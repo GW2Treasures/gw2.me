@@ -1,9 +1,9 @@
 {
-  "name": "web",
+  "name": "example",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "PORT=4000 next dev",
+    "dev": "PORT=4001 next dev",
     "build": "next build",
     "start": "next start"
   },
@@ -13,13 +13,11 @@
     "next": "13.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "server-only": "0.0.1",
-    "ua-parser-js": "1.0.35"
+    "server-only": "0.0.1"
   },
   "devDependencies": {
     "@types/node": "18.16.1",
     "@types/react": "18.2.0",
-    "@types/ua-parser-js": "0.7.36",
     "@typescript-eslint/eslint-plugin": "5.59.1",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",

@@ -7,6 +7,7 @@
   ],
   "scripts": {
     "dev:web": "turbo run dev --filter=web",
+    "dev:example": "turbo run dev --filter=example",
     "prisma:studio": "npm run prisma:studio -w @gw2me/database",
     "prisma:migrate-dev": "npm run prisma:migrate-dev -w @gw2me/database",
     "build": "turbo run build",

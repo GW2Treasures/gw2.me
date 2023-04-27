@@ -1,0 +1,20 @@
+.header {
+  border-bottom: 1px solid #eee;
+  padding: 16px 16px;
+  display: flex;
+  gap: 16px;
+  line-height: 16px;
+}
+
+.title {
+  font-family: var(--font-bitter);
+  font-size: 20px;
+}
+
+.right {
+  margin-left: auto;
+}
+
+.content {
+  padding: 16px;
+}
