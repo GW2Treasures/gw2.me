@@ -7,18 +7,18 @@ import { NextRequest, NextResponse } from 'next/server';
 // 7 days
 const EXPIRES_IN = 604800;
 
-function isValidGrantType(grant_type: string | null): grant_type is 'authorization_code' | 'refresh_token' {
+function isValidGrantType(grant_type: string | undefined): grant_type is 'authorization_code' | 'refresh_token' {
   return grant_type === 'authorization_code' || grant_type === 'refresh_token';
 }
 
-export async function GET(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
+export async function POST(request: NextRequest) {
+  const params = await request.formData();
 
-  const client_id = params.get('client_id');
-  const client_secret = params.get('client_secret');
-  const grant_type = params.get('grant_type');
-  const code = params.get('code');
-  const redirect_uri = params.get('redirect_uri');
+  const client_id = params.get('client_id')?.toString();
+  const client_secret = params.get('client_secret')?.toString();
+  const grant_type = params.get('grant_type')?.toString();
+  const code = params.get('code')?.toString();
+  const redirect_uri = params.get('redirect_uri')?.toString();
 
   if(!client_id || !client_secret || !isValidGrantType(grant_type) || !code || !redirect_uri) {
     return NextResponse.json({ error: true }, { status: 400 });
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
 
       const { applicationId, userId, scope } = authorization;
 
-      const [refreshAuthorization, accessAuthorization] = await db.$transaction([
+      const [refreshAuthorization, accessAuthorization, _] = await db.$transaction([
         // create refresh token
         db.authorization.upsert({
           where: { type_applicationId_userId: { type: AuthorizationType.RefreshToken, applicationId, userId }},

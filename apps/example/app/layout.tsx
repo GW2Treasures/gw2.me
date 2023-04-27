@@ -4,6 +4,7 @@ import './global.css';
 import styles from './layout.module.css';
 import icon from './icon.svg';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -21,7 +22,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <body>
         <div className={styles.header}>
           <Image src={icon} alt=""/>
-          <div className={styles.title}>Example App</div>
+          <Link href="/" className={styles.title}>Example App</Link>
         </div>
         <div className={styles.content}>
           {children}
@@ -33,7 +34,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 
 export const metadata = {
   title: {
-    template: '%s · gw2.me',
+    template: '%s · example@gw2.me',
     default: ''
   },
   description: 'Securly manage GW2 API access',
