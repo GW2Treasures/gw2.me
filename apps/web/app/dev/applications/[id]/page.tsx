@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { deleteApplication } from '../_actions/delete';
 import { ActionForm } from '@/components/ActionForm/ActionForm';
+import { editApplication } from '../_actions/edit';
 
 const getApplication = cache(async (id: string) => {
   const user = await getUser();
@@ -28,7 +29,16 @@ export default async function EditApplicationPage({ params }: { params: { id: st
       <Link href="/dev/applications">← List of Applications</Link>
       <h1>{application.name}</h1>
 
+      <ActionForm action={editApplication}>
+        <input type="hidden" name="id" value={application.id}/>
+        <textarea name="callbackUrls" defaultValue={application.callbackUrls.join('\n')}/>
+        <hr/>
+        <button>Save</button>
+      </ActionForm>
+
       <pre>{JSON.stringify(application, undefined, 2)}</pre>
+
+      <a href={`/oauth2/authorize?response_type=code&redirect_uri=${encodeURIComponent(application.callbackUrls[0])}&client_id=${application.clientId}&scope=identify&state=test`}>Test Link</a>
 
       <ActionForm action={deleteApplication}>
         <input type="hidden" name="id" value={application.id}/>
