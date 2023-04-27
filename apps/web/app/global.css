@@ -19,3 +19,9 @@ a:hover {
 * {
   box-sizing: border-box;
 }
+
+th, td {
+  border-bottom: 1px solid #eee;
+  padding: 8px;
+  text-align: left;
+}
