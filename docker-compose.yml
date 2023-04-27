@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=gw2me
+      - POSTGRES_PASSWORD=gw2me
+      - POSTGRES_DB=gw2me
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - .docker/database:/var/lib/postgresql/data
+    ports:
+      - 54327:5432
