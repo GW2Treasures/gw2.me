@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
     const session = await db.userSession.create({ data: { info: sessionName, userId }});
 
     // send response with session cookie
-    const profileUrl = getUrlFromParts({ ...parts, path: '/profile' });
+    const profileUrl = getUrlFromParts({ ...parts, path: '/login/return' });
     const response = NextResponse.redirect(profileUrl);
     response.cookies.set(authCookie(session.id, parts.protocol === 'https:'));
     return response;

@@ -86,7 +86,15 @@ const authorize = action(async (data) => {
   redirect(url.toString());
 });
 
-export default async function AuthorizePage({ searchParams }: { searchParams: Params }) {
+export default async function AuthorizePage({ searchParams }: { searchParams: Params & Record<string, string> }) {
+  const user = await getUser();
+
+  if(!user) {
+    const returnBuffer = Buffer.from(`/oauth2/authorize?${new URLSearchParams(searchParams).toString()}`);
+
+    redirect('/login/return?to=' + encodeURIComponent(returnBuffer.toString('base64url')));
+  }
+
   // validate request
   const validatedRequest = await validateRequest(searchParams);
 

@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   const session = await db.userSession.create({ data: { info: 'Dev Login', userId: id }});
 
   // send response with session cookie
-  const profileUrl = getUrlFromParts({ ...getUrlPartsFromRequest(request), path: '/profile' });
+  const profileUrl = getUrlFromParts({ ...getUrlPartsFromRequest(request), path: '/login/return' });
   const response = NextResponse.redirect(profileUrl);
 
   response.cookies.set(authCookie(session.id, false));
