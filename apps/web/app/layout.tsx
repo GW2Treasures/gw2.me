@@ -27,6 +27,8 @@ const wotfard = localFont({
   variable: '--font-wotfard',
 });
 
+export const dynamic = 'force-dynamic';
+
 export default async function RootLayout({ children }: RootLayoutProps) {
   const user = await getUser();
 

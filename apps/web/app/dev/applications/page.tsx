@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 
+export const dynamic = 'force-dynamic';
+
 const getApplications = cache(async () => {
   const user = await getUser();
 
@@ -28,9 +30,7 @@ export default async function DevPage() {
         {applications.map((app) => (
           <li key={app.id}><Link href={`/dev/applications/${app.id}`}>{app.name}</Link></li>
         ))}
-
       </ul>
-
     </div>
   );
 }

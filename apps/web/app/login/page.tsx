@@ -2,6 +2,8 @@ import { getUser } from '@/lib/getUser';
 import { redirect } from 'next/navigation';
 import { DevLogin } from './dev-login';
 
+export const dynamic = 'force-dynamic';
+
 export default async function LoginPage({ searchParams }: { searchParams: { logout?: '', error?: '' }}) {
   const user = await getUser();
 

@@ -16,7 +16,7 @@ const bitter = Bitter({
   variable: '--font-bitter',
 });
 
-export default async function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={bitter.variable}>
       <body>

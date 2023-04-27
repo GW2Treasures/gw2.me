@@ -5,6 +5,8 @@ import parseUserAgent from 'ua-parser-js';
 import { authCookie } from '@/lib/cookie';
 import { getUrlFromParts, getUrlPartsFromRequest } from '@/lib/urlParts';
 
+export const dynamic = 'force-dynamic';
+
 const clientId = process.env.DISCORD_CLIENT_ID;
 const clientSecret = process.env.DISCORD_CLIENT_SECRET;
 
