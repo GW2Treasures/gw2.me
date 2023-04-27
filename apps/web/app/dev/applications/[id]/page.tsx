@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { deleteApplication } from '../_actions/delete';
+import { ActionForm } from '@/components/ActionForm/ActionForm';
 
 const getApplication = cache(async (id: string) => {
   const user = await getUser();
@@ -29,11 +30,10 @@ export default async function EditApplicationPage({ params }: { params: { id: st
 
       <pre>{JSON.stringify(application, undefined, 2)}</pre>
 
-      <form method="POST" action="">
-        <input type="hidden" name="$$id" value={deleteApplication.$$id}/>
+      <ActionForm action={deleteApplication}>
         <input type="hidden" name="id" value={application.id}/>
         <button>Delete Application</button>
-      </form>
+      </ActionForm>
     </div>
   );
 }

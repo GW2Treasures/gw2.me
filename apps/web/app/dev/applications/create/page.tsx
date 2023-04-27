@@ -1,15 +1,15 @@
-import { submit } from '../_actions/create';
+import { ActionForm } from '@/components/ActionForm/ActionForm';
+import { createApplication } from '../_actions/create';
 
 export default function CreateApplicationPage() {
   return (
     <div>
       <h1>Create new application</h1>
 
-      <form method="POST" action="">
-        <input type="hidden" name="$$id" value={submit.$$id}/>
+      <ActionForm action={createApplication}>
         <input name="name"/>
         <button>Submit</button>
-      </form>
+      </ActionForm>
     </div>
   );
 }

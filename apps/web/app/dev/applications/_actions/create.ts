@@ -4,7 +4,7 @@ import { getUser } from '@/lib/getUser';
 import { randomBytes, randomUUID } from 'crypto';
 import { redirect } from 'next/navigation';
 
-export const submit = action(async (data) => {
+export const createApplication = action(async (data) => {
   'use server';
 
   const user = await getUser();
