@@ -2,6 +2,8 @@ import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   // make sure example app exists
   const user = await db.user.upsert({

@@ -9,6 +9,7 @@
 .title {
   font-family: var(--font-bitter);
   font-size: 20px;
+  color: #000;
 }
 
 .right {
