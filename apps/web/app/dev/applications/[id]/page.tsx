@@ -6,6 +6,7 @@ import { cache } from 'react';
 import { deleteApplication } from '../_actions/delete';
 import { ActionForm } from '@/components/ActionForm/ActionForm';
 import { editApplication } from '../_actions/edit';
+import { Scope, getAuthorizationUrl } from '@gw2me/api';
 
 const getApplication = cache(async (id: string) => {
   const user = await getUser();
@@ -38,7 +39,7 @@ export default async function EditApplicationPage({ params }: { params: { id: st
 
       <pre>{JSON.stringify(application, undefined, 2)}</pre>
 
-      <a href={`/oauth2/authorize?response_type=code&redirect_uri=${encodeURIComponent(application.callbackUrls[0])}&client_id=${application.clientId}&scope=identify&state=test`}>Test Link</a>
+      <a href={getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], client_id: application.clientId, scopes: [Scope.Identify] })}>Test Link</a>
 
       <ActionForm action={deleteApplication}>
         <input type="hidden" name="id" value={application.id}/>

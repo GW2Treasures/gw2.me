@@ -1,6 +1,7 @@
 import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
+import { Scope, getAuthorizationUrl } from '@gw2me/api';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,5 +19,12 @@ export async function GET(request: NextRequest) {
     update: { clientId: 'example_client_id', clientSecret: 'example_client_secret', name: 'Example App', ownerId: user.id, description: 'This is the gw2.me example app', callbackUrls: ['http://localhost:4001/callback'] }
   });
 
-  redirect('http://localhost:4000/oauth2/authorize?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A4001%2Fcallback&client_id=example_client_id&scope=identify&state=example');
+  const authUrl = getAuthorizationUrl({
+    client_id: 'example_client_id',
+    redirect_uri: 'http://localhost:4001/callback',
+    scopes: [Scope.Identify],
+    state: 'example',
+  });
+
+  redirect(authUrl);
 }

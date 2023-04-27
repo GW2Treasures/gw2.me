@@ -1,5 +1,6 @@
 import { expiresAt, isExpired } from '@/lib/date';
 import { db } from '@/lib/db';
+import { TokenResponse } from '@gw2me/api';
 import { AuthorizationType } from '@gw2me/database';
 import { randomBytes } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
@@ -54,13 +55,15 @@ export async function POST(request: NextRequest) {
         db.authorization.delete({ where: { id: authorization.id }})
       ]);
 
-      return NextResponse.json({
+      const response: TokenResponse = {
         access_token: accessAuthorization.token,
         token_type: 'Bearer',
         expires_in: EXPIRES_IN,
         refresh_token: refreshAuthorization.token,
         scope: scope.join(' ')
-      });
+      };
+
+      return NextResponse.json(response);
     }
 
     case 'refresh_token': {
@@ -82,13 +85,15 @@ export async function POST(request: NextRequest) {
       // set last used to refresh token
       db.authorization.update({ where: { id: refreshAuthorization.id }, data: { usedAt: new Date() }});
 
-      return NextResponse.json({
+      const response: TokenResponse = {
         access_token: accessAuthorization.token,
         token_type: 'Bearer',
         expires_in: EXPIRES_IN,
         refresh_token: refreshAuthorization.token,
         scope: scope.join(' ')
-      });
+      };
+
+      return NextResponse.json(response);
     }
   }
 }
