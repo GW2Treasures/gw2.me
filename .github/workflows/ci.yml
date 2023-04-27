@@ -42,3 +42,10 @@ jobs:
       run: npm ci
     - name: Run Lint
       run: npm run lint
+
+  success:
+    name: Success
+    needs: [build, lint]
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "Success"
