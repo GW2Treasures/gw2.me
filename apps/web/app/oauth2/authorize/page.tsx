@@ -4,7 +4,7 @@ import { expiresAt } from '@/lib/date';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { Application, AuthorizationType } from '@gw2me/database';
-import { headers } from 'next/headers';
+import { randomBytes } from 'crypto';
 import { redirect } from 'next/navigation';
 
 interface Params {
@@ -71,6 +71,7 @@ const authorize = action(async (data) => {
     where: { type_applicationId_userId: { type, applicationId, userId }},
     create: {
       type, applicationId, userId,
+      token: randomBytes(16).toString('hex'),
       expiresAt: expiresAt(60),
     },
     update: {
@@ -79,7 +80,7 @@ const authorize = action(async (data) => {
   });
 
   const url = new URL(redirect_uri);
-  url.searchParams.set('code', authorization.id);
+  url.searchParams.set('code', authorization.token);
   state && url.searchParams.set('state', state);
 
   redirect(url.toString());

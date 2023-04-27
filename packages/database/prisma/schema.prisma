@@ -76,7 +76,8 @@ model Application {
 model Authorization {
   id String @default(uuid()) @id
 
-  type AuthorizationType
+  type  AuthorizationType
+  token String            @unique
 
   scope String[]
 
