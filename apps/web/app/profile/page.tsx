@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
+import Link from 'next/link';
 
 const getUserData = cache(async () => {
   const session = await getUser();
@@ -31,6 +32,7 @@ export default async function ProfilePage() {
 
   return (
     <div>
+      <h1>{user.name}</h1>
       <a href="/logout">Logout</a>
 
       <h2 id="providers">Login Providers</h2>
@@ -52,6 +54,7 @@ export default async function ProfilePage() {
           ))}
         </tbody>
       </table>
+
       <h2 id="sessions">Sessions</h2>
       <table>
         <thead>
@@ -71,6 +74,9 @@ export default async function ProfilePage() {
           ))}
         </tbody>
       </table>
+
+      <h2 id="applications">Authorized Apps</h2>
+      Are you a developer? <Link href="/dev/applications">Manage your own apps</Link>.
     </div>
   );
 }

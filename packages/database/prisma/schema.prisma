@@ -19,6 +19,8 @@ model User {
 
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+
+  applications Application[] @relation("applications")
 }
 
 model UserSession {
@@ -47,4 +49,20 @@ model UserProvider {
   
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+}
+
+model Application {
+  id           String @default(uuid()) @id
+
+  name         String
+  description  String  @default("")
+  public       Boolean @default(false)
+
+  clientId     String
+  clientSecret String
+
+  callbackUrls String[] @default([])
+
+  ownerId  String
+  owner    User      @relation("applications", fields: [ownerId], references: [id])
 }
