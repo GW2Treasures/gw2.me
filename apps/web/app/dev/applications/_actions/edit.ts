@@ -1,7 +1,6 @@
 import { action } from '@/lib/action';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
-import { redirect } from 'next/navigation';
 
 export const editApplication = action(async (data) => {
   'use server';

@@ -7,6 +7,8 @@ import { deleteApplication } from '../_actions/delete';
 import { ActionForm } from '@/components/ActionForm/ActionForm';
 import { editApplication } from '../_actions/edit';
 import { Scope, getAuthorizationUrl } from '@gw2me/api';
+import { resetClientSecret } from '../_actions/resetClientSecret';
+import { ResetClientSecret } from './reset-client-secret';
 
 const getApplication = cache(async (id: string) => {
   const user = await getUser();
@@ -36,6 +38,8 @@ export default async function EditApplicationPage({ params }: { params: { id: st
         <hr/>
         <button>Save</button>
       </ActionForm>
+
+      <ResetClientSecret applicationId={application.id} reset={resetClientSecret}/>
 
       <pre>{JSON.stringify(application, undefined, 2)}</pre>
 

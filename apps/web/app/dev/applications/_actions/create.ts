@@ -18,7 +18,6 @@ export const createApplication = action(async (data) => {
     data: {
       name: name.toString(),
       clientId: randomUUID(),
-      clientSecret: randomBytes(32).toString('hex'),
       ownerId: user?.id
     }
   });

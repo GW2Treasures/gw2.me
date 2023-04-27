@@ -59,8 +59,8 @@ model Application {
   description  String  @default("")
   public       Boolean @default(false)
 
-  clientId     String @unique
-  clientSecret String @unique
+  clientId     String  @unique
+  clientSecret String? @unique
 
   callbackUrls String[] @default([])
 

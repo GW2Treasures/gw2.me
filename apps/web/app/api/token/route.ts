@@ -2,7 +2,7 @@ import { expiresAt, isExpired } from '@/lib/date';
 import { db } from '@/lib/db';
 import { TokenResponse } from '@gw2me/api';
 import { AuthorizationType } from '@gw2me/database';
-import { randomBytes } from 'crypto';
+import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
 // 7 days
@@ -28,9 +28,9 @@ export async function POST(request: NextRequest) {
   switch(grant_type) {
     case 'authorization_code': {
       // find code
-      const authorization = await db.authorization.findUnique({ where: { token: code }});
+      const authorization = await db.authorization.findUnique({ where: { token: code }, include: { application: true }});
 
-      if(!authorization || authorization.type !== AuthorizationType.Code || isExpired(authorization.expiresAt)) {
+      if(!authorization || authorization.type !== AuthorizationType.Code || isExpired(authorization.expiresAt) || authorization.application.clientId !== client_id || !validClientSecret(client_secret, authorization.application.clientSecret)) {
         return NextResponse.json({ error: true }, { status: 400 });
       }
 
@@ -67,9 +67,9 @@ export async function POST(request: NextRequest) {
     }
 
     case 'refresh_token': {
-      const refreshAuthorization = await db.authorization.findUnique({ where: { token: code }});
+      const refreshAuthorization = await db.authorization.findUnique({ where: { token: code }, include: { application: true }});
 
-      if(!refreshAuthorization || refreshAuthorization.type !== AuthorizationType.RefreshToken || isExpired(refreshAuthorization.expiresAt)) {
+      if(!refreshAuthorization || refreshAuthorization.type !== AuthorizationType.RefreshToken || isExpired(refreshAuthorization.expiresAt) || refreshAuthorization.application.clientId !== client_id || !validClientSecret(client_secret, refreshAuthorization.application.clientSecret)) {
         return NextResponse.json({ error: true }, { status: 400 });
       }
 
@@ -96,4 +96,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(response);
     }
   }
+}
+
+function validClientSecret(clientSecret: string, saltedHash: string | null) {
+  if(saltedHash === null) {
+    return false;
+  }
+
+  const [salt, hash] = saltedHash.split(':');
+
+  const saltBuffer = Buffer.from(salt, 'base64');
+  const hashBuffer = Buffer.from(hash, 'base64');
+  const secretBuffer = Buffer.from(clientSecret, 'base64url');
+
+  const derived = scryptSync(secretBuffer, saltBuffer, 16);
+  return timingSafeEqual(hashBuffer, derived);
 }

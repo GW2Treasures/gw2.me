@@ -6,7 +6,7 @@ function getToken(code: string) {
   return getAccessToken({
     code,
     client_id: 'example_client_id',
-    client_secret: 'example_client_secret',
+    client_secret: Buffer.from('example_client_secret', 'utf-8').toString('base64url'),
     redirect_uri: 'http://localhost:4001/callback'
   });
 }
