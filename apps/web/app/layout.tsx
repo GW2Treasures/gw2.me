@@ -7,6 +7,7 @@ import styles from './layout.module.css';
 import icon from './icon.svg';
 import Image from 'next/image';
 import Link from 'next/link';
+import { getUser } from '@/lib/getUser';
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -26,7 +27,9 @@ const wotfard = localFont({
   variable: '--font-wotfard',
 });
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const user = await getUser();
+
   return (
     <html lang="en" className={cx(bitter.variable, wotfard.variable)}>
       <body>
@@ -35,7 +38,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <div className={styles.title}>gw2.me</div>
           <div>by <a href="https://gw2treasures.com/">gw2treasures.com</a></div>
           <div className={styles.right}>
-            <Link href="/login">Login</Link>
+            {user ? <Link href="/profile">{user.name}</Link> : <Link href="/login">Login</Link>}
           </div>
         </div>
         <div className={styles.content}>
