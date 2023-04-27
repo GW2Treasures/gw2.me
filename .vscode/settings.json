@@ -1,0 +1,5 @@
+{
+  "typescript.tsdk": "apps/web/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "css.lint.validProperties": ["composes"]
+}
