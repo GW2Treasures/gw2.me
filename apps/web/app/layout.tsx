@@ -4,10 +4,11 @@ import localFont from 'next/font/local';
 import { cx } from '@/lib/classNames';
 import './global.css';
 import styles from './layout.module.css';
-import icon from './icon.svg';
+import GW2MeIcon from './icon.svg?svgr';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getUser } from '@/lib/getUser';
+import { Icon } from '@gw2treasures/ui';
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -36,11 +37,11 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" className={cx(bitter.variable, wotfard.variable)}>
       <body>
         <div className={styles.header}>
-          <Image src={icon} alt=""/>
+          <Icon icon={<GW2MeIcon/>}/>
           <div className={styles.title}>gw2.me</div>
           <div>by <a href="https://gw2treasures.com/">gw2treasures.com</a></div>
           <div className={styles.right}>
-            {user ? <Link href="/profile">{user.name}</Link> : <Link href="/login">Login</Link>}
+            {user ? <Link href="/profile"><Icon icon="user"/> {user.name}</Link> : <Link href="/login">Login</Link>}
           </div>
         </div>
         <div className={styles.content}>
