@@ -5,7 +5,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist/ && tsup src/index.ts --minify && tsc --emitDeclarationOnly --declaration --declarationMap",
+    "build": "npm run clean && if test $CI; then npm run build:ci; else npm run build:local; fi",
+    "build:local": "tsup src/index.ts && tsc --emitDeclarationOnly --declaration --declarationMap",
+    "build:ci": "tsup src/index.ts --minify --dts",
+    "clean": "rm -rf dist/",
     "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
