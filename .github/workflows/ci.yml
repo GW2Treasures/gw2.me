@@ -20,19 +20,19 @@ jobs:
         node: [ 18, 20 ]
     steps:
     - uses: actions/checkout@v3
-    - name: Cache turbo build setup
-      uses: actions/cache@v3
-      with:
-        path: ./node_modules/.cache/turbo
-        key: turbo-cache-build-${{ runner.os }}-${{ github.sha }}
-        restore-keys: |
-          turbo-cache-build-${{ runner.os }}-
     - uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node }}
         cache: npm
     - name: Install dependencies
       run: npm ci
+    - name: Cache turbo
+      uses: actions/cache@v3
+      with:
+        path: ./node_modules/.cache/turbo
+        key: turbo-cache-build-${{ runner.os }}-${{ github.sha }}
+        restore-keys: |
+          turbo-cache-build-${{ runner.os }}-
     - name: Run Build
       run: npm run build
 
