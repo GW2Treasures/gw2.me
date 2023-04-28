@@ -24,9 +24,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ./node_modules/.cache/turbo
-        key: ${{ runner.os }}-turbo-${{ github.sha }}
+        key: turbo-cache-build-${{ runner.os }}-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-turbo-
+          turbo-cache-build-${{ runner.os }}-
     - uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node }}
@@ -41,13 +41,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Cache turbo build setup
-      uses: actions/cache@v3
-      with:
-        path: ./node_modules/.cache/turbo
-        key: ${{ runner.os }}-turbo-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-turbo-
     - uses: actions/setup-node@v3
       with:
         node-version: 20
