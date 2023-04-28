@@ -3,6 +3,7 @@ import { action } from '@/lib/action';
 import { expiresAt } from '@/lib/date';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
+import { Scope } from '@gw2me/api';
 import { Application, AuthorizationType } from '@gw2me/database';
 import { randomBytes } from 'crypto';
 import { redirect } from 'next/navigation';
@@ -15,9 +16,8 @@ interface Params {
   state: string;
 }
 
-async function validateRequest(params: Params): Promise<{ error: string, application?: undefined } | { error: undefined, application: Application }> {
+async function validateRequest(params: Params): Promise<{ error: string, application?: undefined } | { error: undefined, application: Application, scopes: Scope[] }> {
   const supportedResponseTypes = ['code'];
-  const supportedScopes = ['identify', 'email', 'accounts', 'accounts.create'];
 
   if(!params.response_type || !supportedResponseTypes.includes(params.response_type)) {
     return { error: 'Invalid response_type' };
@@ -35,7 +35,9 @@ async function validateRequest(params: Params): Promise<{ error: string, applica
     return { error: 'Invalid client_id' };
   }
 
-  if(!params.scope || !decodeURIComponent(params.scope).split(' ').every((scope) => supportedScopes.includes(scope))) {
+  const scopes = decodeURIComponent(params.scope).split(' ');
+
+  if(!params.scope || !validScopes(scopes)) {
     return { error: 'Invalid scope' };
   }
 
@@ -49,7 +51,12 @@ async function validateRequest(params: Params): Promise<{ error: string, applica
     return { error: 'Invalid redirect_uri' };
   }
 
-  return { error: undefined, application };
+  return { error: undefined, application, scopes };
+}
+
+function validScopes(scopes: string[]): scopes is Scope[] {
+  const validScopes: string[] = Object.values(Scope);
+  return scopes.every((scope) => validScopes.includes(scope));
 }
 
 const authorize = action(async (data) => {
@@ -57,6 +64,7 @@ const authorize = action(async (data) => {
 
   const applicationId = data.get('applicationId')?.toString();
   const redirect_uri = data.get('redirect_uri')?.toString();
+  const scopes = data.get('scope')?.toString().split(' ');
   const state = data.get('state')?.toString();
   const user = await getUser();
 
@@ -70,7 +78,7 @@ const authorize = action(async (data) => {
   const authorization = await db.authorization.upsert({
     where: { type_applicationId_userId: { type, applicationId, userId }},
     create: {
-      type, applicationId, userId,
+      type, applicationId, userId, scope: scopes,
       token: randomBytes(16).toString('hex'),
       expiresAt: expiresAt(60),
     },
@@ -111,6 +119,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
       <ActionForm action={authorize}>
         <input type="hidden" name="applicationId" value={application.id}/>
         <input type="hidden" name="redirect_uri" value={searchParams.redirect_uri}/>
+        <input type="hidden" name="scope" value={validatedRequest.scopes.join(' ')}/>
         {searchParams.state && <input type="hidden" name="state" value={searchParams.state}/>}
         <button>Authorize</button>
       </ActionForm>

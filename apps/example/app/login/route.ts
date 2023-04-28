@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   const authUrl = getAuthorizationUrl({
     client_id: 'example_client_id',
     redirect_uri: 'http://localhost:4001/callback',
-    scopes: [Scope.Identify],
+    scopes: [Scope.Identify, Scope.Email],
     state: 'example',
   });
 

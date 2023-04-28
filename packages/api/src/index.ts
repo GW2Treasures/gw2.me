@@ -1,5 +1,6 @@
 export enum Scope {
   Identify = 'identify',
+  Email = 'email',
 }
 
 export interface AuthorizationUrlParams {

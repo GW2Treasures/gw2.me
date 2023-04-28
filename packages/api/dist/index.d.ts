@@ -1,5 +1,6 @@
 export declare enum Scope {
-    Identify = "identify"
+    Identify = "identify",
+    Email = "email"
 }
 export interface AuthorizationUrlParams {
     redirect_uri: string;

@@ -20,6 +20,11 @@ a:hover {
   box-sizing: border-box;
 }
 
+h1, h2, h3 {
+  font-family: var(--font-bitter);
+  font-size: 20px;
+}
+
 th, td {
   border-bottom: 1px solid #eee;
   padding: 8px;
