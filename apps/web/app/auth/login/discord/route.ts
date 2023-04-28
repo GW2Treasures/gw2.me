@@ -2,6 +2,8 @@ import { getUrlFromParts, getUrlPartsFromRequest } from '@/lib/urlParts';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 const clientId = process.env.DISCORD_CLIENT_ID;
 
 export function GET(request: NextRequest) {
