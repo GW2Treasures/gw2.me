@@ -24,6 +24,7 @@ jobs:
       with:
         node-version: ${{ matrix.node }}
         cache: npm
+    - run: npm i -g npm@latest
     - name: Install dependencies
       run: npm ci
     - name: Cache turbo
