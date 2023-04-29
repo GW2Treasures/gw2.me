@@ -35,7 +35,7 @@ jobs:
         restore-keys: |
           turbo-cache-build-${{ runner.os }}-
     - name: Run Build
-      run: npm run build
+      run: npm run build -- --no-cache
 
   lint:
     name: Lint
