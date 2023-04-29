@@ -1,5 +1,9 @@
 'use client';
 
+import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
+import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
+import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { FC, useCallback, useState } from 'react';
 
 export interface ResetClientSecretProps {
@@ -16,9 +20,11 @@ export const ResetClientSecret: FC<ResetClientSecretProps> = ({ applicationId, r
   }, [applicationId, reset]);
 
   return (
-    <div>
-      Client Secret: {clientSecret ?? '***'}
-      {clientSecret === undefined && <button onClick={handleReset}>Reset client_secret</button>}
+    <div style={{ gap: 16, display: 'flex' }}>
+      <TextInput value={clientSecret ?? '***'} readOnly/>
+      {!clientSecret
+        ? <Button onClick={handleReset}>Reset client_secret</Button>
+        : <CopyButton copy={clientSecret}>Copy</CopyButton>}
     </div>
   );
 };

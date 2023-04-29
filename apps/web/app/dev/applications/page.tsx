@@ -1,5 +1,7 @@
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
@@ -22,9 +24,7 @@ export default async function DevPage() {
 
   return (
     <div>
-      <h1>Your Applications</h1>
-
-      <Link href="/dev/applications/create">Create new Application</Link>
+      <Headline id="applications" actions={<LinkButton href="/dev/applications/create">Create</LinkButton>}>Your Applications</Headline>
 
       <ul>
         {applications.map((app) => (

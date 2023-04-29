@@ -8,7 +8,7 @@ export interface ActionFormProps {
 
 export const ActionForm: FC<ActionFormProps> = ({ action, children }) => {
   return (
-    <form method="POST" action="">
+    <form method="POST" action="" id={action.$$id}>
       <input type="hidden" name="$$id" value={action.$$id}/>
       {children}
     </form>

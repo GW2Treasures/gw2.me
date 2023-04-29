@@ -4,6 +4,9 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import Link from 'next/link';
+import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
+import { Table } from '@gw2treasures/ui/components/Table/Table';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 const getUserData = cache(async () => {
   const session = await getUser();
@@ -32,11 +35,11 @@ export default async function ProfilePage() {
 
   return (
     <div>
-      <h1>{user.name}</h1>
-      <a href="/logout">Logout</a>
+      <Headline id="profile">{user.name}</Headline>
+      <LinkButton href="/logout" external>Logout</LinkButton>
 
-      <h2 id="providers">Login Providers</h2>
-      <table>
+      <Headline id="providers">Login Providers</Headline>
+      <Table>
         <thead>
           <tr>
             <th>Provider</th>
@@ -53,10 +56,10 @@ export default async function ProfilePage() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
 
-      <h2 id="sessions">Sessions</h2>
-      <table>
+      <Headline id="sessions">Sessions</Headline>
+      <Table>
         <thead>
           <tr>
             <th>Session</th>
@@ -73,9 +76,9 @@ export default async function ProfilePage() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
 
-      <h2 id="applications">Authorized Apps</h2>
+      <Headline id="applications">Authorized Apps</Headline>
       Are you a developer? <Link href="/dev/applications">Manage your own apps</Link>.
     </div>
   );

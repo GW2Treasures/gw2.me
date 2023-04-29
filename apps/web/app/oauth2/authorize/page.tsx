@@ -7,6 +7,7 @@ import { Scope } from '@gw2me/api';
 import { Application, AuthorizationType } from '@gw2me/database';
 import { randomBytes } from 'crypto';
 import { redirect } from 'next/navigation';
+import { Button } from '@gw2treasures/ui/components/Form/Button';
 
 interface Params {
   response_type: string;
@@ -121,7 +122,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
         <input type="hidden" name="redirect_uri" value={searchParams.redirect_uri}/>
         <input type="hidden" name="scope" value={validatedRequest.scopes.join(' ')}/>
         {searchParams.state && <input type="hidden" name="state" value={searchParams.state}/>}
-        <button>Authorize</button>
+        <Button>Authorize</Button>
       </ActionForm>
     </div>
   );

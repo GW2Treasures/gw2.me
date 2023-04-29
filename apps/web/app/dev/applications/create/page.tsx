@@ -1,14 +1,17 @@
 import { ActionForm } from '@/components/ActionForm/ActionForm';
 import { createApplication } from '../_actions/create';
+import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
+import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 
 export default function CreateApplicationPage() {
   return (
     <div>
-      <h1>Create new application</h1>
+      <Headline id="create">Create new application</Headline>
 
       <ActionForm action={createApplication}>
-        <input name="name"/>
-        <button>Submit</button>
+        <TextInput name="name"/>
+        <Button>Submit</Button>
       </ActionForm>
     </div>
   );
