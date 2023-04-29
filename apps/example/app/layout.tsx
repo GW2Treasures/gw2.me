@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Bitter } from 'next/font/google';
 import './global.css';
+import './variables.css';
 import styles from './layout.module.css';
 import icon from './icon.svg';
 import Image from 'next/image';

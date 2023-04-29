@@ -32,6 +32,12 @@ export interface AuthTokenParams {
   client_secret: string;
 }
 
+export interface RefreshTokenParams {
+  refresh_token: string;
+  client_id: string;
+  client_secret: string;
+}
+
 export interface TokenResponse {
   access_token: string,
   token_type: 'Bearer',
@@ -51,6 +57,24 @@ export async function getAccessToken({ code, client_id, client_secret, redirect_
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: data,
+    cache: 'no-store'
+  }).then((r) => r.json());
+
+  return token;
+}
+
+export async function refreshToken({ refresh_token, client_id, client_secret }: RefreshTokenParams): Promise<TokenResponse> {
+  const data = new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token, client_id, client_secret,
+  });
+
+  // get discord token
+  const token = await fetch('http://localhost:4000/api/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: data,
+    cache: 'no-store',
   }).then((r) => r.json());
 
   return token;

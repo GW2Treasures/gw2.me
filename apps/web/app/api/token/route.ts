@@ -5,6 +5,8 @@ import { AuthorizationType } from '@gw2me/database';
 import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // 7 days
 const EXPIRES_IN = 604800;
 
@@ -18,15 +20,20 @@ export async function POST(request: NextRequest) {
   const client_id = params.get('client_id')?.toString();
   const client_secret = params.get('client_secret')?.toString();
   const grant_type = params.get('grant_type')?.toString();
-  const code = params.get('code')?.toString();
-  const redirect_uri = params.get('redirect_uri')?.toString();
 
-  if(!client_id || !client_secret || !isValidGrantType(grant_type) || !code || !redirect_uri) {
+  if(!client_id || !client_secret || !isValidGrantType(grant_type)) {
     return NextResponse.json({ error: true }, { status: 400 });
   }
 
   switch(grant_type) {
     case 'authorization_code': {
+      const code = params.get('code')?.toString();
+      const redirect_uri = params.get('redirect_uri')?.toString();
+
+      if(!code || !redirect_uri) {
+        return NextResponse.json({ error: true }, { status: 400 });
+      }
+
       // find code
       const authorization = await db.authorization.findUnique({ where: { token: code }, include: { application: true }});
 
@@ -67,7 +74,13 @@ export async function POST(request: NextRequest) {
     }
 
     case 'refresh_token': {
-      const refreshAuthorization = await db.authorization.findUnique({ where: { token: code }, include: { application: true }});
+      const refresh_token = params.get('refresh_token')?.toString();
+
+      if(!refresh_token) {
+        return NextResponse.json({ error: true }, { status: 400 });
+      }
+
+      const refreshAuthorization = await db.authorization.findUnique({ where: { token: refresh_token }, include: { application: true }});
 
       if(!refreshAuthorization || refreshAuthorization.type !== AuthorizationType.RefreshToken || isExpired(refreshAuthorization.expiresAt) || refreshAuthorization.application.clientId !== client_id || !validClientSecret(client_secret, refreshAuthorization.application.clientSecret)) {
         return NextResponse.json({ error: true }, { status: 400 });
@@ -83,7 +96,7 @@ export async function POST(request: NextRequest) {
       });
 
       // set last used to refresh token
-      db.authorization.update({ where: { id: refreshAuthorization.id }, data: { usedAt: new Date() }});
+      await db.authorization.update({ where: { id: refreshAuthorization.id }, data: { usedAt: new Date() }});
 
       const response: TokenResponse = {
         access_token: accessAuthorization.token,

@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { deleteApplication } from '../_actions/delete';
 import { ActionForm } from '@/components/ActionForm/ActionForm';
+import { Textarea } from '@/components/Textarea/Textarea';
 import { editApplication } from '../_actions/edit';
 import { Scope, getAuthorizationUrl } from '@gw2me/api';
 import { resetClientSecret } from '../_actions/resetClientSecret';
@@ -40,14 +41,10 @@ export default async function EditApplicationPage({ params }: { params: { id: st
       <Link href="/dev/applications">← List of Applications</Link>
       <Headline id="app">{application.name}</Headline>
 
-      <Label label="ID">
-        <TextInput value={application.id} readOnly/>
-      </Label>
-
       <Label label="Redirect URLs">
         <ActionForm action={editApplication}>
           <input type="hidden" name="id" value={application.id}/>
-          <textarea name="callbackUrls" defaultValue={application.callbackUrls.join('\n')}/>
+          <Textarea name="callbackUrls" defaultValue={application.callbackUrls.join('\n')}/>
         </ActionForm>
       </Label>
 

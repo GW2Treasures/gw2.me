@@ -1,12 +1,14 @@
+import { client_id, client_secret } from '@/lib/client';
 import { getAccessToken } from '@gw2me/api';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 export const dynamic = 'force-dynamic';
 
 function getToken(code: string) {
   return getAccessToken({
     code,
-    client_id: 'example_client_id',
-    client_secret: Buffer.from('example_client_secret', 'utf-8').toString('base64url'),
+    client_id,
+    client_secret,
     redirect_uri: 'http://localhost:4001/callback'
   });
 }
@@ -17,6 +19,10 @@ export default async function CallbackPage({ searchParams }: { searchParams: { c
   return (
     <div>
       <pre>{JSON.stringify(data, undefined, '  ')}</pre>
+
+      {!('error' in data) && (
+        <LinkButton href={`/token?access_token=${data.access_token}&refresh_token=${data.refresh_token}`}>Continue</LinkButton>
+      )}
     </div>
   );
 }
