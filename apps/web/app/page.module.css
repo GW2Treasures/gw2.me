@@ -1,0 +1,22 @@
+.hero {
+  display: flex;
+  align-items: center;
+  padding-left: 64px;
+}
+
+.title {
+  font-size: 64px;
+  font-family: var(--font-bitter);
+  font-weight: bold;
+}
+
+.sub {
+  font-size: 48px;
+  max-width: 500px;
+  line-height: 1.5;
+  margin-top: 32px;
+}
+
+.image {
+  background: radial-gradient(closest-side at center, #b7000d33, transparent);
+}
