@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { ChangeEvent, FC, useCallback } from 'react';
 import styles from './Textarea.module.css';
 
 export interface TextareaProps {
@@ -11,7 +11,7 @@ export interface TextareaProps {
 }
 
 export const Textarea: FC<TextareaProps> = ({ value, onChange, defaultValue, placeholder, name, readOnly }) => {
-  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
     onChange?.(e.target.value);
   }, [onChange]);
 
