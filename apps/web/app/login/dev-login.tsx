@@ -1,4 +1,6 @@
 'use client';
+
+import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { useRouter } from 'next/navigation';
 import { FC, useCallback } from 'react';
 
@@ -15,6 +17,6 @@ export const DevLogin: FC<DevLoginProps> = ({ }) => {
   }, [push]);
 
   return (
-    <button type="button" onClick={login}>Dev Login</button>
+    <Button onClick={login}>Dev Login</Button>
   );
 };

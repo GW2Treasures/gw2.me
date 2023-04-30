@@ -38,7 +38,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <body>
         <div className={styles.header}>
           <Icon icon={<GW2MeIcon/>}/>
-          <div className={styles.title}>gw2.me</div>
+          <Link href="/" className={styles.title}>gw2.me</Link>
           <div>by <a href="https://gw2treasures.com/">gw2treasures.com</a></div>
           <div className={styles.right}>
             {user ? <Link href="/profile"><Icon icon="user"/> {user.name}</Link> : <Link href="/login">Login</Link>}

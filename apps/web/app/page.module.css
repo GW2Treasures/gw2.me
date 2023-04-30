@@ -2,21 +2,85 @@
   display: flex;
   align-items: center;
   padding-left: 64px;
+  background-color: #ffeeee;
+  justify-content: center;
+  gap: 64px;
+}
+
+.gw2treasures {
+  margin-top: 16px;
 }
 
 .title {
   font-size: 64px;
   font-family: var(--font-bitter);
   font-weight: bold;
+  color: #b7000d;
 }
 
 .sub {
-  font-size: 48px;
-  max-width: 500px;
+  font-size: 36px;
+  max-width: 420px;
   line-height: 1.5;
   margin-top: 32px;
 }
 
+.loginButton {
+  margin-top: 32px;
+  display: inline-block;
+  background-color: #b7000d;
+  color: #fff;
+  padding: 8px 32px;
+  border-radius: 2px;
+  box-shadow: var(--shadow);
+  transition: all .3s ease;
+}
+
+.loginButton:hover {
+  text-decoration: none;
+  background-color: #c83943;
+}
+
+.loginButton:focus {
+  outline: 0;
+  box-shadow: var(--shadow), inset 0 0 0 2px #b7000d, inset 0 0 0 4px #fff;
+}
+
+
 .image {
   background: radial-gradient(closest-side at center, #b7000d33, transparent);
+}
+
+.how {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 32px;
+  counter-reset: li;
+}
+
+.how > li {
+  counter-increment: li;
+  padding: 16px;
+  background-color: var(--color-background-light);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 2px;
+  flex: 1;
+}
+
+.how > li::before {
+  content: '0' counter(li);
+  border-bottom: 2px solid var(--color-text-muted);
+  padding-bottom: 8px;
+  display: inline-block;
+  align-self: flex-start;
+  font-weight: bold;
+  color: #b7000d;
+}
+
+@media(prefers-color-scheme: dark) {
+  .hero { background-color: #3c0004; }
 }
