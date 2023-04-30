@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+out
+.docker
+.git
+.next
+.DS_Store
+.idea
+.turbo
