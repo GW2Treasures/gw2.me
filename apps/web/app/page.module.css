@@ -1,10 +1,11 @@
 .hero {
   display: flex;
   align-items: center;
-  padding-left: 64px;
+  flex-wrap: wrap;
   background-color: #ffeeee;
   justify-content: center;
   gap: 64px;
+  padding: 32px 16px;
 }
 
 .gw2treasures {
@@ -51,12 +52,18 @@
   background: radial-gradient(closest-side at center, #b7000d33, transparent);
 }
 
+.image > svg {
+  max-width: 480px;
+  width: 100vw;
+}
+
 .how {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  gap: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
   counter-reset: li;
 }
 
@@ -82,5 +89,5 @@
 }
 
 @media(prefers-color-scheme: dark) {
-  .hero { background-color: #3c0004; }
+  .hero { background-color: #392429; }
 }
