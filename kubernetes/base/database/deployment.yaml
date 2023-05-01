@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: database
+
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      name: database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: database
+    spec:
+      volumes:
+      - name: database-data
+        persistentVolumeClaim:
+          claimName: database
+      containers:
+      - name: database
+        image: postgres:15-alpine
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: database
+              key: user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: database
+              key: password
+        - name: POSTGRES_DB
+          value: gw2me
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+
+        readinessProbe:
+          exec:
+            command: 
+              - /bin/sh
+              - -i
+              - -c
+              - psql -U $POSTGRES_USER -d $POSTGRES_DB -c SELECT 1
+          initialDelaySeconds: 15
+          timeoutSeconds: 2
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -i
+              - -c
+              - psql -U $POSTGRES_USER -d $POSTGRES_DB -c SELECT 1
+          initialDelaySeconds: 45
+          timeoutSeconds: 2
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        volumeMounts:
+        - name: database-data
+          mountPath: /var/lib/postgresql/data
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

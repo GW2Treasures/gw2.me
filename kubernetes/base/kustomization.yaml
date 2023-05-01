@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gw2me
+
+commonLabels:
+  app.kubernetes.io/part-of: gw2me
+
+resources:
+- namespace.yaml
+- database
+- database-migration
+- web
