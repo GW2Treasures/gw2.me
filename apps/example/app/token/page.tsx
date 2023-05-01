@@ -1,6 +1,6 @@
 import { client_id, client_secret } from '@/lib/client';
 import { action } from '@/lib/action';
-import { refreshToken } from '@gw2me/api';
+import { refreshToken, rest } from '@gw2me/api';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { redirect } from 'next/navigation';
@@ -21,7 +21,9 @@ const refreshTokenAction = action(async (data) => {
   redirect(`/token?access_token=${token.access_token}&refresh_token=${token.refresh_token}`);
 });
 
-export default function TokenPage({ searchParams }: { searchParams: { access_token: string; refresh_token: string; }}) {
+export default async function TokenPage({ searchParams }: { searchParams: { access_token: string; refresh_token: string; }}) {
+  const user = await rest.user({ access_token: searchParams.access_token });
+
   return (
     <form method="POST" action="">
       <Label label="access_token">
@@ -30,6 +32,8 @@ export default function TokenPage({ searchParams }: { searchParams: { access_tok
       <Label label="refresh_token">
         <TextInput value={searchParams.refresh_token} readOnly name="refresh_token"/>
       </Label>
+
+      <pre>{JSON.stringify(user, undefined, '  ')}</pre>
 
       <button type="submit" name="$$id" value={refreshTokenAction.$$id}>Refresh Token</button>
     </form>

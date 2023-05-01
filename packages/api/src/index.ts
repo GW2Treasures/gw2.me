@@ -79,3 +79,20 @@ export async function refreshToken({ refresh_token, client_id, client_secret }: 
 
   return token;
 }
+
+export interface UserResponse {
+  user: {
+    id: string;
+    name: string;
+    email?: string;
+  }
+}
+
+export const rest = {
+  user({ access_token }: { access_token: string }): Promise<UserResponse> {
+    return fetch('http://localhost:4000/api/user', {
+      headers: { 'Authorization': `Bearer ${access_token}` },
+      cache: 'no-store',
+    }).then(r => r.json());
+  }
+}
