@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gw2me
+
+commonLabels:
+  app.kubernetes.io/part-of: gw2me
+
+resources:
+- ../base
+- database
+- web
+
+images:
+- name: ghcr.io/gw2treasures/gw2.me/web
+  newTag: latest
+  newName: gw2me/web
+
+- name: ghcr.io/gw2treasures/gw2.me/database-migration
+  newTag: latest
+  newName: gw2me/database-migration

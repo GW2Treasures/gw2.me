@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: database-migration
+
+spec:
+  ttlSecondsAfterFinished: 10
+  template:
+    spec:
+      containers:
+      - name: database-migration
+        image: ghcr.io/gw2treasures/gw2.me/database-migration:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: web
+              key: db
+      restartPolicy: Never
