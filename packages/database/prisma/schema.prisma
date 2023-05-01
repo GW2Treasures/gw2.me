@@ -77,7 +77,7 @@ model Authorization {
   id String @default(uuid()) @id
 
   type  AuthorizationType
-  token String            @unique
+  token String
 
   scope String[]
 
@@ -92,6 +92,7 @@ model Authorization {
   userId String
   user   User   @relation("userAuthorization", fields: [userId], references: [id])
 
+  @@unique([type, token])
   @@unique([type, applicationId, userId])
 }
 

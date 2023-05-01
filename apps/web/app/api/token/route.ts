@@ -35,9 +35,9 @@ export async function POST(request: NextRequest) {
       }
 
       // find code
-      const authorization = await db.authorization.findUnique({ where: { token: code }, include: { application: true }});
+      const authorization = await db.authorization.findUnique({ where: { type_token: { token: code, type: AuthorizationType.Code }}, include: { application: true }});
 
-      if(!authorization || authorization.type !== AuthorizationType.Code || isExpired(authorization.expiresAt) || authorization.application.clientId !== client_id || !validClientSecret(client_secret, authorization.application.clientSecret)) {
+      if(!authorization || isExpired(authorization.expiresAt) || authorization.application.clientId !== client_id || !validClientSecret(client_secret, authorization.application.clientSecret)) {
         return NextResponse.json({ error: true }, { status: 400 });
       }
 
@@ -80,9 +80,9 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: true }, { status: 400 });
       }
 
-      const refreshAuthorization = await db.authorization.findUnique({ where: { token: refresh_token }, include: { application: true }});
+      const refreshAuthorization = await db.authorization.findUnique({ where: { type_token: { token: refresh_token, type: AuthorizationType.RefreshToken }}, include: { application: true }});
 
-      if(!refreshAuthorization || refreshAuthorization.type !== AuthorizationType.RefreshToken || isExpired(refreshAuthorization.expiresAt) || refreshAuthorization.application.clientId !== client_id || !validClientSecret(client_secret, refreshAuthorization.application.clientSecret)) {
+      if(!refreshAuthorization || isExpired(refreshAuthorization.expiresAt) || refreshAuthorization.application.clientId !== client_id || !validClientSecret(client_secret, refreshAuthorization.application.clientSecret)) {
         return NextResponse.json({ error: true }, { status: 400 });
       }
 
