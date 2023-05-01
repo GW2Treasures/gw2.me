@@ -121,7 +121,7 @@ jobs:
     - name: Import images into k3d
       run: k3d image import gw2me/web gw2me/database-migration
     - run: kubectl apply -k kubernetes/local
-    - run: kubectl rollout status deployment web -n gw2me --timeout=120s
+    - run: kubectl rollout status deployment web database -n gw2me --timeout=120s
     - run: kubectl get deployment -n gw2me
       if: success() || failure()
     - run: kubectl get job -n gw2me
