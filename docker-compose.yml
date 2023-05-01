@@ -1,6 +1,19 @@
 version: '3'
 
 services:
+  web:
+    image: gw2me/web
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://gw2me:gw2me@database:5432/gw2me?schema=public
+      - BASE_DOMAIN=localhost
+      - FORCE_COLOR=1
+    ports:
+      - 4000:3000
+
   database:
     image: postgres:15-alpine
     restart: unless-stopped
@@ -13,3 +26,14 @@ services:
       - .docker/database:/var/lib/postgresql/data
     ports:
       - 54327:5432
+
+  database-migration:
+    image: gw2me/database-migration
+    build:
+      context: .
+      dockerfile: apps/database-migration/Dockerfile
+    restart: on-failure
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=postgresql://gw2me:gw2me@database:5432/gw2me?schema=public
