@@ -81,6 +81,8 @@
 .how > li::before {
   content: '0' counter(li);
   border-bottom: 2px solid var(--color-text-muted);
+  font-family: var(--font-bitter);
+  letter-spacing: 1px;
   padding-bottom: 8px;
   display: inline-block;
   align-self: flex-start;
