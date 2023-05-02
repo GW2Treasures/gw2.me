@@ -10,6 +10,10 @@ export interface AuthorizationUrlParams {
   state?: string;
 }
 
+function getUrl() {
+  return process.env.GW2ME_URL || 'https://gw2.me/'
+}
+
 export function getAuthorizationUrl({ redirect_uri, client_id, scopes, state }: AuthorizationUrlParams) {
   const params = new URLSearchParams({
     'response_type': 'code',
@@ -22,7 +26,7 @@ export function getAuthorizationUrl({ redirect_uri, client_id, scopes, state }: 
     params.append('state', state);
   }
 
-  return `http://localhost:4000/oauth2/authorize?${params.toString()}`;
+  return `${getUrl()}oauth2/authorize?${params.toString()}`;
 }
 
 export interface AuthTokenParams {
@@ -53,7 +57,7 @@ export async function getAccessToken({ code, client_id, client_secret, redirect_
   });
 
   // get discord token
-  const token = await fetch('http://localhost:4000/api/token', {
+  const token = await fetch(`${getUrl()}api/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: data,
@@ -70,7 +74,7 @@ export async function refreshToken({ refresh_token, client_id, client_secret }: 
   });
 
   // get discord token
-  const token = await fetch('http://localhost:4000/api/token', {
+  const token = await fetch(`${getUrl()}api/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: data,
@@ -90,7 +94,7 @@ export interface UserResponse {
 
 export const rest = {
   user({ access_token }: { access_token: string }): Promise<UserResponse> {
-    return fetch('http://localhost:4000/api/user', {
+    return fetch(`${getUrl()}api/user`, {
       headers: { 'Authorization': `Bearer ${access_token}` },
       cache: 'no-store',
     }).then(r => r.json());
