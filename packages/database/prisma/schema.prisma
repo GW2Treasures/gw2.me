@@ -58,6 +58,8 @@ model Application {
   name         String
   description  String  @default("")
   public       Boolean @default(false)
+  publicUrl    String  @default("")
+  image        Bytes?
 
   clientId     String  @unique
   clientSecret String? @unique

@@ -14,6 +14,7 @@ import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
+import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 
 const getApplication = cache(async (id: string) => {
   const user = await getUser();
@@ -41,20 +42,39 @@ export default async function EditApplicationPage({ params }: { params: { id: st
       <Link href="/dev/applications">← List of Applications</Link>
       <Headline id="app">{application.name}</Headline>
 
-      <Label label="Redirect URLs">
-        <ActionForm action={editApplication}>
-          <input type="hidden" name="id" value={application.id}/>
-          <Textarea name="callbackUrls" defaultValue={application.callbackUrls.join('\n')}/>
-        </ActionForm>
-      </Label>
+      <ActionForm action={editApplication}>
+        <input type="hidden" name="id" value={application.id}/>
 
-      <Label label="Client ID">
-        <TextInput value={application.clientId} readOnly/>
-      </Label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Label label="Name">
+            <TextInput name="name" defaultValue={application.name} value={undefined}/>
+          </Label>
 
-      <Label label="Client Secret">
-        <ResetClientSecret applicationId={application.id} reset={resetClientSecret}/>
-      </Label>
+          <Label label="Description">
+            <Textarea name="description" defaultValue={application.description}/>
+          </Label>
+
+          <Label label="Public">
+            <Checkbox name="public" defaultChecked={application.public}>Show on <Link href="/discover">Discover</Link> page</Checkbox>
+          </Label>
+
+          <Label label="Public URL">
+            <TextInput name="publicUrl" defaultValue={application.publicUrl} value={undefined}/>
+          </Label>
+
+          <Label label="Redirect URLs">
+            <Textarea name="callbackUrls" defaultValue={application.callbackUrls.join('\n')}/>
+          </Label>
+
+          <Label label="Client ID">
+            <TextInput value={application.clientId} readOnly/>
+          </Label>
+
+          <Label label="Client Secret">
+            <ResetClientSecret applicationId={application.id} reset={resetClientSecret}/>
+          </Label>
+        </div>
+      </ActionForm>
 
       <div style={{ marginTop: 16, display: 'flex', gap: 16 }}>
         <Button form={editApplication.$$id}>Save</Button>

@@ -15,7 +15,11 @@ export const editApplication = action(async (data) => {
   await db.application.updateMany({
     where: { ownerId: user.id, id },
     data: {
-      callbackUrls: data.get('callbackUrls')?.toString().replaceAll('\r', '').split('\n')
+      name: data.get('name')?.toString(),
+      description: data.get('description')?.toString(),
+      public: !!data.get('public')?.toString(),
+      publicUrl: data.get('publicUrl')?.toString(),
+      callbackUrls: data.get('callbackUrls')?.toString().replaceAll('\r', '').split('\n'),
     }
   });
 });
