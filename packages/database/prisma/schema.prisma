@@ -65,7 +65,7 @@ model Application {
   callbackUrls String[] @default([])
 
   ownerId  String
-  owner    User      @relation("applications", fields: [ownerId], references: [id])
+  owner    User      @relation("applications", fields: [ownerId], references: [id], onDelete: Cascade)
   
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
@@ -87,10 +87,10 @@ model Authorization {
   usedAt    DateTime?
 
   applicationId String
-  application   Application @relation("appAuthorization", fields: [applicationId], references: [id])
+  application   Application @relation("appAuthorization", fields: [applicationId], references: [id], onDelete: Cascade)
 
   userId String
-  user   User   @relation("userAuthorization", fields: [userId], references: [id])
+  user   User   @relation("userAuthorization", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([type, token])
   @@unique([type, applicationId, userId])
