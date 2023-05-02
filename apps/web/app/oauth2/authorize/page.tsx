@@ -5,9 +5,9 @@ import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { Scope } from '@gw2me/api';
 import { Application, AuthorizationType } from '@gw2me/database';
-import { randomBytes } from 'crypto';
 import { redirect } from 'next/navigation';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { generateCode } from '@/lib/token';
 
 interface Params {
   response_type: string;
@@ -80,7 +80,7 @@ const authorize = action(async (data) => {
     where: { type_applicationId_userId: { type, applicationId, userId }},
     create: {
       type, applicationId, userId, scope: scopes,
-      token: randomBytes(16).toString('hex'),
+      token: generateCode(),
       expiresAt: expiresAt(60),
     },
     update: {

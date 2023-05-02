@@ -1,8 +1,9 @@
 import { expiresAt, isExpired } from '@/lib/date';
 import { db } from '@/lib/db';
+import { generateAccessToken, generateRefreshToken } from '@/lib/token';
 import { TokenResponse } from '@gw2me/api';
 import { AuthorizationType } from '@gw2me/database';
-import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
+import { scryptSync, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -47,15 +48,15 @@ export async function POST(request: NextRequest) {
         // create refresh token
         db.authorization.upsert({
           where: { type_applicationId_userId: { type: AuthorizationType.RefreshToken, applicationId, userId }},
-          create: { type: AuthorizationType.RefreshToken, applicationId, userId, scope, token: randomBytes(16).toString('hex') },
+          create: { type: AuthorizationType.RefreshToken, applicationId, userId, scope, token: generateRefreshToken() },
           update: { scope }
         }),
 
         // create access token
         db.authorization.upsert({
           where: { type_applicationId_userId: { type: AuthorizationType.AccessToken, applicationId, userId }},
-          create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: randomBytes(16).toString('hex'), expiresAt: expiresAt(EXPIRES_IN) },
-          update: { scope, token: randomBytes(16).toString('hex'), expiresAt: expiresAt(EXPIRES_IN) }
+          create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN) },
+          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN) }
         }),
 
         // delete used code token
@@ -91,8 +92,8 @@ export async function POST(request: NextRequest) {
       // create new access token
       const accessAuthorization = await db.authorization.upsert({
         where: { type_applicationId_userId: { type: AuthorizationType.AccessToken, applicationId, userId }},
-        create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: randomBytes(16).toString('hex'), expiresAt: expiresAt(EXPIRES_IN) },
-        update: { scope, token: randomBytes(16).toString('hex'), expiresAt: expiresAt(EXPIRES_IN) }
+        create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN) },
+        update: { scope, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN) }
       });
 
       // set last used to refresh token
