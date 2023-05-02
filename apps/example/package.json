@@ -10,7 +10,7 @@
   "dependencies": {
     "@gw2me/api": "*",
     "@gw2me/database": "*",
-    "@gw2treasures/ui": "^0.0.3",
+    "@gw2treasures/ui": "^0.0.4",
     "@prisma/nextjs-monorepo-workaround-plugin": "4.13.0",
     "next": "13.3.4",
     "react": "18.2.0",
