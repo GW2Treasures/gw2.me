@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { ActionForm } from '@/components/ActionForm/ActionForm';
 import { action } from '@/lib/action';
 import { expiresAt } from '@/lib/date';
@@ -8,6 +9,7 @@ import { Application, AuthorizationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { generateCode } from '@/lib/token';
+import styles from './layout.module.css';
 
 interface Params {
   response_type: string;
@@ -114,8 +116,14 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
   const application = validatedRequest.application;
 
   return (
-    <div>
-      {application.name} wants to access your gw2.me account.
+    <>
+      <div className={styles.header}>
+        <img src={`/api/application/${application.id}/image`} width={64} height={64} className={styles.image} alt=""/>
+        {application.name}
+      </div>
+      <div>
+        {application.name} wants to access your gw2.me account.
+      </div>
 
       <ActionForm action={authorize}>
         <input type="hidden" name="applicationId" value={application.id}/>
@@ -124,6 +132,6 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
         {searchParams.state && <input type="hidden" name="state" value={searchParams.state}/>}
         <Button>Authorize</Button>
       </ActionForm>
-    </div>
+    </>
   );
 }
