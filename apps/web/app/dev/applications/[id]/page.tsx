@@ -10,6 +10,7 @@ import { editApplication } from '../_actions/edit';
 import { Scope, getAuthorizationUrl } from '@gw2me/api';
 import { resetClientSecret } from '../_actions/resetClientSecret';
 import { ResetClientSecret } from './reset-client-secret';
+import { ApplicationImage } from './application-image';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
@@ -41,6 +42,10 @@ export default async function EditApplicationPage({ params }: { params: { id: st
 
       <Link href="/dev/applications">← List of Applications</Link>
       <Headline id="app">{application.name}</Headline>
+
+      <div>
+        <ApplicationImage applicationId={application.id} exists={application.image !== null}/>
+      </div>
 
       <ActionForm action={editApplication}>
         <input type="hidden" name="id" value={application.id}/>
