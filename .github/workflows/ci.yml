@@ -172,3 +172,29 @@ jobs:
         echo VERSION=$VERSION
         docker tag gw2me/${{ matrix.target }} $IMAGE_ID:$VERSION
         docker push $IMAGE_ID:$VERSION
+
+  publish-npm:
+    name: Publish / npm / ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    needs: [success]    
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      matrix:
+        target: [ api ]
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: npm
+        registry-url: 'https://registry.npmjs.org'
+    - name: Install dependencies
+      run: npm ci
+    - name: Run Publish
+      run: npm run publish-package -- --filter=${{ matrix.target }}...
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NPM_CONFIG_PROVENANCE: true
