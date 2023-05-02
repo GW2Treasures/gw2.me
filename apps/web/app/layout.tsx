@@ -9,6 +9,7 @@ import GW2MeIcon from './icon.svg?svgr';
 import Link from 'next/link';
 import { getUser } from '@/lib/getUser';
 import { Icon } from '@gw2treasures/ui';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -41,7 +42,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <Link href="/" className={styles.title}>gw2.me</Link>
           <div>by <a href="https://gw2treasures.com/">gw2treasures.com</a></div>
           <div className={styles.right}>
-            {user ? <Link href="/profile"><Icon icon="user"/> {user.name}</Link> : <Link href="/login">Login</Link>}
+            <LinkButton appearance="menu" href={user ? '/profile' : '/login'} icon="user">{user ? user.name : 'Login'}</LinkButton>
           </div>
         </div>
         <div className={styles.content}>
