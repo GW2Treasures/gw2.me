@@ -36,6 +36,6 @@ export async function GET(request: NextRequest) {
 function generateClientSecret() {
   const secret = Buffer.from('example_client_secret', 'utf-8');
   const salt = randomBytes(16);
-  const hash = scryptSync(secret, salt, 16);
+  const hash = scryptSync(secret, salt, 32);
   return `${salt.toString('base64')}:${hash.toString('base64')}`;
 }

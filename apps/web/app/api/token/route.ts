@@ -123,6 +123,6 @@ function validClientSecret(clientSecret: string, saltedHash: string | null) {
   const hashBuffer = Buffer.from(hash, 'base64');
   const secretBuffer = Buffer.from(clientSecret, 'base64url');
 
-  const derived = scryptSync(secretBuffer, saltBuffer, 16);
+  const derived = scryptSync(secretBuffer, saltBuffer, 32);
   return timingSafeEqual(hashBuffer, derived);
 }
