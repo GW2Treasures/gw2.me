@@ -1,0 +1,38 @@
+.apps {
+  display: flex;
+}
+
+.app {
+  padding: 8px 16px 8px 8px;
+  display: grid;
+  grid-template:
+    "icon title " min-content
+    "icon breadcrumb" 1fr / min-content 1fr;
+  gap: 8px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  transition: all .3s ease;
+  color: var(--color-text);
+  will-change: transform;
+}
+
+.app:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--color-border-dark);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.icon {
+  grid-area: icon;
+  border-radius: 2px;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.app > p {
+  margin: 0;
+}
