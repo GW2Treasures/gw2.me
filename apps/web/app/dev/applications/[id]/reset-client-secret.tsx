@@ -3,7 +3,6 @@
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
-import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { FC, useCallback, useState } from 'react';
 
 export interface ResetClientSecretProps {

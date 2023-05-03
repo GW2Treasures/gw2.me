@@ -11,7 +11,7 @@ export default function CreateApplicationPage() {
 
       <ActionForm action={createApplication}>
         <TextInput name="name"/>
-        <Button>Submit</Button>
+        <Button type="submit">Submit</Button>
       </ActionForm>
     </div>
   );

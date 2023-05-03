@@ -4,6 +4,7 @@ import { refreshToken, rest } from '@gw2me/api';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { redirect } from 'next/navigation';
+import { Button } from '@gw2treasures/ui/components/Form/Button';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,7 +36,7 @@ export default async function TokenPage({ searchParams }: { searchParams: { acce
 
       <pre>{JSON.stringify(user, undefined, '  ')}</pre>
 
-      <button type="submit" name="$$id" value={refreshTokenAction.$$id}>Refresh Token</button>
+      <Button type="submit" name="$$id" value={refreshTokenAction.$$id}>Refresh Token</Button>
     </form>
   );
 }
