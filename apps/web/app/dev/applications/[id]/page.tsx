@@ -82,9 +82,9 @@ export default async function EditApplicationPage({ params }: { params: { id: st
       </ActionForm>
 
       <div style={{ marginTop: 16, display: 'flex', gap: 16 }}>
-        <Button form={editApplication.$$id}>Save</Button>
+        <Button type="submit" form={editApplication.$$id}>Save</Button>
         <LinkButton external href={getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], client_id: application.clientId, scopes: [Scope.Identify] })}>Test Link</LinkButton>
-        <Button form={deleteApplication.$$id}>Delete Application</Button>
+        <Button type="submit" form={deleteApplication.$$id}>Delete Application</Button>
       </div>
     </div>
   );

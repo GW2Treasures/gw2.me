@@ -130,7 +130,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
         <input type="hidden" name="redirect_uri" value={searchParams.redirect_uri}/>
         <input type="hidden" name="scope" value={validatedRequest.scopes.join(' ')}/>
         {searchParams.state && <input type="hidden" name="state" value={searchParams.state}/>}
-        <Button>Authorize</Button>
+        <Button type="submit">Authorize</Button>
       </ActionForm>
     </>
   );
