@@ -44,9 +44,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 # COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
-# TODO: this is a workaround for missing icon.svg
-COPY --from=builder /app/apps/web/app/icon.svg ./apps/web/app/icon.svg
-
 USER nextjs
 
 EXPOSE 3000

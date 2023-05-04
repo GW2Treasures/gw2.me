@@ -4,8 +4,8 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    appDir: true,
     outputFileTracingRoot: path.join(__dirname, '../../'),
+    serverActions: true,
   },
   reactStrictMode: true,
   output: 'standalone',
