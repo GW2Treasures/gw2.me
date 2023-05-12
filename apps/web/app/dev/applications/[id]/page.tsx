@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { deleteApplication } from '../_actions/delete';
-import { ActionForm } from '@/components/ActionForm/ActionForm';
 import { Textarea } from '@/components/Textarea/Textarea';
 import { editApplication } from '../_actions/edit';
 import { Scope, getAuthorizationUrl } from '@gw2me/api';
@@ -36,9 +35,9 @@ export default async function EditApplicationPage({ params }: { params: { id: st
 
   return (
     <div>
-      <ActionForm action={deleteApplication}>
+      <form action={deleteApplication} id="deleteApplication">
         <input type="hidden" name="id" value={application.id}/>
-      </ActionForm>
+      </form>
 
       <Link href="/dev/applications">← List of Applications</Link>
       <Headline id="app">{application.name}</Headline>
@@ -47,7 +46,7 @@ export default async function EditApplicationPage({ params }: { params: { id: st
         <ApplicationImage applicationId={application.id} exists={application.image !== null}/>
       </div>
 
-      <ActionForm action={editApplication}>
+      <form action={editApplication} id="editApplication">
         <input type="hidden" name="id" value={application.id}/>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -79,12 +78,12 @@ export default async function EditApplicationPage({ params }: { params: { id: st
             <ResetClientSecret applicationId={application.id} reset={resetClientSecret}/>
           </Label>
         </div>
-      </ActionForm>
+      </form>
 
       <div style={{ marginTop: 16, display: 'flex', gap: 16 }}>
-        <Button type="submit" form={editApplication.$$id}>Save</Button>
+        <Button type="submit" form="editApplication">Save</Button>
         <LinkButton external href={getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], client_id: application.clientId, scopes: [Scope.Identify] })}>Test Link</LinkButton>
-        <Button type="submit" form={deleteApplication.$$id}>Delete Application</Button>
+        <Button type="submit" form="deleteApplication">Delete Application</Button>
       </div>
     </div>
   );

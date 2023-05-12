@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { randomBytes, scrypt } from 'crypto';
 
-export const resetClientSecret = async (applicationId: string) => {
+export async function resetClientSecret(applicationId: string) {
   const user = await getUser();
 
   if(!user) {

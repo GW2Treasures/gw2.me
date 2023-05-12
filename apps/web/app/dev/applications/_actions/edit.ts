@@ -1,8 +1,7 @@
-import { action } from '@/lib/action';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 
-export const editApplication = action(async (data) => {
+export async function editApplication(data: FormData) {
   'use server';
 
   const user = await getUser();
@@ -22,4 +21,4 @@ export const editApplication = action(async (data) => {
       callbackUrls: data.get('callbackUrls')?.toString().replaceAll('\r', '').split('\n'),
     }
   });
-});
+};
