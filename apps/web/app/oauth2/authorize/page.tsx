@@ -1,6 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import { ActionForm } from '@/components/ActionForm/ActionForm';
-import { action } from '@/lib/action';
 import { expiresAt } from '@/lib/date';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
@@ -62,7 +60,7 @@ function validScopes(scopes: string[]): scopes is Scope[] {
   return scopes.every((scope) => validScopes.includes(scope));
 }
 
-const authorize = action(async (data) => {
+async function authorize(data: FormData) {
   'use server';
 
   const applicationId = data.get('applicationId')?.toString();
@@ -95,7 +93,7 @@ const authorize = action(async (data) => {
   state && url.searchParams.set('state', state);
 
   redirect(url.toString());
-});
+};
 
 export default async function AuthorizePage({ searchParams }: { searchParams: Params & Record<string, string> }) {
   const user = await getUser();
@@ -125,13 +123,13 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
         {application.name} wants to access your gw2.me account.
       </div>
 
-      <ActionForm action={authorize}>
+      <form action={authorize}>
         <input type="hidden" name="applicationId" value={application.id}/>
         <input type="hidden" name="redirect_uri" value={searchParams.redirect_uri}/>
         <input type="hidden" name="scope" value={validatedRequest.scopes.join(' ')}/>
         {searchParams.state && <input type="hidden" name="state" value={searchParams.state}/>}
         <Button type="submit">Authorize</Button>
-      </ActionForm>
+      </form>
     </>
   );
 }

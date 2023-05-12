@@ -1,4 +1,3 @@
-import { ActionForm } from '@/components/ActionForm/ActionForm';
 import { createApplication } from '../_actions/create';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
@@ -9,10 +8,10 @@ export default function CreateApplicationPage() {
     <div>
       <Headline id="create">Create new application</Headline>
 
-      <ActionForm action={createApplication}>
+      <form action={createApplication}>
         <TextInput name="name"/>
         <Button type="submit">Submit</Button>
-      </ActionForm>
+      </form>
     </div>
   );
 }

@@ -1,10 +1,9 @@
-import { action } from '@/lib/action';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { randomBytes, randomUUID } from 'crypto';
 import { redirect } from 'next/navigation';
 
-export const createApplication = action(async (data) => {
+export async function createApplication(data: FormData) {
   'use server';
 
   const user = await getUser();
@@ -23,4 +22,4 @@ export const createApplication = action(async (data) => {
   });
 
   redirect(`/dev/applications/${application.id}`);
-});
+};
