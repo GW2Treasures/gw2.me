@@ -11,16 +11,18 @@ export interface AuthorizationUrlParams {
 }
 
 function getUrl() {
-  return process.env.GW2ME_URL || 'https://gw2.me/'
+  return process.env.GW2ME_URL || 'https://gw2.me/';
 }
 
 export function getAuthorizationUrl({ redirect_uri, client_id, scopes, state }: AuthorizationUrlParams) {
+  /* eslint-disable object-shorthand */
   const params = new URLSearchParams({
     'response_type': 'code',
     'redirect_uri': redirect_uri,
     'client_id': client_id,
     'scope': scopes.join(' ')
   });
+  /* eslint-enable */
 
   if(state) {
     params.append('state', state);
@@ -97,6 +99,6 @@ export const rest = {
     return fetch(`${getUrl()}api/user`, {
       headers: { 'Authorization': `Bearer ${access_token}` },
       cache: 'no-store',
-    }).then(r => r.json());
+    }).then((r) => r.json());
   }
-}
+};
