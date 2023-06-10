@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const loginUrl = getUrlFromParts({ ...parts, path: '/login' });
     const response = NextResponse.redirect(loginUrl);
 
-    response.cookies.set({ name: 'RETURN_TO', value: request.nextUrl.searchParams.get('to')!, maxAge: 60 * 5, sameSite: 'strict', path: '/login/return' });
+    response.cookies.set({ name: 'RETURN_TO', value: request.nextUrl.searchParams.get('to')!, maxAge: 60 * 5, path: '/login/return' });
 
     return response;
   } else if(request.cookies.has('RETURN_TO')) {
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const returnToUrl = getUrlFromParts({ ...parts, path: returnTo.toString() as any });
     const response = NextResponse.redirect(returnToUrl);
 
-    response.cookies.set({ name: 'RETURN_TO', value: '', expires: new Date(0), sameSite: 'strict', path: '/login/return' });
+    response.cookies.set({ name: 'RETURN_TO', value: '', expires: new Date(0), path: '/login/return' });
 
     return response;
   } else {
