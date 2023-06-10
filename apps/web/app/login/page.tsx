@@ -25,7 +25,7 @@ export default async function LoginPage({ searchParams }: { searchParams: { logo
         <div>Logout successful</div>
       )}
 
-      <LinkButton href="/auth/login/discord">Login with Discord</LinkButton>
+      <LinkButton external href="/auth/login/discord">Login with Discord</LinkButton>
       {process.env.NODE_ENV !== 'production' && (<DevLogin/>)}
     </div>
   );
