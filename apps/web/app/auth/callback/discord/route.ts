@@ -57,19 +57,18 @@ export async function GET(request: NextRequest) {
     // build provider key
     const provider = { provider: 'discord', providerAccountId: profile.id };
 
+    const displayName = profile.discriminator === '0' ? profile.username : `${profile.username}#${profile.discriminator.padStart(4, '0')}`;
+
     // try to find this account in db
     const { userId } = await db.userProvider.upsert({
       where: { provider_providerAccountId: provider },
       create: {
         ...provider,
-        displayName: `${profile.username}#${profile.discriminator}`,
+        displayName,
         token,
         user: { create: { name: profile.username, email: profile.email }}
       },
-      update: {
-        displayName: `${profile.username}#${profile.discriminator}`,
-        token,
-      }
+      update: { displayName, token }
     });
 
     // parse user-agent to set session name
