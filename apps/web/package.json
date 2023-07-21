@@ -12,7 +12,7 @@
     "@gw2me/database": "*",
     "@gw2treasures/ui": "^0.0.8",
     "@prisma/nextjs-monorepo-workaround-plugin": "5.0.0",
-    "next": "13.4.11",
+    "next": "13.4.12",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "server-only": "0.0.1",
@@ -25,7 +25,7 @@
     "@types/ua-parser-js": "0.7.36",
     "@typescript-eslint/eslint-plugin": "6.1.0",
     "eslint": "8.45.0",
-    "eslint-config-next": "13.4.11",
+    "eslint-config-next": "13.4.12",
     "typescript": "5.1.6"
   }
 }
