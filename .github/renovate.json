@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
+  "extends": ["config:recommended", ":pinAllExceptPeerDependencies"],
   "addLabels": ["dependencies"],
   "kubernetes": {
     "fileMatch": ["kubernetes/.+\\.yaml$"]
