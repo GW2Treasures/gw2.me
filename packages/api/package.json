@@ -34,12 +34,12 @@
   },
   "homepage": "https://github.com/gw2treasures/gw2.me#readme",
   "devDependencies": {
-    "@tsconfig/recommended": "^1.0.2",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.39.0",
-    "tsup": "^7.0.0",
-    "typescript": "^5.0.4",
-    "undici": "^5.22.0"
+    "@tsconfig/recommended": "1.0.2",
+    "@typescript-eslint/eslint-plugin": "6.4.0",
+    "@typescript-eslint/parser": "6.4.0",
+    "eslint": "8.47.0",
+    "tsup": "7.2.0",
+    "typescript": "5.1.6",
+    "undici": "5.23.0"
   }
 }
