@@ -15,7 +15,7 @@ services:
       - 4000:3000
 
   database:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     restart: unless-stopped
     environment:
       - POSTGRES_USER=gw2me

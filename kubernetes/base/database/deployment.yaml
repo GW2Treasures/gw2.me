@@ -23,7 +23,7 @@ spec:
           claimName: database
       containers:
       - name: database
-        image: postgres:15-alpine
+        image: postgres:16-alpine
         resources:
           requests:
             memory: "256Mi"
