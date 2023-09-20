@@ -7,7 +7,7 @@ import { client_id } from '@/lib/client';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<never> {
   // make sure example app exists
   const user = await db.user.upsert({
     where: { name: 'example' },

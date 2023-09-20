@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 const clientId = process.env.DISCORD_CLIENT_ID;
 
-export function GET(request: NextRequest) {
+export function GET(request: NextRequest): Promise<never> {
   if(!clientId) {
     console.error('DISCORD_CLIENT_ID not set');
     redirect('/login?error');
