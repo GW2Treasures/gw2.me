@@ -20,7 +20,7 @@
     "ua-parser-js": "1.0.36"
   },
   "devDependencies": {
-    "@types/node": "18.17.19",
+    "@types/node": "18.18.0",
     "@types/react": "18.2.22",
     "@types/ua-parser-js": "0.7.37",
     "@typescript-eslint/eslint-plugin": "6.7.2",
