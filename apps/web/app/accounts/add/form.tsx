@@ -16,7 +16,7 @@ export const AccountAddForm: FC<AccountAddFormProps> = ({ }) => {
   const [state, action] = useFormState(addAccount, {});
 
   return (
-    <form action={action}>
+    <div>
       <Headline id="create">Add Account</Headline>
       {state.message && (
         <div style={{ padding: 16, background: '#b7000d', color: '#fff', marginBottom: 16, borderRadius: 2 }}>
@@ -26,20 +26,20 @@ export const AccountAddForm: FC<AccountAddFormProps> = ({ }) => {
       <Steps>
         <div>Visit the <a href="https://account.arena.net/applications">Guild Wars 2 Account Page</a></div>
         <div>Generate a new API key</div>
-        <div>
+        <form action={action}>
           Paste your key into this form
           <div style={{ display: 'flex', marginBlock: 8 }}>
             <TextInput placeholder="API key" name="api-key"/>
           </div>
           <Button type="submit">Submit</Button>
-          <div style={{ color: 'var(--color-text-muted)', lineHeight: 1.5, fontSize: 14 }}>
-            <div>gw2.me will only be able to read data of your account provided by the official API.</div>
-            <div>gw2.me will NOT be able to write any data to your account.</div>
-            <div>gw2.me will NOT share your API Key with any 3rd party without asking for your explicit permission first.</div>
-            <div>You can remove access at any time by deleting the API key.</div>
-          </div>
-        </div>
+          <ul style={{ color: 'var(--color-text-muted)', lineHeight: 1.5, fontSize: 14, listStyle: 'none', padding: 0 }}>
+            <li>gw2.me will only be able to read data of your account provided by the official API.</li>
+            <li>gw2.me will NOT be able to write any data to your account.</li>
+            <li>gw2.me will NOT share your API key with any 3rd party.</li>
+            <li>You can remove access at any time by deleting the API key.</li>
+          </ul>
+        </form>
       </Steps>
-    </form>
+    </div>
   );
 };

@@ -18,7 +18,7 @@ export async function addAccount(previousState: AddAccountActionState, payload: 
 
   const apiKey = payload.get('api-key');
 
-  if(apiKey === null || typeof apiKey !== 'string') {
+  if(apiKey === null || typeof apiKey !== 'string' || apiKey.trim() === '') {
     return { message: 'Missing API key' };
   }
 
