@@ -5,9 +5,9 @@ import { getUser } from '@/lib/getUser';
 import { Scope } from '@gw2me/api';
 import { Application, AuthorizationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
-import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { generateCode } from '@/lib/token';
 import styles from './layout.module.css';
+import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
 
 interface Params {
   response_type: string;
@@ -60,13 +60,9 @@ function validScopes(scopes: string[]): scopes is Scope[] {
   return scopes.every((scope) => validScopes.includes(scope));
 }
 
-async function authorize(data: FormData) {
+async function authorize({ applicationId, redirect_uri, scopes, state }: { applicationId: string, redirect_uri: string, scopes: string[], state?: string }) {
   'use server';
 
-  const applicationId = data.get('applicationId')?.toString();
-  const redirect_uri = data.get('redirect_uri')?.toString();
-  const scopes = data.get('scope')?.toString().split(' ');
-  const state = data.get('state')?.toString();
   const user = await getUser();
 
   if(!applicationId || !redirect_uri || !user) {
@@ -113,6 +109,13 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
 
   const application = validatedRequest.application;
 
+  const authorizeAction = authorize.bind(null, {
+    applicationId: application.id,
+    redirect_uri: searchParams.redirect_uri,
+    scopes: validatedRequest.scopes,
+    state: searchParams.state
+  });
+
   return (
     <>
       <div className={styles.header}>
@@ -123,12 +126,8 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
         {application.name} wants to access your gw2.me account.
       </div>
 
-      <form action={authorize}>
-        <input type="hidden" name="applicationId" value={application.id}/>
-        <input type="hidden" name="redirect_uri" value={searchParams.redirect_uri}/>
-        <input type="hidden" name="scope" value={validatedRequest.scopes.join(' ')}/>
-        {searchParams.state && <input type="hidden" name="state" value={searchParams.state}/>}
-        <Button type="submit">Authorize</Button>
+      <form action={authorizeAction} style={{ display: 'flex' }}>
+        <SubmitButton icon="gw2me-outline" type="submit" flex>Authorize</SubmitButton>
       </form>
     </>
   );
