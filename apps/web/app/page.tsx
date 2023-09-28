@@ -1,5 +1,5 @@
 import styles from './page.module.css';
-import HeroImage from './gw2me_hero.svg?svgr';
+import { HeroImage } from './gw2me_hero.svg';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Icon } from '@gw2treasures/ui';
 import { getUser } from '@/lib/getUser';
