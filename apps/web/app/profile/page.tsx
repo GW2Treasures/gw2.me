@@ -26,7 +26,7 @@ const getUserData = cache(async () => {
         where: { type: AuthorizationType.RefreshToken },
         include: { application: { select: { name: true }}},
         orderBy: { createdAt: 'desc' },
-      }
+      },
     },
   });
 
@@ -34,19 +34,43 @@ const getUserData = cache(async () => {
     redirect('/login');
   }
 
+  const accounts = await db.account.findMany({
+    where: { apiTokens: { some: { userId: session.id }}}
+  });
+
   return {
     sessionId: session.sessionId,
     user,
+    accounts,
   };
 });
 
 export default async function ProfilePage() {
-  const { sessionId, user } = await getUserData();
+  const { sessionId, user, accounts } = await getUserData();
 
   return (
     <div>
       <Headline id="profile">{user.name}</Headline>
       <LinkButton href="/logout" external>Logout</LinkButton>
+
+      <Headline id="accounts">Guild Wars 2 Accounts</Headline>
+      <LinkButton href="/accounts/add">Add Account</LinkButton>
+      {accounts.length > 0 && (
+        <Table>
+          <thead>
+            <tr>
+              <th>Account</th>
+            </tr>
+          </thead>
+          <tbody>
+            {accounts.map((account) => (
+              <tr key={account.id}>
+                <td>{account.name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
 
       <Headline id="providers">Login Providers</Headline>
       <Table>
