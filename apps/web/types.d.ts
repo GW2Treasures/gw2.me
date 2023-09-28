@@ -6,3 +6,11 @@ declare module '*.svg?svgr' {
   const SVG: React.VFC<React.SVGProps<SVGSVGElement>>;
   export default SVG;
 }
+
+declare module 'react-dom' {
+  export function experimental_useFormState<State, Payload>(
+    action: (state: State, payload: Payload) => State | Promise<State>,
+    initialState: State,
+    permalink?: string,
+  ): [state: State, dispatch: (payload: Payload) => void]
+}
