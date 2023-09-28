@@ -1,0 +1,13 @@
+'use client';
+
+import { Button, ButtonProps } from '@gw2treasures/ui/components/Form/Button';
+import { FC } from 'react';
+import { experimental_useFormStatus as useFormStatus } from 'react-dom';
+
+export interface SubmitButtonProps extends ButtonProps {}
+
+export const SubmitButton: FC<SubmitButtonProps> = ({ disabled, icon, ...props }) => {
+  const { pending } = useFormStatus();
+
+  return <Button {...props} disabled={disabled || pending} icon={pending ? 'loading' : icon}/>;
+};
