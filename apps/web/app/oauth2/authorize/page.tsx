@@ -9,6 +9,7 @@ import { Icon, IconProp } from '@gw2treasures/ui';
 import { FC, ReactNode } from 'react';
 import { AuthorizeRequestParams, validateRequest } from './validate';
 import { authorize } from './actions';
+import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 export default async function AuthorizePage({ searchParams }: { searchParams: AuthorizeRequestParams & Record<string, string> }) {
   const user = await getUser();
@@ -38,6 +39,10 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
 
   const scopeMap = validatedRequest.scopes.reduce<Partial<Record<Scope, true>>>((map, scope) => ({ ...map, [scope]: true }), {});
 
+  const cancelUrl = new URL(redirectUri);
+  cancelUrl.searchParams.set('error', 'access_denied');
+  searchParams.state && cancelUrl.searchParams.set('state', searchParams.state);
+
   return (
     <>
       <div className={layoutStyles.header}>
@@ -54,11 +59,14 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
         {scopeMap.email && <ScopeItem icon="wvw">Your email address</ScopeItem>}
       </ul>
 
-      <div>Authorizing will redirect you to <b>{redirectUri.origin}</b></div>
+      <div>You can revoke access at anytime from your gw2.me profile.</div>
 
-      <form action={authorizeAction} style={{ display: 'flex' }}>
-        <SubmitButton icon="gw2me-outline" type="submit" flex>Authorize {application.name}</SubmitButton>
+      <form action={authorizeAction} className={styles.form}>
+        <LinkButton href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
+        <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
       </form>
+
+      <div className={styles.redirectNote}>Authorizing will redirect you to <b>{redirectUri.origin}</b></div>
     </>
   );
 }
