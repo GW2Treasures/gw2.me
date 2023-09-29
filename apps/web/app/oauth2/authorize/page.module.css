@@ -11,14 +11,46 @@
   display: grid;
   gap: 12px;
   grid-template-columns: 16px auto;
-  align-items: center;
 }
 
 .scopeList > li + li {
   margin-top: 8px;
 }
 
+.scopeList > li > svg {
+  margin-top: 2px;
+}
+
+.gw2Permissions {
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gw2Permissions > li {
+  border: 1px solid var(--color-border-dark);
+  background-color: var(--color-background-light);
+  font-size: 14px;
+  border-radius: 500px;
+  padding: 2px 8px;
+}
+
+.accountSelection {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
 .form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.buttons {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;

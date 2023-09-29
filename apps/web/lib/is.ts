@@ -16,3 +16,7 @@ export function isTruthy<T>(value: T | Falsy): value is T {
 export function isFalsy(value: unknown): value is Falsy {
   return !value;
 }
+
+export function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}

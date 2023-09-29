@@ -52,3 +52,7 @@ function validScopes(scopes: string[]): scopes is Scope[] {
   const validScopes: string[] = Object.values(Scope);
   return scopes.every((scope) => validScopes.includes(scope));
 }
+
+export function hasGW2Scopes(scopes: Scope[]): boolean {
+  return scopes.some((scope) => scope.startsWith('gw2:'));
+}

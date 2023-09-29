@@ -7,9 +7,11 @@ import styles from './page.module.css';
 import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
 import { Icon, IconProp } from '@gw2treasures/ui';
 import { FC, ReactNode } from 'react';
-import { AuthorizeRequestParams, validateRequest } from './validate';
+import { AuthorizeRequestParams, hasGW2Scopes, validateRequest } from './validate';
 import { authorize } from './actions';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { db } from '@/lib/db';
+import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 
 export default async function AuthorizePage({ searchParams }: { searchParams: AuthorizeRequestParams & Record<string, string> }) {
   const user = await getUser();
@@ -26,6 +28,8 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
   if(validatedRequest.error !== undefined) {
     return <div style={{ color: 'red' }}>{validatedRequest.error}</div>;
   }
+
+  const accounts = await db.account.findMany({ where: { apiTokens: { some: { userId: user.id }}}, orderBy: { createdAt: 'asc' }});
 
   const application = validatedRequest.application;
   const redirectUri = new URL(searchParams.redirect_uri);
@@ -44,7 +48,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
   searchParams.state && cancelUrl.searchParams.set('state', searchParams.state);
 
   return (
-    <>
+    <form action={authorizeAction} className={styles.form}>
       <div className={layoutStyles.header}>
         <img src={`/api/application/${application.id}/image`} width={64} height={64} className={layoutStyles.image} alt=""/>
         {application.name}
@@ -57,17 +61,33 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
       <ul className={styles.scopeList}>
         {scopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
         {scopeMap.email && <ScopeItem icon="wvw">Your email address</ScopeItem>}
+        {hasGW2Scopes(validatedRequest.scopes) && (
+          <ScopeItem icon="developer">
+            Access the Guild Wars 2 API with the following permissions
+            <ul className={styles.gw2Permissions}>
+              {validatedRequest.scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => (
+                <li key={permission}>{permission.substring(4)}</li>
+              ))}
+            </ul>
+            <div>Select accounts</div>
+            <div className={styles.accountSelection}>
+              {accounts.map((account, index) => (
+                <Checkbox key={account.id} defaultChecked={index === 0} name="accounts" formValue={account.id}>{account.name}</Checkbox>
+              ))}
+            </div>
+          </ScopeItem>
+        )}
       </ul>
 
       <div>You can revoke access at anytime from your gw2.me profile.</div>
 
-      <form action={authorizeAction} className={styles.form}>
+      <div className={styles.buttons}>
         <LinkButton href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
         <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
-      </form>
+      </div>
 
       <div className={styles.redirectNote}>Authorizing will redirect you to <b>{redirectUri.origin}</b></div>
-    </>
+    </form>
   );
 }
 
