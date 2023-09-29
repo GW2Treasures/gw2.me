@@ -96,6 +96,8 @@ model Authorization {
   userId String
   user   User   @relation("userAuthorization", fields: [userId], references: [id], onDelete: Cascade)
 
+  accounts Account[] @relation("accountAuthorization")
+
   @@unique([type, token])
   @@unique([type, applicationId, userId])
 }
@@ -129,6 +131,8 @@ model Account {
   name String
 
   apiTokens ApiToken[] @relation("accountApiToken")
+
+  authorizations Authorization[] @relation("accountAuthorization")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
