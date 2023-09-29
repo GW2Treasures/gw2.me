@@ -36,27 +36,27 @@ export async function POST(request: NextRequest) {
       }
 
       // find code
-      const authorization = await db.authorization.findUnique({ where: { type_token: { token: code, type: AuthorizationType.Code }}, include: { application: true }});
+      const authorization = await db.authorization.findUnique({ where: { type_token: { token: code, type: AuthorizationType.Code }}, include: { application: true, accounts: { select: { id: true }}}});
 
       if(!authorization || isExpired(authorization.expiresAt) || authorization.application.clientId !== client_id || !validClientSecret(client_secret, authorization.application.clientSecret)) {
         return NextResponse.json({ error: true }, { status: 400 });
       }
 
-      const { applicationId, userId, scope } = authorization;
+      const { applicationId, userId, scope, accounts } = authorization;
 
       const [refreshAuthorization, accessAuthorization, _] = await db.$transaction([
         // create refresh token
         db.authorization.upsert({
           where: { type_applicationId_userId: { type: AuthorizationType.RefreshToken, applicationId, userId }},
-          create: { type: AuthorizationType.RefreshToken, applicationId, userId, scope, token: generateRefreshToken() },
-          update: { scope }
+          create: { type: AuthorizationType.RefreshToken, applicationId, userId, scope, token: generateRefreshToken(), accounts: { connect: accounts }},
+          update: { scope, accounts: { set: accounts }}
         }),
 
         // create access token
         db.authorization.upsert({
           where: { type_applicationId_userId: { type: AuthorizationType.AccessToken, applicationId, userId }},
-          create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN) },
-          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN) }
+          create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN), accounts: { connect: accounts }},
+          update: { scope, accounts: { set: accounts }, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN) }
         }),
 
         // delete used code token
