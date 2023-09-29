@@ -105,11 +105,25 @@ export interface UserResponse {
   }
 }
 
+export interface AccountsResponse {
+  accounts: {
+    id: string;
+    name: string;
+  }[]
+}
+
 export const rest = {
   user({ access_token }: { access_token: string }): Promise<UserResponse> {
     return fetch(`${getUrl()}api/user`, {
       headers: { 'Authorization': `Bearer ${access_token}` },
       cache: 'no-store',
     }).then((r) => r.json());
-  }
+  },
+
+  accounts({ access_token }: { access_token: string}): Promise<AccountsResponse> {
+    return fetch(`${getUrl()}api/accounts`, {
+      headers: { 'Authorization': `Bearer ${access_token}` },
+      cache: 'no-store',
+    }).then((r) => r.json());
+  },
 };

@@ -22,7 +22,10 @@ async function refreshTokenAction(data: FormData) {
 };
 
 export default async function TokenPage({ searchParams }: { searchParams: { access_token: string; refresh_token: string; }}) {
-  const user = await rest.user({ access_token: searchParams.access_token });
+  const access_token = searchParams.access_token;
+
+  const user = await rest.user({ access_token });
+  const accounts = await rest.accounts({ access_token });
 
   return (
     <form action={refreshTokenAction}>
@@ -34,6 +37,7 @@ export default async function TokenPage({ searchParams }: { searchParams: { acce
       </Label>
 
       <pre>{JSON.stringify(user, undefined, '  ')}</pre>
+      <pre>{JSON.stringify(accounts, undefined, '  ')}</pre>
     </form>
   );
 }
