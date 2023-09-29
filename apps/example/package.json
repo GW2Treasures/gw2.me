@@ -11,7 +11,7 @@
     "@gw2me/api": "*",
     "@gw2me/database": "*",
     "@gw2treasures/icons": "0.0.5",
-    "@gw2treasures/ui": "0.0.10",
+    "@gw2treasures/ui": "0.0.11",
     "@prisma/nextjs-monorepo-workaround-plugin": "5.3.1",
     "next": "13.5.3",
     "react": "18.2.0",
@@ -19,7 +19,7 @@
     "server-only": "0.0.1"
   },
   "devDependencies": {
-    "@types/node": "18.18.0",
+    "@types/node": "18.18.1",
     "@types/react": "18.2.23",
     "@typescript-eslint/eslint-plugin": "6.7.3",
     "eslint": "8.50.0",
