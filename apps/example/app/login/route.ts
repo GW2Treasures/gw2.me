@@ -26,7 +26,7 @@ export async function GET(request: NextRequest): Promise<never> {
   const authUrl = getAuthorizationUrl({
     client_id,
     redirect_uri: 'http://localhost:4001/callback',
-    scopes: [Scope.Identify, Scope.Email],
+    scopes: [Scope.Identify, Scope.Email, Scope.GW2_Account],
     state: 'example',
   });
 
