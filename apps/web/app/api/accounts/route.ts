@@ -22,8 +22,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: true }, { status: 401 });
   }
 
-  console.log(authorization);
-
   const response: AccountsResponse = {
     accounts: authorization.accounts.map(({ id, name }) => ({ id, name }))
   };
