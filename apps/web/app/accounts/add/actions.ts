@@ -1,8 +1,8 @@
 'use server';
 
-import { db } from "@/lib/db";
-import { getUser } from "@/lib/getUser";
-import { redirect } from "next/navigation";
+import { db } from '@/lib/db';
+import { getUser } from '@/lib/getUser';
+import { redirect } from 'next/navigation';
 
 export interface AddAccountActionState {
   message?: string;
