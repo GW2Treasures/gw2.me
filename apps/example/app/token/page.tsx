@@ -36,6 +36,8 @@ export default async function TokenPage({ searchParams }: { searchParams: { acce
         <TextInput value={searchParams.refresh_token} readOnly name="refresh_token"/>
       </Label>
 
+      <Button type="submit">Refresh Token</Button>
+
       <pre>{JSON.stringify(user, undefined, '  ')}</pre>
       <pre>{JSON.stringify(accounts, undefined, '  ')}</pre>
     </form>
