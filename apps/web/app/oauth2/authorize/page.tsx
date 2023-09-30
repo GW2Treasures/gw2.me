@@ -72,7 +72,9 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
             <div>Select accounts</div>
             <div className={styles.accountSelection}>
               {accounts.map((account, index) => (
-                <Checkbox key={account.id} defaultChecked={index === 0} name="accounts" formValue={account.id}>{account.accountName}</Checkbox>
+                <Checkbox key={account.id} defaultChecked={index === 0} name="accounts" formValue={account.id}>
+                  {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                </Checkbox>
               ))}
             </div>
           </ScopeItem>
