@@ -3,7 +3,7 @@ import { getUser } from '@/lib/getUser';
 import { db } from '@/lib/db';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { cache } from 'react';
+import { Fragment, cache } from 'react';
 import Link from 'next/link';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
@@ -35,7 +35,12 @@ const getUserData = cache(async () => {
   }
 
   const accounts = await db.account.findMany({
-    where: { userId: session.id }
+    where: { userId: session.id },
+    orderBy: { createdAt: 'asc' },
+    include: {
+      apiTokens: { orderBy: { createdAt: 'asc' }},
+      _count: { select: { authorizations: { where: { type: AuthorizationType.AccessToken }}}}
+    },
   });
 
   return {
@@ -59,14 +64,23 @@ export default async function ProfilePage() {
         <Table>
           <thead>
             <tr>
-              <th>Account</th>
+              <th>API Key</th>
+              <th>Permissions</th>
             </tr>
           </thead>
           <tbody>
             {accounts.map((account) => (
-              <tr key={account.id}>
-                <td>{account.accountName}</td>
-              </tr>
+              <Fragment key={account.id}>
+                <tr>
+                  <td colSpan={99}><b>{account.displayName ?? account.accountName}</b> {account.displayName && `(${account.accountName})`} - {account._count.authorizations} Apps authorized to access this account</td>
+                </tr>
+                {account.apiTokens.map((token) => (
+                  <tr key={token.id}>
+                    <td style={{ paddingLeft: 40 }}>{token.name} ({token.token})</td>
+                    <td>{token.permissions.join(', ')}</td>
+                  </tr>
+                ))}
+              </Fragment>
             ))}
           </tbody>
         </Table>
