@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["filteredRelationCount"]
 }
 
 datasource db {
@@ -23,7 +22,7 @@ model User {
   applications   Application[]   @relation("applications")
   authorizations Authorization[] @relation("userAuthorization")
 
-  apiTokens      ApiToken[]      @relation("userApiTokens")
+  accounts       Account[]      @relation("userAccount")
 }
 
 model UserSession {
@@ -109,9 +108,9 @@ enum AuthorizationType {
 }
 
 model ApiToken {
-  id   String @default(uuid()) @id
-  name String
+  id String @default(uuid()) @id
 
+  name  String
   token String
 
   permissions String[]
@@ -119,21 +118,26 @@ model ApiToken {
   accountId String
   account   Account @relation("accountApiToken", fields: [accountId], references: [id], onDelete: Cascade)
 
-  userId String
-  user   User   @relation("userApiTokens", fields: [userId], references: [id], onDelete: Cascade)
-
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
 
 model Account {
-  id   String @id
-  name String
+  id String @default(uuid()) @id
+
+  accountId String
+  accountName String
+
+  displayName String?
+
+  userId String
+  user   User @relation("userAccount", fields: [userId], references: [id], onDelete: Cascade)
 
   apiTokens ApiToken[] @relation("accountApiToken")
-
   authorizations Authorization[] @relation("accountAuthorization")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  @@unique([accountId, userId])
 }

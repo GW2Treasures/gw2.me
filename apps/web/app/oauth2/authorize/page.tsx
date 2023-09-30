@@ -29,7 +29,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
     return <div style={{ color: 'red' }}>{validatedRequest.error}</div>;
   }
 
-  const accounts = await db.account.findMany({ where: { apiTokens: { some: { userId: user.id }}}, orderBy: { createdAt: 'asc' }});
+  const accounts = await db.account.findMany({ where: { userId: user.id }, orderBy: { createdAt: 'asc' }});
 
   const application = validatedRequest.application;
   const redirectUri = new URL(searchParams.redirect_uri);
@@ -72,7 +72,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
             <div>Select accounts</div>
             <div className={styles.accountSelection}>
               {accounts.map((account, index) => (
-                <Checkbox key={account.id} defaultChecked={index === 0} name="accounts" formValue={account.id}>{account.name}</Checkbox>
+                <Checkbox key={account.id} defaultChecked={index === 0} name="accounts" formValue={account.id}>{account.accountName}</Checkbox>
               ))}
             </div>
           </ScopeItem>
@@ -82,7 +82,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
       <div>You can revoke access at anytime from your gw2.me profile.</div>
 
       <div className={styles.buttons}>
-        <LinkButton href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
+        <LinkButton external href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
         <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
       </div>
 

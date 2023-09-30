@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
   }
 
   const response: AccountsResponse = {
-    accounts: authorization.accounts.map(({ id, name }) => ({ id, name }))
+    accounts: authorization.accounts.map(({ accountId, accountName }) => ({ id: accountId, name: accountName }))
   };
 
   return NextResponse.json(response);

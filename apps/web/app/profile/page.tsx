@@ -35,7 +35,7 @@ const getUserData = cache(async () => {
   }
 
   const accounts = await db.account.findMany({
-    where: { apiTokens: { some: { userId: session.id }}}
+    where: { userId: session.id }
   });
 
   return {
@@ -65,7 +65,7 @@ export default async function ProfilePage() {
           <tbody>
             {accounts.map((account) => (
               <tr key={account.id}>
-                <td>{account.name}</td>
+                <td>{account.accountName}</td>
               </tr>
             ))}
           </tbody>

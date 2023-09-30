@@ -46,20 +46,29 @@ export async function addAccount(previousState: AddAccountActionState, payload: 
   }
 
   try {
-    await db.apiToken.create({
-      data: {
-        id: tokeninfo.id,
-        name: tokeninfo.name,
-        token: apiKey,
-        permissions: tokeninfo.permissions,
-        user: { connect: { id: user.id }},
-        account: {
-          connectOrCreate: {
-            where: { id: account.id },
-            create: {
-              id: account.id,
-              name: account.name
-            }
+    await db.account.upsert({
+      where: { accountId_userId: { accountId: account.id, userId: user.id }},
+      create: {
+        accountId: account.id,
+        accountName: account.name,
+        userId: user.id,
+        apiTokens: {
+          create: {
+            id: tokeninfo.id,
+            name: tokeninfo.name,
+            token: apiKey,
+            permissions: tokeninfo.permissions,
+          }
+        }
+      },
+      update: {
+        accountName: account.name,
+        apiTokens: {
+          create: {
+            id: tokeninfo.id,
+            name: tokeninfo.name,
+            token: apiKey,
+            permissions: tokeninfo.permissions,
           }
         }
       }
