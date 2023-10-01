@@ -60,7 +60,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
 
       <ul className={styles.scopeList}>
         {scopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
-        {scopeMap.email && <ScopeItem icon="wvw">Your email address</ScopeItem>}
+        {scopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
         {hasGW2Scopes(validatedRequest.scopes) && (
           <ScopeItem icon="developer">
             Access the Guild Wars 2 API with the following permissions

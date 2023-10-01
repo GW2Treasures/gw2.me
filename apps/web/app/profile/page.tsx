@@ -59,7 +59,7 @@ export default async function ProfilePage() {
       <LinkButton href="/logout" external>Logout</LinkButton>
 
       <Headline id="accounts">Guild Wars 2 Accounts</Headline>
-      <LinkButton href="/accounts/add">Add Account</LinkButton>
+      <LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>
       {accounts.length > 0 && (
         <Table>
           <thead>
