@@ -9,7 +9,7 @@ import { Icon, IconProp } from '@gw2treasures/ui';
 import { FC, ReactNode } from 'react';
 import { AuthorizeRequestParams, hasGW2Scopes, validateRequest } from './validate';
 import { authorize } from './actions';
-import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { db } from '@/lib/db';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { PermissionList } from '@/components/Permissions/PermissionList';
