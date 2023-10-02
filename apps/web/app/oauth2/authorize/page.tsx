@@ -12,6 +12,7 @@ import { authorize } from './actions';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { db } from '@/lib/db';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
+import { PermissionList } from '@/components/Permissions/PermissionList';
 
 export default async function AuthorizePage({ searchParams }: { searchParams: AuthorizeRequestParams & Record<string, string> }) {
   const user = await getUser();
@@ -64,11 +65,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
         {hasGW2Scopes(validatedRequest.scopes) && (
           <ScopeItem icon="developer">
             Access the Guild Wars 2 API with the following permissions
-            <ul className={styles.gw2Permissions}>
-              {validatedRequest.scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => (
-                <li key={permission}>{permission.substring(4)}</li>
-              ))}
-            </ul>
+            <PermissionList permissions={validatedRequest.scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
             <div>Select accounts</div>
             <div className={styles.accountSelection}>
               {accounts.map((account, index) => (
