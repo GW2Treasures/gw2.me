@@ -3,12 +3,13 @@ import { getUser } from '@/lib/getUser';
 import { db } from '@/lib/db';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { Fragment, cache } from 'react';
+import { cache } from 'react';
 import Link from 'next/link';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { AuthorizationType } from '@gw2me/database';
+import { Icon } from '@gw2treasures/ui';
 
 const getUserData = cache(async () => {
   const session = await getUser();
@@ -38,8 +39,12 @@ const getUserData = cache(async () => {
     where: { userId: session.id },
     orderBy: { createdAt: 'asc' },
     include: {
-      apiTokens: { orderBy: { createdAt: 'asc' }},
-      _count: { select: { authorizations: { where: { type: AuthorizationType.AccessToken }}}}
+      _count: {
+        select: {
+          authorizations: { where: { type: AuthorizationType.AccessToken }},
+          apiTokens: true
+        }
+      }
     },
   });
 
@@ -64,23 +69,20 @@ export default async function ProfilePage() {
         <Table>
           <thead>
             <tr>
-              <th>API Key</th>
-              <th>Permissions</th>
+              <Table.HeaderCell>Account</Table.HeaderCell>
+              <Table.HeaderCell>Authorized Applications</Table.HeaderCell>
+              <Table.HeaderCell>API Keys</Table.HeaderCell>
+              <Table.HeaderCell small>Actions</Table.HeaderCell>
             </tr>
           </thead>
           <tbody>
             {accounts.map((account) => (
-              <Fragment key={account.id}>
-                <tr>
-                  <td colSpan={99}><b>{account.displayName ?? account.accountName}</b> {account.displayName && `(${account.accountName})`} - {account._count.authorizations} Apps authorized to access this account</td>
-                </tr>
-                {account.apiTokens.map((token) => (
-                  <tr key={token.id}>
-                    <td style={{ paddingLeft: 40 }}>{token.name} ({token.token})</td>
-                    <td>{token.permissions.join(', ')}</td>
-                  </tr>
-                ))}
-              </Fragment>
+              <tr key={account.id}>
+                <td><Icon icon="user"/> <b>{account.displayName ?? account.accountName}</b> {account.displayName && `(${account.accountName})`}</td>
+                <td>{account._count.authorizations}</td>
+                <td>{account._count.apiTokens}</td>
+                <td><LinkButton href={`/accounts/${account.id}`} icon="more">Manage</LinkButton></td>
+              </tr>
             ))}
           </tbody>
         </Table>
