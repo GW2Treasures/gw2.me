@@ -9,5 +9,5 @@ export interface SubmitButtonProps extends ButtonProps {}
 export const SubmitButton: FC<SubmitButtonProps> = ({ disabled, icon, ...props }) => {
   const { pending } = useFormStatus();
 
-  return <Button {...props} disabled={disabled || pending} icon={pending ? 'loading' : icon}/>;
+  return <Button type="submit" {...props} disabled={disabled || pending} icon={pending ? 'loading' : icon}/>;
 };
