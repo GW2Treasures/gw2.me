@@ -10,7 +10,7 @@ type AuthorizedRouteHandler<Params> =
 
 type RouteHandler<Params> = ((request: NextRequest, params: Params) => Promise<Response>)
 
-export function withAuthorization<Params>(scopes?: Scope[]): (handler: AuthorizedRouteHandler<Params>) => RouteHandler<Params> {
+export function withAuthorization<Params>(scopes?: Scope[] | { oneOf: Scope[]}): (handler: AuthorizedRouteHandler<Params>) => RouteHandler<Params> {
   return function(handler) {
     return async function(request: NextRequest, params: Params) {
       const auth = request.headers.get('Authorization');
@@ -27,7 +27,7 @@ export function withAuthorization<Params>(scopes?: Scope[]): (handler: Authorize
 
       const authorization = await db.authorization.findUnique({ where: { type_token: { token, type: AuthorizationType.AccessToken }}, include: { accounts: true }});
 
-      if(!authorization || (scopes && scopes.some((scope) => !authorization.scope.includes(scope)))) {
+      if(!authorization || (scopes && Array.isArray(scopes) && scopes.some((scope) => !authorization.scope.includes(scope))) || (scopes && 'oneOf' in scopes && !scopes.oneOf.some((scope) => authorization.scope.includes(scope)))) {
         return NextResponse.json({ error: true }, { status: 401 });
       }
 
