@@ -1,33 +1,26 @@
 import { db } from '@/lib/db';
 import { Scope, UserResponse } from '@gw2me/api';
 import { NextRequest, NextResponse } from 'next/server';
+import { withAuthorization } from '../auth';
+import { Authorization } from '@gw2me/database';
 
-export async function GET(request: NextRequest) {
-  const auth = request.headers.get('Authorization');
+export const GET = withAuthorization([Scope.Identify])(async function GET(authorization: Authorization, request: NextRequest) {
+  const user = await db.user.findUnique({
+    where: { id: authorization.userId },
+    select: { id: true, name: true, email: authorization.scope.includes(Scope.Email) }
+  });
 
-  if(!auth) {
-    return NextResponse.json({ error: true }, { status: 401 });
-  }
-
-  const [tokenType, token] = auth.split(' ');
-
-  if(tokenType !== 'Bearer' || !token) {
-    return NextResponse.json({ error: true }, { status: 400 });
-  }
-
-  const authorization = await db.authorization.findUnique({ where: { type_token: { token, type: 'AccessToken' }}, include: { user: true }});
-
-  if(!authorization || !authorization.scope.includes(Scope.Identify)) {
-    return NextResponse.json({ error: true }, { status: 401 });
+  if(!user) {
+    return NextResponse.json({ error: true }, { status: 404 });
   }
 
   const response: UserResponse = {
     user: {
-      id: authorization.userId,
-      name: authorization.user.name,
-      email: authorization.scope.includes(Scope.Email) ? authorization.user.email ?? undefined : undefined
+      id: user.id,
+      name: user.name,
+      email: user.email ?? undefined
     }
   };
 
   return NextResponse.json(response);
-}
+});
