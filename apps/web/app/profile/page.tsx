@@ -81,7 +81,7 @@ export default async function ProfilePage() {
                 <td><Icon icon="user"/> <b>{account.displayName ?? account.accountName}</b> {account.displayName && `(${account.accountName})`}</td>
                 <td>{account._count.authorizations}</td>
                 <td>{account._count.apiTokens}</td>
-                <td><LinkButton href={`/accounts/${account.id}`} icon="more">Manage</LinkButton></td>
+                <td><LinkButton href={`/accounts/${account.id}`} icon="settings">Manage</LinkButton></td>
               </tr>
             ))}
           </tbody>

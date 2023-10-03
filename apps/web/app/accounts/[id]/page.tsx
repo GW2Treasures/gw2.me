@@ -13,7 +13,8 @@ import { Code } from '@/components/Layout/Code';
 import { PermissionList } from '@/components/Permissions/PermissionList';
 import { Icon } from '@gw2treasures/ui';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
+import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
+import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 
 async function getAccount(id: string) {
   const user = await getUser();
@@ -68,8 +69,15 @@ export default async function AccountPage({ params: { id }}: { params: { id: str
           <tbody>
             {account.apiTokens.map((token) => (
               <tr key={token.id}>
-                <td><Icon icon="key"/> {token.name}</td>
-                <td><Code inline borderless>{token.token}</Code></td>
+                <td><FlexRow><Icon icon="key"/>{token.name}</FlexRow></td>
+                <td>
+                  <FlexRow>
+                    <Code inline borderless>{token.token}</Code>
+                    <Tip tip="Copy API Key">
+                      <CopyButton iconOnly icon="copy" copy={token.token} appearance="tertiary"/>
+                    </Tip>
+                  </FlexRow>
+                </td>
                 <td><PermissionList permissions={token.permissions}/></td>
                 <td><Button type="submit" icon="delete" intent="delete" name="id" value={token.id}>Delete</Button></td>
               </tr>
