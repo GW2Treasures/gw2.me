@@ -1,6 +1,6 @@
 {
   "name": "@gw2me/api",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "gw2.me API",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
