@@ -10,20 +10,20 @@
   "dependencies": {
     "@gw2me/api": "*",
     "@gw2me/database": "*",
-    "@gw2treasures/icons": "0.0.6",
+    "@gw2treasures/icons": "0.0.8",
     "@gw2treasures/ui": "0.0.13",
     "@prisma/nextjs-monorepo-workaround-plugin": "5.3.1",
-    "next": "13.5.3",
+    "next": "13.5.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "server-only": "0.0.1"
   },
   "devDependencies": {
-    "@types/node": "18.18.1",
+    "@types/node": "18.18.3",
     "@types/react": "18.2.24",
-    "@typescript-eslint/eslint-plugin": "6.7.3",
+    "@typescript-eslint/eslint-plugin": "6.7.4",
     "eslint": "8.50.0",
-    "eslint-config-next": "13.5.3",
+    "eslint-config-next": "13.5.4",
     "typescript": "5.2.2"
   }
 }
