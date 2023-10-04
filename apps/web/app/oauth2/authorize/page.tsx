@@ -1,101 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
-import { expiresAt } from '@/lib/date';
-import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { Scope } from '@gw2me/api';
-import { Application, AuthorizationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
-import { Button } from '@gw2treasures/ui/components/Form/Button';
-import { generateCode } from '@/lib/token';
-import styles from './layout.module.css';
+import layoutStyles from './layout.module.css';
+import styles from './page.module.css';
+import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
+import { Icon, IconProp } from '@gw2treasures/ui';
+import { FC, ReactNode } from 'react';
+import { AuthorizeRequestParams, hasGW2Scopes, validateRequest } from './validate';
+import { authorize } from './actions';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { db } from '@/lib/db';
+import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
+import { PermissionList } from '@/components/Permissions/PermissionList';
 
-interface Params {
-  response_type: string;
-  redirect_uri: string;
-  client_id: string;
-  scope: string;
-  state: string;
-}
-
-async function validateRequest(params: Params): Promise<{ error: string, application?: undefined } | { error: undefined, application: Application, scopes: Scope[] }> {
-  const supportedResponseTypes = ['code'];
-
-  if(!params.response_type || !supportedResponseTypes.includes(params.response_type)) {
-    return { error: 'Invalid response_type' };
-  }
-
-  if(!params.redirect_uri) {
-    return { error: 'Invalid redirect_uri' };
-  }
-
-  if(!params.client_id) {
-    return { error: 'Invalid client_id' };
-  }
-
-  if(!params.client_id) {
-    return { error: 'Invalid client_id' };
-  }
-
-  const scopes = decodeURIComponent(params.scope).split(' ');
-
-  if(!params.scope || !validScopes(scopes)) {
-    return { error: 'Invalid scope' };
-  }
-
-  const application = await db.application.findUnique({ where: { clientId: params.client_id }});
-
-  if(!application) {
-    return { error: 'Invalid client_id' };
-  }
-
-  if(!application.callbackUrls.includes(params.redirect_uri)) {
-    return { error: 'Invalid redirect_uri' };
-  }
-
-  return { error: undefined, application, scopes };
-}
-
-function validScopes(scopes: string[]): scopes is Scope[] {
-  const validScopes: string[] = Object.values(Scope);
-  return scopes.every((scope) => validScopes.includes(scope));
-}
-
-async function authorize(data: FormData) {
-  'use server';
-
-  const applicationId = data.get('applicationId')?.toString();
-  const redirect_uri = data.get('redirect_uri')?.toString();
-  const scopes = data.get('scope')?.toString().split(' ');
-  const state = data.get('state')?.toString();
-  const user = await getUser();
-
-  if(!applicationId || !redirect_uri || !user) {
-    throw new Error();
-  }
-
-  const type = AuthorizationType.Code;
-  const userId = user.id;
-
-  const authorization = await db.authorization.upsert({
-    where: { type_applicationId_userId: { type, applicationId, userId }},
-    create: {
-      type, applicationId, userId, scope: scopes,
-      token: generateCode(),
-      expiresAt: expiresAt(60),
-    },
-    update: {
-      expiresAt: expiresAt(60),
-    }
-  });
-
-  const url = new URL(redirect_uri);
-  url.searchParams.set('code', authorization.token);
-  state && url.searchParams.set('state', state);
-
-  redirect(url.toString());
-};
-
-export default async function AuthorizePage({ searchParams }: { searchParams: Params & Record<string, string> }) {
+export default async function AuthorizePage({ searchParams }: { searchParams: AuthorizeRequestParams & Record<string, string> }) {
   const user = await getUser();
 
   if(!user) {
@@ -111,25 +30,72 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
     return <div style={{ color: 'red' }}>{validatedRequest.error}</div>;
   }
 
+  const accounts = await db.account.findMany({ where: { userId: user.id }, orderBy: { createdAt: 'asc' }});
+
   const application = validatedRequest.application;
+  const redirectUri = new URL(searchParams.redirect_uri);
+
+  const authorizeAction = authorize.bind(null, {
+    applicationId: application.id,
+    redirect_uri: redirectUri.toString(),
+    scopes: validatedRequest.scopes,
+    state: searchParams.state
+  });
+
+  const scopeMap = validatedRequest.scopes.reduce<Partial<Record<Scope, true>>>((map, scope) => ({ ...map, [scope]: true }), {});
+
+  const cancelUrl = new URL(redirectUri);
+  cancelUrl.searchParams.set('error', 'access_denied');
+  searchParams.state && cancelUrl.searchParams.set('state', searchParams.state);
 
   return (
-    <>
-      <div className={styles.header}>
-        <img src={`/api/application/${application.id}/image`} width={64} height={64} className={styles.image} alt=""/>
+    <form action={authorizeAction} className={styles.form}>
+      <div className={layoutStyles.header}>
+        <img src={`/api/application/${application.id}/image`} width={64} height={64} className={layoutStyles.image} alt=""/>
         {application.name}
       </div>
+
       <div>
-        {application.name} wants to access your gw2.me account.
+        {application.name} wants to access the following data of your gw2.me account.
       </div>
 
-      <form action={authorize}>
-        <input type="hidden" name="applicationId" value={application.id}/>
-        <input type="hidden" name="redirect_uri" value={searchParams.redirect_uri}/>
-        <input type="hidden" name="scope" value={validatedRequest.scopes.join(' ')}/>
-        {searchParams.state && <input type="hidden" name="state" value={searchParams.state}/>}
-        <Button type="submit">Authorize</Button>
-      </form>
-    </>
+      <ul className={styles.scopeList}>
+        {scopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
+        {scopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
+        {hasGW2Scopes(validatedRequest.scopes) && (
+          <ScopeItem icon="developer">
+            Access the Guild Wars 2 API with the following permissions
+            <PermissionList permissions={validatedRequest.scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+            <div>Select accounts</div>
+            <div className={styles.accountSelection}>
+              {accounts.map((account, index) => (
+                <Checkbox key={account.id} defaultChecked={index === 0} name="accounts" formValue={account.id}>
+                  {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                </Checkbox>
+              ))}
+            </div>
+          </ScopeItem>
+        )}
+      </ul>
+
+      <div>You can revoke access at anytime from your gw2.me profile.</div>
+
+      <div className={styles.buttons}>
+        <LinkButton external href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
+        <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
+      </div>
+
+      <div className={styles.redirectNote}>Authorizing will redirect you to <b>{redirectUri.origin}</b></div>
+    </form>
   );
 }
+
+
+export interface ScopeItemProps {
+  icon: IconProp
+  children: ReactNode;
+}
+
+const ScopeItem: FC<ScopeItemProps> = ({ icon, children }) => {
+  return <li><Icon icon={icon}/><div>{children}</div></li>;
+};

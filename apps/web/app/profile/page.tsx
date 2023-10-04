@@ -9,6 +9,7 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { AuthorizationType } from '@gw2me/database';
+import { Icon } from '@gw2treasures/ui';
 
 const getUserData = cache(async () => {
   const session = await getUser();
@@ -26,7 +27,7 @@ const getUserData = cache(async () => {
         where: { type: AuthorizationType.RefreshToken },
         include: { application: { select: { name: true }}},
         orderBy: { createdAt: 'desc' },
-      }
+      },
     },
   });
 
@@ -34,19 +35,58 @@ const getUserData = cache(async () => {
     redirect('/login');
   }
 
+  const accounts = await db.account.findMany({
+    where: { userId: session.id },
+    orderBy: { createdAt: 'asc' },
+    include: {
+      _count: {
+        select: {
+          authorizations: { where: { type: AuthorizationType.AccessToken }},
+          apiTokens: true
+        }
+      }
+    },
+  });
+
   return {
     sessionId: session.sessionId,
     user,
+    accounts,
   };
 });
 
 export default async function ProfilePage() {
-  const { sessionId, user } = await getUserData();
+  const { sessionId, user, accounts } = await getUserData();
 
   return (
     <div>
       <Headline id="profile">{user.name}</Headline>
       <LinkButton href="/logout" external>Logout</LinkButton>
+
+      <Headline id="accounts">Guild Wars 2 Accounts</Headline>
+      <LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>
+      {accounts.length > 0 && (
+        <Table>
+          <thead>
+            <tr>
+              <Table.HeaderCell>Account</Table.HeaderCell>
+              <Table.HeaderCell>Authorized Applications</Table.HeaderCell>
+              <Table.HeaderCell>API Keys</Table.HeaderCell>
+              <Table.HeaderCell small>Actions</Table.HeaderCell>
+            </tr>
+          </thead>
+          <tbody>
+            {accounts.map((account) => (
+              <tr key={account.id}>
+                <td><Icon icon="user"/> <b>{account.displayName ?? account.accountName}</b> {account.displayName && `(${account.accountName})`}</td>
+                <td>{account._count.authorizations}</td>
+                <td>{account._count.apiTokens}</td>
+                <td><LinkButton href={`/accounts/${account.id}`} icon="settings">Manage</LinkButton></td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
 
       <Headline id="providers">Login Providers</Headline>
       <Table>

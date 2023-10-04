@@ -2,10 +2,12 @@ import { ReactNode } from 'react';
 import { Bitter } from 'next/font/google';
 import localFont from 'next/font/local';
 import { cx } from '@/lib/classNames';
+
 import './global.css';
 import './variables.css';
+import '@gw2treasures/icons/styles.css';
+
 import styles from './layout.module.css';
-import GW2MeIcon from './icon.svg?svgr';
 import Link from 'next/link';
 import { getUser } from '@/lib/getUser';
 import { Icon } from '@gw2treasures/ui';

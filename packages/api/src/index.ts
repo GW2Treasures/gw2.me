@@ -1,6 +1,17 @@
 export enum Scope {
   Identify = 'identify',
   Email = 'email',
+
+  GW2_Account = 'gw2:account',
+  GW2_Inventories = 'gw2:inventories',
+  GW2_Characters = 'gw2:characters',
+  GW2_Tradingpost = 'gw2:tradingpost',
+  GW2_Wallet = 'gw2:wallet',
+  GW2_Unlocks = 'gw2:unlocks',
+  GW2_Pvp = 'gw2:pvp',
+  GW2_Builds = 'gw2:builds',
+  GW2_Progression = 'gw2:progression',
+  GW2_Guilds = 'gw2:guilds',
 }
 
 export interface AuthorizationUrlParams {
@@ -94,11 +105,37 @@ export interface UserResponse {
   }
 }
 
+export interface AccountsResponse {
+  accounts: {
+    id: string;
+    name: string;
+  }[]
+}
+
+export interface SubtokenResponse {
+  subtoken: string;
+  expiresAt: string;
+}
+
 export const rest = {
   user({ access_token }: { access_token: string }): Promise<UserResponse> {
     return fetch(`${getUrl()}api/user`, {
       headers: { 'Authorization': `Bearer ${access_token}` },
       cache: 'no-store',
     }).then((r) => r.json());
-  }
+  },
+
+  accounts({ access_token }: { access_token: string }): Promise<AccountsResponse> {
+    return fetch(`${getUrl()}api/accounts`, {
+      headers: { 'Authorization': `Bearer ${access_token}` },
+      cache: 'no-store',
+    }).then((r) => r.json());
+  },
+
+  subtoken({ access_token, accountId }: { access_token: string, accountId: string }): Promise<SubtokenResponse> {
+    return fetch(`${getUrl()}api/accounts/${accountId}/subtoken`, {
+      headers: { 'Authorization': `Bearer ${access_token}` },
+      cache: 'no-store',
+    }).then((r) => r.json());
+  },
 };

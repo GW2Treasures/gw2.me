@@ -20,7 +20,9 @@ export default async function CallbackPage({ searchParams }: { searchParams: { c
     <div>
       <pre>{JSON.stringify(data, undefined, '  ')}</pre>
 
-      {!('error' in data) && (
+      {('error' in data) ? (
+        <LinkButton href="/">Back</LinkButton>
+      ) : (
         <LinkButton href={`/token?access_token=${data.access_token}&refresh_token=${data.refresh_token}`} external>Continue</LinkButton>
       )}
     </div>

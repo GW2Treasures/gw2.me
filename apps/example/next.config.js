@@ -7,6 +7,7 @@ const nextConfig = {
     outputFileTracingRoot: path.join(__dirname, '../../'),
     serverActions: true,
   },
+  transpilePackages: ['@gw2treasures/ui'],
   reactStrictMode: true,
   output: 'standalone',
   swcMinify: true,
