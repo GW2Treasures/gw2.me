@@ -19,7 +19,7 @@ import { Form } from '@/components/Form/Form';
 
 export default async function AuthorizePage({ searchParams }: { searchParams: AuthorizeRequestParams & Record<string, string> }) {
   // build return url for /account/add?return=X
-  const self_uri = `/oauth2/authorize?${new URLSearchParams(searchParams).toString()}`;
+  const returnUrl = `/oauth2/authorize?${new URLSearchParams(searchParams).toString()}`;
 
   // validate request
   const validatedRequest = await validateRequest(searchParams);
@@ -33,7 +33,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
 
   // redirect to login if user is not logged in
   if(!user) {
-    const encodedReturnUrl = Buffer.from(self_uri).toString('base64url');
+    const encodedReturnUrl = Buffer.from(returnUrl).toString('base64url');
     redirect('/login/return?to=' + encodeURIComponent(encodedReturnUrl));
   }
 
@@ -50,12 +50,13 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
   cancelUrl.searchParams.set('error', 'access_denied');
   searchParams.state && cancelUrl.searchParams.set('state', searchParams.state);
 
+  // declare some variables for easier access
   const application = validatedRequest.application;
-
   const scopes = validatedRequest.scopes;
   const scopeMap = scopes.reduce<Partial<Record<Scope, true>>>((map, scope) => ({ ...map, [scope]: true }), {});
 
-  const action = authorize.bind(null, {
+  // bind parameters to authorize action
+  const authorizeAction = authorize.bind(null, {
     applicationId: application.id,
     redirect_uri: searchParams.redirect_uri,
     scopes,
@@ -68,7 +69,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
         <img src={`/api/application/${application.id}/image`} width={64} height={64} className={layoutStyles.image} alt=""/>
         {application.name}
       </div>
-      <Form action={action}>
+      <Form action={authorizeAction}>
         <div className={styles.form}>
           <div>
             {application.name} wants to access the following data of your gw2.me account.
@@ -88,7 +89,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
                       {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
                     </Checkbox>
                   ))}
-                  <LinkButton href={`/accounts/add?return=${encodeURIComponent(self_uri)}`} appearance="menu" icon="add">Add account</LinkButton>
+                  <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
                 </div>
               </ScopeItem>
             )}
@@ -116,4 +117,3 @@ export interface ScopeItemProps {
 const ScopeItem: FC<ScopeItemProps> = ({ icon, children }) => {
   return <li><Icon icon={icon}/><div>{children}</div></li>;
 };
-
