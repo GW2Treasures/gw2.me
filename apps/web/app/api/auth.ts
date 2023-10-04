@@ -25,9 +25,11 @@ export function withAuthorization<Params>(scopes?: Scope[] | { oneOf: Scope[]}):
         return NextResponse.json({ error: true }, { status: 400 });
       }
 
-      const authorization = await db.authorization.findUnique({ where: { type_token: { token, type: AuthorizationType.AccessToken }}, include: { accounts: true }});
+      const authorization = await db.authorization.findUnique({
+        where: { type_token: { token, type: AuthorizationType.AccessToken }}
+      });
 
-      if(!authorization || (scopes && Array.isArray(scopes) && scopes.some((scope) => !authorization.scope.includes(scope))) || (scopes && 'oneOf' in scopes && !scopes.oneOf.some((scope) => authorization.scope.includes(scope)))) {
+      if(!authorization || !verifyScopes(authorization.scope as Scope[], scopes)) {
         return NextResponse.json({ error: true }, { status: 401 });
       }
 
@@ -37,3 +39,29 @@ export function withAuthorization<Params>(scopes?: Scope[] | { oneOf: Scope[]}):
 }
 
 export const Gw2Scopes = [Scope.GW2_Account, Scope.GW2_Inventories, Scope.GW2_Characters, Scope.GW2_Tradingpost, Scope.GW2_Wallet, Scope.GW2_Unlocks, Scope.GW2_Pvp, Scope.GW2_Builds, Scope.GW2_Progression, Scope.GW2_Guilds];
+
+export function verifyScopes(authorized: Scope[], condition: undefined | Scope[] | { every?: Scope[], oneOf?: Scope[] }): boolean {
+  if(!condition) {
+    return true;
+  }
+
+  const { every, oneOf } = Array.isArray(condition)
+    ? { every: condition, oneOf: [] }
+    : { every: [], oneOf: [], ...condition };
+
+  const hasEvery = every.every((scope) => authorized.includes(scope));
+
+  if(!hasEvery) {
+    console.log('Missing every', { every, authorized });
+    return false;
+  }
+
+  const hasOneOf = oneOf.length === 0 || oneOf.some((scope) => authorized.includes(scope));
+
+  if(!hasOneOf) {
+    console.log('Missing one of', { oneOf, authorized });
+    return false;
+  }
+
+  return true;
+}
