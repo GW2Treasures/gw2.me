@@ -112,6 +112,11 @@ export interface AccountsResponse {
   }[]
 }
 
+export interface SubtokenResponse {
+  subtoken: string;
+  expiresAt: string;
+}
+
 export const rest = {
   user({ access_token }: { access_token: string }): Promise<UserResponse> {
     return fetch(`${getUrl()}api/user`, {
@@ -120,8 +125,15 @@ export const rest = {
     }).then((r) => r.json());
   },
 
-  accounts({ access_token }: { access_token: string}): Promise<AccountsResponse> {
+  accounts({ access_token }: { access_token: string }): Promise<AccountsResponse> {
     return fetch(`${getUrl()}api/accounts`, {
+      headers: { 'Authorization': `Bearer ${access_token}` },
+      cache: 'no-store',
+    }).then((r) => r.json());
+  },
+
+  subtoken({ access_token, accountId }: { access_token: string, accountId: string }): Promise<SubtokenResponse> {
+    return fetch(`${getUrl()}api/accounts/${accountId}/subtoken`, {
       headers: { 'Authorization': `Bearer ${access_token}` },
       cache: 'no-store',
     }).then((r) => r.json());
