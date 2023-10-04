@@ -9,12 +9,9 @@ import { Authorization, AuthorizationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 import { hasGW2Scopes } from './validate';
 import { Scope } from '@gw2me/api';
+import { FormState } from '@/components/Form/Form';
 
-interface AuthorizeState {
-  error?: string;
-}
-
-export async function authorize({ applicationId, redirect_uri, scopes, state }: { applicationId: string, redirect_uri: string, scopes: Scope[], state?: string }, previousState: AuthorizeState, formData: FormData): Promise<AuthorizeState> {
+export async function authorize({ applicationId, redirect_uri, scopes, state }: { applicationId: string, redirect_uri: string, scopes: Scope[], state?: string }, previousState: FormState, formData: FormData): Promise<FormState> {
   const user = await getUser();
 
   if(!applicationId || !redirect_uri) {

@@ -13,7 +13,8 @@ import { db } from '@/lib/db';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { PermissionList } from '@/components/Permissions/PermissionList';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
-import { AuthorizeForm } from './form';
+import { authorize } from './actions';
+import { Form } from '@/components/Form/Form';
 
 
 export default async function AuthorizePage({ searchParams }: { searchParams: AuthorizeRequestParams & Record<string, string> }) {
@@ -54,46 +55,55 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
   const scopes = validatedRequest.scopes;
   const scopeMap = scopes.reduce<Partial<Record<Scope, true>>>((map, scope) => ({ ...map, [scope]: true }), {});
 
+  const action = authorize.bind(null, {
+    applicationId: application.id,
+    redirect_uri: searchParams.redirect_uri,
+    scopes,
+    state: searchParams.state
+  });
+
   return (
     <>
       <div className={layoutStyles.header}>
         <img src={`/api/application/${application.id}/image`} width={64} height={64} className={layoutStyles.image} alt=""/>
         {application.name}
       </div>
-      <AuthorizeForm application={validatedRequest.application} scopes={validatedRequest.scopes} redirect_uri={searchParams.redirect_uri} state={searchParams.state}>
-        <div>
-          {application.name} wants to access the following data of your gw2.me account.
+      <Form action={action}>
+        <div className={styles.form}>
+          <div>
+            {application.name} wants to access the following data of your gw2.me account.
+          </div>
+
+          <ul className={styles.scopeList}>
+            {scopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
+            {scopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
+            {hasGW2Scopes(scopes) && (
+              <ScopeItem icon="developer">
+                Access the Guild Wars 2 API with the following permissions
+                <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+                <div>Select accounts</div>
+                <div className={styles.accountSelection}>
+                  {accounts.map((account, index) => (
+                    <Checkbox key={account.id} defaultChecked={index === 0} name="accounts" formValue={account.id}>
+                      {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                    </Checkbox>
+                  ))}
+                  <LinkButton href={`/accounts/add?return=${encodeURIComponent(self_uri)}`} appearance="menu" icon="add">Add account</LinkButton>
+                </div>
+              </ScopeItem>
+            )}
+          </ul>
+
+          <div>You can revoke access at anytime from your gw2.me profile.</div>
+
+          <div className={styles.buttons}>
+            <LinkButton external href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
+            <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
+          </div>
+
+          <div className={styles.redirectNote}>Authorizing will redirect you to <b>{new URL(searchParams.redirect_uri).origin}</b></div>
         </div>
-
-        <ul className={styles.scopeList}>
-          {scopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
-          {scopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
-          {hasGW2Scopes(scopes) && (
-            <ScopeItem icon="developer">
-              Access the Guild Wars 2 API with the following permissions
-              <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
-              <div>Select accounts</div>
-              <div className={styles.accountSelection}>
-                {accounts.map((account, index) => (
-                  <Checkbox key={account.id} defaultChecked={index === 0} name="accounts" formValue={account.id}>
-                    {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
-                  </Checkbox>
-                ))}
-                <LinkButton href={`/accounts/add?return=${encodeURIComponent(self_uri)}`} appearance="menu" icon="add">Add account</LinkButton>
-              </div>
-            </ScopeItem>
-          )}
-        </ul>
-
-        <div>You can revoke access at anytime from your gw2.me profile.</div>
-
-        <div className={styles.buttons}>
-          <LinkButton external href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
-          <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
-        </div>
-
-        <div className={styles.redirectNote}>Authorizing will redirect you to <b>{new URL(searchParams.redirect_uri).origin}</b></div>
-      </AuthorizeForm>
+      </Form>
     </>
   );
 }
