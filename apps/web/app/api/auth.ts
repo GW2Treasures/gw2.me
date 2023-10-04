@@ -58,14 +58,12 @@ export function verifyScopes(authorized: Scope[], condition: undefined | Scope[]
   const hasEvery = every.every((scope) => authorized.includes(scope));
 
   if(!hasEvery) {
-    console.log('Missing every', { every, authorized });
     return false;
   }
 
   const hasOneOf = oneOf.length === 0 || oneOf.some((scope) => authorized.includes(scope));
 
   if(!hasOneOf) {
-    console.log('Missing one of', { oneOf, authorized });
     return false;
   }
 
