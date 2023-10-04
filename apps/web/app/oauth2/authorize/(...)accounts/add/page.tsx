@@ -1,3 +1,3 @@
-import AccountCreatePage from 'app/accounts/add/page';
+import AccountCreatePage from '../../../../(user)/accounts/add/page';
 
 export default AccountCreatePage;
