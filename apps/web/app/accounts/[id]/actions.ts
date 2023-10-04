@@ -18,7 +18,10 @@ export async function updateDisplayName(id: string, state: FormState, formData: 
     return { error: 'Not logged in' };
   }
 
-  await db.account.updateMany({ where: { id, userId: user.id }, data: { displayName }});
+  await db.account.updateMany({
+    where: { id, userId: user.id },
+    data: { displayName: displayName.trim() || null }
+  });
 
   revalidatePath(`/accounts/${id}`);
 
