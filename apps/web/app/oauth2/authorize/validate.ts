@@ -7,10 +7,10 @@ export interface AuthorizeRequestParams {
   redirect_uri: string;
   client_id: string;
   scope: string;
-  state: string;
+  state?: string;
 }
 
-export async function validateRequest(params: AuthorizeRequestParams): Promise<{ error: string, application?: undefined } | { error: undefined, application: Application, scopes: Scope[] }> {
+export async function validateRequest(params: AuthorizeRequestParams): Promise<{ error: string, application?: undefined } | { error: undefined, application: { id: string, name: string }, scopes: Scope[] }> {
   const supportedResponseTypes = ['code'];
 
   if(!params.response_type || !supportedResponseTypes.includes(params.response_type)) {
@@ -35,7 +35,10 @@ export async function validateRequest(params: AuthorizeRequestParams): Promise<{
     return { error: 'Invalid scope' };
   }
 
-  const application = await db.application.findUnique({ where: { clientId: params.client_id }});
+  const application = await db.application.findUnique({
+    where: { clientId: params.client_id },
+    select: { id: true, name: true, callbackUrls: true }
+  });
 
   if(!application) {
     return { error: 'Invalid client_id' };
