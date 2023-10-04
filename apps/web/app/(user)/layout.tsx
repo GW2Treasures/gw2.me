@@ -11,10 +11,12 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.nav}>
-        <LinkButton appearance="menu" href="/profile" className={segment === 'profile' ? styles.active : undefined}>Profile</LinkButton>
-        <LinkButton appearance="menu" href="/accounts" className={segment === 'accounts' ? styles.active : undefined}>GW2 Accounts</LinkButton>
-        <LinkButton appearance="menu" href="/providers" className={segment === 'providers' ? styles.active : undefined}>Login Providers</LinkButton>
-        <LinkButton appearance="menu" href="/applications" className={segment === 'applications' ? styles.active : undefined}>Applications</LinkButton>
+        <LinkButton appearance="menu" href="/profile" icon="user" className={segment === 'profile' ? styles.active : undefined}>Profile</LinkButton>
+        <LinkButton appearance="menu" href="/accounts" icon="key" className={segment === 'accounts' ? styles.active : undefined}>GW2 Accounts</LinkButton>
+        <LinkButton appearance="menu" href="/providers" icon="profession" className={segment === 'providers' ? styles.active : undefined}>Login Providers</LinkButton>
+        <LinkButton appearance="menu" href="/applications" icon="gw2me-outline" className={segment === 'applications' ? styles.active : undefined}>Applications</LinkButton>
+        <hr/>
+        <LinkButton appearance="menu" href="/dev/applications" icon="developer">Developer</LinkButton>
       </div>
       <div className={styles.content}>
         {children}
