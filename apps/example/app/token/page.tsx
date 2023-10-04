@@ -29,7 +29,7 @@ async function getSubtoken(accountId: string, data: FormData) {
 
   const { subtoken } = await rest.subtoken({ access_token, accountId });
 
-  redirect(`https://api.guildwars2.com/v2/account?access_token=${encodeURIComponent(subtoken)}`);
+  redirect(`https://api.guildwars2.com/v2/tokeninfo?access_token=${encodeURIComponent(subtoken)}`);
 }
 
 export default async function TokenPage({ searchParams }: { searchParams: { access_token: string; refresh_token: string; }}) {
