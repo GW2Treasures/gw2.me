@@ -5,7 +5,7 @@ import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { isString } from '@/lib/is';
 import { generateCode } from '@/lib/token';
-import { AuthorizationType } from '@gw2me/database';
+import { Authorization, AuthorizationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 import { hasGW2Scopes } from './validate';
 import { Scope } from '@gw2me/api';
@@ -34,8 +34,10 @@ export async function authorize({ applicationId, redirect_uri, scopes, state }: 
     return { error: 'At least one account has to be selected.' };
   }
 
+  let authorization: Authorization;
+
   try {
-    const authorization = await db.authorization.upsert({
+    authorization = await db.authorization.upsert({
       where: { type_applicationId_userId: { type, applicationId, userId }},
       create: {
         type, applicationId, userId, scope: scopes,
@@ -48,13 +50,13 @@ export async function authorize({ applicationId, redirect_uri, scopes, state }: 
         expiresAt: expiresAt(60),
       }
     });
-
-    const url = new URL(redirect_uri);
-    url.searchParams.set('code', authorization.token);
-    state && url.searchParams.set('state', state);
-
-    redirect(url.toString());
   } catch {
     return { error: 'Authorization failed' };
   }
+
+  const url = new URL(redirect_uri);
+  url.searchParams.set('code', authorization.token);
+  state && url.searchParams.set('state', state);
+
+  redirect(url.toString());
 };

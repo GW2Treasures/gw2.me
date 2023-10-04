@@ -1,10 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 import { getUser } from '@/lib/getUser';
+import { Scope } from '@gw2me/api';
 import { redirect } from 'next/navigation';
+import layoutStyles from './layout.module.css';
+import styles from './page.module.css';
+import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
+import { Icon, IconProp } from '@gw2treasures/ui';
+import { FC, ReactNode } from 'react';
 import { AuthorizeRequestParams, hasGW2Scopes, validateRequest } from './validate';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { db } from '@/lib/db';
-import { AuthorizeForm } from './form';
+import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
+import { PermissionList } from '@/components/Permissions/PermissionList';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
+import { AuthorizeForm } from './form';
+
 
 export default async function AuthorizePage({ searchParams }: { searchParams: AuthorizeRequestParams & Record<string, string> }) {
   // build return url for /account/add?return=X
@@ -39,15 +49,61 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
   cancelUrl.searchParams.set('error', 'access_denied');
   searchParams.state && cancelUrl.searchParams.set('state', searchParams.state);
 
+  const application = validatedRequest.application;
+
+  const scopes = validatedRequest.scopes;
+  const scopeMap = scopes.reduce<Partial<Record<Scope, true>>>((map, scope) => ({ ...map, [scope]: true }), {});
+
   return (
-    <AuthorizeForm
-      application={validatedRequest.application}
-      accounts={accounts}
-      userName={user.name}
-      scopes={validatedRequest.scopes}
-      redirect_uri={searchParams.redirect_uri}
-      state={searchParams.state}
-      cancel_uri={cancelUrl.toString()}
-      self_uri={self_uri}/>
+    <>
+      <div className={layoutStyles.header}>
+        <img src={`/api/application/${application.id}/image`} width={64} height={64} className={layoutStyles.image} alt=""/>
+        {application.name}
+      </div>
+      <AuthorizeForm application={validatedRequest.application} scopes={validatedRequest.scopes} redirect_uri={searchParams.redirect_uri} state={searchParams.state}>
+        <div>
+          {application.name} wants to access the following data of your gw2.me account.
+        </div>
+
+        <ul className={styles.scopeList}>
+          {scopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
+          {scopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
+          {hasGW2Scopes(scopes) && (
+            <ScopeItem icon="developer">
+              Access the Guild Wars 2 API with the following permissions
+              <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+              <div>Select accounts</div>
+              <div className={styles.accountSelection}>
+                {accounts.map((account, index) => (
+                  <Checkbox key={account.id} defaultChecked={index === 0} name="accounts" formValue={account.id}>
+                    {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                  </Checkbox>
+                ))}
+                <LinkButton href={`/accounts/add?return=${encodeURIComponent(self_uri)}`} appearance="menu" icon="add">Add account</LinkButton>
+              </div>
+            </ScopeItem>
+          )}
+        </ul>
+
+        <div>You can revoke access at anytime from your gw2.me profile.</div>
+
+        <div className={styles.buttons}>
+          <LinkButton external href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
+          <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
+        </div>
+
+        <div className={styles.redirectNote}>Authorizing will redirect you to <b>{new URL(searchParams.redirect_uri).origin}</b></div>
+      </AuthorizeForm>
+    </>
   );
 }
+
+export interface ScopeItemProps {
+  icon: IconProp
+  children: ReactNode;
+}
+
+const ScopeItem: FC<ScopeItemProps> = ({ icon, children }) => {
+  return <li><Icon icon={icon}/><div>{children}</div></li>;
+};
+
