@@ -3,7 +3,7 @@
 import { expiresAt } from '@/lib/date';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
-import { isDefinied, isString } from '@/lib/is';
+import { isString } from '@/lib/is';
 import { generateCode } from '@/lib/token';
 import { AuthorizationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';

@@ -15,12 +15,13 @@ import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { PermissionList } from '@/components/Permissions/PermissionList';
 
 export default async function AuthorizePage({ searchParams }: { searchParams: AuthorizeRequestParams & Record<string, string> }) {
+  const returnBuffer = Buffer.from(`/oauth2/authorize?${new URLSearchParams(searchParams).toString()}`);
+  const returnUrl = returnBuffer.toString('base64url');
+
   const user = await getUser();
 
   if(!user) {
-    const returnBuffer = Buffer.from(`/oauth2/authorize?${new URLSearchParams(searchParams).toString()}`);
-
-    redirect('/login/return?to=' + encodeURIComponent(returnBuffer.toString('base64url')));
+    redirect('/login/return?to=' + encodeURIComponent(returnUrl));
   }
 
   // validate request
@@ -73,6 +74,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
                   {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
                 </Checkbox>
               ))}
+              <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnBuffer.toString())}`} appearance="menu" icon="add">Add account</LinkButton>
             </div>
           </ScopeItem>
         )}

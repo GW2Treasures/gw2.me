@@ -1,7 +1,13 @@
 import { AccountAddForm } from './form';
 
-export default function AccountCreatePage() {
+export interface AccountCreatePageProps {
+  searchParams?: {
+    return?: string;
+  }
+}
+
+export default function AccountCreatePage({ searchParams }: AccountCreatePageProps) {
   return (
-    <AccountAddForm/>
+    <AccountAddForm returnTo={searchParams?.return}/>
   );
 }
