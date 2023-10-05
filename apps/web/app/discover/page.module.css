@@ -23,11 +23,6 @@
   text-decoration: none;
 }
 
-.icon {
-  grid-area: icon;
-  border-radius: 2px;
-}
-
 .title {
   font-weight: 500;
   font-size: 18px;

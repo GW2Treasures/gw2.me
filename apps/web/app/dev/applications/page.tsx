@@ -1,7 +1,9 @@
+import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -36,7 +38,7 @@ export default async function DevPage() {
         <tbody>
           {applications.map((app) => (
             <tr key={app.id}>
-              <td><Link href={`/dev/applications/${app.id}`}>{app.name}</Link></td>
+              <td><Link href={`/dev/applications/${app.id}`}><FlexRow><ApplicationImage applicationId={app.id}/>{app.name}</FlexRow></Link></td>
             </tr>
           ))}
         </tbody>

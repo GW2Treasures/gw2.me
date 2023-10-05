@@ -9,6 +9,8 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
 import { AuthorizationType } from '@gw2me/database';
+import { ApplicationImage } from '@/components/Application/ApplicationImage';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 
 const getUserData = cache(async () => {
   const session = await getUser();
@@ -58,7 +60,7 @@ export default async function ProfilePage() {
           <tbody>
             {user.authorizations.map((authorization) => (
               <tr key={authorization.id}>
-                <td><img src={`/api/application/${authorization.applicationId}/image`} width={32} height={32} alt="" style={{ verticalAlign: -10, borderRadius: 2 }}/> {authorization.application.name}</td>
+                <td><FlexRow><ApplicationImage applicationId={authorization.applicationId}/> {authorization.application.name}</FlexRow></td>
                 <td>{authorization.usedAt?.toISOString()}</td>
               </tr>
             ))}
