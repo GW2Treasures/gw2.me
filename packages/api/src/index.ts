@@ -44,6 +44,7 @@ export function getAuthorizationUrl({ redirect_uri, client_id, scopes, state }: 
 
 export interface AuthTokenParams {
   code: string;
+  redirect_uri: string;
   client_id: string;
   client_secret: string;
 }
@@ -62,10 +63,10 @@ export interface TokenResponse {
   scope: string,
 }
 
-export async function getAccessToken({ code, client_id, client_secret }: AuthTokenParams): Promise<TokenResponse> {
+export async function getAccessToken({ code, client_id, client_secret, redirect_uri }: AuthTokenParams): Promise<TokenResponse> {
   const data = new URLSearchParams({
     grant_type: 'authorization_code',
-    code, client_id, client_secret,
+    code, client_id, client_secret, redirect_uri,
   });
 
   // get discord token

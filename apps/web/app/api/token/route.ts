@@ -29,14 +29,16 @@ export async function POST(request: NextRequest) {
   switch(grant_type) {
     case 'authorization_code': {
       const code = params.get('code')?.toString();
+      const redirect_uri = params.get('redirect_uri')?.toString();
 
-      if(!code) {
+      if(!code || !redirect_uri) {
         return NextResponse.json({ error: true }, { status: 400 });
       }
 
       // find code
       const authorization = await db.authorization.findUnique({ where: { type_token: { token: code, type: AuthorizationType.Code }}, include: { application: true, accounts: { select: { id: true }}}});
 
+      // TODO: verify redirect_uri is the same
       if(!authorization || isExpired(authorization.expiresAt) || authorization.application.clientId !== client_id || !validClientSecret(client_secret, authorization.application.clientSecret)) {
         return NextResponse.json({ error: true }, { status: 400 });
       }

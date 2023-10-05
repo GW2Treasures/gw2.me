@@ -191,6 +191,11 @@ export default function Docs() {
             <td><Code inline borderless>String</Code></td>
             <td>The <Code inline>client_secret</Code> of your application.</td>
           </tr>
+          <tr>
+            <td><Code inline>redirect_uri</Code></td>
+            <td><Code inline borderless>String</Code></td>
+            <td>This must be the same <Code inline>redirect_uri</Code> as used in the authorization request.</td>
+          </tr>
         </tbody>
       </Table>
 
