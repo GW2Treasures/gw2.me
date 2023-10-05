@@ -27,7 +27,7 @@ export default async function DevPage() {
 
   return (
     <div>
-      <Headline id="applications" actions={<LinkButton href="/dev/applications/create">Create</LinkButton>}>Your Applications</Headline>
+      <Headline id="applications" actions={<LinkButton href="/dev/applications/create" icon="add">Create</LinkButton>}>Your Applications</Headline>
 
       <Table>
         <thead>

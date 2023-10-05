@@ -9,12 +9,19 @@ import { editApplication } from '../_actions/edit';
 import { Scope, getAuthorizationUrl } from '@gw2me/api';
 import { resetClientSecret } from '../_actions/resetClientSecret';
 import { ResetClientSecret } from './reset-client-secret';
-import { EditApplicationImage } from './application-image';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
+import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
+import { Form } from '@/components/Form/Form';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { ApplicationImage } from '@/components/Application/ApplicationImage';
+import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
+import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
+import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
+import { Icon } from '@gw2treasures/ui';
 
 const getApplication = cache(async (id: string) => {
   const user = await getUser();
@@ -35,21 +42,18 @@ export default async function EditApplicationPage({ params }: { params: { id: st
 
   return (
     <div>
-      <form action={deleteApplication} id="deleteApplication">
-        <input type="hidden" name="id" value={application.id}/>
-      </form>
-
-      <Link href="/dev/applications">← List of Applications</Link>
       <Headline id="app">{application.name}</Headline>
 
-      <div>
-        <EditApplicationImage applicationId={application.id} exists={application.image !== null}/>
-      </div>
-
-      <form action={editApplication} id="editApplication">
-        <input type="hidden" name="id" value={application.id}/>
-
+      <Form action={editApplication.bind(null, application.id)} id="editApplication">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Label label="Image">
+            <FlexRow>
+              { /* eslint-disable-next-line @next/next/no-img-element */}
+              {application.image !== null && (<img src={`data:image/png;base64,${application.image?.toString('base64')}`} alt="" width={64} height={64}/>)}
+              <input type="file" name="image"/>
+            </FlexRow>
+          </Label>
+
           <Label label="Name">
             <TextInput name="name" defaultValue={application.name} value={undefined}/>
           </Label>
@@ -66,25 +70,32 @@ export default async function EditApplicationPage({ params }: { params: { id: st
             <TextInput name="publicUrl" defaultValue={application.publicUrl} value={undefined}/>
           </Label>
 
+          <b style={{ marginTop: 16 }}>OAuth2 Client Information</b>
+
+          <div>
+            <FlexRow wrap>
+              <Label label="Client ID">
+                <TextInput value={application.clientId} readOnly/>
+                <CopyButton copy={application.clientId} icon="copy">Copy</CopyButton>
+              </Label>
+
+              <Label label="Client Secret">
+                <ResetClientSecret applicationId={application.id} reset={resetClientSecret} hasClientSecret={application.clientSecret !== null}/>
+              </Label>
+            </FlexRow>
+          </div>
+
           <Label label="Redirect URLs">
             <Textarea name="callbackUrls" defaultValue={application.callbackUrls.join('\n')}/>
           </Label>
-
-          <Label label="Client ID">
-            <TextInput value={application.clientId} readOnly/>
-          </Label>
-
-          <Label label="Client Secret">
-            <ResetClientSecret applicationId={application.id} reset={resetClientSecret}/>
-          </Label>
         </div>
-      </form>
+      </Form>
 
-      <div style={{ marginTop: 16, display: 'flex', gap: 16 }}>
-        <Button type="submit" form="editApplication">Save</Button>
-        <LinkButton external href={getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], client_id: application.clientId, scopes: [Scope.Identify] })}>Test Link</LinkButton>
-        <Button type="submit" form="deleteApplication">Delete Application</Button>
-      </div>
+      <FlexRow wrap>
+        <SubmitButton form="editApplication">Save</SubmitButton>
+        <LinkButton target="_blank" href={getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], client_id: application.clientId, scopes: [Scope.Identify] })}>Test Link <Icon icon="external"/></LinkButton>
+        <LinkButton href={`/dev/applications/${application.id}/delete`} icon="delete">Delete Application</LinkButton>
+      </FlexRow>
     </div>
   );
 }
