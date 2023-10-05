@@ -15,6 +15,7 @@ import { Icon } from '@gw2treasures/ui';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
 import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
+import { ApplicationImage } from '@/components/Application/ApplicationImage';
 
 async function getAccount(id: string) {
   const user = await getUser();
@@ -96,8 +97,7 @@ export default async function AccountPage({ params: { id }}: { params: { id: str
         <tbody>
           {account.authorizations.map(({ application, scope }) => (
             <tr key={application.id}>
-              { /* eslint-disable-next-line @next/next/no-img-element */ }
-              <td><img src={`/api/application/${application.id}/image`} width={32} height={32} alt="" style={{ verticalAlign: -10, borderRadius: 2 }}/> {application.name}</td>
+              <td><FlexRow><ApplicationImage applicationId={application.id}/> {application.name}</FlexRow></td>
             </tr>
           ))}
         </tbody>

@@ -15,6 +15,7 @@ import { PermissionList } from '@/components/Permissions/PermissionList';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { authorize } from './actions';
 import { Form } from '@/components/Form/Form';
+import { ApplicationImage } from '@/components/Application/ApplicationImage';
 
 
 export default async function AuthorizePage({ searchParams }: { searchParams: AuthorizeRequestParams & Record<string, string> }) {
@@ -66,7 +67,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
   return (
     <>
       <div className={layoutStyles.header}>
-        <img src={`/api/application/${application.id}/image`} width={64} height={64} className={layoutStyles.image} alt=""/>
+        <ApplicationImage applicationId={application.id} size={64}/>
         {application.name}
       </div>
       <Form action={authorizeAction}>

@@ -1,15 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
+import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { FC, useCallback, useRef, useState } from 'react';
 
-export interface ApplicationImageProps {
+export interface EditApplicationImageProps {
   applicationId: string;
   exists: boolean;
 }
 
-export const ApplicationImage: FC<ApplicationImageProps> = ({ applicationId, exists }) => {
+export const EditApplicationImage: FC<EditApplicationImageProps> = ({ applicationId, exists }) => {
   const img = useRef<HTMLImageElement>(null);
   const file = useRef<HTMLInputElement>(null);
   const [uploaded, setUploaded] = useState(false);
@@ -40,10 +42,10 @@ export const ApplicationImage: FC<ApplicationImageProps> = ({ applicationId, exi
   }, [applicationId]);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-      {(exists || uploaded) && <img ref={img} width={64} height={64} src={`/api/application/${applicationId}/image`} alt="" style={{ borderRadius: 2 }}/>}
+    <FlexRow>
+      {(exists || uploaded) && <ApplicationImage applicationId={applicationId} size={64}/>}
       <input type="file" ref={file} hidden onChange={handleUpload}/>
       <Button onClick={handleShowUpload}>Upload new image</Button>
-    </div>
+    </FlexRow>
   );
 };

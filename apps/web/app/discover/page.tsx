@@ -2,6 +2,7 @@
 import { db } from '@/lib/db';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import styles from './page.module.css';
+import { ApplicationImage } from '@/components/Application/ApplicationImage';
 
 export const revalidate = 300;
 
@@ -23,7 +24,7 @@ export default async function DiscoverPage() {
       <div className={styles.apps}>
         {applications.map((app) => (
           <a key={app.id} className={styles.app} href={app.publicUrl} target="_blank" rel="noreferrer noopener">
-            <img src={`/api/application/${app.id}/image`} width={64} height={64} alt="" className={styles.icon}/>
+            <ApplicationImage applicationId={app.id} size={64}/>
             <div className={styles.title}>{app.name}</div>
             <p>{app.description}</p>
           </a>
