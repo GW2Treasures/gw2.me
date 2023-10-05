@@ -49,13 +49,22 @@ export async function editApplication(id: string, _: FormState, form: FormData):
     return { error: 'Invalid public URL' };
   }
 
-  const callbackUrls = callbackUrlsRaw
-    .split(/\r|\n/g)
-    .map((url) => url.trim())
-    .filter((url) => url !== '');
-
+  let callbackUrls: string[];
   try {
-    callbackUrls.forEach((url) => new URL(url));
+    callbackUrls = callbackUrlsRaw
+      .split(/\r|\n/g)
+      .map((url) => url.trim())
+      .filter((url) => url !== '')
+      .map((url) => {
+        const u = new URL(url);
+
+        // ignore port for loopback ips (see https://datatracker.ietf.org/doc/html/rfc8252#section-7.3)
+        if(u.hostname === '127.0.0.1' || u.hostname === '[::1]') {
+          u.port = '';
+        }
+
+        return u.toString();
+    });
   } catch {
     return { error: 'Invalid callback URLs' };
   }

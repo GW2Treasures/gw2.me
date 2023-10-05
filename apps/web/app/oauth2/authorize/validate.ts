@@ -1,6 +1,5 @@
 import { db } from '@/lib/db';
 import { Scope } from '@gw2me/api';
-import { Application } from '@gw2me/database';
 
 export interface AuthorizeRequestParams {
   response_type: string;
@@ -10,7 +9,7 @@ export interface AuthorizeRequestParams {
   state?: string;
 }
 
-export async function validateRequest(params: AuthorizeRequestParams): Promise<{ error: string, application?: undefined } | { error: undefined, application: { id: string, name: string }, scopes: Scope[] }> {
+export async function validateRequest(params: AuthorizeRequestParams): Promise<{ error: string, application?: undefined } | { error: undefined, application: { id: string, name: string }, scopes: Scope[], redirect_uri: URL }> {
   const supportedResponseTypes = ['code'];
 
   if(!params.response_type || !supportedResponseTypes.includes(params.response_type)) {
@@ -18,6 +17,13 @@ export async function validateRequest(params: AuthorizeRequestParams): Promise<{
   }
 
   if(!params.redirect_uri) {
+    return { error: 'Invalid redirect_uri' };
+  }
+
+  let redirect_uri;
+  try {
+    redirect_uri = new URL(params.redirect_uri);
+  } catch {
     return { error: 'Invalid redirect_uri' };
   }
 
@@ -40,11 +46,17 @@ export async function validateRequest(params: AuthorizeRequestParams): Promise<{
     return { error: 'Invalid client_id' };
   }
 
-  if(!application.callbackUrls.includes(params.redirect_uri)) {
+  // ignore port for loopback ips (see https://datatracker.ietf.org/doc/html/rfc8252#section-7.3)
+  const redirect_uri_normalized = new URL(redirect_uri);
+  if(redirect_uri_normalized.hostname === '127.0.0.1' || redirect_uri_normalized.hostname === '[::1]') {
+    redirect_uri_normalized.port = '';
+  }
+
+  if(!application.callbackUrls.includes(redirect_uri_normalized.toString())) {
     return { error: 'Invalid redirect_uri' };
   }
 
-  return { error: undefined, application, scopes };
+  return { error: undefined, application, scopes, redirect_uri };
 }
 
 function validScopes(scopes: string[]): scopes is Scope[] {
