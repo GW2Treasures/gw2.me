@@ -11,7 +11,7 @@ export default function DevLayout({ children }: { children: ReactNode }) {
   return (
     <NavLayout content={children}>
       <LinkButton appearance="menu" href="/dev/docs" className={segment === 'docs' ? ActiveButtonClass : undefined}>Documentation</LinkButton>
-      <LinkButton appearance="menu" href="/dev/applications" className={segment === 'applications' ? ActiveButtonClass : undefined}>Applications</LinkButton>
+      <LinkButton appearance="menu" href="/dev/applications" className={segment === 'applications' ? ActiveButtonClass : undefined}>Your Applications</LinkButton>
     </NavLayout>
   );
 }

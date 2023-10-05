@@ -25,10 +25,6 @@ export async function validateRequest(params: AuthorizeRequestParams): Promise<{
     return { error: 'Invalid client_id' };
   }
 
-  if(!params.client_id) {
-    return { error: 'Invalid client_id' };
-  }
-
   const scopes = decodeURIComponent(params.scope).split(' ');
 
   if(!params.scope || !validScopes(scopes)) {

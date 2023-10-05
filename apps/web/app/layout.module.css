@@ -9,6 +9,7 @@
   position: sticky;
   align-items: center;
   background-color: var(--color-background);
+  z-index: 2;
 }
 
 .title {
