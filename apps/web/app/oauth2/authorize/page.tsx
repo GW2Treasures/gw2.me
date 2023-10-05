@@ -47,7 +47,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
     : [];
 
   // build cancel url
-  const cancelUrl = new URL(searchParams.redirect_uri);
+  const cancelUrl = new URL(validatedRequest.redirect_uri);
   cancelUrl.searchParams.set('error', 'access_denied');
   searchParams.state && cancelUrl.searchParams.set('state', searchParams.state);
 
@@ -59,7 +59,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
   // bind parameters to authorize action
   const authorizeAction = authorize.bind(null, {
     applicationId: application.id,
-    redirect_uri: searchParams.redirect_uri,
+    redirect_uri: validatedRequest.redirect_uri.toString(),
     scopes,
     state: searchParams.state
   });
@@ -103,7 +103,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
             <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
           </div>
 
-          <div className={styles.redirectNote}>Authorizing will redirect you to <b>{new URL(searchParams.redirect_uri).origin}</b></div>
+          <div className={styles.redirectNote}>Authorizing will redirect you to <b>{validatedRequest.redirect_uri.origin}</b></div>
         </div>
       </Form>
     </>
