@@ -7,10 +7,11 @@ import { FC, useCallback, useState } from 'react';
 
 export interface ResetClientSecretProps {
   applicationId: string;
+  hasClientSecret: boolean;
   reset: (applicationId: string) => Promise<string>
 }
 
-export const ResetClientSecret: FC<ResetClientSecretProps> = ({ applicationId, reset }) => {
+export const ResetClientSecret: FC<ResetClientSecretProps> = ({ applicationId, hasClientSecret, reset }) => {
   const [clientSecret, setClientSecret] = useState<string>();
 
   const handleReset = useCallback(async () => {
@@ -19,11 +20,11 @@ export const ResetClientSecret: FC<ResetClientSecretProps> = ({ applicationId, r
   }, [applicationId, reset]);
 
   return (
-    <div style={{ gap: 16, display: 'flex' }}>
-      <TextInput value={clientSecret ?? '***'} readOnly/>
+    <>
+      <TextInput value={clientSecret ?? (hasClientSecret ? '***' : '')} readOnly/>
       {!clientSecret
-        ? <Button onClick={handleReset}>Reset client_secret</Button>
-        : <CopyButton copy={clientSecret}>Copy</CopyButton>}
-    </div>
+        ? <Button onClick={handleReset}>{hasClientSecret ? 'Reset client_secret' : 'Generate Client Secret'}</Button>
+        : <CopyButton copy={clientSecret} icon="copy">Copy</CopyButton>}
+    </>
   );
 };

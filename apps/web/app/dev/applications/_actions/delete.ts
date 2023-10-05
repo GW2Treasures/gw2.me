@@ -1,20 +1,24 @@
+import { FormState } from '@/components/Form/Form';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { redirect } from 'next/navigation';
 
-export async function deleteApplication(data: FormData) {
+export async function deleteApplication(id: string, _: FormState, data: FormData): Promise<FormState> {
   'use server';
 
   const user = await getUser();
-  const id = data.get('id')?.toString();
 
-  if(!id || !user) {
-    throw new Error();
+  if(!user) {
+    return { error: 'Not logged in' };
   }
 
-  await db.application.deleteMany({
-    where: { ownerId: user.id, id }
-  });
+  try {
+    await db.application.deleteMany({
+      where: { ownerId: user.id, id }
+    });
+  } catch {
+    return { error: 'Unknown error' };
+  }
 
   redirect('/dev/applications');
 };
