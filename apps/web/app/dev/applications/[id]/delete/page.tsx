@@ -1,4 +1,3 @@
-
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { deleteApplication } from '../../_actions/delete';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
