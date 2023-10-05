@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       // find code
       const authorization = await db.authorization.findUnique({ where: { type_token: { token: code, type: AuthorizationType.Code }}, include: { application: true, accounts: { select: { id: true }}}});
 
+      // TODO: verify redirect_uri is the same
       if(!authorization || isExpired(authorization.expiresAt) || authorization.application.clientId !== client_id || !validClientSecret(client_secret, authorization.application.clientSecret)) {
         return NextResponse.json({ error: true }, { status: 400 });
       }
