@@ -9,7 +9,6 @@ function getToken(code: string) {
     code,
     client_id,
     client_secret,
-    redirect_uri: 'http://localhost:4001/callback'
   });
 }
 
