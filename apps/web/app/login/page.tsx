@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import { DevLogin } from './dev-login';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
+import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,15 +20,17 @@ export default async function LoginPage({ searchParams }: { searchParams: { logo
       <Headline id="login">Login</Headline>
 
       {searchParams.error !== undefined && (
-        <div data-type="warning">Unknown error</div>
+        <Notice type="error">Unknown error</Notice>
       )}
 
       {searchParams.logout !== undefined && (
-        <div>Logout successful</div>
+        <Notice>Logout successful</Notice>
       )}
 
-      <LinkButton external href="/auth/login/discord">Login with Discord</LinkButton>
-      {process.env.NODE_ENV !== 'production' && (<DevLogin/>)}
+      <FlexRow wrap>
+        <LinkButton external href="/auth/login/discord">Login with Discord</LinkButton>
+        {process.env.NODE_ENV !== 'production' && (<DevLogin/>)}
+      </FlexRow>
     </div>
   );
 }
