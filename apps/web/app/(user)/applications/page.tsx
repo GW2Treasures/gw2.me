@@ -7,9 +7,8 @@ import { cache } from 'react';
 import Link from 'next/link';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
-import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
 import { AuthorizationType } from '@gw2me/database';
-import { Icon } from '@gw2treasures/ui';
 
 const getUserData = cache(async () => {
   const session = await getUser();
@@ -46,24 +45,29 @@ export default async function ProfilePage() {
     <>
       <Headline id="applications">Authorized Apps</Headline>
 
-      <Table>
-        <thead>
-          <tr>
-            <th>Application</th>
-            <th>Last Active</th>
-          </tr>
-        </thead>
-        <tbody>
-          {user.authorizations.map((authorization) => (
-            <tr key={authorization.id}>
-              <td><img src={`/api/application/${authorization.applicationId}/image`} width={32} height={32} alt="" style={{ verticalAlign: -10, borderRadius: 2 }}/> {authorization.application.name}</td>
-              <td>{authorization.usedAt?.toISOString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <p>Visit the <Link href="/discover">Discover</Link> page to find new applications using gw2.me.</p>
 
-      <p>Are you a developer? <Link href="/dev/applications">Manage your own apps</Link>.</p>
+      {user.authorizations.length > 0 && (
+        <Table>
+          <thead>
+            <tr>
+              <th>Application</th>
+              <th>Last Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            {user.authorizations.map((authorization) => (
+              <tr key={authorization.id}>
+                <td><img src={`/api/application/${authorization.applicationId}/image`} width={32} height={32} alt="" style={{ verticalAlign: -10, borderRadius: 2 }}/> {authorization.application.name}</td>
+                <td>{authorization.usedAt?.toISOString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
+
+      <Separator/>
+      <p>Are you a developer? <Link href="/dev/applications">Manage your own applications</Link>.</p>
     </>
   );
 }

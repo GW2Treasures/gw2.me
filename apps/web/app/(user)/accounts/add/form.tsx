@@ -10,6 +10,7 @@ import { addAccount } from './actions';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 
 export interface AccountAddFormProps {
   returnTo?: string;
@@ -27,7 +28,7 @@ export const AccountAddForm: FC<AccountAddFormProps> = ({ returnTo }) => {
         </Notice>
       )}
       <Steps>
-        <div>Visit the <a href="https://account.arena.net/applications">Guild Wars 2 Account Page</a></div>
+        <div>Visit the <ExternalLink href="https://account.arena.net/applications">Guild Wars 2 Account Page</ExternalLink></div>
         <div>Generate a new API key</div>
         <form action={action}>
           Paste your key into this form

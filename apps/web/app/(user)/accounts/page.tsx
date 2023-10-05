@@ -39,6 +39,10 @@ const getAccounts = cache(async () => {
 export default async function ProfilePage() {
   const { accounts } = await getAccounts();
 
+  if(accounts.length === 0) {
+    redirect('/accounts/add');
+  }
+
   return (
     <>
       <Headline id="accounts" actions={<LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>}>Guild Wars 2 Accounts</Headline>

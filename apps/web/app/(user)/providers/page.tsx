@@ -35,6 +35,9 @@ export default async function ProfilePage() {
   return (
     <>
       <Headline id="providers">Login Providers</Headline>
+
+      <p>More providers coming soon.</p>
+
       <Table>
         <thead>
           <tr>
