@@ -1,5 +1,5 @@
 import { client_id, client_secret } from '@/lib/client';
-import { refreshToken, rest } from '@gw2me/api';
+import { refreshToken, rest } from '@gw2me/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { redirect } from 'next/navigation';

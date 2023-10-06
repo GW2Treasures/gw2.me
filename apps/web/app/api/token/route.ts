@@ -1,7 +1,7 @@
 import { expiresAt, isExpired } from '@/lib/date';
 import { db } from '@/lib/db';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
-import { TokenResponse } from '@gw2me/api';
+import { TokenResponse } from '@gw2me/client';
 import { ApplicationType, AuthorizationType, Prisma, PrismaClient } from '@gw2me/database';
 import { createHash, scryptSync, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';

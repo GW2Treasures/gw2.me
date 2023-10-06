@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { getUser } from '@/lib/getUser';
-import { Scope } from '@gw2me/api';
+import { Scope } from '@gw2me/client';
 import { redirect } from 'next/navigation';
 import layoutStyles from './layout.module.css';
 import styles from './page.module.css';

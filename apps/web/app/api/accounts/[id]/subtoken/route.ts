@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import { SubtokenResponse, Scope } from '@gw2me/api';
+import { SubtokenResponse, Scope } from '@gw2me/client';
 import { NextResponse } from 'next/server';
 import { Gw2Scopes, withAuthorization } from '../../../auth';
 import { Authorization } from '@gw2me/database';

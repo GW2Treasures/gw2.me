@@ -1,7 +1,7 @@
 {
-  "name": "@gw2me/api",
-  "version": "0.1.1",
-  "description": "gw2.me API",
+  "name": "@gw2me/client",
+  "version": "0.1.2",
+  "description": "gw2.me client library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

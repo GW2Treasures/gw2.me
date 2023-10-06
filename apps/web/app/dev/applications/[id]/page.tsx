@@ -6,7 +6,7 @@ import { cache } from 'react';
 import { deleteApplication } from '../_actions/delete';
 import { Textarea } from '@/components/Textarea/Textarea';
 import { editApplication } from '../_actions/edit';
-import { Scope, getAuthorizationUrl } from '@gw2me/api';
+import { Scope, getAuthorizationUrl } from '@gw2me/client';
 import { resetClientSecret } from '../_actions/resetClientSecret';
 import { ResetClientSecret } from './reset-client-secret';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
