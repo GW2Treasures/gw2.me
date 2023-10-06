@@ -34,6 +34,7 @@ async function verifyClientId({ client_id }: Partial<AuthorizeRequestParams>) {
   await getApplicationByClientId(client_id);
 }
 
+/** @see https://datatracker.ietf.org/doc/html/rfc6749#section-3.1.2 */
 async function verifyRedirectUri({ client_id, redirect_uri }: Partial<AuthorizeRequestParams>) {
   assert(redirect_uri, OAuth2ErrorCode.invalid_request, 'redirect_uri is missing');
 
@@ -49,6 +50,7 @@ async function verifyRedirectUri({ client_id, redirect_uri }: Partial<AuthorizeR
   assert(application.callbackUrls.includes(url.toString()), OAuth2ErrorCode.invalid_request, 'unregistered redirect_uri');
 }
 
+/** @see https://datatracker.ietf.org/doc/html/rfc6749#section-3.1.1 */
 function verifyResponseType({ response_type }: Partial<AuthorizeRequestParams>) {
   const supportedResponseTypes = ['code'];
 
@@ -56,6 +58,7 @@ function verifyResponseType({ response_type }: Partial<AuthorizeRequestParams>) 
   assert(supportedResponseTypes.includes(response_type), OAuth2ErrorCode.unsupported_response_type, 'response_type is unsupported');
 }
 
+/** @see https://datatracker.ietf.org/doc/html/rfc6749#section-3.3 */
 function verifyScopes({ scope }: Partial<AuthorizeRequestParams>) {
   assert(scope, OAuth2ErrorCode.invalid_request, 'missing scopes');
 
@@ -67,6 +70,7 @@ function verifyScopes({ scope }: Partial<AuthorizeRequestParams>) {
   }
 }
 
+/** @see https://datatracker.ietf.org/doc/html/rfc7636#section-4.3 */
 async function verifyPKCE({ client_id, code_challenge, code_challenge_method }: Partial<AuthorizeRequestParams>) {
   const supportedAlgorithms = ['S256'];
 
