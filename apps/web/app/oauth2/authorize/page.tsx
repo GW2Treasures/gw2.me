@@ -7,7 +7,8 @@ import styles from './page.module.css';
 import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
 import { Icon, IconProp } from '@gw2treasures/ui';
 import { FC, ReactNode } from 'react';
-import { AuthorizeRequestParams, hasGW2Scopes, validateRequest } from './validate';
+import { AuthorizeRequestParams, getApplicationByClientId, validateRequest } from './validate';
+import { hasGW2Scopes } from '@/lib/scope';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { db } from '@/lib/db';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
@@ -16,17 +17,19 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { authorize } from './actions';
 import { Form } from '@/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
+import { createRedirectUrl } from '@/lib/redirectUrl';
+import { OAuth2ErrorCode } from '@/lib/oauth/error';
 
 
-export default async function AuthorizePage({ searchParams }: { searchParams: AuthorizeRequestParams & Record<string, string> }) {
+export default async function AuthorizePage({ searchParams }: { searchParams: Partial<AuthorizeRequestParams> & Record<string, string> }) {
   // build return url for /account/add?return=X
   const returnUrl = `/oauth2/authorize?${new URLSearchParams(searchParams).toString()}`;
 
   // validate request
-  const validatedRequest = await validateRequest(searchParams);
+  const { error, request } = await validateRequest(searchParams);
 
-  if(validatedRequest.error !== undefined) {
-    return <Notice type="error">{validatedRequest.error}</Notice>;
+  if(error !== undefined) {
+    return <Notice type="error">{error}</Notice>;
   }
 
   // get current user
@@ -38,8 +41,14 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
     redirect('/login/return?to=' + encodeURIComponent(encodedReturnUrl));
   }
 
+  // declare some variables for easier access
+  const application = await getApplicationByClientId(request.client_id);
+  const scopes = decodeURIComponent(request.scope).split(' ') as Scope[];
+  const redirect_uri = new URL(request.redirect_uri);
+  const scopeMap = scopes.reduce<Partial<Record<Scope, true>>>((map, scope) => ({ ...map, [scope]: true }), {});
+
   // get accounts
-  const accounts = hasGW2Scopes(validatedRequest.scopes)
+  const accounts = hasGW2Scopes(scopes)
     ? await db.account.findMany({
         where: { userId: user.id },
         orderBy: { createdAt: 'asc' }
@@ -47,22 +56,19 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
     : [];
 
   // build cancel url
-  const cancelUrl = new URL(validatedRequest.redirect_uri);
-  cancelUrl.searchParams.set('error', 'access_denied');
-  searchParams.state && cancelUrl.searchParams.set('state', searchParams.state);
-
-  // declare some variables for easier access
-  const application = validatedRequest.application;
-  const scopes = validatedRequest.scopes;
-  const scopeMap = scopes.reduce<Partial<Record<Scope, true>>>((map, scope) => ({ ...map, [scope]: true }), {});
+  const cancelUrl = createRedirectUrl(redirect_uri, {
+    state: request.state,
+    error: OAuth2ErrorCode.access_denied,
+    error_description: 'user canceled authorization',
+  });
 
   // bind parameters to authorize action
   const authorizeAction = authorize.bind(null, {
     applicationId: application.id,
-    redirect_uri: validatedRequest.redirect_uri.toString(),
+    redirect_uri: redirect_uri.toString(),
     scopes,
-    state: searchParams.state,
-    codeChallenge: validatedRequest.codeChallenge
+    state: request.state,
+    codeChallenge: `${request.code_challenge_method}:${request.code_challenge}`
   });
 
   return (
@@ -104,7 +110,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
             <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
           </div>
 
-          <div className={styles.redirectNote}>Authorizing will redirect you to <b>{validatedRequest.redirect_uri.origin}</b></div>
+          <div className={styles.redirectNote}>Authorizing will redirect you to <b>{redirect_uri.origin}</b></div>
         </div>
       </Form>
     </>
