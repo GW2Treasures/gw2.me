@@ -19,13 +19,15 @@ export interface AuthorizationUrlParams {
   client_id: string;
   scopes: Scope[];
   state?: string;
+  code_challenge?: string;
+  code_challenge_method?: 'S256'
 }
 
 function getUrl() {
   return process.env.GW2ME_URL || 'https://gw2.me/';
 }
 
-export function getAuthorizationUrl({ redirect_uri, client_id, scopes, state }: AuthorizationUrlParams) {
+export function getAuthorizationUrl({ redirect_uri, client_id, scopes, state, code_challenge, code_challenge_method }: AuthorizationUrlParams) {
   /* eslint-disable object-shorthand */
   const params = new URLSearchParams({
     'response_type': 'code',
@@ -39,6 +41,11 @@ export function getAuthorizationUrl({ redirect_uri, client_id, scopes, state }: 
     params.append('state', state);
   }
 
+  if(code_challenge && code_challenge_method) {
+    params.append('code_challenge', code_challenge);
+    params.append('code_challenge_method', code_challenge_method);
+  }
+
   return `${getUrl()}oauth2/authorize?${params.toString()}`;
 }
 
@@ -47,6 +54,7 @@ export interface AuthTokenParams {
   redirect_uri: string;
   client_id: string;
   client_secret?: string;
+  code_verifier?: string;
 }
 
 export interface RefreshTokenParams {
@@ -63,7 +71,7 @@ export interface TokenResponse {
   scope: string,
 }
 
-export async function getAccessToken({ code, client_id, client_secret, redirect_uri }: AuthTokenParams): Promise<TokenResponse> {
+export async function getAccessToken({ code, client_id, client_secret, redirect_uri, code_verifier }: AuthTokenParams): Promise<TokenResponse> {
   const data = new URLSearchParams({
     grant_type: 'authorization_code',
     code, client_id, redirect_uri,
@@ -71,6 +79,10 @@ export async function getAccessToken({ code, client_id, client_secret, redirect_
 
   if(client_secret) {
     data.set('client_secret', client_secret);
+  }
+
+  if(code_verifier) {
+    data.set('code_verifier', code_verifier);
   }
 
   // get discord token

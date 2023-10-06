@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
 import { TokenResponse } from '@gw2me/api';
 import { ApplicationType, AuthorizationType, Prisma, PrismaClient } from '@gw2me/database';
-import { scryptSync, timingSafeEqual } from 'crypto';
+import { createHash, scryptSync, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
     case 'authorization_code': {
       const code = params.get('code')?.toString();
       const redirect_uri = params.get('redirect_uri')?.toString();
+      const code_verifier = params.get('code_verifier')?.toString();
 
       if(!code || !redirect_uri) {
         return NextResponse.json({ error: true }, { status: 400 });
@@ -38,8 +39,14 @@ export async function POST(request: NextRequest) {
       // find code
       const authorization = await db.authorization.findUnique({ where: { type_token: { token: code, type: AuthorizationType.Code }}, include: { application: true, accounts: { select: { id: true }}}});
 
-      // TODO: verify redirect_uri is the same
-      if(!authorization || isExpired(authorization.expiresAt) || authorization.application.clientId !== client_id || (authorization.application.type === ApplicationType.Confidential && (!client_secret || !validClientSecret(client_secret, authorization.application.clientSecret)))) {
+      if(
+        !authorization ||
+        isExpired(authorization.expiresAt) ||
+        authorization.application.clientId !== client_id ||
+        authorization.redirectUri !== redirect_uri ||
+        !verifyCodeChallenge(authorization.codeChallenge, code_verifier) ||
+        (authorization.application.type === ApplicationType.Confidential && (!client_secret || !validClientSecret(client_secret, authorization.application.clientSecret)))
+      ) {
         return NextResponse.json({ error: true }, { status: 400 });
       }
 
@@ -128,4 +135,28 @@ function validClientSecret(clientSecret: string, saltedHash: string | null) {
 
   const derived = scryptSync(secretBuffer, saltBuffer, 32);
   return timingSafeEqual(hashBuffer, derived);
+}
+
+function verifyCodeChallenge(codeChallenge: string | null, codeVerifier: string | undefined) {
+  // no challenge needs to be completed
+  if(!codeChallenge) {
+    return true;
+  }
+
+  // handle missing code verifier
+  if(!codeVerifier) {
+    return false;
+  }
+
+  // parse stored challenge
+  const [method, challenge] = codeChallenge.split(':', 2);
+
+  // calculate hash and compare
+  switch(method) {
+    case 'S256':
+      return challenge === createHash('sha256').update(codeVerifier).digest('base64url');;
+  }
+
+  // method not supported -> fail
+  return false;
 }

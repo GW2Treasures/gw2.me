@@ -153,6 +153,16 @@ export default function Docs() {
             <td><Code inline borderless>String?</Code></td>
             <td>Recommended state to improve security.</td>
           </tr>
+          <tr>
+            <td><Code inline>code_challenge</Code> (optional)</td>
+            <td><Code inline borderless>String?</Code></td>
+            <td>PKCE challenge. Required for <Code inline>Public</Code> applications.</td>
+          </tr>
+          <tr>
+            <td><Code inline>code_challenge_method</Code> (optional)</td>
+            <td><Code inline borderless>&quot;S256&quot;?</Code></td>
+            <td>PKCE challenge method. Only SHA-256 is supported.</td>
+          </tr>
         </tbody>
       </Table>
 
@@ -187,14 +197,19 @@ export default function Docs() {
             <td>The <Code inline>client_id</Code> of your application.</td>
           </tr>
           <tr>
-            <td><Code inline>client_secret</Code></td>
-            <td><Code inline borderless>String</Code></td>
+            <td><Code inline>client_secret</Code> (optional)</td>
+            <td><Code inline borderless>String?</Code></td>
             <td>The <Code inline>client_secret</Code> of your application. Only required if your app is <Code inline>Confidential</Code>.</td>
           </tr>
           <tr>
             <td><Code inline>redirect_uri</Code></td>
             <td><Code inline borderless>String</Code></td>
             <td>This must be the same <Code inline>redirect_uri</Code> as used in the authorization request.</td>
+          </tr>
+          <tr>
+            <td><Code inline>challenge_verifier</Code> (optional)</td>
+            <td><Code inline borderless>String?</Code></td>
+            <td>PKCE challenge verifier used to calculate <Code inline>code_challenge</Code>.</td>
           </tr>
         </tbody>
       </Table>

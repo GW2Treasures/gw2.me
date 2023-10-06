@@ -61,7 +61,8 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
     applicationId: application.id,
     redirect_uri: validatedRequest.redirect_uri.toString(),
     scopes,
-    state: searchParams.state
+    state: searchParams.state,
+    codeChallenge: validatedRequest.codeChallenge
   });
 
   return (

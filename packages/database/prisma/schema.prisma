@@ -91,6 +91,9 @@ model Authorization {
 
   scope String[]
 
+  redirectUri   String?
+  codeChallenge String?
+
   expiresAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

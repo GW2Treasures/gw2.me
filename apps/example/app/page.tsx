@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { Scope, getAuthorizationUrl } from '@gw2me/api';
 import { randomBytes, scryptSync } from 'crypto';
-import { client_id } from '@/lib/client';
+import { client_id, code_challenge } from '@/lib/client';
 
 export default function HomePage() {
   return (
@@ -49,6 +49,8 @@ async function login(formData: FormData) {
     redirect_uri: 'http://localhost:4001/callback',
     scopes,
     state: 'example',
+    code_challenge,
+    code_challenge_method: 'S256'
   });
 
   redirect(authUrl);

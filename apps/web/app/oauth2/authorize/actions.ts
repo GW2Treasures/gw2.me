@@ -11,7 +11,7 @@ import { hasGW2Scopes } from './validate';
 import { Scope } from '@gw2me/api';
 import { FormState } from '@/components/Form/Form';
 
-export async function authorize({ applicationId, redirect_uri, scopes, state }: { applicationId: string, redirect_uri: string, scopes: Scope[], state?: string }, previousState: FormState, formData: FormData): Promise<FormState> {
+export async function authorize({ applicationId, redirect_uri, scopes, state, codeChallenge }: { applicationId: string, redirect_uri: string, scopes: Scope[], state?: string, codeChallenge?: string }, previousState: FormState, formData: FormData): Promise<FormState> {
   // verify request
   if(!applicationId || !redirect_uri || !scopes) {
     return { error: 'Invalid request' };
@@ -43,12 +43,16 @@ export async function authorize({ applicationId, redirect_uri, scopes, state }: 
       where: { type_applicationId_userId: { type, applicationId, userId }},
       create: {
         type, applicationId, userId, scope: scopes,
+        redirectUri: redirect_uri,
+        codeChallenge,
         accounts: { connect: accountIds },
         token: generateCode(),
         expiresAt: expiresAt(60),
       },
       update: {
         accounts: { set: accountIds },
+        redirectUri: redirect_uri,
+        codeChallenge,
         scope: scopes,
         expiresAt: expiresAt(60),
       }
