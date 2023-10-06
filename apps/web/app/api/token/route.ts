@@ -2,7 +2,7 @@ import { expiresAt, isExpired } from '@/lib/date';
 import { db } from '@/lib/db';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
 import { TokenResponse } from '@gw2me/api';
-import { AuthorizationType } from '@gw2me/database';
+import { ApplicationType, AuthorizationType, Prisma, PrismaClient } from '@gw2me/database';
 import { scryptSync, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   const client_secret = params.get('client_secret')?.toString();
   const grant_type = params.get('grant_type')?.toString();
 
-  if(!client_id || !client_secret || !isValidGrantType(grant_type)) {
+  if(!client_id || !isValidGrantType(grant_type)) {
     return NextResponse.json({ error: true }, { status: 400 });
   }
 
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       const authorization = await db.authorization.findUnique({ where: { type_token: { token: code, type: AuthorizationType.Code }}, include: { application: true, accounts: { select: { id: true }}}});
 
       // TODO: verify redirect_uri is the same
-      if(!authorization || isExpired(authorization.expiresAt) || authorization.application.clientId !== client_id || !validClientSecret(client_secret, authorization.application.clientSecret)) {
+      if(!authorization || isExpired(authorization.expiresAt) || authorization.application.clientId !== client_id || (authorization.application.type === ApplicationType.Confidential && (!client_secret || !validClientSecret(client_secret, authorization.application.clientSecret)))) {
         return NextResponse.json({ error: true }, { status: 400 });
       }
 
@@ -47,11 +47,13 @@ export async function POST(request: NextRequest) {
 
       const [refreshAuthorization, accessAuthorization, _] = await db.$transaction([
         // create refresh token
-        db.authorization.upsert({
-          where: { type_applicationId_userId: { type: AuthorizationType.RefreshToken, applicationId, userId }},
-          create: { type: AuthorizationType.RefreshToken, applicationId, userId, scope, token: generateRefreshToken(), accounts: { connect: accounts }},
-          update: { scope, accounts: { set: accounts }}
-        }),
+        authorization.application.type === ApplicationType.Confidential
+          ? db.authorization.upsert({
+              where: { type_applicationId_userId: { type: AuthorizationType.RefreshToken, applicationId, userId }},
+              create: { type: AuthorizationType.RefreshToken, applicationId, userId, scope, token: generateRefreshToken(), accounts: { connect: accounts }},
+              update: { scope, accounts: { set: accounts }}
+            })
+          : Promise.resolve(null) as Prisma.PrismaPromise<null>,
 
         // create access token
         db.authorization.upsert({
@@ -68,7 +70,7 @@ export async function POST(request: NextRequest) {
         access_token: accessAuthorization.token,
         token_type: 'Bearer',
         expires_in: EXPIRES_IN,
-        refresh_token: refreshAuthorization.token,
+        refresh_token: refreshAuthorization?.token,
         scope: scope.join(' ')
       };
 
@@ -78,7 +80,7 @@ export async function POST(request: NextRequest) {
     case 'refresh_token': {
       const refresh_token = params.get('refresh_token')?.toString();
 
-      if(!refresh_token) {
+      if(!refresh_token || !client_secret) {
         return NextResponse.json({ error: true }, { status: 400 });
       }
 

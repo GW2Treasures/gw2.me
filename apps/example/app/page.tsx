@@ -40,7 +40,7 @@ async function login(formData: FormData) {
 
   await db.application.upsert({
     where: { id: '1e3d49dd-bbda-4780-a51a-e24db5d87826' },
-    create: { id: '1e3d49dd-bbda-4780-a51a-e24db5d87826', clientId: client_id, clientSecret, name: 'Example App', ownerId: user.id, description: 'This is the gw2.me example app', callbackUrls: ['http://localhost:4001/callback'] },
+    create: { id: '1e3d49dd-bbda-4780-a51a-e24db5d87826', clientId: client_id, clientSecret, name: 'Example App', ownerId: user.id, description: 'This is the gw2.me example app', callbackUrls: ['http://localhost:4001/callback'], type: 'Confidential' },
     update: { clientId: client_id, clientSecret, name: 'Example App', ownerId: user.id, description: 'This is the gw2.me example app', callbackUrls: ['http://localhost:4001/callback'] }
   });
 

@@ -150,8 +150,8 @@ export default function Docs() {
           </tr>
           <tr>
             <td><Code inline>state</Code> (optional)</td>
-            <td><Code inline borderless>String</Code></td>
-            <td>Recommend state to improve security.</td>
+            <td><Code inline borderless>String?</Code></td>
+            <td>Recommended state to improve security.</td>
           </tr>
         </tbody>
       </Table>
@@ -189,7 +189,7 @@ export default function Docs() {
           <tr>
             <td><Code inline>client_secret</Code></td>
             <td><Code inline borderless>String</Code></td>
-            <td>The <Code inline>client_secret</Code> of your application.</td>
+            <td>The <Code inline>client_secret</Code> of your application. Only required if your app is <Code inline>Confidential</Code>.</td>
           </tr>
           <tr>
             <td><Code inline>redirect_uri</Code></td>
@@ -228,7 +228,7 @@ export default function Docs() {
           <tr>
             <td><Code inline>refresh_token</Code></td>
             <td><Code inline borderless>String</Code></td>
-            <td>The generated <Code inline>refresh_token</Code>. The <Code inline>refresh_token</Code> can be used to <Link href="#refresh-token">generate a fresh <Code inline>access_token</Code></Link>.</td>
+            <td>The generated <Code inline>refresh_token</Code>. The <Code inline>refresh_token</Code> can be used to <Link href="#refresh-token">generate a fresh <Code inline>access_token</Code></Link>. Only included if the application is <Code inline>Confidential</Code></td>
           </tr>
           <tr>
             <td><Code inline>scope</Code></td>
@@ -240,7 +240,7 @@ export default function Docs() {
 
       <Headline id="refresh-token">Refresh token</Headline>
 
-      <p>When the <Code inline>access_token</Code> expires it can be refreshed by making a POST request to <Code inline>https://gw2.me/api/token</Code>. The body needs to have the <Code inline>Content-Type: application/x-www-form-urlencoded</Code>.</p>
+      <p>When the <Code inline>access_token</Code> expires <Code inline>Confidential</Code> apps can refreshed it by making a POST request to <Code inline>https://gw2.me/api/token</Code>. The body needs to have the <Code inline>Content-Type: application/x-www-form-urlencoded</Code>.</p>
 
       <Table>
         <thead>

@@ -22,6 +22,8 @@ import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
 import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
 import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
 import { Icon } from '@gw2treasures/ui';
+import { Select } from '@gw2treasures/ui/components/Form/Select';
+import { ApplicationTypeOptions } from '../_actions/helper';
 
 const getApplication = cache(async (id: string) => {
   const user = await getUser();
@@ -72,6 +74,10 @@ export default async function EditApplicationPage({ params }: { params: { id: st
 
           <b style={{ marginTop: 16 }}>OAuth2 Client Information</b>
 
+          <Label label="Type">
+            <TextInput readOnly value={application.type}/>
+          </Label>
+
           <div>
             <FlexRow wrap>
               <Label label="Client ID">
@@ -79,9 +85,11 @@ export default async function EditApplicationPage({ params }: { params: { id: st
                 <CopyButton copy={application.clientId} icon="copy">Copy</CopyButton>
               </Label>
 
-              <Label label="Client Secret">
-                <ResetClientSecret applicationId={application.id} reset={resetClientSecret} hasClientSecret={application.clientSecret !== null}/>
-              </Label>
+              {application.type === 'Confidential' && (
+                <Label label="Client Secret">
+                  <ResetClientSecret applicationId={application.id} reset={resetClientSecret} hasClientSecret={application.clientSecret !== null}/>
+                </Label>
+              )}
             </FlexRow>
           </div>
 
