@@ -56,24 +56,31 @@ model UserProvider {
 model Application {
   id           String @default(uuid()) @id
 
+  type         ApplicationType
+
   name         String
-  description  String  @default("")
-  public       Boolean @default(false)
-  publicUrl    String  @default("")
+  description  String   @default("")
+  public       Boolean  @default(false)
+  publicUrl    String   @default("")
   image        Bytes?
 
-  clientId     String  @unique
-  clientSecret String? @unique
+  clientId     String   @unique
+  clientSecret String?  @unique
 
   callbackUrls String[] @default([])
 
-  ownerId  String
-  owner    User      @relation("applications", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId      String
+  owner        User     @relation("applications", fields: [ownerId], references: [id], onDelete: Cascade)
   
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   authorizations Authorization[] @relation("appAuthorization")
+}
+
+enum ApplicationType {
+  Confidential
+  Public
 }
 
 model Authorization {
