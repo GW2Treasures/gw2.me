@@ -43,6 +43,7 @@ export async function authorize({ applicationId, redirect_uri, scopes, state }: 
       where: { type_applicationId_userId: { type, applicationId, userId }},
       create: {
         type, applicationId, userId, scope: scopes,
+        redirectUri: redirect_uri,
         accounts: { connect: accountIds },
         token: generateCode(),
         expiresAt: expiresAt(60),
