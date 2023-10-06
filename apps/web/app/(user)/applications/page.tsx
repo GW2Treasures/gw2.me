@@ -1,83 +1,93 @@
 /* eslint-disable @next/next/no-img-element */
 import { getUser } from '@/lib/getUser';
 import { db } from '@/lib/db';
-import { Metadata } from 'next';
-import { notFound, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import Link from 'next/link';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
-import { AuthorizationType } from '@gw2me/database';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { Prisma } from '@gw2me/database';
+import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { Form } from '@/components/Form/Form';
+import { revokeAccess } from './actions';
 
 const getUserData = cache(async () => {
-  const session = await getUser();
+  const user = await getUser();
 
-  if(!session) {
+  if(!user) {
     redirect('/login');
   }
 
-  const user = await db.user.findUnique({
-    where: { id: session.id },
-    include: {
+  const authorizationFilter: Prisma.AuthorizationWhereInput = {
+    userId: user.id,
+    OR: [
+      { expiresAt: { gte: new Date() }},
+      { expiresAt: null }
+    ],
+  };
+
+  const applications = await db.application.findMany({
+    where: { authorizations: { some: authorizationFilter }},
+    select: {
+      id: true,
+      name: true,
+
+      // include the last used authorization
       authorizations: {
-        where: { type: AuthorizationType.RefreshToken },
-        include: { application: { select: { name: true }}},
-        orderBy: { createdAt: 'desc' },
-      },
-    },
+        take: 1,
+        where: { ...authorizationFilter, usedAt: { not: null }},
+        orderBy: { usedAt: 'desc' },
+        select: { usedAt: true }
+      }
+    }
   });
 
-  if(!user) {
-    notFound();
-  }
-
   return {
-    sessionId: session.sessionId,
-    user,
+    applications
   };
 });
 
 export default async function ProfilePage() {
-  const { sessionId, user } = await getUserData();
+  const { applications } = await getUserData();
 
   return (
     <>
-      <Headline id="applications">Authorized Apps</Headline>
+      <Headline id="applications">Authorized Applications</Headline>
 
       <p>Visit the <Link href="/discover">Discover</Link> page to find new applications using gw2.me.</p>
 
-      {user.authorizations.length > 0 && (
-        <Table>
-          <thead>
-            <tr>
-              <th>Application</th>
-              <th>Last Active</th>
-            </tr>
-          </thead>
-          <tbody>
-            {user.authorizations.map((authorization) => (
-              <tr key={authorization.id}>
-                <td><FlexRow><ApplicationImage applicationId={authorization.applicationId}/> {authorization.application.name}</FlexRow></td>
-                <td>{authorization.usedAt?.toISOString()}</td>
+      <Form action={revokeAccess}>
+        {applications.length > 0 && (
+          <Table>
+            <thead>
+              <tr>
+                <Table.HeaderCell>Application</Table.HeaderCell>
+                <Table.HeaderCell>Last Used</Table.HeaderCell>
+                <Table.HeaderCell small>Actions</Table.HeaderCell>
               </tr>
-            ))}
-          </tbody>
-        </Table>
-      )}
+            </thead>
+            <tbody>
+              {applications.map((application) => (
+                <tr key={application.id}>
+                  <td><FlexRow><ApplicationImage applicationId={application.id}/> {application.name}</FlexRow></td>
+                  <td>{application.authorizations[0]?.usedAt?.toISOString() ?? 'never'}</td>
+                  <td><Button type="submit" name="applicationId" value={application.id} intent="delete" icon="delete">Revoke Access</Button></td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
 
-      <Separator/>
-      <p>Are you a developer? <Link href="/dev/applications">Manage your own applications</Link>.</p>
+        <Separator/>
+        <p>Are you a developer? <Link href="/dev/applications">Manage your own applications</Link>.</p>
+      </Form>
     </>
   );
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { user } = await getUserData();
-
-  return {
-    title: user.name,
-  };
+export const metadata = {
+  title: 'Applications'
 };
