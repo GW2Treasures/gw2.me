@@ -5,6 +5,7 @@ import { Scope } from '@gw2me/client';
 import { ApplicationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
+import { createRedirectUrl } from '@/lib/redirectUrl';
 
 export interface AuthorizeRequestParams {
   response_type: string;
@@ -105,17 +106,22 @@ export async function validateRequest(request: Partial<AuthorizeRequestParams>):
 
     return { error: undefined, request: request as AuthorizeRequestParams };
   } catch(error) {
-    const redirect_uri = new URL(request.redirect_uri!);
-    request.state && redirect_uri.searchParams.set('state', request.state);
+    let redirect_uri: URL;
 
     if(error instanceof OAuth2Error) {
-      redirect_uri.searchParams.set('error', error.code);
-      error.description && redirect_uri.searchParams.set('error_description', error.description);
+      redirect_uri = createRedirectUrl(request.redirect_uri!, {
+        state: request.state,
+        error: error.code,
+        error_description: error.description
+      });
     } else {
       console.log(error);
 
-      redirect_uri.searchParams.set('error', OAuth2ErrorCode.server_error);
-      redirect_uri.searchParams.set('error_description', 'internal server error');
+      redirect_uri = createRedirectUrl(request.redirect_uri!, {
+        state: request.state,
+        error: OAuth2ErrorCode.server_error,
+        error_description: 'internal server error'
+      });
     }
 
     redirect(redirect_uri.toString());

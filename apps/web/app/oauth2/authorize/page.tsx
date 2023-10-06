@@ -16,6 +16,8 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { authorize } from './actions';
 import { Form } from '@/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
+import { createRedirectUrl } from '@/lib/redirectUrl';
+import { OAuth2ErrorCode } from '@/lib/oauth/error';
 
 
 export default async function AuthorizePage({ searchParams }: { searchParams: Partial<AuthorizeRequestParams> & Record<string, string> }) {
@@ -53,9 +55,11 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
     : [];
 
   // build cancel url
-  const cancelUrl = new URL(redirect_uri);
-  cancelUrl.searchParams.set('error', 'access_denied');
-  request.state && cancelUrl.searchParams.set('state', request.state);
+  const cancelUrl = createRedirectUrl(redirect_uri, {
+    state: request.state,
+    error: OAuth2ErrorCode.access_denied,
+    error_description: 'user canceled authorization',
+  });
 
   // bind parameters to authorize action
   const authorizeAction = authorize.bind(null, {

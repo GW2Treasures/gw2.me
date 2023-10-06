@@ -10,6 +10,7 @@ import { redirect } from 'next/navigation';
 import { hasGW2Scopes } from './validate';
 import { Scope } from '@gw2me/client';
 import { FormState } from '@/components/Form/Form';
+import { createRedirectUrl } from '@/lib/redirectUrl';
 
 export async function authorize({ applicationId, redirect_uri, scopes, state, codeChallenge }: { applicationId: string, redirect_uri: string, scopes: Scope[], state?: string, codeChallenge?: string }, previousState: FormState, formData: FormData): Promise<FormState> {
   // verify request
@@ -63,9 +64,10 @@ export async function authorize({ applicationId, redirect_uri, scopes, state, co
   }
 
   // build redirect url with token and state
-  const url = new URL(redirect_uri);
-  url.searchParams.set('code', authorization.token);
-  state && url.searchParams.set('state', state);
+  const url = createRedirectUrl(redirect_uri, {
+    state,
+    code: authorization.token,
+  });
 
   // redirect back to app
   redirect(url.toString());
