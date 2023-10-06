@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import { Scope } from '@gw2me/api';
+import { Scope } from '@gw2me/client';
 import { ApplicationType } from '@gw2me/database';
 
 export interface AuthorizeRequestParams {

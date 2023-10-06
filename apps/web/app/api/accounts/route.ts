@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import { AccountsResponse } from '@gw2me/api';
+import { AccountsResponse } from '@gw2me/client';
 import { Authorization } from '@gw2me/database';
 import { NextResponse } from 'next/server';
 import { Gw2Scopes, withAuthorization } from '../auth';

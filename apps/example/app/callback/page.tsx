@@ -1,5 +1,5 @@
 import { client_id, client_secret, code_verifier } from '@/lib/client';
-import { getAccessToken } from '@gw2me/api';
+import { getAccessToken } from '@gw2me/client';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 export const dynamic = 'force-dynamic';

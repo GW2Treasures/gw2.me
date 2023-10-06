@@ -8,7 +8,7 @@ import { generateCode } from '@/lib/token';
 import { Authorization, AuthorizationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 import { hasGW2Scopes } from './validate';
-import { Scope } from '@gw2me/api';
+import { Scope } from '@gw2me/client';
 import { FormState } from '@/components/Form/Form';
 
 export async function authorize({ applicationId, redirect_uri, scopes, state, codeChallenge }: { applicationId: string, redirect_uri: string, scopes: Scope[], state?: string, codeChallenge?: string }, previousState: FormState, formData: FormData): Promise<FormState> {

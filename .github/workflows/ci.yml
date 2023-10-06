@@ -194,7 +194,7 @@ jobs:
       id-token: write
     strategy:
       matrix:
-        target: [ api ]
+        target: [ client ]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v3

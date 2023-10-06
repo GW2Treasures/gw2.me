@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import { Scope } from '@gw2me/api';
+import { Scope } from '@gw2me/client';
 import { Authorization, AuthorizationType } from '@gw2me/database';
 import { NextRequest, NextResponse } from 'next/server';
 

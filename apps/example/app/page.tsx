@@ -2,7 +2,7 @@ import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
-import { Scope, getAuthorizationUrl } from '@gw2me/api';
+import { Scope, getAuthorizationUrl } from '@gw2me/client';
 import { randomBytes, scryptSync } from 'crypto';
 import { client_id, code_challenge } from '@/lib/client';
 

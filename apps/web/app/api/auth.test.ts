@@ -1,4 +1,4 @@
-import { Scope } from '@gw2me/api';
+import { Scope } from '@gw2me/client';
 import { verifyScopes } from './auth';
 
 describe('API authorization', () => {
