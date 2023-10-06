@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
-import { OAuth2Error, OAuth2ErrorCode, assert, fail, tryOrFail } from '@/lib/oauth2Error';
+import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
+import { assert, fail, tryOrFail } from '@/lib/oauth/assert';
 import { Scope } from '@gw2me/client';
 import { ApplicationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';

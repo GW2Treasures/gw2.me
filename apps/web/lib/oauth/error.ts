@@ -1,5 +1,3 @@
-import { Falsy } from './is';
-
 export enum OAuth2ErrorCode {
   access_denied = 'access_denied',
   invalid_client = 'invalid_client',
@@ -20,23 +18,5 @@ export class OAuth2Error extends Error {
     this.description = description;
 
     Object.setPrototypeOf(this, OAuth2Error.prototype);
-  }
-}
-
-export function assert(condition: unknown, code: OAuth2ErrorCode = OAuth2ErrorCode.server_error, description?: string): asserts condition {
-  if(!condition) {
-    throw new OAuth2Error(code, { description });
-  }
-}
-
-export function fail(condition: unknown, code: OAuth2ErrorCode, description?: string): asserts condition is Falsy {
-  assert(!condition, code, description);
-}
-
-export function tryOrFail<T>(callback: () => T, code: OAuth2ErrorCode, description?: string): T {
-  try {
-    return callback();
-  } catch {
-    throw new OAuth2Error(code, { description });
   }
 }
