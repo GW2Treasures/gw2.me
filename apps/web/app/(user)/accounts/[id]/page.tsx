@@ -27,20 +27,25 @@ async function getAccount(id: string) {
   const account = await db.account.findUnique({
     where: { id, userId: user.id },
     include: {
-      apiTokens: true,
-      authorizations: { where: { type: 'AccessToken' }, include: { application: { select: { id: true, name: true }}}}
+      apiTokens: true
     }
   });
+
 
   if(!account) {
     notFound();
   }
 
-  return { account };
+  const applications = await db.application.findMany({
+    select: { id: true, name: true },
+    where: { authorizations: { some: { userId: user.id, accounts: { some: { id }}}}}
+  });
+
+  return { account, applications };
 }
 
 export default async function AccountPage({ params: { id }}: { params: { id: string }}) {
-  const { account } = await getAccount(id);
+  const { account, applications } = await getAccount(id);
 
   return (
     <>
@@ -95,7 +100,7 @@ export default async function AccountPage({ params: { id }}: { params: { id: str
           </tr>
         </thead>
         <tbody>
-          {account.authorizations.map(({ application, scope }) => (
+          {applications.map((application) => (
             <tr key={application.id}>
               <td><FlexRow><ApplicationImage applicationId={application.id}/> {application.name}</FlexRow></td>
             </tr>
