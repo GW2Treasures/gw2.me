@@ -1,5 +1,5 @@
 .steps {
-  margin: 0;
+  margin: 0 0 1.5em;
   padding: 0;
   list-style: none;
   counter-reset: steps;

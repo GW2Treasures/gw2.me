@@ -7,7 +7,7 @@ body {
 }
 
 a {
-  color: #b7000d;
+  color: var(--color-brand);
   text-decoration: none;
 }
 

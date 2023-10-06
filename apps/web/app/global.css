@@ -7,24 +7,38 @@ body {
   background-color: var(--color-background);
 }
 
-a {
-  color: #b7000d;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: 2px solid underline;
-  text-underline-offset: 2px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
 b {
   font-weight: 500;
 }
 
 p {
   line-height: 1.5;
+  margin: 0 0 1.5em;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:where(:any-link) {
+  color: var(--link-color, var(--color-brand));
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+  text-decoration-color: transparent;
+  transition: text-decoration-color .3s ease;
+}
+
+a:where(:any-link:hover) {
+  text-decoration-color: currentColor;
+  transition: text-decoration-color .15s ease;
+}
+
+* {
+  box-sizing: border-box;
 }
