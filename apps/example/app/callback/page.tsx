@@ -14,17 +14,19 @@ function getToken(code: string) {
   });
 }
 
-export default async function CallbackPage({ searchParams }: { searchParams: { code: string }}) {
-  const data = await getToken(searchParams.code);
+export default async function CallbackPage({ searchParams }: { searchParams: { code: string } | object}) {
+  const data = 'code' in searchParams
+    ? await getToken(searchParams.code)
+    : searchParams;
 
   return (
     <div>
       <pre>{JSON.stringify(data, undefined, '  ')}</pre>
 
-      {('error' in data) ? (
+      {!('access_token' in data) ? (
         <LinkButton href="/">Back</LinkButton>
       ) : (
-        <LinkButton href={`/token?access_token=${data.access_token}&refresh_token=${data.refresh_token}`} external>Continue</LinkButton>
+        <LinkButton href={`/token?access_token=${data.access_token}&refresh_token=${(data as any).refresh_token}`} external>Continue</LinkButton>
       )}
     </div>
   );
