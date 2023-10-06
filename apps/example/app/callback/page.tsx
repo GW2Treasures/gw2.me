@@ -1,4 +1,4 @@
-import { client_id, client_secret } from '@/lib/client';
+import { client_id, client_secret, code_verifier } from '@/lib/client';
 import { getAccessToken } from '@gw2me/api';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
@@ -9,7 +9,8 @@ function getToken(code: string) {
     code,
     client_id,
     client_secret,
-    redirect_uri: 'http://localhost:4001/callback'
+    code_verifier,
+    redirect_uri: 'http://localhost:4001/callback',
   });
 }
 

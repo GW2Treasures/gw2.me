@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
 import { Scope } from '@gw2me/api';
+import { ApplicationType } from '@gw2me/database';
 
 export interface AuthorizeRequestParams {
   response_type: string;
@@ -7,9 +8,11 @@ export interface AuthorizeRequestParams {
   client_id: string;
   scope: string;
   state?: string;
+  code_challenge?: string;
+  code_challenge_method?: string;
 }
 
-export async function validateRequest(params: AuthorizeRequestParams): Promise<{ error: string, application?: undefined } | { error: undefined, application: { id: string, name: string }, scopes: Scope[], redirect_uri: URL }> {
+export async function validateRequest(params: AuthorizeRequestParams): Promise<{ error: string, application?: undefined } | { error: undefined, application: { id: string, name: string }, scopes: Scope[], redirect_uri: URL, codeChallenge?: string }> {
   const supportedResponseTypes = ['code'];
 
   if(!params.response_type || !supportedResponseTypes.includes(params.response_type)) {
@@ -31,6 +34,14 @@ export async function validateRequest(params: AuthorizeRequestParams): Promise<{
     return { error: 'Invalid client_id' };
   }
 
+  if(params.code_challenge_method && !validCodeChallengeMethod(params.code_challenge_method)) {
+    return { error: 'Invalid code_challenge_method' };
+  }
+
+  if(!!params.code_challenge !== !!params.code_challenge_method) {
+    return { error: 'Invalid code_challenge or code_challenge_method' };
+  }
+
   const scopes = decodeURIComponent(params.scope).split(' ');
 
   if(!params.scope || !validScopes(scopes)) {
@@ -39,7 +50,7 @@ export async function validateRequest(params: AuthorizeRequestParams): Promise<{
 
   const application = await db.application.findUnique({
     where: { clientId: params.client_id },
-    select: { id: true, name: true, callbackUrls: true }
+    select: { id: true, name: true, callbackUrls: true, type: true }
   });
 
   if(!application) {
@@ -56,7 +67,17 @@ export async function validateRequest(params: AuthorizeRequestParams): Promise<{
     return { error: 'Invalid redirect_uri' };
   }
 
-  return { error: undefined, application, scopes, redirect_uri };
+  const hasPKCE = params.code_challenge && params.code_challenge_method;
+
+  if(application.type === ApplicationType.Public && !hasPKCE) {
+    return { error: 'PKCE required' };
+  }
+
+  const codeChallenge = hasPKCE
+    ? `${params.code_challenge_method}:${params.code_challenge}`
+    : undefined;
+
+  return { error: undefined, application, scopes, redirect_uri, codeChallenge };
 }
 
 function validScopes(scopes: string[]): scopes is Scope[] {
@@ -66,4 +87,8 @@ function validScopes(scopes: string[]): scopes is Scope[] {
 
 export function hasGW2Scopes(scopes: Scope[]): boolean {
   return scopes.some((scope) => scope.startsWith('gw2:'));
+}
+
+function validCodeChallengeMethod(method: string): method is 'S256' {
+  return method === 'S256';
 }
