@@ -18,15 +18,15 @@ import { Form } from '@/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 
 
-export default async function AuthorizePage({ searchParams }: { searchParams: AuthorizeRequestParams & Record<string, string> }) {
+export default async function AuthorizePage({ searchParams }: { searchParams: Partial<AuthorizeRequestParams> & Record<string, string> }) {
   // build return url for /account/add?return=X
   const returnUrl = `/oauth2/authorize?${new URLSearchParams(searchParams).toString()}`;
 
   // validate request
-  const validatedRequest = await validateRequest(searchParams);
+  const { error, request } = await validateRequest(searchParams);
 
-  if(validatedRequest.error !== undefined) {
-    return <Notice type="error">{validatedRequest.error}</Notice>;
+  if(error !== undefined) {
+    return <Notice type="error">{error}</Notice>;
   }
 
   // get current user
@@ -39,9 +39,9 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
   }
 
   // declare some variables for easier access
-  const application = await getApplicationByClientId(searchParams.client_id);
-  const scopes = decodeURIComponent(searchParams.scope).split(' ') as Scope[];
-  const redirect_uri = new URL(searchParams.redirect_uri);
+  const application = await getApplicationByClientId(request.client_id);
+  const scopes = decodeURIComponent(request.scope).split(' ') as Scope[];
+  const redirect_uri = new URL(request.redirect_uri);
   const scopeMap = scopes.reduce<Partial<Record<Scope, true>>>((map, scope) => ({ ...map, [scope]: true }), {});
 
   // get accounts
@@ -55,15 +55,15 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Au
   // build cancel url
   const cancelUrl = new URL(redirect_uri);
   cancelUrl.searchParams.set('error', 'access_denied');
-  searchParams.state && cancelUrl.searchParams.set('state', searchParams.state);
+  request.state && cancelUrl.searchParams.set('state', request.state);
 
   // bind parameters to authorize action
   const authorizeAction = authorize.bind(null, {
     applicationId: application.id,
     redirect_uri: redirect_uri.toString(),
     scopes,
-    state: searchParams.state,
-    codeChallenge: `${searchParams.code_challenge_method}:${searchParams.code_challenge}`
+    state: request.state,
+    codeChallenge: `${request.code_challenge_method}:${request.code_challenge}`
   });
 
   return (

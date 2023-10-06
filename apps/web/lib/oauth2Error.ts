@@ -23,7 +23,7 @@ export class OAuth2Error extends Error {
   }
 }
 
-export function assert<T>(condition: T | Falsy, code: OAuth2ErrorCode = OAuth2ErrorCode.server_error, description?: string): asserts condition is T {
+export function assert(condition: unknown, code: OAuth2ErrorCode = OAuth2ErrorCode.server_error, description?: string): asserts condition {
   if(!condition) {
     throw new OAuth2Error(code, { description });
   }

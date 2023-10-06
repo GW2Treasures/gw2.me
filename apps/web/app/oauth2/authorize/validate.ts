@@ -80,11 +80,11 @@ async function verifyPKCE({ client_id, code_challenge, code_challenge_method }: 
   fail(application.type === ApplicationType.Public && !hasPKCE, OAuth2ErrorCode.invalid_request, 'PKCE is required for public clients');
 }
 
-export async function validateRequest(params: Partial<AuthorizeRequestParams>): Promise<{ error: string | undefined }> {
+export async function validateRequest(request: Partial<AuthorizeRequestParams>): Promise<{ error: string, request?: undefined } | { error: undefined, request: AuthorizeRequestParams }> {
   try {
     // first verify client_id and redirect_uri
-    await verifyClientId(params);
-    await verifyRedirectUri(params);
+    await verifyClientId(request);
+    await verifyRedirectUri(request);
   } catch(error) {
     if(error instanceof OAuth2Error) {
       // it is not safe to redirect back to the client, so we show an error
@@ -97,15 +97,15 @@ export async function validateRequest(params: Partial<AuthorizeRequestParams>): 
 
   try {
     await Promise.all([
-      verifyResponseType(params),
-      verifyScopes(params),
-      verifyPKCE(params),
+      verifyResponseType(request),
+      verifyScopes(request),
+      verifyPKCE(request),
     ]);
 
-    return { error: undefined };
+    return { error: undefined, request: request as AuthorizeRequestParams };
   } catch(error) {
-    const redirect_uri = new URL(params.redirect_uri!);
-    params.state && redirect_uri.searchParams.set('state', params.state);
+    const redirect_uri = new URL(request.redirect_uri!);
+    request.state && redirect_uri.searchParams.set('state', request.state);
 
     if(error instanceof OAuth2Error) {
       redirect_uri.searchParams.set('error', error.code);
