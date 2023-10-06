@@ -42,7 +42,7 @@ export async function authorize({ applicationId, redirect_uri, scopes, state, co
     };
 
     // delete old pending authorization codes for this app
-    await db.authorization.delete({ where: { type_applicationId_userId: identifier }});
+    await db.authorization.deleteMany({ where: identifier });
 
     // create code authorization in db
     authorization = await db.authorization.create({
@@ -56,7 +56,9 @@ export async function authorize({ applicationId, redirect_uri, scopes, state, co
         accounts: { connect: accountIds },
       },
     });
-  } catch {
+  } catch(error) {
+    console.log(error);
+
     return { error: 'Authorization failed' };
   }
 
