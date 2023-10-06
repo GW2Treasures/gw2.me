@@ -35,27 +35,26 @@ export async function authorize({ applicationId, redirect_uri, scopes, state, co
   let authorization: Authorization;
 
   try {
-    const type = AuthorizationType.Code;
-    const userId = user.id;
+    const identifier = {
+      type: AuthorizationType.Code,
+      applicationId,
+      userId: user.id
+    };
+
+    // delete old pending authorization codes for this app
+    await db.authorization.delete({ where: { type_applicationId_userId: identifier }});
 
     // create code authorization in db
-    authorization = await db.authorization.upsert({
-      where: { type_applicationId_userId: { type, applicationId, userId }},
-      create: {
-        type, applicationId, userId, scope: scopes,
+    authorization = await db.authorization.create({
+      data: {
+        ...identifier,
+        scope: scopes,
         redirectUri: redirect_uri,
         codeChallenge,
-        accounts: { connect: accountIds },
         token: generateCode(),
         expiresAt: expiresAt(60),
+        accounts: { connect: accountIds },
       },
-      update: {
-        accounts: { set: accountIds },
-        redirectUri: redirect_uri,
-        codeChallenge,
-        scope: scopes,
-        expiresAt: expiresAt(60),
-      }
     });
   } catch {
     return { error: 'Authorization failed' };
