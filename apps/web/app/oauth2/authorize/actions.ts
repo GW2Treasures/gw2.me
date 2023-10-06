@@ -7,7 +7,7 @@ import { isString } from '@/lib/is';
 import { generateCode } from '@/lib/token';
 import { Authorization, AuthorizationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
-import { hasGW2Scopes } from './validate';
+import { hasGW2Scopes } from '@/lib/scope';
 import { Scope } from '@gw2me/client';
 import { FormState } from '@/components/Form/Form';
 import { createRedirectUrl } from '@/lib/redirectUrl';

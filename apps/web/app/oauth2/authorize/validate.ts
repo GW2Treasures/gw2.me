@@ -126,7 +126,3 @@ export async function validateRequest(request: Partial<AuthorizeRequestParams>):
     redirect(redirect_uri.toString());
   }
 }
-
-export function hasGW2Scopes(scopes: Scope[]): boolean {
-  return scopes.some((scope) => scope.startsWith('gw2:'));
-}
