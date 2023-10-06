@@ -1,5 +1,7 @@
 .apps {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, auto));
+  gap: 16px;
 }
 
 .app {
@@ -14,13 +16,13 @@
   transition: all .3s ease;
   color: var(--color-text);
   will-change: transform;
+  text-decoration: none;
 }
 
 .app:hover {
   box-shadow: var(--shadow);
   border-color: var(--color-border-dark);
   transform: translateY(-2px);
-  text-decoration: none;
 }
 
 .title {

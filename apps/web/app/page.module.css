@@ -24,6 +24,7 @@
   max-width: 420px;
   line-height: 1.5;
   margin-top: 32px;
+  text-wrap: pretty;
 }
 
 .loginButton {
@@ -61,8 +62,8 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   counter-reset: li;
 }
