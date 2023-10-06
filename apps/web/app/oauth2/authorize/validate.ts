@@ -18,7 +18,6 @@ export interface AuthorizeRequestParams {
 }
 
 export const getApplicationByClientId = cache(async function getApplicationByClientId(clientId: string | undefined) {
-  console.log('> Load application', clientId);
   assert(clientId, OAuth2ErrorCode.invalid_request, 'client_id is missing');
 
   const application = await db.application.findUnique({
@@ -30,13 +29,6 @@ export const getApplicationByClientId = cache(async function getApplicationByCli
 
   return application;
 });
-
-function verifyResponseType({ response_type }: Partial<AuthorizeRequestParams>) {
-  const supportedResponseTypes = ['code'];
-
-  assert(response_type, OAuth2ErrorCode.invalid_request, 'missing response_type');
-  assert(supportedResponseTypes.includes(response_type), OAuth2ErrorCode.unsupported_response_type, 'response_type is unsupported');
-}
 
 async function verifyClientId({ client_id }: Partial<AuthorizeRequestParams>) {
   await getApplicationByClientId(client_id);
@@ -55,6 +47,13 @@ async function verifyRedirectUri({ client_id, redirect_uri }: Partial<AuthorizeR
   }
 
   assert(application.callbackUrls.includes(url.toString()), OAuth2ErrorCode.invalid_request, 'unregistered redirect_uri');
+}
+
+function verifyResponseType({ response_type }: Partial<AuthorizeRequestParams>) {
+  const supportedResponseTypes = ['code'];
+
+  assert(response_type, OAuth2ErrorCode.invalid_request, 'missing response_type');
+  assert(supportedResponseTypes.includes(response_type), OAuth2ErrorCode.unsupported_response_type, 'response_type is unsupported');
 }
 
 function verifyScopes({ scope }: Partial<AuthorizeRequestParams>) {
