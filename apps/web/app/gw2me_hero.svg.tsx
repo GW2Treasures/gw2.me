@@ -1,42 +1,42 @@
 export const HeroImage = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" fill="none" fontFamily="var(--font-wotfard)" >
-    <path stroke="#b7000d" opacity=".25" strokeLinejoin="round" strokeOpacity=".8" d="M160.5 172v4.5c0 3.728 0 5.591.609 7.061a7.997 7.997 0 0 0 4.33 4.33c1.47.609 3.333.609 7.061.609h53c3.728 0 5.591 0 7.061.609a7.997 7.997 0 0 1 4.33 4.33c.609 1.47.609 3.333.609 7.061v9m3 0V128m80 44v4.5c0 3.728 0 5.591-.609 7.061a7.997 7.997 0 0 1-4.33 4.33c-1.47.609-3.333.609-7.061.609h-53c-3.728 0-5.591 0-7.061.609a7.997 7.997 0 0 0-4.33 4.33c-.609 1.47-.609 3.333-.609 7.061v9M160.5 308v-5.5c0-3.728 0-5.591.609-7.061a7.997 7.997 0 0 1 4.33-4.33c1.47-.609 3.333-.609 7.061-.609h53c3.728 0 5.591 0 7.061-.609a7.997 7.997 0 0 0 4.33-4.33c.609-1.47.609-3.333.609-7.061V270m3 0v82m80-44v-5.5c0-3.728 0-5.591-.609-7.061a7.997 7.997 0 0 0-4.33-4.33c-1.47-.609-3.333-.609-7.061-.609h-53c-3.728 0-5.591 0-7.061-.609a7.997 7.997 0 0 1-4.33-4.33c-.609-1.47-.609-3.333-.609-7.061V270"/>
+    <path stroke="var(--color-brand)" opacity=".25" strokeLinejoin="round" strokeOpacity=".8" d="M160.5 172v4.5c0 3.728 0 5.591.609 7.061a7.997 7.997 0 0 0 4.33 4.33c1.47.609 3.333.609 7.061.609h53c3.728 0 5.591 0 7.061.609a7.997 7.997 0 0 1 4.33 4.33c.609 1.47.609 3.333.609 7.061v9m3 0V128m80 44v4.5c0 3.728 0 5.591-.609 7.061a7.997 7.997 0 0 1-4.33 4.33c-1.47.609-3.333.609-7.061.609h-53c-3.728 0-5.591 0-7.061.609a7.997 7.997 0 0 0-4.33 4.33c-.609 1.47-.609 3.333-.609 7.061v9M160.5 308v-5.5c0-3.728 0-5.591.609-7.061a7.997 7.997 0 0 1 4.33-4.33c1.47-.609 3.333-.609 7.061-.609h53c3.728 0 5.591 0 7.061-.609a7.997 7.997 0 0 0 4.33-4.33c.609-1.47.609-3.333.609-7.061V270m3 0v82m80-44v-5.5c0-3.728 0-5.591-.609-7.061a7.997 7.997 0 0 0-4.33-4.33c-1.47-.609-3.333-.609-7.061-.609h-53c-3.728 0-5.591 0-7.061-.609a7.997 7.997 0 0 1-4.33-4.33c-.609-1.47-.609-3.333-.609-7.061V270"/>
     <g filter="url(#a)">
-      <circle cx="240" cy="240" r="32" fill="#fff"/>
-      <circle cx="240" cy="240" r="31.5" stroke="#AAA"/>
+      <circle cx="240" cy="240" r="32" fill="var(--color-background)"/>
+      <circle cx="240" cy="240" r="31.5" stroke="var(--color-border-dark)"/>
     </g>
-    <path fill="#B7000D" fillRule="evenodd" d="M240 226a6 6 0 0 0-6 6v5a1 1 0 0 1-2 0v-5a8 8 0 0 1 15.23-3.429 1 1 0 0 1-1.807.858A6.001 6.001 0 0 0 240 226Z" clipRule="evenodd"/>
-    <path fill="#B7000D" fillRule="evenodd" d="M247.832 236.445A1 1 0 0 0 247 236h-13v-4a6 6 0 0 1 11.423-2.571 1 1 0 0 0 1.807-.858A8 8 0 0 0 232 232v4.697l-3.832 5.748a1 1 0 0 0 .125 1.262l11 11a.999.999 0 0 0 1.414 0l11-11a1 1 0 0 0 .125-1.262l-4-6ZM240 246a2 2 0 1 0 .001-3.999A2 2 0 0 0 240 246Z" clipRule="evenodd"/>
+    <path fill="var(--color-brand)" fillRule="evenodd" d="M240 226a6 6 0 0 0-6 6v5a1 1 0 0 1-2 0v-5a8 8 0 0 1 15.23-3.429 1 1 0 0 1-1.807.858A6.001 6.001 0 0 0 240 226Z" clipRule="evenodd"/>
+    <path fill="var(--color-brand)" fillRule="evenodd" d="M247.832 236.445A1 1 0 0 0 247 236h-13v-4a6 6 0 0 1 11.423-2.571 1 1 0 0 0 1.807-.858A8 8 0 0 0 232 232v4.697l-3.832 5.748a1 1 0 0 0 .125 1.262l11 11a.999.999 0 0 0 1.414 0l11-11a1 1 0 0 0 .125-1.262l-4-6ZM240 246a2 2 0 1 0 .001-3.999A2 2 0 0 0 240 246Z" clipRule="evenodd"/>
     <g filter="url(#b)">
-      <rect width="128" height="32" x="96" y="140" fill="#fff" rx="2"/>
-      <rect width="127" height="31" x="96.5" y="140.5" stroke="#AAA" rx="1.5"/>
+      <rect width="128" height="32" x="96" y="140" fill="var(--color-background)" rx="2"/>
+      <rect width="127" height="31" x="96.5" y="140.5" stroke="var(--color-border-dark)" rx="1.5"/>
     </g>
-    <text xmlSpace="preserve" fill="#000" fontSize="16" letterSpacing="0em"><tspan x="109.477" y="162.1">GW2 Account</tspan></text>
+    <text xmlSpace="preserve" fill="var(--color-text)" fontSize="16" letterSpacing="0em"><tspan x="109.477" y="162.1">GW2 Account</tspan></text>
     <g filter="url(#c)">
-      <rect width="128" height="32" x="96" y="308" fill="#fff" rx="2"/>
-      <rect width="127" height="31" x="96.5" y="308.5" stroke="#AAA" rx="1.5"/>
+      <rect width="128" height="32" x="96" y="308" fill="var(--color-background)" rx="2"/>
+      <rect width="127" height="31" x="96.5" y="308.5" stroke="var(--color-border-dark)" rx="1.5"/>
     </g>
-    <text xmlSpace="preserve" fill="#000" fontSize="16" letterSpacing="0em"><tspan x="119.266" y="330.1">Application</tspan></text>
+    <text xmlSpace="preserve" fill="var(--color-text)" fontSize="16" letterSpacing="0em"><tspan x="119.266" y="330.1">Application</tspan></text>
     <g filter="url(#d)">
-      <rect width="128" height="32" x="176" y="96" fill="#fff" rx="2"/>
-      <rect width="127" height="31" x="176.5" y="96.5" stroke="#AAA" rx="1.5"/>
+      <rect width="128" height="32" x="176" y="96" fill="var(--color-background)" rx="2"/>
+      <rect width="127" height="31" x="176.5" y="96.5" stroke="var(--color-border-dark)" rx="1.5"/>
     </g>
-    <text xmlSpace="preserve" fill="#000" fontSize="16" letterSpacing="0em"><tspan x="189.477" y="118.1">GW2 Account</tspan></text>
+    <text xmlSpace="preserve" fill="var(--color-text)" fontSize="16" letterSpacing="0em"><tspan x="189.477" y="118.1">GW2 Account</tspan></text>
     <g filter="url(#e)">
-      <rect width="128" height="32" x="176" y="352" fill="#fff" rx="2"/>
-      <rect width="127" height="31" x="176.5" y="352.5" stroke="#AAA" rx="1.5"/>
+      <rect width="128" height="32" x="176" y="352" fill="var(--color-background)" rx="2"/>
+      <rect width="127" height="31" x="176.5" y="352.5" stroke="var(--color-border-dark)" rx="1.5"/>
     </g>
-    <text xmlSpace="preserve" fill="#000" fontSize="16" letterSpacing="0em"><tspan x="199.266" y="374.1">Application</tspan></text>
+    <text xmlSpace="preserve" fill="var(--color-text)" fontSize="16" letterSpacing="0em"><tspan x="199.266" y="374.1">Application</tspan></text>
     <g filter="url(#f)">
-      <rect width="128" height="32" x="256" y="140" fill="#fff" rx="2"/>
-      <rect width="127" height="31" x="256.5" y="140.5" stroke="#AAA" rx="1.5"/>
+      <rect width="128" height="32" x="256" y="140" fill="var(--color-background)" rx="2"/>
+      <rect width="127" height="31" x="256.5" y="140.5" stroke="var(--color-border-dark)" rx="1.5"/>
     </g>
-    <text xmlSpace="preserve" fill="#000" fontSize="16" letterSpacing="0em"><tspan x="269.477" y="162.1">GW2 Account</tspan></text>
+    <text xmlSpace="preserve" fill="var(--color-text)" fontSize="16" letterSpacing="0em"><tspan x="269.477" y="162.1">GW2 Account</tspan></text>
     <g filter="url(#g)">
-      <rect width="128" height="32" x="256" y="308" fill="#fff" rx="2"/>
-      <rect width="127" height="31" x="256.5" y="308.5" stroke="#AAA" rx="1.5"/>
+      <rect width="128" height="32" x="256" y="308" fill="var(--color-background)" rx="2"/>
+      <rect width="127" height="31" x="256.5" y="308.5" stroke="var(--color-border-dark)" rx="1.5"/>
     </g>
-    <text xmlSpace="preserve" fill="#000" fontSize="16" letterSpacing="0em"><tspan x="279.266" y="330.1">Application</tspan></text>
+    <text xmlSpace="preserve" fill="var(--color-text)" fontSize="16" letterSpacing="0em"><tspan x="279.266" y="330.1">Application</tspan></text>
     <defs>
       <filter id="a" width="72" height="72" x="204" y="208" colorInterpolationFilters="sRGB" filterUnits="userSpaceOnUse">
         <feFlood floodOpacity="0" result="BackgroundImageFix"/>

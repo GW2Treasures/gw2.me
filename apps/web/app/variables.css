@@ -1,6 +1,8 @@
 :root {
   color-scheme: light;
 
+  --color-brand: #b7000d;
+
   --color-text: #000;
   --color-text-muted: #555;
 
@@ -24,6 +26,8 @@
   :root {
     color-scheme: dark;
 
+    --color-brand: #e34c57;
+
     --color-text: #dcddde;
     --color-text-muted: #999;
 
@@ -36,6 +40,8 @@
     --color-border-transparent: rgba(0 0 0 / .37);
 
     --color-focus: #2196f3;
+
+    --color-error: #ff6b60;
 
     --shadow: 0 0 2px rgba(0,0,0,0.24), 0 4px 8px rgba(0,0,0,0.28)
   }

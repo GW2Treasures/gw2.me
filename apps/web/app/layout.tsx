@@ -40,7 +40,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" className={cx(bitter.variable, wotfard.variable)}>
       <body>
         <div className={styles.header}>
-          <Icon icon="gw2me" color="#b7000d"/>
+          <Icon icon="gw2me" color="var(--color-brand)"/>
           <Link href="/" className={styles.title}>gw2.me</Link>
           <div>by <a href="https://gw2treasures.com/">gw2treasures.com</a></div>
           <LinkButton appearance="menu" href="/discover">Discover</LinkButton>
