@@ -12,6 +12,10 @@
   z-index: 2;
 }
 
+.header > svg {
+  flex-shrink: 0;
+}
+
 .title {
   font-family: var(--font-bitter);
   font-size: 20px;
@@ -24,4 +28,8 @@
 
 .content {
   padding: 16px;
+}
+
+@media (max-width: 640px) {
+  .mobileHidden { display: none !important; }
 }
