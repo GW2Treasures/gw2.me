@@ -68,7 +68,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
     redirect_uri: redirect_uri.toString(),
     scopes,
     state: request.state,
-    codeChallenge: `${request.code_challenge_method}:${request.code_challenge}`
+    codeChallenge: request.code_challenge ? `${request.code_challenge_method}:${request.code_challenge}` : undefined,
   });
 
   return (
