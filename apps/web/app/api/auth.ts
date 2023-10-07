@@ -27,16 +27,21 @@ export function withAuthorization<Context>(scopes?: Scope[] | { oneOf: Scope[]})
         return NextResponse.json({ error: true }, { status: 400 });
       }
 
-      // find authorization in db and set usedAt
-      const authorization = await db.authorization.update({
+      // find authorization in db
+      const authorization = await db.authorization.findUnique({
         where: { type_token: { token, type: AuthorizationType.AccessToken }},
-        data: { usedAt: new Date() }
       });
 
       // verify that the token has the required scopes for the current endpoint
       if(!authorization || !verifyScopes(authorization.scope as Scope[], scopes)) {
         return NextResponse.json({ error: true }, { status: 401 });
       }
+
+      // set last use timestamp
+      await db.authorization.update({
+        where: { id: authorization.id },
+        data: { usedAt: new Date() }
+      });
 
       // run endpoint handler
       return handler(authorization, request, context);
