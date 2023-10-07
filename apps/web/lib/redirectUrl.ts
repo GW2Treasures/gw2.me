@@ -38,8 +38,10 @@ export function createRedirectUrl(base: string | URL, searchParams: RedirectUrlS
   const url = new URL(base);
 
   Object.entries(searchParams)
-    .filter(([, value]) => isDefinied)
+    .filter(([, value]) => isDefinied(value))
     .forEach(([key, value]) => url.searchParams.set(key, value!));
+
+  console.log(url.searchParams);
 
   return url;
 }
