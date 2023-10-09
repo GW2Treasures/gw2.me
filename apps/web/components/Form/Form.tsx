@@ -1,9 +1,8 @@
 'use client';
 
-import { FC, ReactNode, useEffect } from 'react';
+import { FC, ReactNode, useCallback } from 'react';
 import { experimental_useFormState as useFormState } from 'react-dom';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
-import { useRouter } from 'next/navigation';
 
 export interface FormState {
   error?: string;
@@ -18,21 +17,18 @@ export interface FormProps<State> {
 
 export const Form: FC<FormProps<FormState>> = ({ action, children, id }) => {
   const [state, formAction] = useFormState(action, {});
-  const { refresh } = useRouter();
 
-  useEffect(() => {
-    if(state.success) {
-      refresh();
-    }
-  }, [state.success, refresh]);
+  const showNotice = useCallback((notice: HTMLElement | null) => {
+    notice?.scrollIntoView({ block: 'nearest' });
+  }, []);
 
   return (
     <form action={formAction} id={id}>
       {state.error && (
-        <Notice type="error">{state.error}</Notice>
+        <Notice type="error" ref={showNotice} key={crypto.randomUUID()}>{state.error}</Notice>
       )}
       {state.success && (
-        <Notice>{state.success}</Notice>
+        <Notice ref={showNotice} key={crypto.randomUUID()}>{state.success}</Notice>
       )}
 
       {children}
