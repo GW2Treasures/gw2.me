@@ -5,7 +5,7 @@ import { notFound, redirect } from 'next/navigation';
 import { cache } from 'react';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
-import { AuthorizationType } from '@gw2me/database';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 const getUserData = cache(async () => {
   const session = await getUser();
@@ -33,7 +33,7 @@ export default async function ProfilePage() {
   const { sessionId, user } = await getUserData();
 
   return (
-    <>
+    <PageLayout>
       <Headline id="providers">Login Providers</Headline>
 
       <p>More providers coming soon.</p>
@@ -76,10 +76,10 @@ export default async function ProfilePage() {
           ))}
         </tbody>
       </Table>
-    </>
+    </PageLayout>
   );
 }
 
 export const metadata = {
-  title: 'Security'
+  title: 'Login Providers'
 };

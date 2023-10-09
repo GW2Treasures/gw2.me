@@ -4,16 +4,17 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Icon } from '@gw2treasures/ui';
 import { getUser } from '@/lib/getUser';
 import Link from 'next/link';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 export default async function HomePage() {
   const user = await getUser();
 
   return (
-    <div>
+    <PageLayout>
       <div className={styles.hero}>
         <div>
           <div className={styles.title}>gw2.me</div>
-          <div className={styles.sub}>Securly manage your Guild Wars 2 API keys</div>
+          <div className={styles.sub}>Securely manage your Guild Wars 2 API keys</div>
           <div className={styles.gw2treasures}>A service provided by <a href="https://gw2treasures.com/">gw2treasures.com</a></div>
           {!user && (<Link className={styles.loginButton} href="/login"><Icon icon="user"/> Login</Link>)}
         </div>
@@ -32,7 +33,7 @@ export default async function HomePage() {
 
       <Headline id="devs">For developers</Headline>
       <p>gw2.me is a OAuth2 Server. You can use your own libraries or frameworks to add gw2.me as a Login Provider. After you have an access token, we provide API endpoints to generate GW2 API subtokens you can use to access the Guild Wars 2 API.</p>
-    </div>
+    </PageLayout>
   );
 }
 

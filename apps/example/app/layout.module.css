@@ -1,5 +1,5 @@
 .header {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border);
   padding: 16px 16px;
   display: flex;
   gap: 16px;
@@ -9,7 +9,7 @@
 .title {
   font-family: var(--font-bitter);
   font-size: 20px;
-  color: #000;
+  color: var(--color-text);
 }
 
 .right {

@@ -79,16 +79,16 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
       </div>
       <Form action={authorizeAction}>
         <div className={styles.form}>
-          <div>
+          <p className={styles.intro}>
             {application.name} wants to access the following data of your gw2.me account.
-          </div>
+          </p>
 
           <ul className={styles.scopeList}>
             {scopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
             {scopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
             {hasGW2Scopes(scopes) && (
               <ScopeItem icon="developer">
-                Access the Guild Wars 2 API with the following permissions
+                <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
                 <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
                 <div>Select accounts</div>
                 <div className={styles.accountSelection}>
@@ -103,7 +103,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
             )}
           </ul>
 
-          <div>You can revoke access at anytime from your gw2.me profile.</div>
+          <p className={styles.outro}>You can revoke access at anytime from your gw2.me profile.</p>
 
           <div className={styles.buttons}>
             <LinkButton external href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>

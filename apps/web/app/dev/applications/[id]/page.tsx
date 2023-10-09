@@ -24,6 +24,7 @@ import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
 import { Icon } from '@gw2treasures/ui';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { ApplicationTypeOptions } from '../_actions/helper';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 const getApplication = cache(async (id: string) => {
   const user = await getUser();
@@ -43,10 +44,10 @@ export default async function EditApplicationPage({ params }: { params: { id: st
   }
 
   return (
-    <div>
+    <PageLayout>
       <Headline id="app">{application.name}</Headline>
 
-      <Form action={editApplication.bind(null, application.id)} id="editApplication">
+      <Form action={editApplication.bind(null, application.id)}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <Label label="Image">
             <FlexRow>
@@ -97,13 +98,13 @@ export default async function EditApplicationPage({ params }: { params: { id: st
             <Textarea name="callbackUrls" defaultValue={application.callbackUrls.join('\n')}/>
           </Label>
         </div>
-      </Form>
 
-      <FlexRow wrap>
-        <SubmitButton form="editApplication">Save</SubmitButton>
-        <LinkButton target="_blank" href={getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], client_id: application.clientId, scopes: [Scope.Identify] })}>Test Link <Icon icon="external"/></LinkButton>
-        <LinkButton href={`/dev/applications/${application.id}/delete`} icon="delete">Delete Application</LinkButton>
-      </FlexRow>
-    </div>
+        <FlexRow wrap>
+          <SubmitButton>Save</SubmitButton>
+          <LinkButton target="_blank" href={getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], client_id: application.clientId, scopes: [Scope.Identify] })}>Test Link <Icon icon="external"/></LinkButton>
+          <LinkButton href={`/dev/applications/${application.id}/delete`} icon="delete">Delete Application</LinkButton>
+        </FlexRow>
+      </Form>
+    </PageLayout>
   );
 }

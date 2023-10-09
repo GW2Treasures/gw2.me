@@ -6,5 +6,5 @@ interface AuthorizeLayoutProps {
 }
 
 export default function AuthorizeLayout({ children }: AuthorizeLayoutProps) {
-  return <div className={styles.wrapper}>{children}</div>;
+  return <main className={styles.wrapper}>{children}</main>;
 }

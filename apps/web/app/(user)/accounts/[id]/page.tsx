@@ -16,6 +16,7 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
 import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 async function getAccount(id: string) {
   const user = await getUser();
@@ -48,7 +49,7 @@ export default async function AccountPage({ params: { id }}: { params: { id: str
   const { account, applications } = await getAccount(id);
 
   return (
-    <>
+    <PageLayout>
       <Headline id="account">{account.accountName}</Headline>
 
       <Form action={updateDisplayName.bind(null, id)}>
@@ -107,6 +108,6 @@ export default async function AccountPage({ params: { id }}: { params: { id: str
           ))}
         </tbody>
       </Table>
-    </>
+    </PageLayout>
   );
 }

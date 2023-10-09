@@ -8,10 +8,11 @@ import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { ApplicationTypeOptions } from '../_actions/helper';
 import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
 import Link from 'next/link';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 export default function CreateApplicationPage() {
   return (
-    <div>
+    <PageLayout>
       <Headline id="create">Create new application</Headline>
 
       <Form action={createApplication}>
@@ -29,6 +30,6 @@ export default function CreateApplicationPage() {
           </FlexRow>
         </div>
       </Form>
-    </div>
+    </PageLayout>
   );
 }

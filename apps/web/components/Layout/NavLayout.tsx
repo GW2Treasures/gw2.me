@@ -1,5 +1,6 @@
 import { FC, ReactNode } from 'react';
 import styles from './NavLayout.module.css';
+import { PageLayout } from './PageLayout';
 
 export interface NavLayoutProps {
   content: ReactNode;
@@ -9,12 +10,12 @@ export interface NavLayoutProps {
 export const NavLayout: FC<NavLayoutProps> = ({ content, children }) => {
   return (
     <div className={styles.wrapper}>
-      <div className={styles.nav}>
-        {children}
-      </div>
-      <div className={styles.content}>
-        {content}
-      </div>
+      <aside className={styles.side}>
+        <div className={styles.nav}>
+          {children}
+        </div>
+      </aside>
+      {content}
     </div>
   );
 };

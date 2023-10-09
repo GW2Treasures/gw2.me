@@ -1,16 +1,13 @@
 'use server';
 
+import { FormState } from '@/components/Form/Form';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { redirect } from 'next/navigation';
 
-export interface AddAccountActionState {
-  message?: string;
-}
-
 const apiKeyRegex = /^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{20}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/;
 
-export async function addAccount(returnTo: string | undefined, previousState: AddAccountActionState, payload: FormData): Promise<AddAccountActionState> {
+export async function addAccount(returnTo: string | undefined, previousState: FormState, payload: FormData): Promise<FormState> {
   const user = await getUser();
 
   if(!user) {
@@ -20,12 +17,12 @@ export async function addAccount(returnTo: string | undefined, previousState: Ad
   const apiKey = payload.get('api-key');
 
   if(apiKey === null || typeof apiKey !== 'string' || apiKey.trim() === '') {
-    return { message: 'Missing API key' };
+    return { error: 'Missing API key' };
   }
 
   // verify format
   if(!apiKey.match(apiKeyRegex)) {
-    return { message: 'Invalid Format (JWT Subtokens are not supported)' };
+    return { error: 'Invalid Format (JWT Subtokens are not supported)' };
   }
 
   const headers = { Authorization: `Bearer ${apiKey}` };
@@ -34,7 +31,7 @@ export async function addAccount(returnTo: string | undefined, previousState: Ad
   const response = await fetch('https://api.guildwars2.com/v2/tokeninfo', { headers });
 
   if(response.status !== 200) {
-    return { message: 'Could not verify API key' };
+    return { error: 'Could not verify API key' };
   }
 
   const tokeninfo = await response.json();
@@ -43,7 +40,7 @@ export async function addAccount(returnTo: string | undefined, previousState: Ad
   // check if api key is already known
   const count = await db.apiToken.count({ where: { id: tokeninfo.id }});
   if(count > 0) {
-    return { message: 'API key already added' };
+    return { error: 'API key already added' };
   }
 
   try {
@@ -76,7 +73,7 @@ export async function addAccount(returnTo: string | undefined, previousState: Ad
     });
   } catch(error) {
     console.error(error);
-    return { message: 'Could not save api token' };
+    return { error: 'Could not save api token' };
   }
 
   redirect(returnTo ?? '/profile');

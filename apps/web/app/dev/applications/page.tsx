@@ -1,4 +1,5 @@
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
+import { PageLayout } from '@/components/Layout/PageLayout';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
@@ -26,7 +27,7 @@ export default async function DevPage() {
   const applications = await getApplications();
 
   return (
-    <div>
+    <PageLayout>
       <Headline id="applications" actions={<LinkButton href="/dev/applications/create" icon="add">Create</LinkButton>}>Your Applications</Headline>
 
       <Table>
@@ -43,6 +44,6 @@ export default async function DevPage() {
           ))}
         </tbody>
       </Table>
-    </div>
+    </PageLayout>
   );
 }

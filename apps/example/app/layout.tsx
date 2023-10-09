@@ -38,5 +38,5 @@ export const metadata = {
     template: '%s · example@gw2.me',
     default: ''
   },
-  description: 'Securly manage GW2 API access',
+  description: 'Securely manage GW2 API access',
 };
