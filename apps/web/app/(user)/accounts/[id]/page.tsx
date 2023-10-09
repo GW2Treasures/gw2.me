@@ -38,7 +38,7 @@ async function getAccount(id: string) {
   }
 
   const applications = await db.application.findMany({
-    select: { id: true, name: true },
+    select: { id: true, name: true, imageId: true },
     where: { authorizations: { some: { userId: user.id, accounts: { some: { id }}}}}
   });
 
@@ -103,7 +103,7 @@ export default async function AccountPage({ params: { id }}: { params: { id: str
         <tbody>
           {applications.map((application) => (
             <tr key={application.id}>
-              <td><FlexRow><ApplicationImage applicationId={application.id}/> {application.name}</FlexRow></td>
+              <td><FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow></td>
             </tr>
           ))}
         </tbody>

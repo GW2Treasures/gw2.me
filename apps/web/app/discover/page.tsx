@@ -10,7 +10,7 @@ export const revalidate = 300;
 const getApplications = async () => {
   const applications = await db.application.findMany({
     where: { public: true },
-    select: { id: true, name: true, description: true, publicUrl: true }
+    select: { id: true, name: true, description: true, publicUrl: true, imageId: true }
   });
 
   return applications;
@@ -25,7 +25,7 @@ export default async function DiscoverPage() {
       <div className={styles.apps}>
         {applications.map((app) => (
           <a key={app.id} className={styles.app} href={app.publicUrl} target="_blank" rel="noreferrer noopener">
-            <ApplicationImage applicationId={app.id} size={64}/>
+            <ApplicationImage fileId={app.imageId} size={64}/>
             <div className={styles.title}>{app.name}</div>
             <p>{app.description}</p>
           </a>

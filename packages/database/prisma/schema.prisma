@@ -62,7 +62,9 @@ model Application {
   description  String   @default("")
   public       Boolean  @default(false)
   publicUrl    String   @default("")
-  image        Bytes?
+  
+  imageId      String?
+  image        File?    @relation("applicationImage", fields: [imageId], references: [id], onDelete: SetNull)
 
   clientId     String   @unique
   clientSecret String?  @unique
@@ -150,4 +152,18 @@ model Account {
   updatedAt DateTime  @updatedAt
 
   @@unique([accountId, userId])
+}
+
+model File {
+  id       String    @default(uuid()) @id
+
+  data      Bytes
+  sha256    String   @unique
+  type      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  applicationImage Application[] @relation("applicationImage")
 }

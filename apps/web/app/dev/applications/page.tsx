@@ -39,7 +39,7 @@ export default async function DevPage() {
         <tbody>
           {applications.map((app) => (
             <tr key={app.id}>
-              <td><Link href={`/dev/applications/${app.id}`}><FlexRow><ApplicationImage applicationId={app.id}/>{app.name}</FlexRow></Link></td>
+              <td><Link href={`/dev/applications/${app.id}`}><FlexRow><ApplicationImage fileId={app.imageId}/>{app.name}</FlexRow></Link></td>
             </tr>
           ))}
         </tbody>
