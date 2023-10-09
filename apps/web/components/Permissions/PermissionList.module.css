@@ -12,5 +12,6 @@
   background-color: var(--color-background-light);
   font-size: 14px;
   border-radius: 500px;
-  padding: 2px 8px;
+  padding: 4px 8px;
+  line-height: 1;
 }

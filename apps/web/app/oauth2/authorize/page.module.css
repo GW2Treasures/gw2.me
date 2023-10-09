@@ -27,6 +27,14 @@
   flex-direction: column;
 }
 
+.p {
+  margin-bottom: 0;
+}
+
+.intro, .outro {
+  composes: p;
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -63,6 +71,7 @@ button.authorizeButton {
 
 .redirectNote {
   font-size: 15px;
+  line-height: 20px;
   text-align: center;
   color: var(--color-text-muted);
 }

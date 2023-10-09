@@ -8,6 +8,7 @@ body {
   color: var(--color-text);
   background-color: var(--color-background);
 
+  line-height: 1;
   scroll-padding: 64px 16px 16px;
 
   -webkit-tap-highlight-color: transparent;
