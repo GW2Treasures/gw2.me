@@ -3,6 +3,7 @@
 	"extends": ["//"],
 	"pipeline": {
 		"build": {
+      "dependsOn": ["prisma:generate"],
 			"outputs": ["lib/**"]
 		}
 	}
