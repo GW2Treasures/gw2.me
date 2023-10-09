@@ -74,7 +74,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
   return (
     <>
       <div className={layoutStyles.header}>
-        <ApplicationImage applicationId={application.id} size={64}/>
+        <ApplicationImage fileId={application.imageId} size={64}/>
         {application.name}
       </div>
       <Form action={authorizeAction}>

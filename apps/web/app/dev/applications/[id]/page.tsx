@@ -51,8 +51,9 @@ export default async function EditApplicationPage({ params }: { params: { id: st
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <Label label="Image">
             <FlexRow>
-              { /* eslint-disable-next-line @next/next/no-img-element */}
-              {application.image !== null && (<img src={`data:image/png;base64,${application.image?.toString('base64')}`} alt="" width={64} height={64}/>)}
+              {application.imageId && (
+                <ApplicationImage fileId={application.imageId} size={64}/>
+              )}
               <input type="file" name="image"/>
             </FlexRow>
           </Label>

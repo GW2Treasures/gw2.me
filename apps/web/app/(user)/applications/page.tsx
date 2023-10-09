@@ -35,6 +35,7 @@ const getUserData = cache(async () => {
     select: {
       id: true,
       name: true,
+      imageId: true,
 
       // include the last used authorization
       authorizations: {
@@ -73,7 +74,7 @@ export default async function ProfilePage() {
             <tbody>
               {applications.map((application) => (
                 <tr key={application.id}>
-                  <td><FlexRow><ApplicationImage applicationId={application.id}/> {application.name}</FlexRow></td>
+                  <td><FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow></td>
                   <td>{application.authorizations[0]?.usedAt?.toISOString() ?? 'never'}</td>
                   <td><Button type="submit" name="applicationId" value={application.id} intent="delete" icon="delete">Revoke Access</Button></td>
                 </tr>
