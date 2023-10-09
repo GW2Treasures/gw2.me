@@ -13,6 +13,7 @@ import { Prisma } from '@gw2me/database';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { Form } from '@/components/Form/Form';
 import { revokeAccess } from './actions';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 const getUserData = cache(async () => {
   const user = await getUser();
@@ -54,7 +55,7 @@ export default async function ProfilePage() {
   const { applications } = await getUserData();
 
   return (
-    <>
+    <PageLayout>
       <Headline id="applications">Authorized Applications</Headline>
 
       <p>Visit the <Link href="/discover">Discover</Link> page to find new applications using gw2.me.</p>
@@ -84,7 +85,7 @@ export default async function ProfilePage() {
         <Separator/>
         <p>Are you a developer? <Link href="/dev/applications">Manage your own applications</Link>.</p>
       </Form>
-    </>
+    </PageLayout>
   );
 }
 

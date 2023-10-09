@@ -1,3 +1,4 @@
+import { PageLayout } from '@/components/Layout/PageLayout';
 import { AccountAddForm } from './form';
 
 export interface AccountCreatePageProps {
@@ -8,6 +9,8 @@ export interface AccountCreatePageProps {
 
 export default function AccountCreatePage({ searchParams }: AccountCreatePageProps) {
   return (
-    <AccountAddForm returnTo={searchParams?.return}/>
+    <PageLayout>
+      <AccountAddForm returnTo={searchParams?.return}/>
+    </PageLayout>
   );
 }

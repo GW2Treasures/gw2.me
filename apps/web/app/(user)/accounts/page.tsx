@@ -9,6 +9,7 @@ import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { AuthorizationType } from '@gw2me/database';
 import { Icon } from '@gw2treasures/ui';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 const getAccounts = cache(async () => {
   const user = await getUser();
@@ -44,7 +45,7 @@ export default async function ProfilePage() {
   }
 
   return (
-    <>
+    <PageLayout>
       <Headline id="accounts" actions={<LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>}>Guild Wars 2 Accounts</Headline>
 
       {accounts.length > 0 && (
@@ -69,7 +70,7 @@ export default async function ProfilePage() {
           </tbody>
         </Table>
       )}
-    </>
+    </PageLayout>
   );
 }
 

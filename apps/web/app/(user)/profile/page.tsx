@@ -8,6 +8,7 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Steps } from '@/components/Steps/Steps';
 import Link from 'next/link';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 const getUserData = cache(async () => {
   const session = await getUser();
@@ -34,7 +35,7 @@ export default async function ProfilePage() {
   const { user } = await getUserData();
 
   return (
-    <div>
+    <PageLayout>
       <Headline id="profile" actions={<LinkButton href="/logout" external>Logout</LinkButton>}>{user.name}</Headline>
 
       <p>Thank you for signing up to gw2.me.</p>
@@ -44,7 +45,7 @@ export default async function ProfilePage() {
         <div><Link href="/discover">Discover</Link> applications that support gw2.me.</div>
         <div>Are your a developer? <Link href="/dev/applications">Manage your own applications</Link>.</div>
       </Steps>
-    </div>
+    </PageLayout>
   );
 }
 

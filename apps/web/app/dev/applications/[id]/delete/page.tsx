@@ -7,6 +7,7 @@ import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { notFound, redirect } from 'next/navigation';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 async function getApplication(id: string) {
   const user = await getUser();
@@ -31,15 +32,17 @@ export default async function DeleteApplicationPage({ params }: { params: { id: 
   const app = await getApplication(params.id);
 
   return (
-    <Form action={deleteApplication.bind(null, app.id)}>
-      <Headline id="delete">{app.name}</Headline>
+    <PageLayout>
+      <Form action={deleteApplication.bind(null, app.id)}>
+        <Headline id="delete">{app.name}</Headline>
 
-      <p>Are your sure you want to delete {app.name}?</p>
+        <p>Are your sure you want to delete {app.name}?</p>
 
-      <FlexRow>
-        <LinkButton href={`/dev/applications/${app.id}`}>Cancel</LinkButton>
-        <SubmitButton icon="delete" intent="delete">Delete Application</SubmitButton>
-      </FlexRow>
-    </Form>
+        <FlexRow>
+          <LinkButton href={`/dev/applications/${app.id}`}>Cancel</LinkButton>
+          <SubmitButton icon="delete" intent="delete">Delete Application</SubmitButton>
+        </FlexRow>
+      </Form>
+    </PageLayout>
   );
 }

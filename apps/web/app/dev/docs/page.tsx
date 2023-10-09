@@ -1,4 +1,5 @@
 import { Code } from '@/components/Layout/Code';
+import { PageLayout } from '@/components/Layout/PageLayout';
 import { Steps } from '@/components/Steps/Steps';
 import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
@@ -9,7 +10,7 @@ import Link from 'next/link';
 
 export default function Docs() {
   return (
-    <div>
+    <PageLayout>
       <Headline id="docs">Documentation</Headline>
 
       <p>gw2.me is a OAuth2 server. This page documents the basic concept, supported scopes and the available endpoints with requests parameters and response bodies.</p>
@@ -383,7 +384,7 @@ export default function Docs() {
           </tr>
         </tbody>
       </Table>
-    </div>
+    </PageLayout>
   );
 }
 export interface AccountsResponse {

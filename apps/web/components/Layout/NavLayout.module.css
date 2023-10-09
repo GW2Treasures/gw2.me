@@ -1,22 +1,22 @@
 .wrapper {
   display: flex;
-  min-height: calc(100vh - 48px - 32px);
+  flex: 1;
 }
 
-.nav {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+.side {
   width: 20%;
   max-width: 240px;
-  gap: 8px;
-  padding-right: 16px;
-  margin-right: 16px;
   border-right: 1px solid var(--color-border);
 }
 
-.content {
-  flex: 1;
+.nav {
+  position: sticky;
+  top: 48px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .active {

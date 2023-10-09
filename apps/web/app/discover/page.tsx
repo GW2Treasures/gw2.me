@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import styles from './page.module.css';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 export const revalidate = 300;
 
@@ -19,7 +20,7 @@ export default async function DiscoverPage() {
   const applications = await getApplications();
 
   return (
-    <>
+    <PageLayout>
       <Headline id="applications">Discover applications using gw2.me</Headline>
       <div className={styles.apps}>
         {applications.map((app) => (
@@ -30,6 +31,6 @@ export default async function DiscoverPage() {
           </a>
         ))}
       </div>
-    </>
+    </PageLayout>
   );
 }
