@@ -1,3 +1,4 @@
+/** @jest-environment node */
 import { Scope } from '@gw2me/client';
 import { verifyScopes } from './auth';
 
