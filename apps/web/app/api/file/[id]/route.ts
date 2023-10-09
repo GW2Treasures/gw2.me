@@ -9,9 +9,20 @@ export async function GET(request: NextRequest, { params: { id }}: { params: { i
     notFound();
   }
 
+  const etag = `"${file.sha256}"`;
+
+  // if none match
+  const ifNoneMatch = request.headers.get('If-None-Match');
+  if(ifNoneMatch === etag) {
+    return new Response(null, { status: 304 });
+  }
+
   return new Response(file.data, {
     headers: {
-      'Content-Type': file.type
+      'Cache-Control': 'max-age=31536000, immutable',
+      'Content-Type': file.type,
+      'Content-Length': file.data.byteLength.toString(),
+      'ETag': etag,
     }
   });
 }

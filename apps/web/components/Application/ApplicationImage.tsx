@@ -10,6 +10,11 @@ export interface ApplicationImageProps {
 
 export const ApplicationImage: FC<ApplicationImageProps> = ({ fileId, size = 32 }) => {
   return (
-    <img src={fileId ? `/api/file/${fileId}` : placeholder.src} width={size} height={size} alt="" className={styles.image}/>
+    <img
+      className={styles.image}
+      src={fileId ? `/api/file/${fileId}` : placeholder.src}
+      width={size} height={size}
+      alt=""
+      crossOrigin="anonymous" referrerPolicy="no-referrer" loading="lazy"/>
   );
 };
