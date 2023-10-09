@@ -2,9 +2,12 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["^build", "prisma:generate"]
+      "dependsOn": ["^build"]
     },
     "lint": {},
+    "test": {
+      "dependsOn": ["^build"]
+    },
     "prisma:generate": {
       "cache": false
     },

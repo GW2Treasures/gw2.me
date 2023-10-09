@@ -12,6 +12,7 @@
     "prisma:migrate-dev": "npm run prisma:migrate-dev -w @gw2me/database",
     "build": "turbo run build",
     "lint": "turbo run lint",
+    "test": "turbo run test",
     "publish-package": "turbo run publish-package"
   },
   "devDependencies": {
