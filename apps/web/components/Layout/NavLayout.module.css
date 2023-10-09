@@ -34,7 +34,7 @@
   border-radius: 2px;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1279px) {
   .wrapper {
     flex-direction: column;
     min-height: initial;
