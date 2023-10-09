@@ -11,7 +11,7 @@
     "@gw2me/client": "*",
     "@gw2me/database": "*",
     "@gw2treasures/icons": "0.0.9",
-    "@gw2treasures/ui": "0.0.16",
+    "@gw2treasures/ui": "0.0.17",
     "@prisma/nextjs-monorepo-workaround-plugin": "5.4.1",
     "next": "13.5.4",
     "react": "18.2.0",
