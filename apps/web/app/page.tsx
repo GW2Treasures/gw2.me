@@ -13,7 +13,7 @@ export default async function HomePage() {
       <div className={styles.hero}>
         <div>
           <div className={styles.title}>gw2.me</div>
-          <div className={styles.sub}>Securly manage your Guild Wars 2 API keys</div>
+          <div className={styles.sub}>Securely manage your Guild Wars 2 API keys</div>
           <div className={styles.gw2treasures}>A service provided by <a href="https://gw2treasures.com/">gw2treasures.com</a></div>
           {!user && (<Link className={styles.loginButton} href="/login"><Icon icon="user"/> Login</Link>)}
         </div>
