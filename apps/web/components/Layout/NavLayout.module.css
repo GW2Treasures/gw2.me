@@ -40,16 +40,17 @@
     min-height: initial;
   }
 
-  .nav {
-    flex-direction: row;
+  .side {
     width: initial;
     max-width: initial;
     border-right: none;
+  }
+
+  .nav {
+    position: static;
+    flex-direction: row;
     border-bottom: 1px solid var(--color-border);
-    padding-right: 0;
-    padding-bottom: 16px;
-    margin-right: 0;
-    margin-bottom: 16px;
+    padding: 8px 16px;
   }
 
   .nav > hr {
@@ -57,7 +58,7 @@
   }
 
   .active::before {
-    bottom: -2px;
+    bottom: -8px;
     width: initial;
     left: 16px;
     right: 16px;
