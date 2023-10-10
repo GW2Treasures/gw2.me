@@ -21,6 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/setup-node
+      name: Setup Node.js environment
       with:
         node-version: ${{ matrix.node }}
         turbo-cache-key: build
@@ -33,6 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/setup-node
+      name: Setup Node.js environment
       with:
         node-version: 20
         turbo-cache-key: lint
@@ -117,6 +119,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/setup-node
+      name: Setup Node.js environment
       with:
         node-version: 20
         turbo-cache-key: test
@@ -185,6 +188,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/setup-node
+      name: Setup Node.js environment
       with:
         node-version: 20
         turbo-cache-key: publish
