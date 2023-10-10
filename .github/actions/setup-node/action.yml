@@ -1,0 +1,36 @@
+name: Setup Node.js
+description: Composite task to set up the Node.js environment used in CI
+
+inputs:
+  node-version:
+    description: Version of Node.js
+    required: true
+  turbo-cache-key:
+    description: The prefix for cache key for turbo or 'false' to disable caching
+    required: false
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: npm
+        registry-url: 'https://registry.npmjs.org'
+    - name: Install latest npm
+      shell: bash
+      run: |
+        npm install --global npm@latest
+        npm -v
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
+    - name: Cache turbo
+      if: inputs.turbo-cache-key != 'false'
+      uses: actions/cache@v3
+      with:
+        path: ./node_modules/.cache/turbo
+        key: turbo-cache-${{ inputs.turbo-cache-key }}-${{ runner.os }}-${{ github.sha }}
+        restore-keys: |
+          turbo-cache-${{ inputs.turbo-cache-key }}-${{ runner.os }}-
