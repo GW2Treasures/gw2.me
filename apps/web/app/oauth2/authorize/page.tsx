@@ -45,21 +45,41 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
 
   // declare some variables for easier access
   const application = await getApplicationByClientId(request.client_id);
-  const scopes = decodeURIComponent(request.scope).split(' ') as Scope[];
-  const scopeMap = scopesToMap(scopes);
   const previousAuthorization = await getPreviousAuthorization(application.id, user.id);
   const previousScope = (previousAuthorization?.scope ?? []) as Scope[];
   const previousScopeMap = scopesToMap(previousScope);
   const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
-  const redirect_uri = new URL(request.redirect_uri);
+  const scopes = decodeURIComponent(request.scope).split(' ') as Scope[];
 
-  const allPreviouslyAuthorized = scopes.every((scope) => previousScopeMap[scope]);
-  if(allPreviouslyAuthorized) {
+  if(request.include_granted_scopes) {
+    previousScope.forEach((scope) => {
+      if(!scopes.includes(scope)) {
+        scopes.push(scope);
+      }
+    });
+  }
+
+  const scopeMap = scopesToMap(scopes);
+  const redirect_uri = new URL(request.redirect_uri);
+  const newScopes = scopes.filter((scope) => !previousScopeMap[scope]);
+  const oldScopes = previousScope.filter((scope) => scopeMap[scope]);
+
+  const allPreviouslyAuthorized = newScopes.length === 0;
+  if(allPreviouslyAuthorized && request.prompt !== 'consent') {
     // TODO: instantly redirect unless prompt=consent
+  }
+  if(!allPreviouslyAuthorized && request.prompt === 'none') {
+    const errorUrl = createRedirectUrl(redirect_uri, {
+      state: request.state,
+      error: OAuth2ErrorCode.access_denied,
+      error_description: 'user not previously authorized',
+    });
+
+    redirect(errorUrl.toString());
   }
 
   // get accounts
-  const accounts = hasGW2Scopes(scopes) || hasGW2Scopes(previousScope)
+  const accounts = hasGW2Scopes(scopes)
     ? await db.account.findMany({
         where: { userId: user.id },
         orderBy: { createdAt: 'asc' }
@@ -77,7 +97,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
   const authorizeAction = authorize.bind(null, {
     applicationId: application.id,
     redirect_uri: redirect_uri.toString(),
-    scopes: Array.from(new Set([...scopes, ...previousScope])),
+    scopes,
     state: request.state,
     codeChallenge: request.code_challenge ? `${request.code_challenge_method}:${request.code_challenge}` : undefined,
   });
@@ -90,19 +110,19 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
       </div>
       <Form action={authorizeAction}>
         <div className={styles.form}>
-          {!allPreviouslyAuthorized ? (
-            <p className={styles.intro}>
-              {application.name} wants to access the following {previousAuthorization && 'additional '}data of your gw2.me account.
-            </p>
+          {newScopes.length === 0 ? (
+            <p className={styles.intro}>{application.name} wants to reauthorize access to your gw2.me account.</p>
+          ) : oldScopes.length === 0 ?(
+            <p className={styles.intro}>{application.name} wants to access the following data of your gw2.me account.</p>
           ) : (
-            <p className={styles.intro}>{application.name} wants you tou authorize again.</p>
+            <p className={styles.intro}>{application.name} wants to access additional data.</p>
           )}
 
-          {(!allPreviouslyAuthorized || hasGW2Scopes(scopes)) && (
+          {newScopes.length > 0 && (
             <ul className={styles.scopeList}>
-              {scopeMap.identify && !previousScopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
-              {scopeMap.email && !previousScopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
-              {hasGW2Scopes(scopes) && (
+              {newScopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
+              {newScopes.includes(Scope.Email) && <ScopeItem icon="mail">Your email address</ScopeItem>}
+              {hasGW2Scopes(newScopes) && (
                 <ScopeItem icon="developer">
                   <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
                   <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
@@ -120,15 +140,15 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
             </ul>
           )}
 
-          {previousAuthorization?.scope && (
+          {oldScopes.length > 0 && (
             <Expandable label="View previously authorized permissions.">
               <ul className={styles.scopeList}>
-                {previousScopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
-                {previousScopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
-                {hasGW2Scopes(previousAuthorization.scope as Scope[]) && !hasGW2Scopes(scopes) && (
+                {oldScopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
+                {oldScopes.includes(Scope.Email) && <ScopeItem icon="mail">Your email address</ScopeItem>}
+                {hasGW2Scopes(oldScopes) && (!hasGW2Scopes(newScopes) ? (
                   <ScopeItem icon="developer">
                     <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
-                    <PermissionList permissions={previousAuthorization.scope.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+                    <PermissionList permissions={oldScopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
                     <div>Select accounts</div>
                     <div className={styles.accountSelection}>
                       {accounts.map((account) => (
@@ -139,7 +159,12 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
                       <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
                     </div>
                   </ScopeItem>
-                )}
+                ) : (
+                  <ScopeItem icon="developer">
+                    <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
+                    <PermissionList permissions={oldScopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+                  </ScopeItem>
+                ))}
               </ul>
             </Expandable>
           )}

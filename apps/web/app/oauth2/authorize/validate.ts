@@ -15,6 +15,8 @@ export interface AuthorizeRequestParams {
   state?: string;
   code_challenge?: string;
   code_challenge_method?: string;
+  prompt?: string;
+  include_granted_scopes?: string;
 }
 
 export const getApplicationByClientId = cache(async function getApplicationByClientId(clientId: string | undefined) {
@@ -85,6 +87,14 @@ async function verifyPKCE({ client_id, code_challenge, code_challenge_method }: 
   fail(application.type === ApplicationType.Public && !hasPKCE, OAuth2ErrorCode.invalid_request, 'PKCE is required for public clients');
 }
 
+function verifyIncludeGrantedScopes({ include_granted_scopes }: Partial<AuthorizeRequestParams>) {
+  assert(include_granted_scopes === undefined || include_granted_scopes === 'true', OAuth2ErrorCode.invalid_request, 'invalid include_granted_scopes');
+}
+
+function verifyPrompt({ prompt }: Partial<AuthorizeRequestParams>) {
+  assert([undefined, 'none', 'consent'].includes(prompt), OAuth2ErrorCode.invalid_request, 'invalid prompt');
+}
+
 export async function validateRequest(request: Partial<AuthorizeRequestParams>): Promise<{ error: string, request?: undefined } | { error: undefined, request: AuthorizeRequestParams }> {
   try {
     // first verify client_id and redirect_uri
@@ -105,6 +115,8 @@ export async function validateRequest(request: Partial<AuthorizeRequestParams>):
       verifyResponseType(request),
       verifyScopes(request),
       verifyPKCE(request),
+      verifyPrompt(request),
+      verifyIncludeGrantedScopes(request),
     ]);
 
     return { error: undefined, request: request as AuthorizeRequestParams };
