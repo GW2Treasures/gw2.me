@@ -11,12 +11,13 @@ export interface FormState {
 
 export interface FormProps<State> {
   action: (state: State, payload: FormData) => State | Promise<State>,
+  initialState?: State,
   children: ReactNode;
   id?: string;
 }
 
-export const Form: FC<FormProps<FormState>> = ({ action, children, id }) => {
-  const [state, formAction] = useFormState(action, {});
+export const Form: FC<FormProps<FormState>> = ({ action, initialState, children, id }) => {
+  const [state, formAction] = useFormState(action, initialState ?? {});
 
   const showNotice = useCallback((notice: HTMLElement | null) => {
     notice?.scrollIntoView({ block: 'nearest' });

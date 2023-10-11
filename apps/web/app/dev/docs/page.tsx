@@ -6,6 +6,7 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
+import { List } from '@gw2treasures/ui/components/Layout/List';
 import Link from 'next/link';
 
 export default function Docs() {
@@ -150,18 +151,34 @@ export default function Docs() {
             <td>List of <Link href="#scopes">scopes</Link> separated by spaces.</td>
           </tr>
           <tr>
+            <td><Code inline>include_granted_scopes</Code> (optional)</td>
+            <td><Code inline borderless>&quot;true&quot;</Code></td>
+            <td>If this parameter is <Code inline>true</Code>, all previously authorized scopes will be included. This can be used for incremental authorization.</td>
+          </tr>
+          <tr>
+            <td><Code inline>prompt</Code> (optional)</td>
+            <td><Code inline borderless>&quot;none&quot; | &quot;consent&quot;</Code></td>
+            <td>
+              <List>
+                <li><Code inline>none</Code><br/>gw2.me will not display a consent screen. If the user is not already authenticated this will return an error.</li>
+                <li><Code inline>consent</Code><br/>gw2.me will always display a consent screen.</li>
+                <li>If no value is specified and the user has not previously authorized access, then the user is shown a consent screen.</li>
+              </List>
+            </td>
+          </tr>
+          <tr>
             <td><Code inline>state</Code> (optional)</td>
-            <td><Code inline borderless>String?</Code></td>
+            <td><Code inline borderless>String</Code></td>
             <td>Recommended state to improve security.</td>
           </tr>
           <tr>
             <td><Code inline>code_challenge</Code> (optional)</td>
-            <td><Code inline borderless>String?</Code></td>
+            <td><Code inline borderless>String</Code></td>
             <td>PKCE challenge. Required for <Code inline>Public</Code> applications.</td>
           </tr>
           <tr>
             <td><Code inline>code_challenge_method</Code> (optional)</td>
-            <td><Code inline borderless>&quot;S256&quot;?</Code></td>
+            <td><Code inline borderless>&quot;S256&quot;</Code></td>
             <td>PKCE challenge method. Only SHA-256 is supported.</td>
           </tr>
         </tbody>
@@ -199,7 +216,7 @@ export default function Docs() {
           </tr>
           <tr>
             <td><Code inline>client_secret</Code> (optional)</td>
-            <td><Code inline borderless>String?</Code></td>
+            <td><Code inline borderless>String</Code></td>
             <td>The <Code inline>client_secret</Code> of your application. Only required if your app is <Code inline>Confidential</Code>.</td>
           </tr>
           <tr>
@@ -209,7 +226,7 @@ export default function Docs() {
           </tr>
           <tr>
             <td><Code inline>challenge_verifier</Code> (optional)</td>
-            <td><Code inline borderless>String?</Code></td>
+            <td><Code inline borderless>String</Code></td>
             <td>PKCE challenge verifier used to calculate <Code inline>code_challenge</Code>.</td>
           </tr>
         </tbody>
