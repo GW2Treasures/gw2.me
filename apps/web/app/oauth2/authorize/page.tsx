@@ -14,8 +14,8 @@ import { db } from '@/lib/db';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { PermissionList } from '@/components/Permissions/PermissionList';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
-import { authorize } from './actions';
-import { Form } from '@/components/Form/Form';
+import { AuthorizeActionParams, authorize, authorizeInternal } from './actions';
+import { Form, FormState } from '@/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { createRedirectUrl } from '@/lib/redirectUrl';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
@@ -64,10 +64,22 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
   const newScopes = scopes.filter((scope) => !previousScopeMap[scope]);
   const oldScopes = previousScope.filter((scope) => scopeMap[scope]);
 
+  const authorizeActionParams: AuthorizeActionParams = {
+    applicationId: application.id,
+    redirect_uri: redirect_uri.toString(),
+    scopes,
+    state: request.state,
+    codeChallenge: request.code_challenge ? `${request.code_challenge_method}:${request.code_challenge}` : undefined,
+  };
+
+  // handle prompt!=consent
   const allPreviouslyAuthorized = newScopes.length === 0;
+  let autoAuthorizeState: FormState | undefined;
   if(allPreviouslyAuthorized && request.prompt !== 'consent') {
-    // TODO: instantly redirect unless prompt=consent
+    autoAuthorizeState = await authorizeInternal(authorizeActionParams, previousAccountIds);
   }
+
+  // handle prompt=none
   if(!allPreviouslyAuthorized && request.prompt === 'none') {
     const errorUrl = createRedirectUrl(redirect_uri, {
       state: request.state,
@@ -94,13 +106,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
   });
 
   // bind parameters to authorize action
-  const authorizeAction = authorize.bind(null, {
-    applicationId: application.id,
-    redirect_uri: redirect_uri.toString(),
-    scopes,
-    state: request.state,
-    codeChallenge: request.code_challenge ? `${request.code_challenge_method}:${request.code_challenge}` : undefined,
-  });
+  const authorizeAction = authorize.bind(null, authorizeActionParams);
 
   return (
     <>
@@ -108,7 +114,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
         <ApplicationImage fileId={application.imageId} size={64}/>
         {application.name}
       </div>
-      <Form action={authorizeAction}>
+      <Form action={authorizeAction} initialState={autoAuthorizeState}>
         <div className={styles.form}>
           {newScopes.length === 0 ? (
             <p className={styles.intro}>{application.name} wants to reauthorize access to your gw2.me account.</p>

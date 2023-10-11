@@ -1,5 +1,3 @@
-'use server';
-
 import { expiresAt } from '@/lib/date';
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
@@ -12,10 +10,31 @@ import { Scope } from '@gw2me/client';
 import { FormState } from '@/components/Form/Form';
 import { createRedirectUrl } from '@/lib/redirectUrl';
 
-export async function authorize({ applicationId, redirect_uri, scopes, state, codeChallenge }: { applicationId: string, redirect_uri: string, scopes: Scope[], state?: string, codeChallenge?: string }, previousState: FormState, formData: FormData): Promise<FormState> {
-  // verify request
-  if(!applicationId || !redirect_uri || !scopes) {
-    return { error: 'Invalid request' };
+export interface AuthorizeActionParams {
+  applicationId: string,
+  redirect_uri: string,
+  scopes: Scope[],
+  state?: string,
+  codeChallenge?: string
+}
+
+// eslint-disable-next-line require-await
+export async function authorize(params: AuthorizeActionParams, _: FormState, formData: FormData): Promise<FormState> {
+  'use server';
+
+  // get account ids from form
+  const accountIds = formData.getAll('accounts').filter(isString);
+
+  return authorizeInternal(params, accountIds);
+};
+
+export async function authorizeInternal(
+  { applicationId, redirect_uri, scopes, state, codeChallenge }: AuthorizeActionParams,
+  accountIds: string[]
+) {
+  // verify at least one account was selected
+  if(hasGW2Scopes(scopes) && accountIds.length === 0) {
+    return { error: 'At least one account has to be selected.' };
   }
 
   // get session and verify
@@ -23,14 +42,6 @@ export async function authorize({ applicationId, redirect_uri, scopes, state, co
 
   if(!user) {
     return { error: 'Not logged in' };
-  }
-
-  // get account ids from form
-  const accountIds = formData.getAll('accounts').filter(isString).map((id) => ({ id }));
-
-  // verify at least one account was selected
-  if(hasGW2Scopes(scopes) && accountIds.length === 0) {
-    return { error: 'At least one account has to be selected.' };
   }
 
   let authorization: Authorization;
@@ -54,7 +65,7 @@ export async function authorize({ applicationId, redirect_uri, scopes, state, co
         codeChallenge,
         token: generateCode(),
         expiresAt: expiresAt(60),
-        accounts: { connect: accountIds },
+        accounts: { connect: accountIds.map((id) => ({ id })) },
       },
     });
   } catch(error) {
@@ -71,4 +82,4 @@ export async function authorize({ applicationId, redirect_uri, scopes, state, co
 
   // redirect back to app
   redirect(url.toString());
-};
+}
