@@ -20,14 +20,15 @@ export interface AuthorizationUrlParams {
   scopes: Scope[];
   state?: string;
   code_challenge?: string;
-  code_challenge_method?: 'S256'
+  code_challenge_method?: 'S256';
+  prompt?: 'none' | 'consent'
 }
 
 function getUrl() {
   return process.env.GW2ME_URL || 'https://gw2.me/';
 }
 
-export function getAuthorizationUrl({ redirect_uri, client_id, scopes, state, code_challenge, code_challenge_method }: AuthorizationUrlParams) {
+export function getAuthorizationUrl({ redirect_uri, client_id, scopes, state, code_challenge, code_challenge_method, prompt }: AuthorizationUrlParams) {
   /* eslint-disable object-shorthand */
   const params = new URLSearchParams({
     'response_type': 'code',
@@ -44,6 +45,10 @@ export function getAuthorizationUrl({ redirect_uri, client_id, scopes, state, co
   if(code_challenge && code_challenge_method) {
     params.append('code_challenge', code_challenge);
     params.append('code_challenge_method', code_challenge_method);
+  }
+
+  if(prompt) {
+    params.append('prompt', prompt);
   }
 
   return `${getUrl()}oauth2/authorize?${params.toString()}`;
