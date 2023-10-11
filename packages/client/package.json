@@ -1,6 +1,6 @@
 {
   "name": "@gw2me/client",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "gw2.me client library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
