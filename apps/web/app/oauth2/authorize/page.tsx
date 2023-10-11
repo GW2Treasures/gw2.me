@@ -20,6 +20,7 @@ import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { createRedirectUrl } from '@/lib/redirectUrl';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { AuthorizationType } from '@gw2me/database';
+import { Expandable } from '@/components/Expandable/Expandable';
 
 
 export default async function AuthorizePage({ searchParams }: { searchParams: Partial<AuthorizeRequestParams> & Record<string, string> }) {
@@ -97,29 +98,30 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
             <p className={styles.intro}>{application.name} wants you tou authorize again.</p>
           )}
 
-          <ul className={styles.scopeList}>
-            {scopeMap.identify && !previousScopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
-            {scopeMap.email && !previousScopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
-            {hasGW2Scopes(scopes) && (
-              <ScopeItem icon="developer">
-                <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
-                <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
-                <div>Select accounts</div>
-                <div className={styles.accountSelection}>
-                  {accounts.map((account) => (
-                    <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id)} name="accounts" formValue={account.id}>
-                      {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
-                    </Checkbox>
-                  ))}
-                  <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
-                </div>
-              </ScopeItem>
-            )}
-          </ul>
+          {(!allPreviouslyAuthorized || hasGW2Scopes(scopes)) && (
+            <ul className={styles.scopeList}>
+              {scopeMap.identify && !previousScopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
+              {scopeMap.email && !previousScopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
+              {hasGW2Scopes(scopes) && (
+                <ScopeItem icon="developer">
+                  <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
+                  <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+                  <div>Select accounts</div>
+                  <div className={styles.accountSelection}>
+                    {accounts.map((account) => (
+                      <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id)} name="accounts" formValue={account.id}>
+                        {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                      </Checkbox>
+                    ))}
+                    <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
+                  </div>
+                </ScopeItem>
+              )}
+            </ul>
+          )}
 
           {previousAuthorization?.scope && (
-            <>
-              <p className={styles.intro}>View previously authorized permissions.</p>
+            <Expandable label="View previously authorized permissions.">
               <ul className={styles.scopeList}>
                 {previousScopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
                 {previousScopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
@@ -139,7 +141,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
                   </ScopeItem>
                 )}
               </ul>
-            </>
+            </Expandable>
           )}
 
           <p className={styles.outro}>You can revoke access at anytime from your gw2.me profile.</p>
