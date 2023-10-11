@@ -16,7 +16,8 @@ export default function HomePage() {
           <Checkbox key={scope} name="scopes" formValue={scope} defaultChecked={[Scope.Identify, Scope.Email, Scope.GW2_Account].includes(scope)}>{scope}</Checkbox>
         ))}
         <Separator/>
-        <Select name="prompt" options={[{ value: undefined!, label: 'Default' }, { value: 'none', label: 'Prompt: None' }, { value: 'consent', label: 'Prompt: Consent' }]}/>
+        <Checkbox name="include_granted_scopes" formValue="true">Include granted scopes</Checkbox>
+        <Select name="prompt" options={[{ value: '', label: 'Default' }, { value: 'none', label: 'Prompt: None' }, { value: 'consent', label: 'Prompt: Consent' }]}/>
       </div>
 
       <Button type="submit" icon="gw2me">Login with gw2.me</Button>
@@ -32,7 +33,8 @@ async function login(formData: FormData) {
   'use server';
 
   const scopes = formData.getAll('scopes') as Scope[];
-  const prompt = (formData.get('prompt') ?? undefined) as 'consent' | 'none' | undefined;
+  const prompt = (formData.get('prompt') || undefined) as 'consent' | 'none' | undefined;
+  const include_granted_scopes = formData.get('include_granted_scopes') === 'true';
 
   // make sure example app exists
   const user = await db.user.upsert({
@@ -57,6 +59,7 @@ async function login(formData: FormData) {
     code_challenge,
     code_challenge_method: 'S256',
     prompt,
+    include_granted_scopes,
   });
 
   redirect(authUrl);
