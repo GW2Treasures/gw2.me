@@ -19,6 +19,7 @@ import { Form } from '@/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { createRedirectUrl } from '@/lib/redirectUrl';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
+import { AuthorizationType } from '@gw2me/database';
 
 
 export default async function AuthorizePage({ searchParams }: { searchParams: Partial<AuthorizeRequestParams> & Record<string, string> }) {
@@ -44,11 +45,20 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
   // declare some variables for easier access
   const application = await getApplicationByClientId(request.client_id);
   const scopes = decodeURIComponent(request.scope).split(' ') as Scope[];
+  const scopeMap = scopesToMap(scopes);
+  const previousAuthorization = await getPreviousAuthorization(application.id, user.id);
+  const previousScope = (previousAuthorization?.scope ?? []) as Scope[];
+  const previousScopeMap = scopesToMap(previousScope);
+  const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
   const redirect_uri = new URL(request.redirect_uri);
-  const scopeMap = scopes.reduce<Partial<Record<Scope, true>>>((map, scope) => ({ ...map, [scope]: true }), {});
+
+  const allPreviouslyAuthorized = scopes.every((scope) => previousScopeMap[scope]);
+  if(allPreviouslyAuthorized) {
+    // TODO: instantly redirect unless prompt=consent
+  }
 
   // get accounts
-  const accounts = hasGW2Scopes(scopes)
+  const accounts = hasGW2Scopes(scopes) || hasGW2Scopes(previousScope)
     ? await db.account.findMany({
         where: { userId: user.id },
         orderBy: { createdAt: 'asc' }
@@ -66,7 +76,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
   const authorizeAction = authorize.bind(null, {
     applicationId: application.id,
     redirect_uri: redirect_uri.toString(),
-    scopes,
+    scopes: Array.from(new Set([...scopes, ...previousScope])),
     state: request.state,
     codeChallenge: request.code_challenge ? `${request.code_challenge_method}:${request.code_challenge}` : undefined,
   });
@@ -79,21 +89,25 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
       </div>
       <Form action={authorizeAction}>
         <div className={styles.form}>
-          <p className={styles.intro}>
-            {application.name} wants to access the following data of your gw2.me account.
-          </p>
+          {!allPreviouslyAuthorized ? (
+            <p className={styles.intro}>
+              {application.name} wants to access the following {previousAuthorization && 'additional '}data of your gw2.me account.
+            </p>
+          ) : (
+            <p className={styles.intro}>{application.name} wants you tou authorize again.</p>
+          )}
 
           <ul className={styles.scopeList}>
-            {scopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
-            {scopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
+            {scopeMap.identify && !previousScopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
+            {scopeMap.email && !previousScopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
             {hasGW2Scopes(scopes) && (
               <ScopeItem icon="developer">
                 <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
                 <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
                 <div>Select accounts</div>
                 <div className={styles.accountSelection}>
-                  {accounts.map((account, index) => (
-                    <Checkbox key={account.id} defaultChecked={index === 0} name="accounts" formValue={account.id}>
+                  {accounts.map((account) => (
+                    <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id)} name="accounts" formValue={account.id}>
                       {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
                     </Checkbox>
                   ))}
@@ -102,6 +116,31 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
               </ScopeItem>
             )}
           </ul>
+
+          {previousAuthorization?.scope && (
+            <>
+              <p className={styles.intro}>View previously authorized permissions.</p>
+              <ul className={styles.scopeList}>
+                {previousScopeMap.identify && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
+                {previousScopeMap.email && <ScopeItem icon="mail">Your email address</ScopeItem>}
+                {hasGW2Scopes(previousAuthorization.scope as Scope[]) && !hasGW2Scopes(scopes) && (
+                  <ScopeItem icon="developer">
+                    <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
+                    <PermissionList permissions={previousAuthorization.scope.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+                    <div>Select accounts</div>
+                    <div className={styles.accountSelection}>
+                      {accounts.map((account) => (
+                        <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id)} name="accounts" formValue={account.id}>
+                          {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                        </Checkbox>
+                      ))}
+                      <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
+                    </div>
+                  </ScopeItem>
+                )}
+              </ul>
+            </>
+          )}
 
           <p className={styles.outro}>You can revoke access at anytime from your gw2.me profile.</p>
 
@@ -125,3 +164,16 @@ export interface ScopeItemProps {
 const ScopeItem: FC<ScopeItemProps> = ({ icon, children }) => {
   return <li><Icon icon={icon}/><div>{children}</div></li>;
 };
+
+function getPreviousAuthorization(applicationId: string, userId: string) {
+  return db.authorization.findFirst({
+    where: { applicationId, userId, type: { not: AuthorizationType.Code }},
+    include: { accounts: { select: { id: true }}}
+  });
+}
+
+const emptyScopeMap = Object.fromEntries(Object.values(Scope).map((scope) => [scope, false])) as Record<Scope, boolean>;
+
+function scopesToMap(scopes: Scope[]): Record<Scope, boolean> {
+  return scopes.reduce((map, scope) => ({ ...map, [scope]: true }), emptyScopeMap);
+}
