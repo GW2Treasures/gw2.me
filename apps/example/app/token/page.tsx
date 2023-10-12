@@ -1,5 +1,4 @@
-import { client_id, client_secret } from '@/lib/client';
-import { refreshToken, rest } from '@gw2me/client';
+import { gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { redirect } from 'next/navigation';
@@ -17,7 +16,7 @@ async function refreshTokenAction(data: FormData) {
     throw new Error();
   }
 
-  const token = await refreshToken({ refresh_token, client_id, client_secret });
+  const token = await gw2me.refreshToken({ refresh_token });
 
   redirect(`/token?access_token=${token.access_token}&refresh_token=${token.refresh_token}`);
 };
@@ -27,7 +26,7 @@ async function getSubtoken(accountId: string, data: FormData) {
 
   const access_token = data.get('access_token')?.toString()!;
 
-  const { subtoken } = await rest.subtoken({ access_token, accountId });
+  const { subtoken } = await gw2me.api(access_token).subtoken(accountId);
 
   redirect(`https://api.guildwars2.com/v2/tokeninfo?access_token=${encodeURIComponent(subtoken)}`);
 }
@@ -35,8 +34,9 @@ async function getSubtoken(accountId: string, data: FormData) {
 export default async function TokenPage({ searchParams }: { searchParams: { access_token: string; refresh_token: string; }}) {
   const access_token = searchParams.access_token;
 
-  const user = await rest.user({ access_token });
-  const accounts = await rest.accounts({ access_token });
+  const api = gw2me.api(access_token);
+  const user = await api.user();
+  const accounts = await api.accounts();
 
   return (
     <form>
