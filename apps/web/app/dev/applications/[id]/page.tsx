@@ -3,27 +3,22 @@ import { getUser } from '@/lib/getUser';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
-import { deleteApplication } from '../_actions/delete';
 import { Textarea } from '@/components/Textarea/Textarea';
 import { editApplication } from '../_actions/edit';
-import { Scope, getAuthorizationUrl } from '@gw2me/client';
+import { Scope, Gw2MeClient } from '@gw2me/client';
 import { resetClientSecret } from '../_actions/resetClientSecret';
 import { ResetClientSecret } from './reset-client-secret';
-import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
-import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { Form } from '@/components/Form/Form';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
 import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
-import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
 import { Icon } from '@gw2treasures/ui';
-import { Select } from '@gw2treasures/ui/components/Form/Select';
-import { ApplicationTypeOptions } from '../_actions/helper';
 import { PageLayout } from '@/components/Layout/PageLayout';
 
 const getApplication = cache(async (id: string) => {
@@ -102,7 +97,7 @@ export default async function EditApplicationPage({ params }: { params: { id: st
 
         <FlexRow wrap>
           <SubmitButton>Save</SubmitButton>
-          <LinkButton target="_blank" href={getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], client_id: application.clientId, scopes: [Scope.Identify] })}>Test Link <Icon icon="external"/></LinkButton>
+          <LinkButton target="_blank" href={new Gw2MeClient({ client_id: application.clientId }).getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], scopes: [Scope.Identify] })}>Test Link <Icon icon="external"/></LinkButton>
           <LinkButton href={`/dev/applications/${application.id}/delete`} icon="delete">Delete Application</LinkButton>
         </FlexRow>
       </Form>

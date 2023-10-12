@@ -4,9 +4,9 @@ import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
 import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
-import { Scope, getAuthorizationUrl } from '@gw2me/client';
+import { Scope } from '@gw2me/client';
 import { randomBytes, scryptSync } from 'crypto';
-import { client_id, code_challenge } from '@/lib/client';
+import { client_id, code_challenge, gw2me } from '@/lib/client';
 
 export default function HomePage() {
   return (
@@ -51,8 +51,7 @@ async function login(formData: FormData) {
     update: { clientId: client_id, clientSecret, name: 'Example App', ownerId: user.id, description: 'This is the gw2.me example app', callbackUrls: ['http://localhost:4001/callback'] }
   });
 
-  const authUrl = getAuthorizationUrl({
-    client_id,
+  const authUrl = gw2me.getAuthorizationUrl({
     redirect_uri: 'http://localhost:4001/callback',
     scopes,
     state: 'example',

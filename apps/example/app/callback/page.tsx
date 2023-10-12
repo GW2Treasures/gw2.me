@@ -1,14 +1,11 @@
-import { client_id, client_secret, code_verifier } from '@/lib/client';
-import { getAccessToken } from '@gw2me/client';
+import { code_verifier, gw2me } from '@/lib/client';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 export const dynamic = 'force-dynamic';
 
 function getToken(code: string) {
-  return getAccessToken({
+  return gw2me.getAccessToken({
     code,
-    client_id,
-    client_secret,
     code_verifier,
     redirect_uri: 'http://localhost:4001/callback',
   });

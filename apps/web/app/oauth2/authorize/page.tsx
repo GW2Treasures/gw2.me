@@ -118,7 +118,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
         <div className={styles.form}>
           {newScopes.length === 0 ? (
             <p className={styles.intro}>{application.name} wants to reauthorize access to your gw2.me account.</p>
-          ) : oldScopes.length === 0 ?(
+          ) : oldScopes.length === 0 ? (
             <p className={styles.intro}>{application.name} wants to access the following data of your gw2.me account.</p>
           ) : (
             <p className={styles.intro}>{application.name} wants to access additional data.</p>
