@@ -13,7 +13,7 @@
     "@gw2treasures/icons": "0.0.10",
     "@gw2treasures/ui": "0.0.17",
     "@prisma/nextjs-monorepo-workaround-plugin": "5.4.2",
-    "next": "13.5.4",
+    "next": "13.5.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "server-only": "0.0.1"
@@ -23,7 +23,7 @@
     "@types/react": "18.2.28",
     "@typescript-eslint/eslint-plugin": "6.7.5",
     "eslint": "8.51.0",
-    "eslint-config-next": "13.5.4",
+    "eslint-config-next": "13.5.5",
     "typescript": "5.2.2"
   }
 }
