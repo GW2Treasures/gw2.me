@@ -3,6 +3,7 @@ import { AccountsResponse } from '@gw2me/client';
 import { Authorization } from '@gw2me/database';
 import { NextResponse } from 'next/server';
 import { Gw2Scopes, withAuthorization } from '../auth';
+import { corsHeaders } from '@/lib/cors-header';
 
 export const GET = withAuthorization({ oneOf: Gw2Scopes })(
   async (authorization: Authorization) => {
@@ -18,3 +19,9 @@ export const GET = withAuthorization({ oneOf: Gw2Scopes })(
     return NextResponse.json(response);
   }
 );
+
+export const OPTIONS = (request: Request) => {
+  return new NextResponse(null, {
+    headers: corsHeaders(request)
+  });
+};

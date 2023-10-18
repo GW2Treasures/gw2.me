@@ -3,6 +3,7 @@ import { SubtokenResponse, Scope } from '@gw2me/client';
 import { NextResponse } from 'next/server';
 import { Gw2Scopes, withAuthorization } from '../../../auth';
 import { Authorization } from '@gw2me/database';
+import { corsHeaders } from '@/lib/cors-header';
 
 interface Context {
   params: { id: string }
@@ -57,3 +58,9 @@ export const GET = withAuthorization<Context>({ oneOf: Gw2Scopes })(
     return NextResponse.json(response);
   }
 );
+
+export const OPTIONS = (request: Request) => {
+  return new NextResponse(null, {
+    headers: corsHeaders(request)
+  });
+};
