@@ -127,6 +127,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export const OPTIONS = (request: Request) => {
+  return new NextResponse(null, {
+    headers: corsHeaders(request)
+  });
+};
+
 function validClientSecret(clientSecret: string, saltedHash: string | null) {
   if(saltedHash === null) {
     return false;
