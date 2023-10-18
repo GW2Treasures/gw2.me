@@ -41,7 +41,5 @@ export function createRedirectUrl(base: string | URL, searchParams: RedirectUrlS
     .filter(([, value]) => isDefinied(value))
     .forEach(([key, value]) => url.searchParams.set(key, value!));
 
-  console.log(url.searchParams);
-
   return url;
 }

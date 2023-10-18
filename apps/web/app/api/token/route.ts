@@ -1,3 +1,4 @@
+import { corsHeaders } from '@/lib/cors-header';
 import { expiresAt, isExpired } from '@/lib/date';
 import { db } from '@/lib/db';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
@@ -81,7 +82,9 @@ export async function POST(request: NextRequest) {
         scope: scope.join(' ')
       };
 
-      return NextResponse.json(response);
+      return NextResponse.json(response, {
+        headers: corsHeaders(request)
+      });
     }
 
     case 'refresh_token': {
@@ -117,7 +120,9 @@ export async function POST(request: NextRequest) {
         scope: scope.join(' ')
       };
 
-      return NextResponse.json(response);
+      return NextResponse.json(response, {
+        headers: corsHeaders(request)
+      });
     }
   }
 }
