@@ -1,0 +1,22 @@
+{
+  "name": "extension",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Generate Guild Wars 2 Subtokens",
+  "scripts": {
+    "web-ext": "web-ext"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GW2treasures/gw2.me.git"
+  },
+  "author": "darthmaim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GW2treasures/gw2.me/issues"
+  },
+  "homepage": "https://github.com/GW2treasures/gw2.me#readme",
+  "devDependencies": {
+    "@types/chrome": "^0.0.248"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "gw2.me",
+  "description": "Generate Guild Wars 2 Subtokens",
+  "version": "0.0.1",
+  "permissions": ["identity"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "128": "assets/gw2.me.png"
+  }
+}
