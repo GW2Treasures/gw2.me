@@ -3,7 +3,7 @@
   "name": "gw2.me",
   "description": "Generate Guild Wars 2 Subtokens",
   "version": "0.0.1",
-  "permissions": ["identity"],
+  "permissions": ["identity", "storage"],
   "action": {
     "default_popup": "popup.html"
   },
