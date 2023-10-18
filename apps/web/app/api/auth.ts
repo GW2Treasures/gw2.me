@@ -1,3 +1,4 @@
+import { corsHeaders } from '@/lib/cors-header';
 import { db } from '@/lib/db';
 import { Scope } from '@gw2me/client';
 import { Authorization, AuthorizationType } from '@gw2me/database';
@@ -44,7 +45,18 @@ export function withAuthorization<Context>(scopes?: Scope[] | { oneOf: Scope[]})
       });
 
       // run endpoint handler
-      return handler(authorization, request, context);
+      const response = await handler(authorization, request, context);
+
+      // add cors headers
+      const cors = corsHeaders(request);
+      response.headers.append('Vary', cors.Vary);
+
+      if('Access-Control-Allow-Origin' in cors) {
+        response.headers.append('Access-Control-Allow-Origin', cors['Access-Control-Allow-Origin']);
+      }
+
+      // return response
+      return response;
     };
   };
 }
