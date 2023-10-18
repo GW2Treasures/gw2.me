@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
               create: { type: AuthorizationType.RefreshToken, applicationId, userId, scope, token: generateRefreshToken(), accounts: { connect: accounts }},
               update: { scope, accounts: { set: accounts }}
             })
-          : Promise.resolve(null) as Prisma.PrismaPromise<null>,
+          : db.authorization.findFirst({ take: 0 }),
 
         // create access token
         db.authorization.upsert({
