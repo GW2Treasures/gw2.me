@@ -1,7 +1,9 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { Icon } from '@gw2treasures/ui/icons/Icon';
 import { AccountsResponse, Scope } from '@gw2me/client';
 import { client } from './client';
+import styles from './App.module.css';
 
 export interface AppProps {
   // TODO: add props
@@ -82,8 +84,17 @@ export const App: FC<AppProps> = ({ }) => {
     setState({ step: Step.LOADING_ACCOUNTS, access_token })
   }, []);
 
+  const createSubtoken = useCallback(async (accountId: string) => {
+    if(state.step !== Step.READY) {
+      return;
+    }
+
+    const subtoken = await client.api(state.access_token).subtoken(accountId);
+    navigator.clipboard.writeText(subtoken.subtoken);
+  }, [state]);
+
   if(isLoadingStep(state.step)) {
-    return <>Loading... ({state.step}) <a onClick={() => chrome.storage.sync.clear().then(() => setState({ step: Step.INITIAL }))}>Reset</a></>
+    return <><Icon icon="loading"/> Loading... ({state.step})</>
   }
 
   return (
@@ -95,9 +106,9 @@ export const App: FC<AppProps> = ({ }) => {
         <Button onClick={login} icon="gw2me">Login</Button>
       )}
       {state.step === Step.READY && (
-        <ul>
+        <ul className={styles.accountList}>
           {state.accounts.map((account) => (
-            <li key={account.id}>{account.name}</li>
+            <li key={account.id}>{account.name} <Button icon="copy" onClick={() => createSubtoken(account.id)}>Copy Token</Button></li>
           ))}
         </ul>
       )}
