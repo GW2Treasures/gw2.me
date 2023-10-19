@@ -4,6 +4,9 @@
 
   display: flex;
   gap: 32px;
+  max-width: 1920px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .left {
@@ -15,6 +18,9 @@
 
 .right {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .title {
@@ -28,6 +34,8 @@
 .browser {
   background: #fff;
   min-height: 400px;
+  max-height: 920px;
+  height: 100%;
   border-radius: 8px;
   position: relative;
   display: flex;
