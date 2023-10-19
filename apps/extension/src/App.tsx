@@ -1,5 +1,7 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
 import { Icon } from '@gw2treasures/ui/icons/Icon';
 import { AccountsResponse, Scope } from '@gw2me/client';
 import { client } from './client';
@@ -38,7 +40,7 @@ type State = {
 
 export const App: FC<AppProps> = ({ }) => {
   const [state, setState] = useState<State>({ step: Step.INITIAL });
-  console.log(state);
+  const [accountState, setAccountState] = useState<Record<string, undefined | 'loading' | 'copied'>>({});
 
   useEffect(() => {
     const loadAccessToken = async () => {
@@ -64,7 +66,9 @@ export const App: FC<AppProps> = ({ }) => {
 
       client.api(state.access_token).accounts().then((({ accounts }) => {
         setState({ step: Step.READY, access_token: state.access_token, accounts });
-      }));
+      })).catch(() => {
+        setState({ step: Step.AUTH_REQUIRED });
+      });
     }
   }, [state])
 
@@ -84,17 +88,35 @@ export const App: FC<AppProps> = ({ }) => {
     setState({ step: Step.LOADING_ACCOUNTS, access_token })
   }, []);
 
+  const logout = useCallback(async () => {
+    await self.chrome.storage.sync.remove('access_token');
+    setState({ step: Step.AUTH_REQUIRED })
+  }, []);
+
   const createSubtoken = useCallback(async (accountId: string) => {
     if(state.step !== Step.READY) {
       return;
     }
 
+    setAccountState((accounts) => ({ ...accounts, [accountId]: 'loading' }));
+
     const subtoken = await client.api(state.access_token).subtoken(accountId);
     navigator.clipboard.writeText(subtoken.subtoken);
+
+    setAccountState((accounts) => ({ ...accounts, [accountId]: 'copied' }));
+
+    setTimeout(() => {
+      setAccountState((accounts) => ({ ...accounts, [accountId]: undefined }));
+    }, 500);
   }, [state]);
 
   if(isLoadingStep(state.step)) {
-    return <><Icon icon="loading"/> Loading... ({state.step})</>
+    return (
+      <FlexRow>
+        <Icon icon="loading"/>
+        Loading
+      </FlexRow>
+    );
   }
 
   return (
@@ -106,11 +128,18 @@ export const App: FC<AppProps> = ({ }) => {
         <Button onClick={login} icon="gw2me">Login</Button>
       )}
       {state.step === Step.READY && (
-        <ul className={styles.accountList}>
-          {state.accounts.map((account) => (
-            <li key={account.id}>{account.name} <Button icon="copy" onClick={() => createSubtoken(account.id)}>Copy Token</Button></li>
-          ))}
-        </ul>
+        <>
+          <ul className={styles.accountList}>
+            {state.accounts.map((account) => (
+              <li key={account.id}>
+                {account.name}
+                <Button icon={accountState[account.id] === 'copied' ? 'checkmark' : accountState[account.id] === 'loading' ? 'loading' : 'copy'} onClick={() => createSubtoken(account.id)}>Copy Token</Button>
+              </li>
+            ))}
+          </ul>
+          <Separator/>
+          <Button onClick={logout}>Logout</Button>
+        </>
       )}
     </div>
   );
@@ -123,7 +152,18 @@ async function setup() {
 
     const { code_challenge, code_challenge_method, code_verifier } = await generatePKCEChallenge();
 
-    const authUrl = client.getAuthorizationUrl({ redirect_uri, scopes: [Scope.GW2_Account], code_challenge, code_challenge_method });
+    const authUrl = client.getAuthorizationUrl({ redirect_uri, code_challenge, code_challenge_method, scopes: [
+      Scope.GW2_Account,
+      Scope.GW2_Inventories,
+      Scope.GW2_Characters,
+      Scope.GW2_Tradingpost,
+      Scope.GW2_Wallet,
+      Scope.GW2_Unlocks,
+      Scope.GW2_Pvp,
+      Scope.GW2_Builds,
+      Scope.GW2_Progression,
+      Scope.GW2_Guilds,
+    ]});
 
     const callback = await chrome.identity.launchWebAuthFlow({
       interactive: true,
