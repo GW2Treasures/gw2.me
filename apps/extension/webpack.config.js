@@ -18,7 +18,18 @@ module.exports = {
   plugins: [
     new CopyPlugin({
       patterns: [
-        { from: 'manifest.json' },
+        { from: 'manifest.json', transform(input) {
+          const browser = process.env.EXTENSION_BROWSER || 'chromium';
+          const supportsBrowserSpecificSettings = browser !== 'chromium';
+
+          if(!supportsBrowserSpecificSettings) {
+            const json = JSON.parse(input);
+            delete json['browser_specific_settings'];
+            return JSON.stringify(json, null, '  ');
+          }
+
+          return input;
+        }},
         { from: 'popup.html' },
         { from: 'assets/**/*' },
       ]

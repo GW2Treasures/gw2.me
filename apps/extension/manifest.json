@@ -8,7 +8,10 @@
     "default_popup": "popup.html"
   },
   "icons": {
-    "128": "assets/gw2.me.png"
+    "128": "assets/gw2.me-128.png",
+    "48": "assets/gw2.me-48.png",
+    "32": "assets/gw2.me-32.png",
+    "16": "assets/gw2.me-16.png"
   },
   "browser_specific_settings": {
     "gecko": {

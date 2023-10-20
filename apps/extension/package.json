@@ -4,8 +4,11 @@
   "version": "0.0.1",
   "description": "Generate Guild Wars 2 Subtokens",
   "scripts": {
-    "build": "webpack build",
-    "watch": "webpack watch"
+    "build": "EXTENSION_BROWSER=firefox webpack build --mode=production",
+    "watch": "npm run watch:chromium",
+    "watch:chromium": "EXTENSION_BROWSER=chromium webpack watch --mode=development",
+    "watch:firefox": "EXTENSION_BROWSER=chromium webpack watch --mode=development",
+    "pack": "node pack.mjs"
   },
   "repository": {
     "type": "git",
@@ -18,9 +21,11 @@
   },
   "homepage": "https://github.com/GW2treasures/gw2.me#readme",
   "devDependencies": {
+    "@types/archiver": "^5.3.4",
     "@types/chrome": "0.0.248",
     "@types/react": "18.2.29",
     "@types/react-dom": "18.2.13",
+    "archiver": "^6.0.1",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.8.1",
     "style-loader": "^3.3.3",
