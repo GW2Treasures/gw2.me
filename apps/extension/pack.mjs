@@ -33,7 +33,7 @@ function buildOther() {
   const archive = archiver('zip');
   archive.pipe(output);
 
-  archive.directory('dist', 'gw2.me');
+  archive.directory('dist', false);
 
   archive.finalize();
 }
