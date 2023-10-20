@@ -21,23 +21,23 @@
   },
   "homepage": "https://github.com/GW2treasures/gw2.me#readme",
   "devDependencies": {
-    "@types/archiver": "^5.3.4",
+    "@types/archiver": "5.3.4",
     "@types/chrome": "0.0.248",
     "@types/react": "18.2.29",
     "@types/react-dom": "18.2.13",
-    "archiver": "^6.0.1",
-    "copy-webpack-plugin": "^11.0.0",
-    "css-loader": "^6.8.1",
-    "style-loader": "^3.3.3",
+    "archiver": "6.0.1",
+    "copy-webpack-plugin": "11.0.0",
+    "css-loader": "6.8.1",
+    "style-loader": "3.3.3",
     "ts-loader": "9.5.0",
     "typescript": "5.2.2",
     "webpack-cli": "5.1.4"
   },
   "dependencies": {
-    "@fontsource/bitter": "^5.0.14",
-    "@gw2me/client": "^0.2.0",
-    "@gw2treasures/icons": "^0.0.11",
-    "@gw2treasures/ui": "^0.0.17",
+    "@fontsource/bitter": "5.0.14",
+    "@gw2me/client": "0.2.0",
+    "@gw2treasures/icons": "0.0.11",
+    "@gw2treasures/ui": "0.0.17",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   }
