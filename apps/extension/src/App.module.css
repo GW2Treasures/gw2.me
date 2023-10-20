@@ -1,11 +1,45 @@
 .accountList {
   padding: 0;
-  margin: 0;
+  margin: -8px;
 }
 
 .accountList > li {
   display: flex;
   align-items: center;
+}
+
+.header {
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: 32px;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.title {
+  font-family: 'Bitter', serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 32px;
+}
+
+.content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.error {
+  color: var(--color-error);
+  margin-bottom: 1em;
+}
+
+.loginButton {
+  --icon-color: var(--color-brand);
+  justify-content: center;
+}
+
+.logoutButton {
+  padding: 6px 12px;
 }

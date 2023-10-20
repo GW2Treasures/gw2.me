@@ -110,37 +110,47 @@ export const App: FC<AppProps> = ({ }) => {
     }, 500);
   }, [state]);
 
-  if(isLoadingStep(state.step)) {
-    return (
-      <FlexRow>
-        <Icon icon="loading"/>
-        Loading
-      </FlexRow>
-    );
-  }
-
   return (
     <div>
-      {state.step === Step.AUTH_FAILED && (
-        <div>Authentication failed</div>
-      )}
-      {(state.step === Step.AUTH_REQUIRED || state.step === Step.AUTH_FAILED) && (
-        <Button onClick={login} icon="gw2me">Login</Button>
-      )}
-      {state.step === Step.READY && (
-        <>
-          <ul className={styles.accountList}>
-            {state.accounts.map((account) => (
-              <li key={account.id}>
-                {account.name}
-                <Button icon={accountState[account.id] === 'copied' ? 'checkmark' : accountState[account.id] === 'loading' ? 'loading' : 'copy'} onClick={() => createSubtoken(account.id)}>Copy Token</Button>
-              </li>
-            ))}
-          </ul>
-          <Separator/>
-          <Button onClick={logout}>Logout</Button>
-        </>
-      )}
+      <div className={styles.header}>
+        <div className={styles.title}>gw2.me</div>
+        {state.step === Step.READY && (
+          <Button onClick={logout} className={styles.logoutButton}>Logout</Button>
+        )}
+      </div>
+      <div className={styles.content}>
+        {isLoadingStep(state.step) ? (
+          <FlexRow>
+            <Icon icon="loading"/>
+            Loading
+          </FlexRow>
+        ) : (
+          <>
+            {state.step === Step.AUTH_FAILED && (
+              <div className={styles.error}>Authentication failed</div>
+            )}
+            {(state.step === Step.AUTH_REQUIRED || state.step === Step.AUTH_FAILED) && (
+              <>
+                <p>You need to connect with gw2.me to access your accounts.</p>
+                <Button onClick={login} icon="gw2me" className={styles.loginButton}>Continue with gw2.me</Button>
+              </>
+            )}
+            {state.step === Step.READY && (
+              <>
+                <ul className={styles.accountList}>
+                  {state.accounts.map((account) => (
+                    <li key={account.id}>
+                      <Button flex icon={accountState[account.id] === 'copied' ? 'checkmark' : accountState[account.id] === 'loading' ? 'loading' : 'copy'} onClick={() => createSubtoken(account.id)} appearance="menu">
+                        {account.name}
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
