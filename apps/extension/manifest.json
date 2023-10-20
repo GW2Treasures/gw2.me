@@ -9,5 +9,10 @@
   },
   "icons": {
     "128": "assets/gw2.me.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "extension@gw2.me"
+    }
   }
 }
