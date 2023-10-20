@@ -1,5 +1,6 @@
 .viewport {
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
 }
@@ -40,7 +41,7 @@
 }
 
 .footer {
-  padding: 32px 16px;
+  padding: 16px;
   border-top: 1px solid var(--color-border);
 }
 

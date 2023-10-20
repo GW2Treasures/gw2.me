@@ -143,6 +143,7 @@
   animation: cursor ease 10s 3s infinite backwards;
   will-change: transform;
   z-index: 1;
+  pointer-events: none;
 }
 
 @keyframes cursor {
