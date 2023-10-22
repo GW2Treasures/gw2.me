@@ -3,11 +3,12 @@ import styles from './PageLayout.module.css';
 
 interface PageLayoutProps {
   children: ReactNode;
+  thin?: boolean;
 };
 
-export const PageLayout: FC<PageLayoutProps> = ({ children }) => {
+export const PageLayout: FC<PageLayoutProps> = ({ children, thin = false }) => {
   return (
-    <main className={styles.page}>
+    <main className={thin ? styles.thinPage : styles.page}>
       {children}
     </main>
   );

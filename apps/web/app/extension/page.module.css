@@ -31,6 +31,12 @@
   line-height: 48px;
 }
 
+.extensionLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .browser {
   background: #fff;
   min-height: 400px;
@@ -143,6 +149,7 @@
   animation: cursor ease 10s 3s infinite backwards;
   will-change: transform;
   z-index: 1;
+  pointer-events: none;
 }
 
 @keyframes cursor {

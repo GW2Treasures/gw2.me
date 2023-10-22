@@ -13,7 +13,7 @@ function buildChromium() {
   archive.pipe(output);
 
   // add all files from dist except manifest
-  archive.glob('*', { cwd: 'dist', ignore: ['manifest.json'],  });
+  archive.glob('**', { cwd: 'dist', ignore: ['manifest.json'],  });
 
   // remove browser_specific_settings from manifest
   const manifest = JSON.parse(fs.readFileSync('dist/manifest.json', 'utf-8'));
