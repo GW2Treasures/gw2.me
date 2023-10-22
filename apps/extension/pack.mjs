@@ -38,5 +38,16 @@ function buildOther() {
   archive.finalize();
 }
 
+function buildSource() {
+  const output = fs.createWriteStream(path.resolve(artifactsDir, 'source.zip'));
+  const archive = archiver('zip');
+  archive.pipe(output);
+
+  archive.glob('**', { ignore: ['artifacts', 'dist', 'node_modules'] });
+
+  archive.finalize();
+}
+
 buildChromium();
 buildOther();
+buildSource();
