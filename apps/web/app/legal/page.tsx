@@ -1,10 +1,11 @@
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { PageTitle } from '@/components/Layout/PageTitle';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 
 export default function LegalPage() {
   return (
     <PageLayout thin>
-      <Headline id="legal">Legal Notice</Headline>
+      <PageTitle>Legal Notice</PageTitle>
       <p>Last updated October 22, 2023</p>
 
       <Headline id="contact">Contact</Headline>
@@ -21,3 +22,8 @@ export default function LegalPage() {
     </PageLayout>
   );
 }
+
+export const metadata = {
+  title: 'Legal Notice',
+  description: 'Last updated October 22, 2023',
+};

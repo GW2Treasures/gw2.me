@@ -1,0 +1,7 @@
+.title {
+  font-family: var(--font-bitter);
+  font-size: 32px;
+  line-height: 40px;
+  margin: 0 0 16px;
+  letter-spacing: 0.5px;
+}
