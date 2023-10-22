@@ -1,11 +1,12 @@
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { PageTitle } from '@/components/Layout/PageTitle';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { List } from '@gw2treasures/ui/components/Layout/List';
 
 export default function PrivacyPage() {
   return (
     <PageLayout thin>
-      <Headline id="privacy">Privacy Policy for gw2.me</Headline>
+      <PageTitle>Privacy Policy</PageTitle>
       <p>Last updated October 22, 2023</p>
 
       <p>At gw2.me one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by gw2.me and how we use it.</p>
@@ -86,3 +87,8 @@ export default function PrivacyPage() {
     </PageLayout>
   );
 }
+
+export const metadata = {
+  title: 'Privacy Policy',
+  description: 'Last updated October 22, 2023',
+};

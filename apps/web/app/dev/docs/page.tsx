@@ -4,15 +4,15 @@ import { Steps } from '@/components/Steps/Steps';
 import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { List } from '@gw2treasures/ui/components/Layout/List';
 import Link from 'next/link';
+import { PageTitle } from '@/components/Layout/PageTitle';
 
 export default function Docs() {
   return (
     <PageLayout>
-      <Headline id="docs">Documentation</Headline>
+      <PageTitle>Documentation</PageTitle>
 
       <p>gw2.me is a OAuth2 server. This page documents the basic concept, supported scopes and the available endpoints with requests parameters and response bodies.</p>
 
@@ -410,3 +410,8 @@ export interface AccountsResponse {
     name: string;
   }[]
 }
+
+export const metadata = {
+  title: 'Developer Documentation',
+  description: 'Documentation for integrating gw2.me',
+};

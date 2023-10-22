@@ -5,6 +5,7 @@ import styles from './page.module.css';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { Icon } from '@gw2treasures/ui';
+import { PageTitle } from '@/components/Layout/PageTitle';
 
 export const revalidate = 300;
 
@@ -22,7 +23,8 @@ export default async function DiscoverPage() {
 
   return (
     <PageLayout>
-      <Headline id="applications">Discover applications using gw2.me</Headline>
+      <PageTitle>Discover</PageTitle>
+      <p>Here are some of the applications that support gw2.me.</p>
       <div className={styles.apps}>
         {applications.map((app) => (
           <a key={app.id} className={styles.app} href={app.publicUrl} target="_blank" rel="noreferrer noopener">
@@ -35,3 +37,8 @@ export default async function DiscoverPage() {
     </PageLayout>
   );
 }
+
+export const metadata = {
+  title: 'Discover',
+  description: 'Discover applications with gw2.me integration',
+};
