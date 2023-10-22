@@ -87,7 +87,7 @@ export async function editApplication(id: string, _: FormState, form: FormData):
     return { error: 'Invalid image' };
   }
 
-  let imageId: string | null = null;
+  let imageId: string | undefined;
   try {
     if(imageRaw !== null && imageRaw.size > 0) {
       // get source image buffer
