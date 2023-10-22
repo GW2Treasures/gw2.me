@@ -1,8 +1,6 @@
-import { PageLayout } from '@/components/Layout/PageLayout';
 import styles from './page.module.css';
-import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Icon, cx } from '@gw2treasures/ui';
-import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 export default function ExtensionPage() {
   return (
@@ -10,13 +8,17 @@ export default function ExtensionPage() {
       <main className={styles.left}>
         <div className={styles.title} id="extension">Browser Extension</div>
         <p>Get the gw2.me browser extension to generate Subtokens on the fly for tools that do not have gw2.me integration.</p>
-        <p>Soon&trade; for Google Chrome, Microsoft Edge, Firefox and more. Join the <ExternalLink href="https://discord.com/invite/gvx6ZSE">gw2treasures Discord</ExternalLink> to stay up-to-date.</p>
+        <div className={styles.extensionLinks}>
+          <LinkButton external appearance="menu" icon="chevron-right" href="#">Get for Google Chrome - soon&trade;</LinkButton>
+          <LinkButton external appearance="menu" icon="chevron-right" href="#">Get for Microsoft Edge - soon&trade;</LinkButton>
+          <LinkButton external appearance="menu" icon="chevron-right" target="_blank" href="https://addons.mozilla.org/firefox/addon/gw2-me/">Get for Mozilla Firefox</LinkButton>
+        </div>
       </main>
       <aside className={styles.right} aria-hidden>
         <div className={styles.browser}>
           <div className={styles.cursor}/>
           <div className={styles.addressBar}>
-            <Icon icon="unlock"/> example.com
+            <Icon icon="lock"/> example.com
           </div>
           <div className={styles.extension}>
             <Icon icon="gw2me" color="#b7000d"/>

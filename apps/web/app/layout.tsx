@@ -46,6 +46,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             <Link href="/" className={styles.title}>gw2.me</Link>
             <div className={styles.mobileHidden}>by <a href="https://gw2treasures.com/">gw2treasures.com</a></div>
             <LinkButton appearance="menu" href="/discover" className={styles.mobileHidden}>Discover</LinkButton>
+            <LinkButton appearance="menu" href="/extension" className={styles.mobileHidden}>Extension</LinkButton>
             <div className={styles.right}>
               <LinkButton appearance="menu" href={user ? '/profile' : '/login'} icon="user">{user ? user.name : 'Login'}</LinkButton>
             </div>
