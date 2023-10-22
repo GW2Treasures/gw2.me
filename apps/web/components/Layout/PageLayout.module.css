@@ -2,3 +2,10 @@
   flex: 1;
   padding: 16px;
 }
+
+.thinPage {
+  composes: page;
+
+  max-width: 960px;
+  margin: 0 auto;
+}

@@ -52,7 +52,12 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           </div>
           {children}
           <div className={styles.footer}>
-            <b>gw2.me</b> by <a href="https://next.gw2treasures.com/">gw2treasures.com</a> © {new Date().getFullYear()}
+            <div className={styles.copyright}><b>gw2.me</b> by <a href="https://next.gw2treasures.com/">gw2treasures.com</a> © {new Date().getFullYear()}</div>
+            <div className={styles.footerLinks}>
+              <Link href="/dev/docs">Developer Documentation</Link>
+              <Link href="/legal">Legal Notice</Link>
+              <Link href="/privacy">Privacy Policy</Link>
+            </div>
           </div>
         </div>
         <div className={styles.disclaimer}>

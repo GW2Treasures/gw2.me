@@ -43,10 +43,20 @@
 .footer {
   padding: 16px;
   border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-.footer > a {
+.copyright > a {
   color: inherit;
+}
+
+.footerLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .disclaimer {
