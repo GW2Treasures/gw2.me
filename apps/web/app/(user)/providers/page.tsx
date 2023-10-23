@@ -60,6 +60,7 @@ export default async function ProfilePage() {
       </Table>
 
       <form method="POST">
+        <input type="hidden" name="type" value="add"/>
         <FlexRow>
           <Button type="submit" formAction="/auth/login/discord">Add Discord</Button>
         </FlexRow>

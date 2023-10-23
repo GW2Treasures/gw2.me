@@ -1,11 +1,12 @@
 import { redirect } from 'next/navigation';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 import parseUserAgent from 'ua-parser-js';
 import { authCookie } from '@/lib/cookie';
-import { getUrlFromParts, getUrlPartsFromRequest } from '@/lib/urlParts';
 import { getUser } from '@/lib/getUser';
-import { UserProviderType } from '@gw2me/database';
+import { UserProviderRequestType, UserProviderType } from '@gw2me/database';
+import { cookies } from 'next/headers';
+import { isRedirectError } from 'next/dist/client/components/redirect';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,22 +19,20 @@ export async function GET(request: NextRequest) {
     redirect('/login?error');
   }
 
+  // get code from querystring
+  const { searchParams } = new URL(request.url);
+  const code = searchParams.get('code');
+  const state = searchParams.get('state');
+
+  // code and state are required
+  if(!code || !state) {
+    redirect('/login?error');
+  }
+
   try {
-    // get code from querystring
-    const { searchParams } = new URL(request.url);
-    const code = searchParams.get('code');
-
-    const user = await getUser();
-
-    if(!code) {
-      redirect('/login?error');
-    }
-
-    // build callback url
-    const parts = getUrlPartsFromRequest(request);
-    const callbackUrl = getUrlFromParts({
-      ...parts,
-      path: '/auth/callback/discord'
+    // get request from db
+    const authRequest = await db.userProviderRequest.findUniqueOrThrow({
+      where: { state }
     });
 
     // build token request
@@ -43,7 +42,8 @@ export async function GET(request: NextRequest) {
       'client_id': clientId,
       'client_secret': clientSecret,
       'grant_type': 'authorization_code',
-      'redirect_uri': callbackUrl,
+      'redirect_uri': authRequest.redirect_uri,
+      'code_verifier': authRequest.code_verifier!,
     });
 
     // get discord token
@@ -61,7 +61,10 @@ export async function GET(request: NextRequest) {
     // build provider key
     const provider = { provider: UserProviderType.discord, providerAccountId: profile.id };
 
-    const displayName = profile.discriminator === '0' ? profile.username : `${profile.username}#${profile.discriminator.padStart(4, '0')}`;
+    // get discord user name (darthmaim or legacy darthmaim#1234)
+    const displayName = profile.discriminator !== '0'
+      ? `${profile.username}#${profile.discriminator.padStart(4, '0')}`
+      : profile.username;
 
     // try to find this account in db
     const { userId } = await db.userProvider.upsert({
@@ -70,31 +73,44 @@ export async function GET(request: NextRequest) {
         ...provider,
         displayName,
         token,
-        user: user
-          ? { connect: { id: user.id }}
-          : { create: { name: profile.username, email: profile.email }}
+        user: authRequest.type === UserProviderRequestType.login
+          ? { create: { name: profile.username, email: profile.email }}
+          : { connect: { id: authRequest.userId! }}
       },
       update: { displayName, token }
     });
 
-    if(!user || user.id !== userId) {
-      // parse user-agent to set session name
-      const userAgentString = request.headers.get('user-agent');
-      const userAgent = userAgentString ? parseUserAgent(userAgentString) : undefined;
-      const sessionName = userAgent ? `${userAgent.browser.name} on ${userAgent.os.name}` : 'Session';
+    const existingSession = await getUser();
 
-      // create a new session
-      const session = await db.userSession.create({ data: { info: sessionName, userId }});
-
-      // send response with session cookie
-      const profileUrl = getUrlFromParts({ ...parts, path: '/login/return' });
-      const response = NextResponse.redirect(profileUrl);
-      response.cookies.set(authCookie(session.id, parts.protocol === 'https:'));
-      return response;
-    } else {
-      redirect('/profile');
+    if(existingSession) {
+      if(existingSession.id === userId) {
+        // the existing session was for the same user and we can reuse it
+        redirect('/profile');
+      } else {
+        // just logged in with a different user - lets delete the old session
+        await db.userSession.delete({ where: { id: existingSession.sessionId }});
+      }
     }
+
+    // parse user-agent to set session name
+    const userAgentString = request.headers.get('user-agent');
+    const userAgent = userAgentString ? parseUserAgent(userAgentString) : undefined;
+    const sessionName = userAgent ? `${userAgent.browser.name} on ${userAgent.os.name}` : 'Session';
+
+    // create a new session
+    const session = await db.userSession.create({ data: { info: sessionName, userId }});
+
+    // set session cookie
+    const isHttps = new URL(authRequest.redirect_uri).protocol === 'https:';
+    cookies().set(authCookie(session.id, isHttps));
+
+    // redirect
+    redirect('/login/return');
   } catch(error) {
+    if(isRedirectError(error)) {
+      throw error;
+    }
+
     console.error(error);
     redirect('/login?error');
   }

@@ -54,7 +54,8 @@ model UserProvider {
 }
 
 model UserProviderRequest {
-  id String @id @default(uuid())
+  id    String @id @default(uuid())
+  state String @unique
 
   provider UserProviderType
   type     UserProviderRequestType
@@ -62,7 +63,6 @@ model UserProviderRequest {
   userId String?
 
   redirect_uri  String
-  state         String?
   code_verifier String?
   
   createdAt      DateTime   @default(now())
