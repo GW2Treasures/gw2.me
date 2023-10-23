@@ -1,7 +1,7 @@
 import { getUser } from '@/lib/getUser';
 import { redirect } from 'next/navigation';
 import { DevLogin } from './dev-login';
-import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
@@ -28,10 +28,12 @@ export default async function LoginPage({ searchParams }: { searchParams: { logo
         <Notice>Logout successful</Notice>
       )}
 
-      <FlexRow wrap>
-        <LinkButton external href="/auth/login/discord">Login with Discord</LinkButton>
-        {process.env.NODE_ENV !== 'production' && (<DevLogin/>)}
-      </FlexRow>
+      <form method="POST">
+        <FlexRow wrap>
+          <Button type="submit" formAction="/auth/login/discord">Login with Discord</Button>
+          {process.env.NODE_ENV !== 'production' && (<DevLogin/>)}
+        </FlexRow>
+      </form>
     </PageLayout>
   );
 }
