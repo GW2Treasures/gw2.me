@@ -1,18 +1,21 @@
 import { db } from '@/lib/db';
 import { getUser } from '@/lib/getUser';
 import { getUrlFromParts, getUrlPartsFromRequest } from '@/lib/urlParts';
-import { UserProviderRequestType, UserProviderType } from '@gw2me/database';
+import { UserProviderRequestType } from '@gw2me/database';
+import { providers } from 'app/auth/providers';
 import { createHash, randomBytes } from 'crypto';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-const clientId = process.env.DISCORD_CLIENT_ID;
+export async function POST(request: NextRequest, { params: { provider: providerName }}: { params: { provider: string }}): Promise<never> {
+  // get provider
+  const provider = providers[providerName];
 
-export async function POST(request: NextRequest): Promise<never> {
-  if(!clientId) {
-    console.error('DISCORD_CLIENT_ID not set');
+  // make sure provider exists and is configured
+  if(!provider) {
+    console.error(`Invalid provider ${provider}`);
     redirect('/login?error');
   }
 
@@ -27,11 +30,12 @@ export async function POST(request: NextRequest): Promise<never> {
   // build callback url
   const redirect_uri = getUrlFromParts({
     ...getUrlPartsFromRequest(request),
-    path: '/auth/callback/discord'
+    path: `/auth/callback/${providerName}`
   });
 
-  let userId: string | undefined;
 
+  // if this is a 'add' request make sure the user is logged in
+  let userId: string | undefined;
   if(type === UserProviderRequestType.add) {
     const user = await getUser();
     if(!user) {
@@ -41,13 +45,18 @@ export async function POST(request: NextRequest): Promise<never> {
     userId = user.id;
   }
 
+  // generate state
   const state = randomBytes(16).toString('base64url');
+
+  // genereate PKCE verifier and challenge
   const code_verifier = randomBytes(32).toString('base64url');
+  const code_challenge_method = 'S256';
   const code_challenge = createHash('sha256').update(code_verifier).digest('base64url');
 
+  // store auth request in db so we can later verify the state and code challenge and append additional data
   await db.userProviderRequest.create({
     data: {
-      provider: UserProviderType.discord,
+      provider: provider.id,
       type,
       userId,
       state,
@@ -57,18 +66,6 @@ export async function POST(request: NextRequest): Promise<never> {
     select: { id: true }
   });
 
-  // build discord url
-  const searchParams = new URLSearchParams({
-    'client_id': clientId,
-    'scope': 'identify email',
-    'response_type': 'code',
-    'prompt': 'none',
-    code_challenge,
-    code_challenge_method: 'S256',
-    redirect_uri,
-    state,
-  });
-
-  // redirect to discord
-  redirect(`https://discord.com/oauth2/authorize?${searchParams.toString()}`);
+  // redirect to provider
+  redirect(provider.getAuthUrl({ state, redirect_uri, code_challenge, code_challenge_method }));
 }
