@@ -8,6 +8,7 @@ import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { revalidatePath } from 'next/cache';
 
 const getUserData = cache(async () => {
   const session = await getUser();
@@ -66,7 +67,7 @@ export default async function ProfilePage() {
         </FlexRow>
       </form>
 
-      <Headline id="sessions">Sessions</Headline>
+      <Headline id="sessions" actions={<form action={revokeAllSessions}><Button type="submit" icon="delete">Revoke all</Button></form>}>Sessions</Headline>
       <Table>
         <thead>
           <tr>
@@ -92,3 +93,19 @@ export default async function ProfilePage() {
 export const metadata = {
   title: 'Login Providers'
 };
+
+async function revokeAllSessions() {
+  'use server';
+
+  const user = await getUser();
+
+  if(!user) {
+    return;
+  }
+
+  await db.userSession.deleteMany({
+    where: { id: { not: user.sessionId }, userId: user.id }
+  });
+
+  revalidatePath('/providers');
+}
