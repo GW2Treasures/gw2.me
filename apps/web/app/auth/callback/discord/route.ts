@@ -5,6 +5,7 @@ import parseUserAgent from 'ua-parser-js';
 import { authCookie } from '@/lib/cookie';
 import { getUrlFromParts, getUrlPartsFromRequest } from '@/lib/urlParts';
 import { getUser } from '@/lib/getUser';
+import { UserProviderType } from '@gw2me/database';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,7 +59,7 @@ export async function GET(request: NextRequest) {
     }).then(getJsonIfOk) as { id: string, username: string, email: string, discriminator: string };
 
     // build provider key
-    const provider = { provider: 'discord', providerAccountId: profile.id };
+    const provider = { provider: UserProviderType.discord, providerAccountId: profile.id };
 
     const displayName = profile.discriminator === '0' ? profile.username : `${profile.username}#${profile.discriminator.padStart(4, '0')}`;
 
