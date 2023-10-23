@@ -6,6 +6,8 @@ import { cache } from 'react';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { Button } from '@gw2treasures/ui/components/Form/Button';
 
 const getUserData = cache(async () => {
   const session = await getUser();
@@ -56,6 +58,12 @@ export default async function ProfilePage() {
           ))}
         </tbody>
       </Table>
+
+      <form method="POST">
+        <FlexRow>
+          <Button type="submit" formAction="/auth/login/discord">Add Discord</Button>
+        </FlexRow>
+      </form>
 
       <Headline id="sessions">Sessions</Headline>
       <Table>

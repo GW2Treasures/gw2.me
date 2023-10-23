@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 import parseUserAgent from 'ua-parser-js';
 import { authCookie } from '@/lib/cookie';
 import { getUrlFromParts, getUrlPartsFromRequest } from '@/lib/urlParts';
+import { getUser } from '@/lib/getUser';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +21,8 @@ export async function GET(request: NextRequest) {
     // get code from querystring
     const { searchParams } = new URL(request.url);
     const code = searchParams.get('code');
+
+    const user = await getUser();
 
     if(!code) {
       redirect('/login?error');
@@ -66,24 +69,30 @@ export async function GET(request: NextRequest) {
         ...provider,
         displayName,
         token,
-        user: { create: { name: profile.username, email: profile.email }}
+        user: user
+          ? { connect: { id: user.id }}
+          : { create: { name: profile.username, email: profile.email }}
       },
       update: { displayName, token }
     });
 
-    // parse user-agent to set session name
-    const userAgentString = request.headers.get('user-agent');
-    const userAgent = userAgentString ? parseUserAgent(userAgentString) : undefined;
-    const sessionName = userAgent ? `${userAgent.browser.name} on ${userAgent.os.name}` : 'Session';
+    if(!user || user.id !== userId) {
+      // parse user-agent to set session name
+      const userAgentString = request.headers.get('user-agent');
+      const userAgent = userAgentString ? parseUserAgent(userAgentString) : undefined;
+      const sessionName = userAgent ? `${userAgent.browser.name} on ${userAgent.os.name}` : 'Session';
 
-    // create a new session
-    const session = await db.userSession.create({ data: { info: sessionName, userId }});
+      // create a new session
+      const session = await db.userSession.create({ data: { info: sessionName, userId }});
 
-    // send response with session cookie
-    const profileUrl = getUrlFromParts({ ...parts, path: '/login/return' });
-    const response = NextResponse.redirect(profileUrl);
-    response.cookies.set(authCookie(session.id, parts.protocol === 'https:'));
-    return response;
+      // send response with session cookie
+      const profileUrl = getUrlFromParts({ ...parts, path: '/login/return' });
+      const response = NextResponse.redirect(profileUrl);
+      response.cookies.set(authCookie(session.id, parts.protocol === 'https:'));
+      return response;
+    } else {
+      redirect('/profile');
+    }
   } catch(error) {
     console.error(error);
     redirect('/login?error');
