@@ -10,9 +10,9 @@ export default function ExtensionPage() {
         <PageTitle className={styles.title}>Browser Extension</PageTitle>
         <p>Get the gw2.me browser extension to generate Subtokens on the fly for tools that do not have gw2.me integration.</p>
         <div className={styles.extensionLinks}>
-          <LinkButton external appearance="menu" icon="chevron-right" href="#">Get for Google Chrome - soon&trade;</LinkButton>
-          <LinkButton external appearance="menu" icon="chevron-right" href="#">Get for Microsoft Edge - soon&trade;</LinkButton>
+          <LinkButton external appearance="menu" icon="chevron-right" target="_blank" href="https://chromewebstore.google.com/detail/gw2me/pfggcioahgcppjhdmpgknbhfhkhjfmkh">Get for Google Chrome</LinkButton>
           <LinkButton external appearance="menu" icon="chevron-right" target="_blank" href="https://addons.mozilla.org/firefox/addon/gw2-me/">Get for Mozilla Firefox</LinkButton>
+          <LinkButton external appearance="menu" icon="chevron-right" href="#">Get for Microsoft Edge - soon&trade;</LinkButton>
         </div>
       </main>
       <aside className={styles.right} aria-hidden>
