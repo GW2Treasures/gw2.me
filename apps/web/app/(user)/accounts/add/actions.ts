@@ -43,8 +43,9 @@ export async function addAccount(returnTo: string | undefined, previousState: Fo
     return { error: 'API key already added' };
   }
 
+  let accountId: string | undefined;
   try {
-    await db.account.upsert({
+    const { id } = await db.account.upsert({
       where: { accountId_userId: { accountId: account.id, userId: user.id }},
       create: {
         accountId: account.id,
@@ -71,10 +72,12 @@ export async function addAccount(returnTo: string | undefined, previousState: Fo
         }
       }
     });
+
+    accountId = id;
   } catch(error) {
     console.error(error);
     return { error: 'Could not save api token' };
   }
 
-  redirect(returnTo ?? '/profile');
+  redirect(returnTo ?? `/accounts/${accountId}`);
 }
