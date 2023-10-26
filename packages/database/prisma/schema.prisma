@@ -13,6 +13,8 @@ model User {
   name  String  @unique
   email String? @unique
 
+  roles UserRole[]
+
   sessions  UserSession[]  @relation("session")
   providers UserProvider[] @relation("provider")
 
@@ -23,6 +25,10 @@ model User {
   authorizations Authorization[] @relation("userAuthorization")
 
   accounts       Account[]      @relation("userAccount")
+}
+
+enum UserRole {
+  Admin
 }
 
 model UserSession {
