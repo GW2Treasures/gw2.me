@@ -1,6 +1,5 @@
 import { FC, ReactNode } from 'react';
 import styles from './NavLayout.module.css';
-import { PageLayout } from './PageLayout';
 
 export interface NavLayoutProps {
   content: ReactNode;
