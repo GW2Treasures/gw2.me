@@ -1,7 +1,7 @@
 'use client';
 
 import { FC, ReactNode, useCallback } from 'react';
-import { experimental_useFormState as useFormState } from 'react-dom';
+import { useFormState } from 'react-dom';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 
 export interface FormState {
@@ -10,7 +10,7 @@ export interface FormState {
 }
 
 export interface FormProps<State> {
-  action: (state: State, payload: FormData) => State | Promise<State>,
+  action: (state: State, payload: FormData) => Promise<State>,
   initialState?: State,
   children: ReactNode;
   id?: string;
