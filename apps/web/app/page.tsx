@@ -25,10 +25,10 @@ export default async function HomePage() {
 
       <Headline id="how">How it works</Headline>
       <ol className={styles.how}>
-        <li>Create a gw2.me account<Link href="/login">Login</Link></li>
-        <li>Add API keys for all your Guild Wars 2 accounts</li>
-        <li>Login to your favourite applications with gw2.me<Link href="/discover">Discover</Link></li>
-        <li>Review and revoke access at any time</li>
+        <li>Create a gw2.me account. <Link href="/login">Login</Link></li>
+        <li>Add API keys for all your Guild Wars 2 accounts.</li>
+        <li><span><Link href="/discover">Discover</Link> apps to use with gw2.me or get our <Link href="/extension">browser extension</Link>.</span></li>
+        <li>Review and revoke access at any time.</li>
       </ol>
 
       <Headline id="devs">For developers</Headline>
