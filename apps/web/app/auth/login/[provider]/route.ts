@@ -5,18 +5,20 @@ import { UserProviderRequestType } from '@gw2me/database';
 import { providers } from 'app/auth/providers';
 import { createHash, randomBytes } from 'crypto';
 import { redirect } from 'next/navigation';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: NextRequest, { params: { provider: providerName }}: { params: { provider: string }}): Promise<never> {
+export async function POST(request: NextRequest, { params }: { params: { provider: string }}) {
   // get provider
-  const provider = providers[providerName];
+  const provider = providers[params.provider];
 
   // make sure provider exists and is configured
   if(!provider) {
-    console.error(`Invalid provider ${provider}`);
-    redirect('/login?error');
+    console.error(`Invalid provider ${params.provider}`);
+    // make sure to redirect with status 302, not 307 (default of next.js redirect())
+    // because this is a POST route and /login?error is GET
+    return new NextResponse(null, { status: 302, headers: { Location: '/login?error' }});
   }
 
   // get formdata
@@ -30,7 +32,7 @@ export async function POST(request: NextRequest, { params: { provider: providerN
   // build callback url
   const redirect_uri = getUrlFromParts({
     ...getUrlPartsFromRequest(request),
-    path: `/auth/callback/${providerName}`
+    path: `/auth/callback/${provider.id}`
   });
 
 

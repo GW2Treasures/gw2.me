@@ -3,6 +3,7 @@
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { useRouter } from 'next/navigation';
 import { FC, useCallback } from 'react';
+import styles from './form.module.css';
 
 export interface DevLoginProps {}
 
@@ -17,6 +18,6 @@ export const DevLogin: FC<DevLoginProps> = ({ }) => {
   }, [push]);
 
   return (
-    <Button onClick={login}>Dev Login</Button>
+    <Button className={styles.button} onClick={login}>Dev Login</Button>
   );
 };
