@@ -3,6 +3,8 @@ import { FC } from 'react';
 import { DevLogin } from './dev-login';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import styles from './form.module.css';
+import discord from './discord-mark-blue.svg';
+import Image from 'next/image';
 
 interface LoginFormProps {
   returnTo?: string;
@@ -17,7 +19,7 @@ export const LoginForm: FC<LoginFormProps> = ({ returnTo }) => {
       <Notice type="warning">If you have used gw2.me before, please use the same login provider.</Notice>
 
       <div className={styles.buttons}>
-        <Button className={styles.button} type="submit" formAction="/auth/login/discord">Login with Discord</Button>
+        <Button className={styles.button} type="submit" formAction="/auth/login/discord" icon={<Image src={discord} alt=""/>}> Login with Discord</Button>
         {process.env.NODE_ENV !== 'production' && (<DevLogin/>)}
       </div>
     </form>

@@ -17,6 +17,6 @@ export const DevLogin: FC<DevLoginProps> = ({ }) => {
   }, []);
 
   return (
-    <Button className={styles.button} onClick={login}>Dev Login</Button>
+    <Button className={styles.button} onClick={login} icon="user">Dev Login</Button>
   );
 };
