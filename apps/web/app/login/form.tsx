@@ -5,13 +5,15 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import styles from './form.module.css';
 
 interface LoginFormProps {
-  // TODO: define props
+  returnTo?: string;
 };
 
-export const LoginForm: FC<LoginFormProps> = ({ }) => {
+export const LoginForm: FC<LoginFormProps> = ({ returnTo }) => {
+  // TODO: update RETURN_TO to only handle trusted urls (encode it? JWT?)
 
   return (
     <form method="POST">
+      {returnTo && (<input type="hidden" name="RETURN_TO" value={returnTo}/>)}
       <Notice type="warning">If you have used gw2.me before, please use the same login provider.</Notice>
 
       <div className={styles.buttons}>

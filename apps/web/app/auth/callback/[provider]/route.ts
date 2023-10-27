@@ -31,6 +31,14 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     redirect('/login?error');
   }
 
+  // handle return url
+  let returnUrl: string | undefined;
+  if(cookies().has(`${state}.return`)) {
+    returnUrl = cookies().get(`${state}.return`)?.value;
+
+    cookies().delete(`${state}.return`);
+  }
+
   try {
     // get request from db
     const authRequest = await db.userProviderRequest.findUniqueOrThrow({
@@ -70,7 +78,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     if(existingSession) {
       if(existingSession.id === userId) {
         // the existing session was for the same user and we can reuse it
-        redirect('/profile');
+        redirect(returnUrl ?? '/profile');
       } else {
         // just logged in with a different user - lets delete the old session
         await db.userSession.delete({ where: { id: existingSession.sessionId }});
@@ -90,7 +98,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     cookies().set(authCookie(session.id, isHttps));
 
     // redirect
-    redirect('/login/return');
+    redirect(returnUrl ?? '/profile');
   } catch(error) {
     if(isRedirectError(error)) {
       throw error;

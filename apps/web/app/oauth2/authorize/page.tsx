@@ -9,7 +9,7 @@ import { Icon, IconProp } from '@gw2treasures/ui';
 import { FC, ReactNode } from 'react';
 import { AuthorizeRequestParams, getApplicationByClientId, validateRequest } from './validate';
 import { hasGW2Scopes } from '@/lib/scope';
-import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { db } from '@/lib/db';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { PermissionList } from '@/components/Permissions/PermissionList';
@@ -21,7 +21,6 @@ import { createRedirectUrl } from '@/lib/redirectUrl';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { AuthorizationType } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
-import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
 import { LoginForm } from 'app/login/form';
 
 
@@ -113,7 +112,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
       {!user ? (
         <>
           <p className={styles.intro}>To authorize this application, you need to login in first.</p>
-          <LoginForm/>
+          <LoginForm returnTo={returnUrl}/>
           <LinkButton external href={cancelUrl.toString()} flex appearance="tertiary" className={styles.button}>Cancel</LinkButton>
         </>
       ) : (

@@ -1,9 +1,11 @@
 import { db } from '@/lib/db';
+import { getFormDataString } from '@/lib/form-data';
 import { getUser } from '@/lib/getUser';
 import { getUrlFromParts, getUrlPartsFromRequest } from '@/lib/urlParts';
 import { UserProviderRequestType } from '@gw2me/database';
 import { providers } from 'app/auth/providers';
 import { createHash, randomBytes } from 'crypto';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -49,6 +51,13 @@ export async function POST(request: NextRequest, { params }: { params: { provide
 
   // generate state
   const state = randomBytes(16).toString('base64url');
+
+  // set return cookie
+  // TODO: we could also save this in the db instead of as a cookie
+  const returnTo = getFormDataString(formData, 'RETURN_TO');
+  if(returnTo) {
+    cookies().set(`${state}.return`, returnTo, { maxAge: 300 });
+  }
 
   // genereate PKCE verifier and challenge
   const code_verifier = randomBytes(32).toString('base64url');
