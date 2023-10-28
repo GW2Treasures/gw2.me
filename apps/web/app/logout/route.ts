@@ -1,21 +1,25 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
-import { getUrlFromParts, getUrlPartsFromRequest } from '@/lib/urlParts';
-import { SessionCookieName, authCookie } from '@/lib/cookie';
+import { SessionCookieName } from '@/lib/cookie';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export async function GET(request: NextRequest) {
-  const sessionId = request.cookies.get(SessionCookieName)?.value ?? '';
-
-  if(sessionId) {
-    await db.userSession.deleteMany({ where: { id: sessionId }});
+  // check if we even have a session to logout
+  if(!cookies().has(SessionCookieName)) {
+    redirect('/login');
   }
 
-  // build login url
-  const parts = getUrlPartsFromRequest(request);
-  const loginUrl = getUrlFromParts({ ...parts, path: '/login?logout' });
+  // get the session id
+  const sessionId = cookies().get(SessionCookieName)!.value;
 
-  const response = NextResponse.redirect(loginUrl);
-  response.cookies.set({ ...authCookie('', parts.protocol === 'https:'), expires: new Date(0) });
+  // try to delete session in db
+  // use deleteMany instead of delete so it doesn't fail if there is no matching session in db
+  await db.userSession.deleteMany({ where: { id: sessionId }});
 
-  return response;
+  // delete session cookie
+  cookies().delete(SessionCookieName);
+
+  // redirect to login and show logout
+  redirect('/login?logout');
 }
