@@ -95,7 +95,7 @@ function verifyPrompt({ prompt }: Partial<AuthorizeRequestParams>) {
   assert([undefined, 'none', 'consent'].includes(prompt), OAuth2ErrorCode.invalid_request, 'invalid prompt');
 }
 
-export async function validateRequest(request: Partial<AuthorizeRequestParams>): Promise<{ error: string, request?: undefined } | { error: undefined, request: AuthorizeRequestParams }> {
+export const validateRequest = cache(async function validateRequest(request: Partial<AuthorizeRequestParams>): Promise<{ error: string, request?: undefined } | { error: undefined, request: AuthorizeRequestParams }> {
   try {
     // first verify client_id and redirect_uri
     await verifyClientId(request);
@@ -142,4 +142,4 @@ export async function validateRequest(request: Partial<AuthorizeRequestParams>):
 
     redirect(redirect_uri.toString());
   }
-}
+});

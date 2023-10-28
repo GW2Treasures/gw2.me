@@ -22,9 +22,13 @@ import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { AuthorizationType } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
 import { LoginForm } from 'app/login/form';
+import { Metadata } from 'next';
 
+interface AuthorizePageProps {
+  searchParams: Partial<AuthorizeRequestParams> & Record<string, string>
+}
 
-export default async function AuthorizePage({ searchParams }: { searchParams: Partial<AuthorizeRequestParams> & Record<string, string> }) {
+export default async function AuthorizePage({ searchParams }: AuthorizePageProps) {
   // build return url for /account/add?return=X
   const returnUrl = `/oauth2/authorize?${new URLSearchParams(searchParams).toString()}`;
 
@@ -190,6 +194,22 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
       )}
     </>
   );
+}
+
+export async function generateMetadata({ searchParams }: AuthorizePageProps): Promise<Metadata> {
+  const { error, request } = await validateRequest(searchParams);
+
+  if(error !== undefined) {
+    return {
+      title: error
+    };
+  }
+
+  const application = await getApplicationByClientId(request.client_id);
+
+  return {
+    title: `Authorize ${application.name}`
+  };
 }
 
 export interface ScopeItemProps {
