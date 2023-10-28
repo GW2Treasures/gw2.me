@@ -2,11 +2,11 @@ import { redirect } from 'next/navigation';
 import { NextRequest, userAgent } from 'next/server';
 import { db } from '@/lib/db';
 import { authCookie } from '@/lib/cookie';
-import { getUser } from '@/lib/getUser';
 import { UserProviderRequestType } from '@gw2me/database';
 import { cookies } from 'next/headers';
 import { isRedirectError } from 'next/dist/client/components/redirect';
 import { providers } from 'app/auth/providers';
+import { getSession } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     });
 
     // get existing session so we can reuse it
-    const existingSession = await getUser();
+    const existingSession = await getSession();
 
     if(existingSession) {
       if(existingSession.id === userId) {
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
         redirect(returnUrl ?? '/profile');
       } else {
         // just logged in with a different user - lets delete the old session
-        await db.userSession.delete({ where: { id: existingSession.sessionId }});
+        await db.userSession.delete({ where: { id: existingSession.id }});
       }
     }
 

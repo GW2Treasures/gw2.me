@@ -1,13 +1,13 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { randomBytes, scrypt } from 'crypto';
 
 export async function resetClientSecret(applicationId: string) {
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
+  if(!session) {
     throw new Error();
   }
 
@@ -27,7 +27,7 @@ export async function resetClientSecret(applicationId: string) {
   const hashHex = hash.toString('base64');
 
   await db.application.updateMany({
-    where: { ownerId: user.id, id: applicationId },
+    where: { ownerId: session.userId, id: applicationId },
     data: {
       clientSecret: `${saltHex}:${hashHex}`
     }

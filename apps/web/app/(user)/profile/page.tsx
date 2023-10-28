@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { getUser } from '@/lib/getUser';
+import { getSession, getUser } from '@/lib/session';
 import { db } from '@/lib/db';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
@@ -18,28 +18,17 @@ import { revalidatePath } from 'next/cache';
 import { getFormDataString } from '@/lib/form-data';
 
 const getUserData = cache(async () => {
-  const session = await getUser();
-
-  if(!session) {
-    redirect('/login');
-  }
-
-  const user = await db.user.findUnique({
-    where: { id: session.id }
-  });
+  const user = await getUser();
 
   if(!user) {
     redirect('/login');
   }
 
-  return {
-    sessionId: session.sessionId,
-    user
-  };
+  return user;
 });
 
 export default async function ProfilePage() {
-  const { user } = await getUserData();
+  const user = await getUserData();
 
   return (
     <PageLayout>
@@ -75,7 +64,7 @@ export default async function ProfilePage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { user } = await getUserData();
+  const user = await getUserData();
 
   return {
     title: user.name,
@@ -90,9 +79,9 @@ async function updateSettings(_: FormState, formData: FormData): Promise<FormSta
   const emailRegex = /^(.+@.+)?$/;
 
   // get current user
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
+  if(!session) {
     return { error: 'Not logged in' };
   }
 
@@ -112,7 +101,7 @@ async function updateSettings(_: FormState, formData: FormData): Promise<FormSta
 
   // check if username is not already taken
   const userExists = await db.user.findFirst({
-    where: { name: username, id: { not: user.id }},
+    where: { name: username, id: { not: session.userId }},
     select: { id: true }
   });
 
@@ -122,7 +111,7 @@ async function updateSettings(_: FormState, formData: FormData): Promise<FormSta
 
   // save
   await db.user.update({
-    where: { id: user.id },
+    where: { id: session.userId },
     data: { name: username, email: email === '' ? null : email }
   });
 

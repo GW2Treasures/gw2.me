@@ -2,12 +2,12 @@ import styles from './page.module.css';
 import { HeroImage } from './gw2me_hero.svg';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Icon } from '@gw2treasures/ui';
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import Link from 'next/link';
 import { PageLayout } from '@/components/Layout/PageLayout';
 
 export default async function HomePage() {
-  const user = await getUser();
+  const session = await getSession();
 
   return (
     <PageLayout>
@@ -16,7 +16,7 @@ export default async function HomePage() {
           <div className={styles.title}>gw2.me</div>
           <div className={styles.sub}>Securely manage your Guild Wars 2 API keys</div>
           <div className={styles.gw2treasures}>A service provided by <a href="https://gw2treasures.com/">gw2treasures.com</a></div>
-          {!user && (<Link className={styles.loginButton} href="/login"><Icon icon="user"/> Login</Link>)}
+          {!session && (<Link className={styles.loginButton} href="/login"><Icon icon="user"/> Login</Link>)}
         </div>
         <div className={styles.image}>
           <HeroImage/>

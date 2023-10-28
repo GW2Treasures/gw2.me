@@ -9,10 +9,9 @@ import '@gw2treasures/icons/styles.css';
 
 import styles from './layout.module.css';
 import Link from 'next/link';
-import { getUser } from '@/lib/getUser';
+import { getUser } from '@/lib/session';
 import { Icon } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
-import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 
 interface RootLayoutProps {
   children: ReactNode;

@@ -2,7 +2,7 @@
 
 import { FormState } from '@/components/Form/Form';
 import { db } from '@/lib/db';
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { revalidatePath } from 'next/cache';
 
 export async function updateDisplayName(id: string, state: FormState, formData: FormData): Promise<FormState> {
@@ -12,14 +12,14 @@ export async function updateDisplayName(id: string, state: FormState, formData: 
     return { error: 'Invalid displayName' };
   }
 
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
+  if(!session) {
     return { error: 'Not logged in' };
   }
 
   await db.account.updateMany({
-    where: { id, userId: user.id },
+    where: { id, userId: session.userId },
     data: { displayName: displayName.trim() || null }
   });
 
@@ -35,14 +35,14 @@ export async function deleteApiKey(state: FormState, formData: FormData): Promis
     return { error: 'Invalid id' };
   }
 
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
+  if(!session) {
     return { error: 'Not logged in' };
   }
 
   try {
-    await db.apiToken.delete({ where: { id, account: { userId: user.id }}});
+    await db.apiToken.delete({ where: { id, account: { userId: session.userId }}});
   } catch {
     return { error: 'Error deleting key' };
   }

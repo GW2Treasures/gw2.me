@@ -1,6 +1,6 @@
 import { NavLayout } from '@/components/Layout/NavLayout';
 import { Navigation } from '@/components/Layout/Navigation';
-import { getUser } from '@/lib/getUser';
+import { getUser } from '@/lib/session';
 import { UserRole } from '@gw2me/database';
 import { notFound } from 'next/navigation';
 import { ReactNode } from 'react';

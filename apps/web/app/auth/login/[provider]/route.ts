@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { getFormDataString } from '@/lib/form-data';
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { getUrlFromRequest } from '@/lib/url';
 import { UserProviderRequestType } from '@gw2me/database';
 import { providers } from 'app/auth/providers';
@@ -40,12 +40,12 @@ export async function POST(request: NextRequest, { params }: { params: { provide
   // if this is a 'add' request make sure the user is logged in
   let userId: string | undefined;
   if(type === UserProviderRequestType.add) {
-    const user = await getUser();
-    if(!user) {
+    const session = await getSession();
+    if(!session) {
       redirect('/login?error');
     }
 
-    userId = user.id;
+    userId = session.userId;
   }
 
   // generate state

@@ -1,7 +1,5 @@
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
-import { DevLogin } from './dev-login';
-import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { PageLayout } from '@/components/Layout/PageLayout';
@@ -10,9 +8,9 @@ import { LoginForm } from './form';
 export const dynamic = 'force-dynamic';
 
 export default async function LoginPage({ searchParams }: { searchParams: { logout?: '', error?: '' }}) {
-  const user = await getUser();
+  const session = await getSession();
 
-  if(user) {
+  if(session) {
     redirect('/profile');
   }
 
