@@ -1,6 +1,6 @@
 import { FormState } from '@/components/Form/Form';
 import { db } from '@/lib/db';
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { createHash } from 'crypto';
 import { revalidatePath } from 'next/cache';
 import sharp from 'sharp';
@@ -8,15 +8,14 @@ import sharp from 'sharp';
 export async function editApplication(id: string, _: FormState, form: FormData): Promise<FormState> {
   'use server';
 
-  // get user
-  const user = await getUser();
-  if(!user) {
+  const session = await getSession();
+  if(!session) {
     return { error: 'Not logged in' };
   }
 
   // get the existing application and verify ownership
   const application = await db.application.findUnique({
-    where: { id, ownerId: user.id }
+    where: { id, ownerId: session.userId }
   });
 
   if(!application) {

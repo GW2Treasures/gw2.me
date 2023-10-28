@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { cache } from 'react';
 import { Textarea } from '@/components/Textarea/Textarea';
 import { editApplication } from '../_actions/edit';
@@ -22,13 +22,13 @@ import { Icon } from '@gw2treasures/ui';
 import { PageLayout } from '@/components/Layout/PageLayout';
 
 const getApplication = cache(async (id: string) => {
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
-    notFound();
+  if(!session) {
+    redirect('/login');
   }
 
-  return db.application.findFirst({ where: { id, ownerId: user.id }});
+  return db.application.findFirst({ where: { id, ownerId: session.userId }});
 });
 
 export default async function EditApplicationPage({ params }: { params: { id: string }}) {

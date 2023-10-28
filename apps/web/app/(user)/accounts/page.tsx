@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { db } from '@/lib/db';
-import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
@@ -12,14 +11,14 @@ import { Icon } from '@gw2treasures/ui';
 import { PageLayout } from '@/components/Layout/PageLayout';
 
 const getAccounts = cache(async () => {
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
+  if(!session) {
     redirect('/login');
   }
 
   const accounts = await db.account.findMany({
-    where: { userId: user.id },
+    where: { userId: session.userId },
     orderBy: { createdAt: 'asc' },
     include: {
       _count: {
@@ -31,10 +30,7 @@ const getAccounts = cache(async () => {
     },
   });
 
-  return {
-    user,
-    accounts,
-  };
+  return { accounts };
 });
 
 export default async function ProfilePage() {

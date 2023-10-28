@@ -2,15 +2,15 @@
 
 import { FormState } from '@/components/Form/Form';
 import { db } from '@/lib/db';
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 
 const apiKeyRegex = /^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{20}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/;
 
 export async function addAccount(returnTo: string | undefined, previousState: FormState, payload: FormData): Promise<FormState> {
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
+  if(!session) {
     redirect('/login');
   }
 
@@ -46,11 +46,11 @@ export async function addAccount(returnTo: string | undefined, previousState: Fo
   let accountId: string | undefined;
   try {
     const { id } = await db.account.upsert({
-      where: { accountId_userId: { accountId: account.id, userId: user.id }},
+      where: { accountId_userId: { accountId: account.id, userId: session.userId }},
       create: {
         accountId: account.id,
         accountName: account.name,
-        userId: user.id,
+        userId: session.userId,
         apiTokens: {
           create: {
             id: tokeninfo.id,

@@ -2,15 +2,15 @@
 
 import { FormState } from '@/components/Form/Form';
 import { db } from '@/lib/db';
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { ApplicationType } from '@gw2me/database';
 import { randomUUID } from 'crypto';
 import { redirect } from 'next/navigation';
 
 export async function createApplication(_: FormState, data: FormData): Promise<FormState> {
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
+  if(!session) {
     return { error: 'Not logged in' };
   }
 
@@ -34,7 +34,7 @@ export async function createApplication(_: FormState, data: FormData): Promise<F
         name: name.trim(),
         type,
         clientId: randomUUID(),
-        ownerId: user.id
+        ownerId: session.userId
       },
       select: {
         id: true

@@ -1,6 +1,6 @@
 import { expiresAt } from '@/lib/date';
 import { db } from '@/lib/db';
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { isString } from '@/lib/is';
 import { generateCode } from '@/lib/token';
 import { Authorization, AuthorizationType } from '@gw2me/database';
@@ -38,9 +38,9 @@ export async function authorizeInternal(
   }
 
   // get session and verify
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
+  if(!session) {
     return { error: 'Not logged in' };
   }
 
@@ -50,7 +50,7 @@ export async function authorizeInternal(
     const identifier = {
       type: AuthorizationType.Code,
       applicationId,
-      userId: user.id
+      userId: session.userId
     };
 
     // delete old pending authorization codes for this app

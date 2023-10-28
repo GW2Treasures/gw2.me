@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { getUser } from '@/lib/getUser';
+import { getSession, getUser } from '@/lib/session';
 import { Scope } from '@gw2me/client';
 import { redirect } from 'next/navigation';
 import layoutStyles from './layout.module.css';
@@ -40,11 +40,12 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
   }
 
   // get current user
+  const session = await getSession();
   const user = await getUser();
 
   // declare some variables for easier access
   const application = await getApplicationByClientId(request.client_id);
-  const previousAuthorization = user ? await getPreviousAuthorization(application.id, user.id) : undefined;
+  const previousAuthorization = session ? await getPreviousAuthorization(application.id, session.userId) : undefined;
   const previousScope = (previousAuthorization?.scope ?? []) as Scope[];
   const previousScopeMap = scopesToMap(previousScope);
   const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
@@ -90,9 +91,9 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
   }
 
   // get accounts
-  const accounts = user && hasGW2Scopes(scopes)
+  const accounts = session && hasGW2Scopes(scopes)
     ? await db.account.findMany({
-        where: { userId: user.id },
+        where: { userId: session.userId },
         orderBy: { createdAt: 'asc' }
       })
     : [];
@@ -113,7 +114,7 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
         <ApplicationImage fileId={application.imageId} size={64}/>
         {application.name}
       </div>
-      {!user ? (
+      {!session || !user ? (
         <>
           <p className={styles.intro}>To authorize this application, you need to login in first.</p>
           <LoginForm returnTo={returnUrl}/>

@@ -1,6 +1,6 @@
 import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
 import { db } from '@/lib/db';
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
@@ -19,14 +19,14 @@ import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { PageLayout } from '@/components/Layout/PageLayout';
 
 async function getAccount(id: string) {
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
+  if(!session) {
     redirect('/login');
   }
 
   const account = await db.account.findUnique({
-    where: { id, userId: user.id },
+    where: { id, userId: session.userId },
     include: {
       apiTokens: true
     }
@@ -39,7 +39,7 @@ async function getAccount(id: string) {
 
   const applications = await db.application.findMany({
     select: { id: true, name: true, imageId: true },
-    where: { authorizations: { some: { userId: user.id, accounts: { some: { id }}}}}
+    where: { authorizations: { some: { userId: session.userId, accounts: { some: { id }}}}}
   });
 
   return { account, applications };

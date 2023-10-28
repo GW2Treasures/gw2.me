@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
@@ -16,14 +16,14 @@ import { revokeAccess } from './actions';
 import { PageLayout } from '@/components/Layout/PageLayout';
 
 const getUserData = cache(async () => {
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
+  if(!session) {
     redirect('/login');
   }
 
   const authorizationFilter: Prisma.AuthorizationWhereInput = {
-    userId: user.id,
+    userId: session.userId,
     OR: [
       { expiresAt: { gte: new Date() }},
       { expiresAt: null }

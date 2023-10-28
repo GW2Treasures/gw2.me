@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { getUser } from '@/lib/getUser';
+import { getSession } from '@/lib/session';
 import { db } from '@/lib/db';
 import { notFound, redirect } from 'next/navigation';
 import { cache } from 'react';
@@ -11,14 +11,14 @@ import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { revalidatePath } from 'next/cache';
 
 const getUserData = cache(async () => {
-  const session = await getUser();
+  const session = await getSession();
 
   if(!session) {
     redirect('/login');
   }
 
   const user = await db.user.findUnique({
-    where: { id: session.id },
+    where: { id: session.userId },
     include: { sessions: true, providers: true },
   });
 
@@ -27,13 +27,13 @@ const getUserData = cache(async () => {
   }
 
   return {
-    sessionId: session.sessionId,
+    session,
     user,
   };
 });
 
 export default async function ProfilePage() {
-  const { sessionId, user } = await getUserData();
+  const { session: currentSession, user } = await getUserData();
 
   return (
     <PageLayout>
@@ -79,7 +79,7 @@ export default async function ProfilePage() {
         <tbody>
           {user.sessions.map((session) => (
             <tr key={session.id}>
-              <td>{session.info}{session.id === sessionId && ' (Current Session)'}</td>
+              <td>{session.info}{session.id === currentSession.id && ' (Current Session)'}</td>
               <td>{session.createdAt.toISOString()}</td>
               <td>{session.lastUsed.toISOString()}</td>
             </tr>
@@ -97,14 +97,14 @@ export const metadata = {
 async function revokeAllSessions() {
   'use server';
 
-  const user = await getUser();
+  const session = await getSession();
 
-  if(!user) {
+  if(!session) {
     return;
   }
 
   await db.userSession.deleteMany({
-    where: { id: { not: user.sessionId }, userId: user.id }
+    where: { id: { not: session.id }, userId: session.userId }
   });
 
   revalidatePath('/providers');
