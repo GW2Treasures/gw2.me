@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { getSession } from '@/lib/session';
 import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
