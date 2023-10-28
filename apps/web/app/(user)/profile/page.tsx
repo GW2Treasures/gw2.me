@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { getSession, getUser } from '@/lib/session';
 import { db } from '@/lib/db';
 import { Metadata } from 'next';

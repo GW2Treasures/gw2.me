@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { getSession, getUser } from '@/lib/session';
 import { Scope } from '@gw2me/client';
 import { redirect } from 'next/navigation';

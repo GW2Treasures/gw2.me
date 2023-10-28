@@ -1,6 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
 import { db } from '@/lib/db';
-import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import styles from './page.module.css';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { PageLayout } from '@/components/Layout/PageLayout';
