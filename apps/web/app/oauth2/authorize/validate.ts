@@ -103,7 +103,7 @@ export const validateRequest = cache(async function validateRequest(request: Par
   } catch(error) {
     if(error instanceof OAuth2Error) {
       // it is not safe to redirect back to the client, so we show an error
-    console.log(error);
+      console.log(error);
       return { error: error.message };
     }
 
