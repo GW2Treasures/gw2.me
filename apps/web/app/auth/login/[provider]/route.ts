@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { getFormDataString } from '@/lib/form-data';
 import { getUser } from '@/lib/getUser';
-import { getUrlFromParts, getUrlPartsFromRequest } from '@/lib/urlParts';
+import { getUrlFromRequest } from '@/lib/url';
 import { UserProviderRequestType } from '@gw2me/database';
 import { providers } from 'app/auth/providers';
 import { createHash, randomBytes } from 'crypto';
@@ -32,11 +32,10 @@ export async function POST(request: NextRequest, { params }: { params: { provide
     : UserProviderRequestType.login;
 
   // build callback url
-  const redirect_uri = getUrlFromParts({
-    ...getUrlPartsFromRequest(request),
-    path: `/auth/callback/${provider.id}`
-  });
-
+  const redirect_uri = new URL(
+    `/auth/callback/${provider.id}`,
+    getUrlFromRequest(request)
+  ).toString();
 
   // if this is a 'add' request make sure the user is logged in
   let userId: string | undefined;
