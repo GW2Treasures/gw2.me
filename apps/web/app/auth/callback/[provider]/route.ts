@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
-import { NextRequest } from 'next/server';
+import { NextRequest, userAgent } from 'next/server';
 import { db } from '@/lib/db';
-import parseUserAgent from 'ua-parser-js';
 import { authCookie } from '@/lib/cookie';
 import { getUser } from '@/lib/getUser';
 import { UserProviderRequestType } from '@gw2me/database';
@@ -86,9 +85,8 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     }
 
     // parse user-agent to set session name
-    const userAgentString = request.headers.get('user-agent');
-    const userAgent = userAgentString ? parseUserAgent(userAgentString) : undefined;
-    const sessionName = userAgent ? `${userAgent.browser.name} on ${userAgent.os.name}` : 'Session';
+    const { browser, os } = userAgent(request);
+    const sessionName = browser && os ? `${browser.name} on ${os.name}` : 'Session';
 
     // create a new session
     const session = await db.userSession.create({ data: { info: sessionName, userId }});
