@@ -21,9 +21,14 @@ import { createRedirectUrl } from '@/lib/redirectUrl';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { AuthorizationType } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
+import { LoginForm } from 'app/login/form';
+import { Metadata } from 'next';
 
+interface AuthorizePageProps {
+  searchParams: Partial<AuthorizeRequestParams> & Record<string, string>
+}
 
-export default async function AuthorizePage({ searchParams }: { searchParams: Partial<AuthorizeRequestParams> & Record<string, string> }) {
+export default async function AuthorizePage({ searchParams }: AuthorizePageProps) {
   // build return url for /account/add?return=X
   const returnUrl = `/oauth2/authorize?${new URLSearchParams(searchParams).toString()}`;
 
@@ -37,15 +42,9 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
   // get current user
   const user = await getUser();
 
-  // redirect to login if user is not logged in
-  if(!user) {
-    const encodedReturnUrl = Buffer.from(returnUrl).toString('base64url');
-    redirect('/login/return?to=' + encodeURIComponent(encodedReturnUrl));
-  }
-
   // declare some variables for easier access
   const application = await getApplicationByClientId(request.client_id);
-  const previousAuthorization = await getPreviousAuthorization(application.id, user.id);
+  const previousAuthorization = user ? await getPreviousAuthorization(application.id, user.id) : undefined;
   const previousScope = (previousAuthorization?.scope ?? []) as Scope[];
   const previousScopeMap = scopesToMap(previousScope);
   const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
@@ -91,7 +90,7 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
   }
 
   // get accounts
-  const accounts = hasGW2Scopes(scopes)
+  const accounts = user && hasGW2Scopes(scopes)
     ? await db.account.findMany({
         where: { userId: user.id },
         orderBy: { createdAt: 'asc' }
@@ -114,47 +113,31 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
         <ApplicationImage fileId={application.imageId} size={64}/>
         {application.name}
       </div>
-      <Form action={authorizeAction} initialState={autoAuthorizeState}>
-        <div className={styles.form}>
-          {newScopes.length === 0 ? (
-            <p className={styles.intro}>{application.name} wants to reauthorize access to your gw2.me account.</p>
-          ) : oldScopes.length === 0 ? (
-            <p className={styles.intro}>{application.name} wants to access the following data of your gw2.me account.</p>
-          ) : (
-            <p className={styles.intro}>{application.name} wants to access additional data.</p>
-          )}
+      {!user ? (
+        <>
+          <p className={styles.intro}>To authorize this application, you need to login in first.</p>
+          <LoginForm returnTo={returnUrl}/>
+          <LinkButton external href={cancelUrl.toString()} flex appearance="tertiary" className={styles.button}>Cancel</LinkButton>
+        </>
+      ) : (
+        <Form action={authorizeAction} initialState={autoAuthorizeState}>
+          <div className={styles.form}>
+            {newScopes.length === 0 ? (
+              <p className={styles.intro}>{application.name} wants to reauthorize access to your gw2.me account.</p>
+            ) : oldScopes.length === 0 ? (
+              <p className={styles.intro}>{application.name} wants to access the following data of your gw2.me account.</p>
+            ) : (
+              <p className={styles.intro}>{application.name} wants to access additional data.</p>
+            )}
 
-          {newScopes.length > 0 && (
-            <ul className={styles.scopeList}>
-              {newScopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
-              {newScopes.includes(Scope.Email) && <ScopeItem icon="mail">Your email address</ScopeItem>}
-              {hasGW2Scopes(newScopes) && (
-                <ScopeItem icon="developer">
-                  <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
-                  <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
-                  <div>Select accounts</div>
-                  <div className={styles.accountSelection}>
-                    {accounts.map((account) => (
-                      <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id)} name="accounts" formValue={account.id}>
-                        {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
-                      </Checkbox>
-                    ))}
-                    <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
-                  </div>
-                </ScopeItem>
-              )}
-            </ul>
-          )}
-
-          {oldScopes.length > 0 && (
-            <Expandable label="View previously authorized permissions.">
+            {newScopes.length > 0 && (
               <ul className={styles.scopeList}>
-                {oldScopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
-                {oldScopes.includes(Scope.Email) && <ScopeItem icon="mail">Your email address</ScopeItem>}
-                {hasGW2Scopes(oldScopes) && (!hasGW2Scopes(newScopes) ? (
+                {newScopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
+                {newScopes.includes(Scope.Email) && <ScopeItem icon="mail">Your email address</ScopeItem>}
+                {hasGW2Scopes(newScopes) && (
                   <ScopeItem icon="developer">
                     <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
-                    <PermissionList permissions={oldScopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+                    <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
                     <div>Select accounts</div>
                     <div className={styles.accountSelection}>
                       {accounts.map((account) => (
@@ -165,28 +148,68 @@ export default async function AuthorizePage({ searchParams }: { searchParams: Pa
                       <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
                     </div>
                   </ScopeItem>
-                ) : (
-                  <ScopeItem icon="developer">
-                    <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
-                    <PermissionList permissions={oldScopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
-                  </ScopeItem>
-                ))}
+                )}
               </ul>
-            </Expandable>
-          )}
+            )}
 
-          <p className={styles.outro}>You can revoke access at anytime from your gw2.me profile.</p>
+            {oldScopes.length > 0 && (
+              <Expandable label="View previously authorized permissions.">
+                <ul className={styles.scopeList}>
+                  {oldScopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
+                  {oldScopes.includes(Scope.Email) && <ScopeItem icon="mail">Your email address</ScopeItem>}
+                  {hasGW2Scopes(oldScopes) && (!hasGW2Scopes(newScopes) ? (
+                    <ScopeItem icon="developer">
+                      <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
+                      <PermissionList permissions={oldScopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+                      <div>Select accounts</div>
+                      <div className={styles.accountSelection}>
+                        {accounts.map((account) => (
+                          <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id)} name="accounts" formValue={account.id}>
+                            {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                          </Checkbox>
+                        ))}
+                        <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
+                      </div>
+                    </ScopeItem>
+                  ) : (
+                    <ScopeItem icon="developer">
+                      <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
+                      <PermissionList permissions={oldScopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+                    </ScopeItem>
+                  ))}
+                </ul>
+              </Expandable>
+            )}
 
-          <div className={styles.buttons}>
-            <LinkButton external href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
-            <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
+            <p className={styles.outro}>You can revoke access at anytime from your gw2.me profile.</p>
+
+            <div className={styles.buttons}>
+              <LinkButton external href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
+              <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
+            </div>
+
+            <div className={styles.redirectNote}>Authorizing will redirect you to <b>{redirect_uri.origin}</b></div>
           </div>
-
-          <div className={styles.redirectNote}>Authorizing will redirect you to <b>{redirect_uri.origin}</b></div>
-        </div>
-      </Form>
+        </Form>
+      )}
     </>
   );
+}
+
+export async function generateMetadata({ searchParams }: AuthorizePageProps): Promise<Metadata> {
+  const { error, request } = await validateRequest(searchParams);
+
+  if(error !== undefined) {
+    return {
+      title: error
+    };
+  }
+
+  const application = await getApplicationByClientId(request.client_id);
+
+  return {
+    title: `Authorize ${application.name}`
+  };
 }
 
 export interface ScopeItemProps {

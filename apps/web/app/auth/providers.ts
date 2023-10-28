@@ -30,6 +30,7 @@ function discord(): ProviderConfig | undefined {
 
   // make sure discord is configured
   if(!discord_client_id || !discord_client_secret) {
+    console.log('Discord integration disabled, not configured');
     return undefined;
   }
 
