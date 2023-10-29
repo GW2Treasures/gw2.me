@@ -1,3 +1,4 @@
+import { FormatDate } from '@/components/Format/FormatDate';
 import { Code } from '@/components/Layout/Code';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { db } from '@/lib/db';
@@ -42,7 +43,7 @@ export default async function AdminUserPage() {
               <td>{user.roles.join(', ')}</td>
               <td>{user._count.applications}</td>
               <td>{user._count.authorizations}</td>
-              <td>{user.createdAt.toISOString()}</td>
+              <td><FormatDate date={user.createdAt}/></td>
             </tr>
           ))}
         </tbody>

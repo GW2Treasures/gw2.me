@@ -13,6 +13,7 @@ import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { Form } from '@/components/Form/Form';
 import { revokeAccess } from './actions';
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { FormatDate } from '@/components/Format/FormatDate';
 
 const getUserData = cache(async () => {
   const session = await getSession();
@@ -74,7 +75,7 @@ export default async function ProfilePage() {
               {applications.map((application) => (
                 <tr key={application.id}>
                   <td><FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow></td>
-                  <td>{application.authorizations[0]?.usedAt?.toISOString() ?? 'never'}</td>
+                  <td>{application.authorizations[0]?.usedAt ? <FormatDate date={application.authorizations[0].usedAt}/> : 'never'}</td>
                   <td><Button type="submit" name="applicationId" value={application.id} intent="delete" icon="delete">Revoke Access</Button></td>
                 </tr>
               ))}

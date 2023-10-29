@@ -1,4 +1,5 @@
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
+import { FormatDate } from '@/components/Format/FormatDate';
 import { Code } from '@/components/Layout/Code';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { db } from '@/lib/db';
@@ -40,7 +41,7 @@ export default async function AdminUserPage() {
               <td><FlexRow><ApplicationImage fileId={app.imageId}/> {app.name}</FlexRow></td>
               <td><FlexRow><Icon icon="user"/>{app.owner.name}</FlexRow></td>
               <td>{app._count.authorizations}</td>
-              <td>{app.createdAt.toISOString()}</td>
+              <td><FormatDate date={app.createdAt}/></td>
             </tr>
           ))}
         </tbody>
