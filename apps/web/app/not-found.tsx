@@ -10,3 +10,7 @@ export default function NotFoundPage() {
     </PageLayout>
   );
 }
+
+export const metadata = {
+  title: 'Not found'
+};
