@@ -27,7 +27,7 @@
   display: block;
   position: absolute;
   width: 4px;
-  background-color: var(--color-focus);
+  background-color: var(--color-brand);
   height: 24px;
   margin-left: -16px;
   border-radius: 2px;
