@@ -47,3 +47,7 @@ export default async function DevPage() {
     </PageLayout>
   );
 }
+
+export const metadata = {
+  title: 'Your Applications'
+};

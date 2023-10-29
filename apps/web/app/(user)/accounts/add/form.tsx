@@ -18,7 +18,7 @@ export interface AccountAddFormProps {
 export const AccountAddForm: FC<AccountAddFormProps> = ({ returnTo }) => {
   return (
     <div>
-      <Headline id="create">Add Account</Headline>
+      <Headline id="create">Add API Key</Headline>
       <Form action={addAccount.bind(null, returnTo)}>
         <Steps>
           <div>Visit the <ExternalLink href="https://account.arena.net/applications">Guild Wars 2 Account Page</ExternalLink></div>

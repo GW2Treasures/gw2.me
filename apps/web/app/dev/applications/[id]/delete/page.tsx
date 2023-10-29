@@ -16,19 +16,25 @@ async function getApplication(id: string) {
     redirect('/login');
   }
 
-  const app = await db.application.findUnique({
+  const application = await db.application.findUnique({
     where: { id, ownerId: session.userId },
     select: { id: true, name: true }
   });
 
-  if(!app) {
+  if(!application) {
     notFound();
   }
 
-  return app;
+  return application;
 }
 
-export default async function DeleteApplicationPage({ params }: { params: { id: string }}) {
+interface DeleteApplicationPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function DeleteApplicationPage({ params }: DeleteApplicationPageProps) {
   const app = await getApplication(params.id);
 
   return (
@@ -45,4 +51,13 @@ export default async function DeleteApplicationPage({ params }: { params: { id: 
       </Form>
     </PageLayout>
   );
+}
+
+
+export async function generateMetadata({ params }: DeleteApplicationPageProps) {
+  const application = await getApplication(params.id);
+
+  return {
+    title: `Delete ${application.name}`
+  };
 }

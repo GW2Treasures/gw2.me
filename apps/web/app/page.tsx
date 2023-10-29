@@ -38,5 +38,5 @@ export default async function HomePage() {
 }
 
 export const metadata = {
-  title: 'gw2.me'
+  title: 'gw2.me · Securely manage your Guild Wars 2 API keys'
 };
