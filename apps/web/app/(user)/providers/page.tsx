@@ -11,29 +11,33 @@ import { revalidatePath } from 'next/cache';
 import { FormatDate } from '@/components/Format/FormatDate';
 
 const getUserData = cache(async () => {
-  const session = await getSession();
+  const currentSession = await getSession();
 
-  if(!session) {
+  if(!currentSession) {
     redirect('/login');
   }
 
-  const user = await db.user.findUnique({
-    where: { id: session.userId },
-    include: { sessions: true, providers: true },
-  });
+  const [sessions, providers] = await Promise.all([
+    db.userSession.findMany({
+      where: { userId: currentSession.userId },
+      orderBy: { lastUsed: 'desc' }
+    }),
 
-  if(!user) {
-    notFound();
-  }
+    db.userProvider.findMany({
+      where: { userId: currentSession.userId },
+      orderBy: { createdAt: 'asc' }
+    }),
+  ]);
 
   return {
-    session,
-    user,
+    currentSession,
+    sessions,
+    providers
   };
 });
 
 export default async function ProfilePage() {
-  const { session: currentSession, user } = await getUserData();
+  const { currentSession, sessions, providers } = await getUserData();
 
   return (
     <PageLayout>
@@ -50,7 +54,7 @@ export default async function ProfilePage() {
           </tr>
         </thead>
         <tbody>
-          {user.providers.map((provider) => (
+          {providers.map((provider) => (
             <tr key={`${provider.provider}-${provider.providerAccountId}`}>
               <td>{provider.provider}</td>
               <td>{provider.displayName}</td>
@@ -77,7 +81,7 @@ export default async function ProfilePage() {
           </tr>
         </thead>
         <tbody>
-          {user.sessions.map((session) => (
+          {sessions.map((session) => (
             <tr key={session.id}>
               <td>{session.info}{session.id === currentSession.id && ' (Current Session)'}</td>
               <td><FormatDate date={session.createdAt}/></td>
