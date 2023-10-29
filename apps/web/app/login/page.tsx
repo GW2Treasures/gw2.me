@@ -4,6 +4,7 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { LoginForm } from './form';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +12,7 @@ export default async function LoginPage({ searchParams }: { searchParams: { logo
   const session = await getSession();
 
   if(session) {
+    revalidatePath('/profile');
     redirect('/profile');
   }
 
