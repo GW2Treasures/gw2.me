@@ -8,6 +8,7 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { revalidatePath } from 'next/cache';
+import { FormatDate } from '@/components/Format/FormatDate';
 
 const getUserData = cache(async () => {
   const session = await getSession();
@@ -53,7 +54,7 @@ export default async function ProfilePage() {
             <tr key={`${provider.provider}-${provider.providerAccountId}`}>
               <td>{provider.provider}</td>
               <td>{provider.displayName}</td>
-              <td>{provider.createdAt.toISOString()}</td>
+              <td><FormatDate date={provider.createdAt}/></td>
             </tr>
           ))}
         </tbody>
@@ -79,8 +80,8 @@ export default async function ProfilePage() {
           {user.sessions.map((session) => (
             <tr key={session.id}>
               <td>{session.info}{session.id === currentSession.id && ' (Current Session)'}</td>
-              <td>{session.createdAt.toISOString()}</td>
-              <td>{session.lastUsed.toISOString()}</td>
+              <td><FormatDate date={session.createdAt}/></td>
+              <td><FormatDate date={session.lastUsed}/></td>
             </tr>
           ))}
         </tbody>
