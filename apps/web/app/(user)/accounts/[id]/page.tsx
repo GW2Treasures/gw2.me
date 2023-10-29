@@ -17,8 +17,9 @@ import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton'
 import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { cache } from 'react';
 
-async function getAccount(id: string) {
+const getAccount = cache(async function getAccount(id: string) {
   const session = await getSession();
 
   if(!session) {
@@ -32,21 +33,29 @@ async function getAccount(id: string) {
     }
   });
 
-
   if(!account) {
     notFound();
   }
 
-  const applications = await db.application.findMany({
-    select: { id: true, name: true, imageId: true },
-    where: { authorizations: { some: { userId: session.userId, accounts: { some: { id }}}}}
-  });
+  return account;
+});
 
-  return { account, applications };
+const getApplications = cache(function getApplications(accountId: string, userId: string) {
+  return db.application.findMany({
+    select: { id: true, name: true, imageId: true },
+    where: { authorizations: { some: { userId, accounts: { some: { id: accountId }}}}}
+  });
+});
+
+interface AccountPageProps {
+  params: {
+    id: string;
+  };
 }
 
-export default async function AccountPage({ params: { id }}: { params: { id: string }}) {
-  const { account, applications } = await getAccount(id);
+export default async function AccountPage({ params: { id }}: AccountPageProps) {
+  const account = await getAccount(id);
+  const applications = await getApplications(account.id, account.userId);
 
   return (
     <PageLayout>
@@ -110,4 +119,14 @@ export default async function AccountPage({ params: { id }}: { params: { id: str
       </Table>
     </PageLayout>
   );
+}
+
+export async function generateMetadata({ params }: AccountPageProps) {
+  const account = await getAccount(params.id);
+
+  return {
+    title: account.displayName
+      ? `${account.displayName} (${account.accountName})`
+      : account.accountName
+  };
 }

@@ -28,15 +28,25 @@ const getApplication = cache(async (id: string) => {
     redirect('/login');
   }
 
-  return db.application.findFirst({ where: { id, ownerId: session.userId }});
-});
-
-export default async function EditApplicationPage({ params }: { params: { id: string }}) {
-  const application = await getApplication(params.id);
+  const application = await db.application.findFirst({
+    where: { id, ownerId: session.userId }
+  });
 
   if(!application) {
     notFound();
   }
+
+  return application;
+});
+
+interface EditApplicationPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function EditApplicationPage({ params }: EditApplicationPageProps) {
+  const application = await getApplication(params.id);
 
   return (
     <PageLayout>
@@ -103,4 +113,12 @@ export default async function EditApplicationPage({ params }: { params: { id: st
       </Form>
     </PageLayout>
   );
+}
+
+export async function generateMetadata({ params }: EditApplicationPageProps) {
+  const application = await getApplication(params.id);
+
+  return {
+    title: `Edit ${application.name}`
+  };
 }

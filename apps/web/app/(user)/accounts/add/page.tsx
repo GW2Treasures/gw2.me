@@ -14,3 +14,7 @@ export default function AccountCreatePage({ searchParams }: AccountCreatePagePro
     </PageLayout>
   );
 }
+
+export const metadata = {
+  title: 'Add API Key'
+};
