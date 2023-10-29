@@ -76,6 +76,17 @@ export async function POST(request: NextRequest, { params }: { params: { provide
     select: { id: true }
   });
 
+  // build auth url for provider
+  const authUrl = provider.getAuthUrl({
+    state,
+    redirect_uri,
+    code_challenge,
+    code_challenge_method
+  });
+
   // redirect to provider
-  redirect(provider.getAuthUrl({ state, redirect_uri, code_challenge, code_challenge_method }));
+  return new NextResponse(null, {
+    status: 302,
+    headers: { Location: authUrl }
+  });
 }

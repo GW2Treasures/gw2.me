@@ -7,6 +7,7 @@ import { cookies } from 'next/headers';
 import { isRedirectError } from 'next/dist/client/components/redirect';
 import { providers } from 'app/auth/providers';
 import { getSession } from '@/lib/session';
+import { randomBytes } from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,6 +45,12 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
       where: { state, provider: provider.id }
     });
 
+    if(!returnUrl) {
+      returnUrl = authRequest.type === UserProviderRequestType.add
+        ? '/providers'
+        : '/profile';
+    }
+
     const profile = await provider.getUser({ code, authRequest });
 
     // build provider key
@@ -51,6 +58,11 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
       provider: provider.id,
       providerAccountId: profile.accountId
     };
+
+    // if the username already exists in the db we append a random string
+    const username = await db.user.findFirst({ where: { name: profile.username }})
+      ? `${profile.username}-${randomBytes(4).toString('base64url')}`
+      : profile.username;
 
     // try to find this account in db
     const { userId } = await db.userProvider.upsert({
@@ -61,7 +73,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
         displayName: profile.accountName,
         token: profile.token,
         user: authRequest.type === UserProviderRequestType.login
-          ? { create: { name: profile.username, email: profile.email }}
+          ? { create: { name: username, email: profile.email }}
           : { connect: { id: authRequest.userId! }}
       },
       // if that provider profile is already known we update the displayname (might have changed) and the token
@@ -77,7 +89,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     if(existingSession) {
       if(existingSession.id === userId) {
         // the existing session was for the same user and we can reuse it
-        redirect(returnUrl ?? '/profile');
+        redirect(returnUrl);
       } else {
         // just logged in with a different user - lets delete the old session
         await db.userSession.delete({ where: { id: existingSession.id }});
@@ -96,7 +108,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     cookies().set(authCookie(session.id, isHttps));
 
     // redirect
-    redirect(returnUrl ?? '/profile');
+    redirect(returnUrl);
   } catch(error) {
     if(isRedirectError(error)) {
       throw error;

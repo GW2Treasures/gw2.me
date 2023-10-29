@@ -68,6 +68,7 @@ export default async function ProfilePage() {
         <input type="hidden" name="type" value="add"/>
         <FlexRow>
           <Button type="submit" formAction="/auth/login/discord">Add Discord</Button>
+          <Button type="submit" formAction="/auth/login/github">Add GitHub</Button>
         </FlexRow>
       </form>
 

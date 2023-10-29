@@ -20,7 +20,7 @@ interface ProviderConfig {
     email?: string;
 
     /** token to make additional requests in the future */
-    token: string;
+    token: object;
   }>
 }
 
@@ -88,21 +88,83 @@ function discord(): ProviderConfig | undefined {
         accountName: displayName,
         username: profile.username,
         email: profile.email,
-        token: token.access_token,
+        token,
       };
     }
   };
 }
 
+function github(): ProviderConfig | undefined {
+  const client_id = process.env.GITHUB_CLIENT_ID;
+  const client_secret = process.env.GITHUB_CLIENT_SECRET;
+
+  // make sure github is configured
+  if(!client_id || !client_secret) {
+    console.log('Github integration disabled, not configured');
+    return undefined;
+  }
+
+  return {
+    id: UserProviderType.github,
+
+    getAuthUrl({ redirect_uri, state }) {
+      // build search params url
+      const searchParams = new URLSearchParams({
+        client_id,
+        'scope': 'user:email',
+        'response_type': 'code',
+        redirect_uri,
+        state,
+      });
+
+      // redirect to github
+      return `https://github.com/login/oauth/authorize?${searchParams.toString()}`;
+    },
+
+    async getUser({ code, authRequest }) {
+      // build token request
+      const data = new URLSearchParams({
+        code,
+        client_id,
+        client_secret,
+        'grant_type': 'authorization_code',
+        'redirect_uri': authRequest.redirect_uri,
+      });
+
+      // get access_token token
+      const token = await fetch('https://github.com/login/oauth/access_token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+        body: data,
+      }).then(getJsonIfOk) as { access_token: string };
+
+      // get profile info with token
+      const profile = await fetch('https://api.github.com/user', {
+        headers: { 'Authorization': `Bearer ${token.access_token}` }
+      }).then(getJsonIfOk) as { id: number, login: string, email: string };
+
+      return {
+        accountId: profile.id.toString(),
+        accountName: profile.login,
+        username: profile.login,
+        email: profile.email,
+        token,
+      };
+    }
+  };
+}
+
+
 // map user provider keys to provider configs
 export const providers: Record<string, ProviderConfig | undefined> = {
-  [UserProviderType.discord]: discord()
+  [UserProviderType.discord]: discord(),
+  [UserProviderType.github]: github(),
 } satisfies Record<UserProviderType, ProviderConfig | undefined>;
 
 
 function getJsonIfOk(response: Response) {
   if(!response.ok) {
-    throw new Error('Could not load discord profile');
+    throw new Error('Could not load json');
   }
 
   return response.json();
