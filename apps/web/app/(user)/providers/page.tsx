@@ -11,6 +11,7 @@ import { revalidatePath } from 'next/cache';
 import { FormatDate } from '@/components/Format/FormatDate';
 import { DiscordIcon } from 'app/auth/discord';
 import { GitHubIcon } from 'app/auth/github';
+import { SteamIcon } from 'app/auth/steam';
 
 const getUserData = cache(async () => {
   const currentSession = await getSession();
@@ -62,6 +63,7 @@ export default async function ProfilePage() {
                 {
                   provider.provider === 'discord' ? <FlexRow><DiscordIcon/>Discord</FlexRow> :
                   provider.provider === 'github' ? <FlexRow><GitHubIcon/>GitHub</FlexRow> :
+                  provider.provider === 'steam' ? <FlexRow><SteamIcon/>Steam</FlexRow> :
                   provider.provider
                 }
               </td>
@@ -77,6 +79,7 @@ export default async function ProfilePage() {
         <FlexRow>
           <Button type="submit" formAction="/auth/login/discord" icon={<DiscordIcon/>}>Add Discord</Button>
           <Button type="submit" formAction="/auth/login/github" icon={<GitHubIcon/>}>Add GitHub</Button>
+          <Button type="submit" formAction="/auth/login/steam" icon={<SteamIcon/>}>Add Steam</Button>
         </FlexRow>
       </form>
 

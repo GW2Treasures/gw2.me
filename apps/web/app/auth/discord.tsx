@@ -35,7 +35,11 @@ export function discord(): ProviderConfig | undefined {
       return `https://discord.com/oauth2/authorize?${searchParams.toString()}`;
     },
 
-    async getUser({ code, authRequest }) {
+    async getUser({ searchParams: { code }, authRequest }) {
+      if(!code) {
+        throw new Error('code missing');
+      }
+
       // build token request
       const data = new URLSearchParams({
         code,

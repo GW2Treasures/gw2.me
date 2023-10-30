@@ -78,6 +78,7 @@ model UserProviderRequest {
 enum UserProviderType {
   discord
   github
+  steam
 }
 
 enum UserProviderRequestType {
