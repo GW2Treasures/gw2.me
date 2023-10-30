@@ -54,6 +54,18 @@ spec:
               name: web
               key: discord_client_secret
               optional: true
+        - name: GITHUB_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: web
+              key: github_client_id
+              optional: true
+        - name: GITHUB_CLIENT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: web
+              key: github_client_secret
+              optional: true
         ports:
         - containerPort: 3000
           protocol: TCP
