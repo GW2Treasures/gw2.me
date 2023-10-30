@@ -74,8 +74,8 @@ export function discord(): ProviderConfig | undefined {
   };
 }
 
-export const DiscordIcon: FC = function DiscordIcon() {
+export const DiscordIcon: FC<{ className?: string }> = function DiscordIcon({ className }) {
   return (
-    <Image alt="" src={icon} width={16} height={16}/>
+    <Image className={className} alt="" src={icon} width={16} height={16}/>
   );
 };

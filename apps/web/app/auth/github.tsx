@@ -66,9 +66,9 @@ export function github(): ProviderConfig | undefined {
   };
 }
 
-export const GitHubIcon: FC = function GithubIcon() {
+export const GitHubIcon: FC<{ className?: string }> = function GithubIcon({ className }) {
   return (
-    <picture>
+    <picture className={className}>
       <source srcSet={iconDark.src} media="(prefers-color-scheme: dark)"/>
       <Image src={iconLight} alt="" width={16} height={16}/>
     </picture>
