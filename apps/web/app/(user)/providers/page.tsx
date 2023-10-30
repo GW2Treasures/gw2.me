@@ -9,6 +9,8 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { revalidatePath } from 'next/cache';
 import { FormatDate } from '@/components/Format/FormatDate';
+import { DiscordIcon } from 'app/auth/discord';
+import { GitHubIcon } from 'app/auth/github';
 
 const getUserData = cache(async () => {
   const currentSession = await getSession();
@@ -43,7 +45,7 @@ export default async function ProfilePage() {
     <PageLayout>
       <Headline id="providers">Login Providers</Headline>
 
-      <p>More providers coming soon.</p>
+      <p>Add additional login providers to make sure you can always login.</p>
 
       <Table>
         <thead>
@@ -56,7 +58,13 @@ export default async function ProfilePage() {
         <tbody>
           {providers.map((provider) => (
             <tr key={`${provider.provider}-${provider.providerAccountId}`}>
-              <td>{provider.provider}</td>
+              <td>
+                {
+                  provider.provider === 'discord' ? <FlexRow><DiscordIcon/>Discord</FlexRow> :
+                  provider.provider === 'github' ? <FlexRow><GitHubIcon/>GitHub</FlexRow> :
+                  provider.provider
+                }
+              </td>
               <td>{provider.displayName}</td>
               <td><FormatDate date={provider.createdAt}/></td>
             </tr>
@@ -67,8 +75,8 @@ export default async function ProfilePage() {
       <form method="POST">
         <input type="hidden" name="type" value="add"/>
         <FlexRow>
-          <Button type="submit" formAction="/auth/login/discord">Add Discord</Button>
-          <Button type="submit" formAction="/auth/login/github">Add GitHub</Button>
+          <Button type="submit" formAction="/auth/login/discord" icon={<DiscordIcon/>}>Add Discord</Button>
+          <Button type="submit" formAction="/auth/login/github" icon={<GitHubIcon/>}>Add GitHub</Button>
         </FlexRow>
       </form>
 
