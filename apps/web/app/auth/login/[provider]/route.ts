@@ -59,9 +59,7 @@ export async function POST(request: NextRequest, { params }: { params: { provide
   }
 
   // genereate PKCE verifier and challenge
-  const code_verifier = randomBytes(32).toString('base64url');
-  const code_challenge_method = 'S256';
-  const code_challenge = createHash('sha256').update(code_verifier).digest('base64url');
+  const pkce = provider.supportsPKCE ? generatePKCEParameters() : undefined;
 
   // store auth request in db so we can later verify the state and code challenge and append additional data
   await db.userProviderRequest.create({
@@ -71,11 +69,30 @@ export async function POST(request: NextRequest, { params }: { params: { provide
       userId,
       state,
       redirect_uri,
-      code_verifier,
+      code_verifier: pkce?.code_verifier,
     },
     select: { id: true }
   });
 
+  // build auth url for provider
+  const authUrl = provider.getAuthUrl({
+    state,
+    redirect_uri,
+    code_challenge: pkce?.code_challenge,
+    code_challenge_method: pkce?.code_challenge_method
+  });
+
   // redirect to provider
-  redirect(provider.getAuthUrl({ state, redirect_uri, code_challenge, code_challenge_method }));
+  return new NextResponse(null, {
+    status: 302,
+    headers: { Location: authUrl }
+  });
+}
+
+function generatePKCEParameters() {
+  const code_verifier = randomBytes(32).toString('base64url');
+  const code_challenge_method = 'S256';
+  const code_challenge = createHash('sha256').update(code_verifier).digest('base64url');
+
+  return { code_verifier, code_challenge_method, code_challenge };
 }
