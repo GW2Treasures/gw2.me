@@ -4,7 +4,9 @@ import 'server-only';
 interface ProviderConfig {
   id: UserProviderType,
 
-  getAuthUrl(options: { redirect_uri: string, state: string, code_challenge: string, code_challenge_method: string }): string
+  supportsPKCE: boolean,
+
+  getAuthUrl(options: { redirect_uri: string, state: string, code_challenge?: string, code_challenge_method?: string }): string
 
   getUser(params: { code: string, authRequest: UserProviderRequest }): Promise<{
     /** identifier used by the provider */
@@ -36,6 +38,7 @@ function discord(): ProviderConfig | undefined {
 
   return {
     id: UserProviderType.discord,
+    supportsPKCE: true,
 
     getAuthUrl({ redirect_uri, state, code_challenge, code_challenge_method }) {
       // build discord url
@@ -44,8 +47,8 @@ function discord(): ProviderConfig | undefined {
         'scope': 'identify email',
         'response_type': 'code',
         'prompt': 'none',
-        code_challenge,
-        code_challenge_method,
+        code_challenge: code_challenge!,
+        code_challenge_method: code_challenge_method!,
         redirect_uri,
         state,
       });
@@ -106,6 +109,7 @@ function github(): ProviderConfig | undefined {
 
   return {
     id: UserProviderType.github,
+    supportsPKCE: false,
 
     getAuthUrl({ redirect_uri, state }) {
       // build search params url
