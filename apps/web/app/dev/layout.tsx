@@ -1,17 +1,24 @@
-'use client';
-
-import { ActiveButtonClass, NavLayout } from '@/components/Layout/NavLayout';
-import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
-import { useSelectedLayoutSegment } from 'next/navigation';
+import { NavLayout } from '@/components/Layout/NavLayout';
+import { Navigation } from '@/components/Layout/Navigation';
+import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
 import { ReactNode } from 'react';
 
 export default function DevLayout({ children }: { children: ReactNode }) {
-  const segment = useSelectedLayoutSegment();
-
   return (
     <NavLayout content={children}>
-      <LinkButton appearance="menu" href="/dev/docs" className={segment === 'docs' ? ActiveButtonClass : undefined}>Documentation</LinkButton>
-      <LinkButton appearance="menu" href="/dev/applications" className={segment === 'applications' ? ActiveButtonClass : undefined}>Your Applications</LinkButton>
+      <Navigation prefix="/dev/" items={[
+        { segment: ['docs'], label: 'Documentation' },
+        { segment: ['docs', 'register-app'], label: 'Register Your App' },
+        { segment: ['docs', 'access-tokens'], label: 'Getting Access Tokens' },
+        { segment: ['docs', 'refresh-tokens'], label: 'Refreshing Tokens' },
+        { segment: ['docs', 'gw2-api'], label: 'Guild Wars 2 API' },
+        { segment: ['docs', 'scopes'], label: 'Scopes' },
+        { segment: ['docs', 'api-reference'], label: 'API Reference' },
+      ]}/>
+      <Separator/>
+      <Navigation prefix="/dev/" items={[
+        { segment: 'applications', label: 'Your Applications' },
+      ]}/>
     </NavLayout>
   );
 }

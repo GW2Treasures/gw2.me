@@ -33,13 +33,15 @@ export default async function DevPage() {
       <Table>
         <thead>
           <tr>
-            <th>Application</th>
+            <Table.HeaderCell>Application</Table.HeaderCell>
+            <Table.HeaderCell small>Actions</Table.HeaderCell>
           </tr>
         </thead>
         <tbody>
           {applications.map((app) => (
             <tr key={app.id}>
-              <td><Link href={`/dev/applications/${app.id}`}><FlexRow><ApplicationImage fileId={app.imageId}/>{app.name}</FlexRow></Link></td>
+              <td><FlexRow><ApplicationImage fileId={app.imageId}/>{app.name}</FlexRow></td>
+              <td><LinkButton href={`/dev/applications/${app.id}`} icon="settings">Manage</LinkButton></td>
             </tr>
           ))}
         </tbody>
