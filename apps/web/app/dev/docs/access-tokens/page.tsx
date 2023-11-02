@@ -7,10 +7,11 @@ import { List } from '@gw2treasures/ui/components/Layout/List';
 import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import Link from 'next/link';
+import styles from '../layout.module.css';
 
 export default function DevDocsAccessTokensPage() {
   return (
-    <PageLayout>
+    <PageLayout className={styles.layout}>
       <PageTitle>Getting OAuth Access Tokens</PageTitle>
       <p>To access gw2.me APIs to get info about the user or generate subtokens to access the Guild Wars 2 API you will need an access token. To get an access token the user needs to authorize your application first.</p>
 

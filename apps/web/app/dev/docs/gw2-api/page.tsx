@@ -3,10 +3,11 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import Link from 'next/link';
+import styles from '../layout.module.css';
 
 export default function DevDocsGW2APIPage() {
   return (
-    <PageLayout>
+    <PageLayout className={styles.layout}>
       <PageTitle>Access the Guild Wars 2 API</PageTitle>
       <p>
         The Guild Wars 2 API supports JWT tokens, called subtokens by the API,

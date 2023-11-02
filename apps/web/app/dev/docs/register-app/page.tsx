@@ -6,10 +6,11 @@ import { List } from '@gw2treasures/ui/components/Layout/List';
 import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import Link from 'next/link';
+import styles from '../layout.module.css';
 
 export default function DevDocsRegisterAppPage() {
   return (
-    <PageLayout>
+    <PageLayout className={styles.layout}>
       <PageTitle>Register your Application</PageTitle>
       <p>The first step to getting an access token is to register your application.</p>
 

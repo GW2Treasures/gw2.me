@@ -9,10 +9,11 @@ import Link from 'next/link';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import { List } from '@gw2treasures/ui/components/Layout/List';
+import styles from './layout.module.css';
 
 export default function Docs() {
   return (
-    <PageLayout>
+    <PageLayout className={styles.layout}>
       <PageTitle>Documentation</PageTitle>
 
       <p>gw2.me uses <ExternalLink href="https://datatracker.ietf.org/doc/html/rfc6749">OAuth 2.0</ExternalLink> to manage the access between users and applications.</p>

@@ -2,10 +2,11 @@ import { Code } from '@/components/Layout/Code';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
+import styles from '../layout.module.css';
 
 export default function DevDocsScopePage() {
   return (
-    <PageLayout>
+    <PageLayout className={styles.layout}>
       <PageTitle>Scopes</PageTitle>
       <p>gw2.me API endpoints each require specific permissions. When you authorizing a user, you will need to provide a list of scopes that is required by your application.</p>
 

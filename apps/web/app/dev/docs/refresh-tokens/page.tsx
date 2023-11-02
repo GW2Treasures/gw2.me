@@ -3,10 +3,11 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import Link from 'next/link';
+import styles from '../layout.module.css';
 
 export default function DevDocsRefreshTokensPage() {
   return (
-    <PageLayout>
+    <PageLayout className={styles.layout}>
       <PageTitle>Refreshing Access Tokens</PageTitle>
       <p>
         Access tokens will expire after some time.
