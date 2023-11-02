@@ -31,7 +31,7 @@ export default function DevDocsRegisterAppPage() {
 
       <Headline id="public-confidential">Public vs. Confidential Applications</Headline>
 
-      <p>The <ExternalLink href="https://tools.ietf.org/html/rfc6749#section-2.1">OAuth 2.0 specification</ExternalLink> classifies applications as either confidential or public clients. The main difference is if your application is able to hold secrets securely. You will need to select the type of application when registering a new application.</p>
+      <p>The <ExternalLink href="https://tools.ietf.org/html/rfc6749#section-2.1">OAuth 2.0 specification</ExternalLink> classifies applications as either confidential or public clients. The main difference is whether your application is able to hold secrets securely. You will need to select the type of application when registering a new application.</p>
 
       <p><b>Confidential applications</b> can hold credentials in a secure way without exposing them to unauthorized parties. They require a trusted backend server to store the secret(s).</p>
 
