@@ -70,6 +70,26 @@ export default function Docs() {
         </li>
       </List>
 
+
+      <Headline id="support">Support</Headline>
+
+      <p>
+        If you have any questions or need help integrating gw2.me into your application, you can use the
+        #gw2treasures channel on <ExternalLink href="https://discord.gg/gvx6ZSE">GW2 Development Community Discord server</ExternalLink>.
+      </p>
+
+      <p>
+        If you find any bugs on gw2.me you can report them in
+        the <ExternalLink href="https://github.com/GW2Treasures/gw2.me/issues">GitHub issue tracker</ExternalLink>.
+      </p>
+
+      <Headline id="contribute">Contribute</Headline>
+
+      <p>
+        You can contribute to the development of gw2.me in
+        the <ExternalLink href="https://github.com/GW2Treasures/gw2.me">GW2Treasures/gw2.me</ExternalLink> repository on github.
+      </p>
+
     </PageLayout>
   );
 }
