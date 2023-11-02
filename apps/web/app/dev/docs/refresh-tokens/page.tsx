@@ -31,8 +31,8 @@ export default function DevDocsRefreshTokensPage() {
       </p>
 
       <p>
-        To get a fresh access token, send a POST request to <Code inline>https://gw2.me/api/token</Code>
-        with the following parameters.
+        To get a fresh access token, send a POST request
+        to <Code inline>https://gw2.me/api/token</Code> with the following parameters.
       </p>
 
       <Table>
