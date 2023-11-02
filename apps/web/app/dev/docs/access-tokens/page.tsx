@@ -149,7 +149,7 @@ export default function DevDocsAccessTokensPage() {
         </tbody>
       </Table>
 
-      <p>If the request is successful, the response will contain the access token used to access any further apis.</p>
+      <p>If the request is successful, the response will contain the access token used to access any other API endpoints.</p>
 
       <Code>
         {JSON.stringify({

@@ -5,7 +5,6 @@ import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton'
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
-import { List } from '@gw2treasures/ui/components/Layout/List';
 import Link from 'next/link';
 import { PageTitle } from '@/components/Layout/PageTitle';
 
@@ -48,49 +47,6 @@ export default function Docs() {
           <tr>
             <td>Token URL</td>
             <td><FlexRow><Code inline>https://gw2.me/api/token</Code><CopyButton copy="https://gw2.me/api/token" icon="copy" iconOnly/></FlexRow></td>
-          </tr>
-        </tbody>
-      </Table>
-
-      <Headline id="access-token">Get access token</Headline>
-
-      <p>Make a POST request to <Code inline>https://gw2.me/api/token</Code> to exchange your <Code inline>code</Code> for an <Code inline>access_token</Code> and <Code inline>refresh_token</Code>. The body needs to have the <Code inline>Content-Type: application/x-www-form-urlencoded</Code>.</p>
-
-      <p>The response is will be a JSON object with the following properties:</p>
-
-      <Table>
-        <thead>
-          <tr>
-            <Table.HeaderCell>Property</Table.HeaderCell>
-            <Table.HeaderCell small>Type</Table.HeaderCell>
-            <Table.HeaderCell>Description</Table.HeaderCell>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><Code inline>access_token</Code></td>
-            <td><Code inline borderless>String</Code></td>
-            <td>The generated <Code inline>access_token</Code>. The <Code inline>access_token</Code> is used to make requests to the gw2.me API.</td>
-          </tr>
-          <tr>
-            <td><Code inline>token_type</Code></td>
-            <td><Code inline borderless>String</Code></td>
-            <td>The type of the <Code inline>access_token</Code>. Always <Code inline>Bearer</Code>.</td>
-          </tr>
-          <tr>
-            <td><Code inline>expires_in</Code></td>
-            <td><Code inline borderless>Number</Code></td>
-            <td>Seconds until the access_token expires and needs to be refreshed.</td>
-          </tr>
-          <tr>
-            <td><Code inline>refresh_token</Code></td>
-            <td><Code inline borderless>String</Code></td>
-            <td>The generated <Code inline>refresh_token</Code>. The <Code inline>refresh_token</Code> can be used to <Link href="#refresh-token">generate a fresh <Code inline>access_token</Code></Link>. Only included if the application is <Code inline>Confidential</Code></td>
-          </tr>
-          <tr>
-            <td><Code inline>scope</Code></td>
-            <td><Code inline borderless>String</Code></td>
-            <td>The <Link href="#scopes">scopes</Link> authorized for this <Code inline>access_token</Code> separated by spaces.</td>
           </tr>
         </tbody>
       </Table>
