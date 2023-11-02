@@ -130,63 +130,6 @@ export default function Docs() {
           </tr>
         </tbody>
       </Table>
-
-      <Headline id="accounts">Get Guild Wars 2 Accounts</Headline>
-
-      <p>After the user has authorized your application you can request the shared Guild Wars 2 Accounts by making a request to <Code inline>https://gw2.me/api/accounts</Code>. You will need to pass your <Code inline>access_token</Code> as a header (<Code inline>Authorization: Bearer &lt;access_token&gt;</Code>). This requires at least one Guild Wars 2 scope.</p>
-
-      <Table>
-        <thead>
-          <tr>
-            <Table.HeaderCell>Property</Table.HeaderCell>
-            <Table.HeaderCell small>Type</Table.HeaderCell>
-            <Table.HeaderCell>Description</Table.HeaderCell>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><Code inline>accounts</Code></td>
-            <td><Code inline borderless>Array</Code></td>
-            <td>List of the Guild Wars 2 accounts of the user.</td>
-          </tr>
-          <tr>
-            <td><Code inline>accounts[].id</Code></td>
-            <td><Code inline borderless>String</Code></td>
-            <td>The unique id of the account. This is the same id as returned from the <Code inline borderless>/v2/accounts</Code> Guild Wars 2 API endpoint.</td>
-          </tr>
-          <tr>
-            <td><Code inline>accounts[].name</Code></td>
-            <td><Code inline borderless>String</Code></td>
-            <td>The name of the account as returned by the <Code inline borderless>/v2/accounts</Code> Guild Wars 2 API endpoint.</td>
-          </tr>
-        </tbody>
-      </Table>
-
-      <Headline id="subtokens">Creating GW2 API Subtokens</Headline>
-
-      <p>To access the Guild Wars 2 API you can create a subtoken by requesting <Code inline>https://gw2.me/api/accounts/&lt;accountId&gt;/subtoken</Code>. You will need to pass your <Code inline>access_token</Code> as a header (<Code inline>Authorization: Bearer &lt;access_token&gt;</Code>). This requires at least one Guild Wars 2 scope.</p>
-
-      <Table>
-        <thead>
-          <tr>
-            <Table.HeaderCell>Property</Table.HeaderCell>
-            <Table.HeaderCell small>Type</Table.HeaderCell>
-            <Table.HeaderCell>Description</Table.HeaderCell>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><Code inline>subtoken</Code></td>
-            <td><Code inline borderless>String</Code></td>
-            <td>A Subtoken that can be used to make authenticated requests to the Guild Wars 2 API.</td>
-          </tr>
-          <tr>
-            <td><Code inline>expiresAt</Code></td>
-            <td><Code inline borderless>String</Code></td>
-            <td>The timestamp when the subtoken expires as ISO-8601 string.</td>
-          </tr>
-        </tbody>
-      </Table>
     </PageLayout>
   );
 }
