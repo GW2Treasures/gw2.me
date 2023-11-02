@@ -95,44 +95,6 @@ export default function Docs() {
         </tbody>
       </Table>
 
-      <Headline id="refresh-token">Refresh token</Headline>
-
-      <p>When the <Code inline>access_token</Code> expires <Code inline>Confidential</Code> apps can refreshed it by making a POST request to <Code inline>https://gw2.me/api/token</Code>. The body needs to have the <Code inline>Content-Type: application/x-www-form-urlencoded</Code>.</p>
-
-      <Table>
-        <thead>
-          <tr>
-            <Table.HeaderCell>Parameter</Table.HeaderCell>
-            <Table.HeaderCell small>Type</Table.HeaderCell>
-            <Table.HeaderCell>Description</Table.HeaderCell>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><Code inline>grant_type</Code></td>
-            <td><Code inline borderless>&quot;refresh_token&quot;</Code></td>
-            <td>Must be <Code inline>authorization_code</Code> to exchange your <Code inline>code</Code> with an <Code inline>access_token</Code> and <Code inline>refresh_token</Code>.</td>
-          </tr>
-          <tr>
-            <td><Code inline>refresh_token</Code></td>
-            <td><Code inline borderless>String</Code></td>
-            <td>The <Code inline>refresh_token</Code> you received from the <Link href="#access-token"><Code inline>access_token</Code>-request</Link>.</td>
-          </tr>
-          <tr>
-            <td><Code inline>client_id</Code></td>
-            <td><Code inline borderless>String</Code></td>
-            <td>The <Code inline>client_id</Code> of your application.</td>
-          </tr>
-          <tr>
-            <td><Code inline>client_secret</Code></td>
-            <td><Code inline borderless>String</Code></td>
-            <td>The <Code inline>client_secret</Code> of your application.</td>
-          </tr>
-        </tbody>
-      </Table>
-
-      <p>The response is the same as when <Link href="#access-token">generating the <Code inline>access_token</Code></Link> the first time.</p>
-
       <Headline id="identify">Get the users identity</Headline>
 
       <p>After the user has authorized your application you can request the users identity by making a request to <Code inline>https://gw2.me/api/user</Code>. You will need to pass your <Code inline>access_token</Code> as a header (<Code inline>Authorization: Bearer &lt;access_token&gt;</Code>). Requires the <Code inline>identify</Code> scope. The response is a JSON object with the following properties.</p>
