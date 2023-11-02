@@ -8,6 +8,7 @@ import { Table } from '@gw2treasures/ui/components/Table/Table';
 import Link from 'next/link';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
+import { List } from '@gw2treasures/ui/components/Layout/List';
 
 export default function Docs() {
   return (
@@ -48,6 +49,27 @@ export default function Docs() {
           </tr>
         </tbody>
       </Table>
+
+      <Headline id="why">Why gw2.me</Headline>
+
+      <p>
+        gw2.me provides secure way for users to manage access between multiple Guild Wars 2 accounts and applications.
+      </p>
+
+      <List>
+        <li>User don&apos;t have to handle API keys for every application, instead they just have to <b>setup gw2.me once.</b></li>
+        <li>gw2.me generates <b>secure subtokens</b> with the specific scopes requested by the application.</li>
+        <li>gw2.me also handles all <b>errors</b> around invalid API keys, so applications always receive valid API keys.</li>
+        <li>
+          Instead of instructing the user how to generate API keys and which permissions are required,
+          applications can instead just include a <b>Login with gw2.me</b> button.
+        </li>
+        <li>
+          Users can review and <b>revoke access</b> to any application at any point, which is often not possible with API keys because
+          users tend to reuse the same API key for multiple applications.
+        </li>
+      </List>
+
     </PageLayout>
   );
 }
