@@ -18,6 +18,11 @@ export default function Docs() {
 
       <p>gw2.me uses <ExternalLink href="https://datatracker.ietf.org/doc/html/rfc6749">OAuth 2.0</ExternalLink> to manage the access between users and applications.</p>
 
+      <p>
+        This documentation is aimed at developers who want to integrate gw2.me into their applications,
+        so their users can use gw2.me to authorize the app to access the Guild Wars 2 API on their behalf.
+      </p>
+
       <Headline id="use">Use gw2.me in your application</Headline>
 
       <Steps>
