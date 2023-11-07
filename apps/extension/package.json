@@ -22,7 +22,7 @@
   "homepage": "https://github.com/GW2treasures/gw2.me#readme",
   "devDependencies": {
     "@types/archiver": "6.0.1",
-    "@types/chrome": "0.0.249",
+    "@types/chrome": "0.0.250",
     "@types/react": "18.2.36",
     "@types/react-dom": "18.2.14",
     "archiver": "6.0.1",
