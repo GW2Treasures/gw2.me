@@ -30,7 +30,13 @@ export function withAuthorization<Context>(scopes?: Scope[] | { oneOf: Scope[]})
 
       // find authorization in db
       const authorization = await db.authorization.findUnique({
-        where: { type_token: { token, type: AuthorizationType.AccessToken }},
+        where: {
+          type_token: { token, type: AuthorizationType.AccessToken },
+          OR: [
+            { expiresAt: { gte: new Date() }},
+            { expiresAt: null }
+          ]
+        },
       });
 
       // verify that the token has the required scopes for the current endpoint
