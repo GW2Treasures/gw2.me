@@ -12,7 +12,7 @@
     "@gw2me/client": "*",
     "@gw2me/database": "*",
     "@gw2treasures/icons": "0.0.14",
-    "@gw2treasures/ui": "0.0.17",
+    "@gw2treasures/ui": "0.0.18",
     "next": "14.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
