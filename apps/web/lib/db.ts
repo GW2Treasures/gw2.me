@@ -2,14 +2,16 @@ import { PrismaClient } from '@gw2me/database';
 
 // https://pris.ly/d/help/next-js-best-practices
 
-const globalForPrisma = global as unknown as {
-  _db: PrismaClient | undefined
+const prismaClientSingleton = () => {
+  return new PrismaClient();
 };
 
-export const db =
-  globalForPrisma._db ??
-  new PrismaClient({
-    log: ['query'],
-  });
+type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma._db = db;
+const globalForPrisma = globalThis as unknown as {
+  db: PrismaClientSingleton | undefined
+};
+
+export const db = globalForPrisma.db ?? prismaClientSingleton();
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.db = db;
