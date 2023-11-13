@@ -3,6 +3,7 @@ import 'server-only';
 
 import { discord } from './discord';
 import { github } from './github';
+import { steam } from './steam';
 
 export interface ProviderConfig {
   id: UserProviderType,
@@ -11,7 +12,7 @@ export interface ProviderConfig {
 
   getAuthUrl(options: { redirect_uri: string, state: string, code_challenge?: string, code_challenge_method?: string }): string
 
-  getUser(params: { code: string, authRequest: UserProviderRequest }): Promise<{
+  getUser(params: { searchParams: { code?: string } & Record<string, string | undefined>, authRequest: UserProviderRequest }): Promise<{
     /** identifier used by the provider */
     accountId: string;
 
@@ -33,6 +34,7 @@ export interface ProviderConfig {
 export const providers: Record<string, ProviderConfig | undefined> = {
   [UserProviderType.discord]: discord(),
   [UserProviderType.github]: github(),
+  [UserProviderType.steam]: steam(),
 } satisfies Record<UserProviderType, ProviderConfig | undefined>;
 
 export function getJsonIfOk(response: Response) {

@@ -21,13 +21,10 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     redirect('/login?error');
   }
 
-  // get code from querystring
-  const { searchParams } = new URL(request.url);
-  const code = searchParams.get('code');
-  const state = searchParams.get('state');
+  // get state from querystring
+  const { state, ...searchParams } = Object.fromEntries(new URL(request.url).searchParams.entries());
 
-  // code and state are required
-  if(!code || !state) {
+  if(!state) {
     redirect('/login?error');
   }
 
@@ -51,7 +48,11 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
         : '/profile';
     }
 
-    const profile = await provider.getUser({ code, authRequest });
+    // get user profile from provider
+    const profile = await provider.getUser({ searchParams, authRequest });
+
+    // make sure username only contains valid characters
+    profile.username = profile.username.replaceAll(/[^a-z0-9._-]+/gi, '');
 
     // build provider key
     const providerId = {
