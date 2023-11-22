@@ -24,7 +24,7 @@
     "@types/archiver": "6.0.2",
     "@types/chrome": "0.0.253",
     "@types/react": "18.2.38",
-    "@types/react-dom": "18.2.16",
+    "@types/react-dom": "18.2.17",
     "archiver": "6.0.1",
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.8.1",
