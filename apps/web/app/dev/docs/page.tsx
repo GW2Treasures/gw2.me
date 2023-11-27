@@ -27,7 +27,7 @@ export default function Docs() {
 
       <Steps>
         <div><Link href="/dev/docs/register-app">Register your application</Link>.</div>
-        <div><Link href="/dev/docs/access-token">Get an access token</Link> by navigating the user to the authorization page.</div>
+        <div><Link href="/dev/docs/access-tokens">Get an access token</Link> by navigating the user to the authorization page.</div>
         <div>
           Access the Guild Wars 2 API by <Link href="/dev/docs/gw2-api">generating subtokens</Link> or
           use other <Link href="/dev/docs/api-reference">gw2.me APIs</Link>.

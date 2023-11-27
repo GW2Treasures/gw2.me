@@ -28,7 +28,7 @@ export default function DevDocsGW2APIPage() {
         Before you can request a subtoken, you will need to get the list of accounts
         the user has shared with your application. Make a request to <Code inline>https://gw2.me/api/accounts</Code>.
         You will need to pass your <Code inline>access_token</Code> as a header (<Code inline>Authorization: Bearer &lt;access_token&gt;</Code>).
-        This requires at least one <Link href="/dev/docs/scope">Guild Wars 2 scope</Link>.
+        This requires at least one <Link href="/dev/docs/scopes">Guild Wars 2 scope</Link>.
       </p>
 
       <p>
