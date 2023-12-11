@@ -1,3 +1,5 @@
+'use server';
+
 import { expiresAt } from '@/lib/date';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
@@ -20,8 +22,6 @@ export interface AuthorizeActionParams {
 
 // eslint-disable-next-line require-await
 export async function authorize(params: AuthorizeActionParams, _: FormState, formData: FormData): Promise<FormState> {
-  'use server';
-
   // get account ids from form
   const accountIds = formData.getAll('accounts').filter(isString);
 
