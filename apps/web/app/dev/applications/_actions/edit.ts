@@ -1,3 +1,5 @@
+'use server';
+
 import { FormState } from '@/components/Form/Form';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
@@ -6,8 +8,6 @@ import { revalidatePath } from 'next/cache';
 import sharp from 'sharp';
 
 export async function editApplication(id: string, _: FormState, form: FormData): Promise<FormState> {
-  'use server';
-
   const session = await getSession();
   if(!session) {
     return { error: 'Not logged in' };

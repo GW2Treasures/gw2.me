@@ -28,7 +28,6 @@ export const getUser = cache(async function getUser(): Promise<User | undefined>
 async function getSessionFromDb(sessionId: string) {
   try {
     // try to update session in db
-    console.log('update session');
     const session = await db.userSession.update({
       where: { id: sessionId },
       data: { lastUsed: new Date() },
