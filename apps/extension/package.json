@@ -36,7 +36,7 @@
   "dependencies": {
     "@fontsource/bitter": "5.0.16",
     "@gw2me/client": "0.2.0",
-    "@gw2treasures/icons": "0.0.14",
+    "@gw2treasures/icons": "0.0.15",
     "@gw2treasures/ui": "0.0.19",
     "react": "18.2.0",
     "react-dom": "18.2.0"
