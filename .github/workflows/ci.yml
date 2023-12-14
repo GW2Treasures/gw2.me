@@ -60,7 +60,7 @@ jobs:
           *.output=type=docker,dest=/tmp/image-${{ matrix.target }}.tar
           *.cache-from=type=gha,scope=build-${{ matrix.target }}
           *.cache-to=type=gha,scope=build-${{ matrix.target }},mode=max
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: docker-image-${{ matrix.target }}
         path: /tmp/image-${{ matrix.target }}.tar
