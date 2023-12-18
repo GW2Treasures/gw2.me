@@ -93,10 +93,15 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
   }
 
   // get accounts
+  const gw2Permissions = scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4));
   const accounts = session && hasGW2Scopes(scopes)
     ? await db.account.findMany({
         where: { userId: session.userId },
-        orderBy: { createdAt: 'asc' }
+        orderBy: { createdAt: 'asc' },
+        select: {
+          id: true, accountName: true, displayName: true, verified: true,
+          _count: { select: { apiTokens: { where: { permissions: { hasEvery: gw2Permissions }}}}}
+        }
       })
     : [];
 
@@ -152,6 +157,11 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
                         {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
                         {verifiedAccountsOnly && !account.verified && (<Tip tip="Not verified"><Icon icon="unverified"/></Tip>)}
                         {!verifiedAccountsOnly && account.verified && (<Tip tip="Verified"><Icon icon="verified"/></Tip>)}
+                        {account._count.apiTokens === 0 && (
+                          <Tip tip="No API key of this account has all requested permissions">
+                            <Icon icon="warning" color="#ffa000"/>
+                          </Tip>
+                        )}
                       </FlexRow>
                     </Checkbox>
                   ))}
