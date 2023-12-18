@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
+import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { AuthorizationType } from '@gw2me/database';
 import { Icon } from '@gw2treasures/ui';
@@ -40,38 +41,35 @@ export default async function ProfilePage() {
     redirect('/accounts/add');
   }
 
+  const Accounts = createDataTable(accounts, ({ id }) => id);
+
   return (
     <PageLayout>
       <Headline id="accounts" actions={<LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>}>Guild Wars 2 Accounts</Headline>
 
       {accounts.length > 0 && (
-        <Table>
-          <thead>
-            <tr>
-              <Table.HeaderCell>Account</Table.HeaderCell>
-              <Table.HeaderCell>Verified</Table.HeaderCell>
-              <Table.HeaderCell>Authorized Applications</Table.HeaderCell>
-              <Table.HeaderCell>API Keys</Table.HeaderCell>
-              <Table.HeaderCell small>Actions</Table.HeaderCell>
-            </tr>
-          </thead>
-          <tbody>
-            {accounts.map((account) => (
-              <tr key={account.id}>
-                <td><Icon icon="user"/> <b>{account.displayName ?? account.accountName}</b> {account.displayName && `(${account.accountName})`}</td>
-                <td><FlexRow><Icon icon={account.verified ? 'verified' : 'unverified'}/> {account.verified ? 'Verified' : 'Not Verified'}</FlexRow></td>
-                <td>{account._count.authorizations}</td>
-                <td>{account._count.apiTokens}</td>
-                <td>
-                  <FlexRow>
-                    <LinkButton href={`/accounts/${account.id}`} icon="settings">Manage</LinkButton>
-                    {!account.verified && (<LinkButton href={`/accounts/${account.id}/verify`} icon="verified">Verify</LinkButton>)}
-                  </FlexRow>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <Accounts.Table>
+          <Accounts.Column title="Account" id="accounts">
+            {({ displayName, accountName }) => <><Icon icon="user"/> <b>{displayName ?? accountName}</b> {displayName && `(${accountName})`}</>}
+          </Accounts.Column>
+          <Accounts.Column title="Verified" id="verified" sortBy={({ verified }) => verified ? 1 : 0}>
+            {({ verified }) => <FlexRow><Icon icon={verified ? 'verified' : 'unverified'}/> {verified ? 'Verified' : 'Not Verified'}</FlexRow>}
+          </Accounts.Column>
+          <Accounts.Column title="Authorized Applications" id="apps" align="right" sortBy={({ _count }) => _count.authorizations}>
+            {({ _count }) => _count.authorizations}
+          </Accounts.Column>
+          <Accounts.Column title="API Keys" id="keys" align="right" sortBy={({ _count }) => _count.authorizations}>
+            {({ _count }) => _count.apiTokens}
+          </Accounts.Column>
+          <Accounts.Column small title="Actions" id="actions">
+            {({ id, verified }) => (
+              <FlexRow>
+                <LinkButton href={`/accounts/${id}`} icon="settings">Manage</LinkButton>
+                {!verified && (<LinkButton href={`/accounts/${id}/verify`} icon="verified">Verify</LinkButton>)}
+              </FlexRow>
+            )}
+          </Accounts.Column>
+        </Accounts.Table>
       )}
     </PageLayout>
   );
