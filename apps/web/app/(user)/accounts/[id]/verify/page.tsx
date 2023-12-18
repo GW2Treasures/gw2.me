@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
+import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { notFound, redirect } from 'next/navigation';
 import { cache } from 'react';
 
@@ -40,18 +41,24 @@ export default async function VerifiyAccountPage({ params }: VerifiyAccountPageP
 
       <p>Verify the ownership of your account.</p>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 32 }}>
-        <LinkButton href={`/accounts/${params.id}/verify/api-key`} icon="key">
-          <b>API key challenge</b>
-          <div>Login to the Guild Wars 2 account website and create a new API key using a specific name.</div>
-        </LinkButton>
-        <Button icon="tradingpost" disabled>
-          <div style={{ textAlign: 'left' }}>
-            <b>Trading Post challenge</b> (coming soon)
-            <div>Create a new buy-order on the trading post.</div>
-          </div>
-        </Button>
-      </div>
+      {account.verified ? (
+        <Notice>
+          Your account is already verified.
+        </Notice>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 32 }}>
+          <LinkButton href={`/accounts/${params.id}/verify/api-key`} icon="key">
+            <b>API key challenge</b>
+            <div style={{ whiteSpace: 'normal' }}>Login to the Guild Wars 2 account website and create a new API key using a specific name.</div>
+          </LinkButton>
+          <Button icon="tradingpost" disabled>
+            <div style={{ textAlign: 'left' }}>
+              <b>Trading Post challenge</b> (coming soon)
+              <div style={{ whiteSpace: 'normal' }}>Create a new buy-order on the trading post.</div>
+            </div>
+          </Button>
+        </div>
+      )}
 
       <LinkButton href={`/accounts/${params.id}`} icon="chevron-left">Cancel</LinkButton>
     </PageLayout>
