@@ -175,6 +175,8 @@ model Account {
 
   displayName String?
 
+  verified Boolean @default(false)
+
   userId String
   user   User @relation("userAccount", fields: [userId], references: [id], onDelete: Cascade)
 

@@ -84,6 +84,11 @@ export default function DevDocsAccessTokensPage() {
             <td><Code inline borderless>&quot;S256&quot;</Code></td>
             <td>PKCE challenge method. Only SHA-256 is supported.</td>
           </tr>
+          <tr>
+            <td><Code inline>verified_accounts_only</Code> (optional)</td>
+            <td><Code inline borderless>&quot;true&quot;</Code></td>
+            <td>Only allow the user to select verified accounts.</td>
+          </tr>
         </tbody>
       </Table>
 

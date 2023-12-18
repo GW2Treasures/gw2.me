@@ -12,6 +12,7 @@ export interface AccountsResponse {
   accounts: {
     id: string;
     name: string;
+    verified: boolean;
   }[]
 }
 
