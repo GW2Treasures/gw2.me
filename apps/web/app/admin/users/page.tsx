@@ -2,11 +2,8 @@ import { FormatDate } from '@/components/Format/FormatDate';
 import { Code } from '@/components/Layout/Code';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { db } from '@/lib/db';
-import { Icon } from '@gw2treasures/ui';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
-import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
-import { Table } from '@gw2treasures/ui/components/Table/Table';
 
 function getUsers() {
   return db.user.findMany({

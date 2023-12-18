@@ -7,7 +7,6 @@ import { Icon } from '@gw2treasures/ui';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
-import { Table } from '@gw2treasures/ui/components/Table/Table';
 
 function getApps() {
   return db.application.findMany({
