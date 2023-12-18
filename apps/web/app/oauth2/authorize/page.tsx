@@ -142,21 +142,23 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
               </Expandable>
             )}
 
-            <div className={styles.accountSection}>
-              Select Accounts {verifiedAccountsOnly && '(Verified only)'}
-              <div className={styles.accountSelection}>
-                {accounts.map((account) => (
-                  <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id) && (account.verified || request.verified_accounts_only !== 'true')} name="accounts" formValue={account.id} disabled={!account.verified && request.verified_accounts_only === 'true'}>
-                    <FlexRow>
-                      {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
-                      {verifiedAccountsOnly && !account.verified && (<Tip tip="Not verified"><Icon icon="unverified"/></Tip>)}
-                      {!verifiedAccountsOnly && account.verified && (<Tip tip="Verified"><Icon icon="verified"/></Tip>)}
-                    </FlexRow>
-                  </Checkbox>
-                ))}
-                <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
+            {hasGW2Scopes(scopes) && (
+              <div className={styles.accountSection}>
+                Select Accounts {verifiedAccountsOnly && '(Verified only)'}
+                <div className={styles.accountSelection}>
+                  {accounts.map((account) => (
+                    <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id) && (account.verified || request.verified_accounts_only !== 'true')} name="accounts" formValue={account.id} disabled={!account.verified && request.verified_accounts_only === 'true'}>
+                      <FlexRow>
+                        {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                        {verifiedAccountsOnly && !account.verified && (<Tip tip="Not verified"><Icon icon="unverified"/></Tip>)}
+                        {!verifiedAccountsOnly && account.verified && (<Tip tip="Verified"><Icon icon="verified"/></Tip>)}
+                      </FlexRow>
+                    </Checkbox>
+                  ))}
+                  <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
+                </div>
               </div>
-            </div>
+            )}
 
             <p className={styles.outro}>You can revoke access at anytime from your gw2.me profile.</p>
 
