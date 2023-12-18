@@ -21,10 +21,19 @@
   margin-top: 2px;
 }
 
+.accountSection {
+  margin: 0 -16px;
+  padding: 16px;
+  background-color: var(--color-background-light);
+  border: solid var(--color-border-dark);
+  border-width: 1px 0;
+}
+
 .accountSelection {
-  margin-top: 8px;
+  margin-top: 16px;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .p {

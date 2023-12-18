@@ -10,11 +10,11 @@ export interface AccountCreatePageProps {
 
 export default function AccountCreatePage({ searchParams }: AccountCreatePageProps) {
   return (
-    <PageLayout>
+    <div>
       <Headline id="create">Add API Key</Headline>
 
       <AccountAddForm returnTo={searchParams?.return}/>
-    </PageLayout>
+    </div>
   );
 }
 

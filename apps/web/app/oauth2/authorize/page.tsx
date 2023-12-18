@@ -18,11 +18,12 @@ import { Form, FormState } from '@/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { createRedirectUrl } from '@/lib/redirectUrl';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
-import { AuthorizationType } from '@gw2me/database';
+import { AuthorizationType, User } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
 import { LoginForm } from 'app/login/form';
 import { Metadata } from 'next';
 import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 
 interface AuthorizePageProps {
   searchParams: Partial<AuthorizeRequestParams> & Record<string, string>
@@ -50,6 +51,7 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
   const previousScopeMap = scopesToMap(previousScope);
   const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
   const scopes = decodeURIComponent(request.scope).split(' ') as Scope[];
+  const verifiedAccountsOnly = request.verified_accounts_only === 'true';
 
   if(request.include_granted_scopes) {
     previousScope.forEach((scope) => {
@@ -91,10 +93,15 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
   }
 
   // get accounts
+  const gw2Permissions = scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4));
   const accounts = session && hasGW2Scopes(scopes)
     ? await db.account.findMany({
         where: { userId: session.userId },
-        orderBy: { createdAt: 'asc' }
+        orderBy: { createdAt: 'asc' },
+        select: {
+          id: true, accountName: true, displayName: true, verified: true,
+          _count: { select: { apiTokens: { where: { permissions: { hasEvery: gw2Permissions }}}}}
+        }
       })
     : [];
 
@@ -112,7 +119,8 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
     <>
       <div className={layoutStyles.header}>
         <ApplicationImage fileId={application.imageId} size={64}/>
-        {application.name}
+        <span className={layoutStyles.title}>{application.name}</span>
+        <span className={layoutStyles.subTitle}>by {application.owner.name}</span>
       </div>
       {!session || !user ? (
         <>
@@ -131,55 +139,35 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
               <p className={styles.intro}>{application.name} wants to access additional data.</p>
             )}
 
-            {newScopes.length > 0 && (
-              <ul className={styles.scopeList}>
-                {newScopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
-                {newScopes.includes(Scope.Email) && <ScopeItem icon="mail">Your email address</ScopeItem>}
-                {hasGW2Scopes(newScopes) && (
-                  <ScopeItem icon="developer">
-                    <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
-                    <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
-                    <div>Select accounts</div>
-                    <div className={styles.accountSelection}>
-                      {accounts.map((account) => (
-                        <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id) && (account.verified || request.verified_accounts_only !== 'true')} name="accounts" formValue={account.id} disabled={!account.verified && request.verified_accounts_only === 'true'}>
-                          {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName} <Tip tip={account.verified ? 'Verified' : 'Not verified'}><Icon icon={account.verified ? 'verified' : 'unverified'}/></Tip>
-                        </Checkbox>
-                      ))}
-                      <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
-                    </div>
-                  </ScopeItem>
-                )}
-              </ul>
-            )}
+            {newScopes.length > 0 && renderScopes(newScopes, user)}
 
             {oldScopes.length > 0 && (
-              <Expandable label="View previously authorized permissions.">
-                <ul className={styles.scopeList}>
-                  {oldScopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
-                  {oldScopes.includes(Scope.Email) && <ScopeItem icon="mail">Your email address</ScopeItem>}
-                  {hasGW2Scopes(oldScopes) && (!hasGW2Scopes(newScopes) ? (
-                    <ScopeItem icon="developer">
-                      <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
-                      <PermissionList permissions={oldScopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
-                      <div>Select accounts</div>
-                      <div className={styles.accountSelection}>
-                        {accounts.map((account) => (
-                          <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id) && (account.verified || request.verified_accounts_only !== 'true')} name="accounts" formValue={account.id} disabled={!account.verified && request.verified_accounts_only === 'true'}>
-                            {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName} <Tip tip={account.verified ? 'Verified' : 'Not verified'}><Icon icon={account.verified ? 'verified' : 'unverified'}/></Tip>
-                          </Checkbox>
-                        ))}
-                        <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
-                      </div>
-                    </ScopeItem>
-                  ) : (
-                    <ScopeItem icon="developer">
-                      <p className={styles.p}>Access the Guild Wars 2 API with the following permissions</p>
-                      <PermissionList permissions={oldScopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
-                    </ScopeItem>
-                  ))}
-                </ul>
+              <Expandable label="Show previously authorized permissions.">
+                {renderScopes(oldScopes, user)}
               </Expandable>
+            )}
+
+            {hasGW2Scopes(scopes) && (
+              <div className={styles.accountSection}>
+                Select Accounts {verifiedAccountsOnly && '(Verified only)'}
+                <div className={styles.accountSelection}>
+                  {accounts.map((account) => (
+                    <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id) && (account.verified || request.verified_accounts_only !== 'true')} name="accounts" formValue={account.id} disabled={!account.verified && request.verified_accounts_only === 'true'}>
+                      <FlexRow>
+                        {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                        {verifiedAccountsOnly && !account.verified && (<Tip tip="Not verified"><Icon icon="unverified"/></Tip>)}
+                        {!verifiedAccountsOnly && account.verified && (<Tip tip="Verified"><Icon icon="verified"/></Tip>)}
+                        {account._count.apiTokens === 0 && (
+                          <Tip tip="No API key of this account has all requested permissions">
+                            <Icon icon="warning" color="#ffa000"/>
+                          </Tip>
+                        )}
+                      </FlexRow>
+                    </Checkbox>
+                  ))}
+                  <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
+                </div>
+              </div>
             )}
 
             <p className={styles.outro}>You can revoke access at anytime from your gw2.me profile.</p>
@@ -233,4 +221,19 @@ const emptyScopeMap = Object.fromEntries(Object.values(Scope).map((scope) => [sc
 
 function scopesToMap(scopes: Scope[]): Record<Scope, boolean> {
   return scopes.reduce((map, scope) => ({ ...map, [scope]: true }), emptyScopeMap);
+}
+
+function renderScopes(scopes: Scope[], user: User) {
+  return (
+    <ul className={styles.scopeList}>
+      {scopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
+      {scopes.includes(Scope.Email) && <ScopeItem icon="mail">Your email address</ScopeItem>}
+      {hasGW2Scopes(scopes) && (
+        <ScopeItem icon="developer">
+          <p className={styles.p}>Read-only access to the Guild Wars 2 API</p>
+          <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+        </ScopeItem>
+      )}
+    </ul>
+  );
 }
