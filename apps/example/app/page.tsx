@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation';
 import { Scope } from '@gw2me/client';
 import { randomBytes, scryptSync } from 'crypto';
 import { client_id, code_challenge, gw2me } from '@/lib/client';
+import { Label } from '@gw2treasures/ui/components/Form/Label';
 
 export default function HomePage() {
   return (
@@ -17,7 +18,10 @@ export default function HomePage() {
         ))}
         <Separator/>
         <Checkbox name="include_granted_scopes" formValue="true">Include granted scopes</Checkbox>
-        <Select name="prompt" options={[{ value: '', label: 'Default' }, { value: 'none', label: 'Prompt: None' }, { value: 'consent', label: 'Prompt: Consent' }]}/>
+        <Checkbox name="verified_accounts_only" formValue="true">verified_accounts_only</Checkbox>
+        <Label label="prompt">
+          <Select name="prompt" options={[{ value: '', label: 'Default' }, { value: 'none', label: 'Prompt: None' }, { value: 'consent', label: 'Prompt: Consent' }]}/>
+        </Label>
       </div>
 
       <Button type="submit" icon="gw2me">Login with gw2.me</Button>
@@ -35,6 +39,7 @@ async function login(formData: FormData) {
   const scopes = formData.getAll('scopes') as Scope[];
   const prompt = (formData.get('prompt') || undefined) as 'consent' | 'none' | undefined;
   const include_granted_scopes = formData.get('include_granted_scopes') === 'true';
+  const verified_accounts_only = formData.get('verified_accounts_only') === 'true';
 
   // make sure example app exists
   const user = await db.user.upsert({
@@ -59,6 +64,7 @@ async function login(formData: FormData) {
     code_challenge_method: 'S256',
     prompt,
     include_granted_scopes,
+    verified_accounts_only,
   });
 
   redirect(authUrl);

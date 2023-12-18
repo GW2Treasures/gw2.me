@@ -1,16 +1,13 @@
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { AccountAddForm } from './form';
 
-export interface AccountCreatePageProps {
-  searchParams?: {
-    return?: string;
-  }
-}
-
-export default function AccountCreatePage({ searchParams }: AccountCreatePageProps) {
+export default function AccountCreatePage() {
   return (
     <PageLayout>
-      <AccountAddForm returnTo={searchParams?.return}/>
+      <Headline id="create">Add API Key</Headline>
+
+      <AccountAddForm/>
     </PageLayout>
   );
 }

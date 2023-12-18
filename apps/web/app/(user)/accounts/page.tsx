@@ -8,6 +8,7 @@ import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { AuthorizationType } from '@gw2me/database';
 import { Icon } from '@gw2treasures/ui';
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 
 const getAccounts = cache(async () => {
   const session = await getSession();
@@ -48,6 +49,7 @@ export default async function ProfilePage() {
           <thead>
             <tr>
               <Table.HeaderCell>Account</Table.HeaderCell>
+              <Table.HeaderCell>Verified</Table.HeaderCell>
               <Table.HeaderCell>Authorized Applications</Table.HeaderCell>
               <Table.HeaderCell>API Keys</Table.HeaderCell>
               <Table.HeaderCell small>Actions</Table.HeaderCell>
@@ -57,9 +59,15 @@ export default async function ProfilePage() {
             {accounts.map((account) => (
               <tr key={account.id}>
                 <td><Icon icon="user"/> <b>{account.displayName ?? account.accountName}</b> {account.displayName && `(${account.accountName})`}</td>
+                <td><FlexRow><Icon icon={account.verified ? 'verified' : 'unverified'}/> {account.verified ? 'Verified' : 'Not Verified'}</FlexRow></td>
                 <td>{account._count.authorizations}</td>
                 <td>{account._count.apiTokens}</td>
-                <td><LinkButton href={`/accounts/${account.id}`} icon="settings">Manage</LinkButton></td>
+                <td>
+                  <FlexRow>
+                    <LinkButton href={`/accounts/${account.id}`} icon="settings">Manage</LinkButton>
+                    {!account.verified && (<LinkButton href={`/accounts/${account.id}/verify`} icon="verified">Verify</LinkButton>)}
+                  </FlexRow>
+                </td>
               </tr>
             ))}
           </tbody>

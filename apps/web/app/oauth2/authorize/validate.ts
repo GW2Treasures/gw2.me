@@ -17,6 +17,7 @@ export interface AuthorizeRequestParams {
   code_challenge_method?: string;
   prompt?: string;
   include_granted_scopes?: string;
+  verified_accounts_only?: string;
 }
 
 export const getApplicationByClientId = cache(async function getApplicationByClientId(clientId: string | undefined) {
@@ -95,6 +96,10 @@ function verifyPrompt({ prompt }: Partial<AuthorizeRequestParams>) {
   assert([undefined, 'none', 'consent'].includes(prompt), OAuth2ErrorCode.invalid_request, 'invalid prompt');
 }
 
+function verifyVerifiedAccountsOnly({ verified_accounts_only }: Partial<AuthorizeRequestParams>) {
+  assert(verified_accounts_only === undefined || verified_accounts_only === 'true', OAuth2ErrorCode.invalid_request, 'invalid verified_accounts_only');
+}
+
 export const validateRequest = cache(async function validateRequest(request: Partial<AuthorizeRequestParams>): Promise<{ error: string, request?: undefined } | { error: undefined, request: AuthorizeRequestParams }> {
   try {
     // first verify client_id and redirect_uri
@@ -118,6 +123,7 @@ export const validateRequest = cache(async function validateRequest(request: Par
       verifyPKCE(request),
       verifyPrompt(request),
       verifyIncludeGrantedScopes(request),
+      verifyVerifiedAccountsOnly(request),
     ]);
 
     return { error: undefined, request: request as AuthorizeRequestParams };

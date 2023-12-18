@@ -9,11 +9,11 @@ export const GET = withAuthorization({ oneOf: Gw2Scopes })(
   async (authorization: Authorization) => {
     const accounts = await db.account.findMany({
       where: { authorizations: { some: { id: authorization.id }}},
-      select: { accountId: true, accountName: true }
+      select: { accountId: true, accountName: true, verified: true }
     });
 
     const response: AccountsResponse = {
-      accounts: accounts.map(({ accountId, accountName }) => ({ id: accountId, name: accountName }))
+      accounts: accounts.map(({ accountId, accountName, verified }) => ({ id: accountId, name: accountName, verified }))
     };
 
     return NextResponse.json(response);

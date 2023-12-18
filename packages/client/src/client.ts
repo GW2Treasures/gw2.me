@@ -9,6 +9,7 @@ export interface AuthorizationUrlParams {
   code_challenge_method?: 'S256';
   prompt?: 'none' | 'consent'
   include_granted_scopes?: boolean;
+  verified_accounts_only?: boolean;
 }
 
 export interface AuthTokenParams {
@@ -49,7 +50,8 @@ export class Gw2MeClient {
     code_challenge,
     code_challenge_method,
     prompt,
-    include_granted_scopes
+    include_granted_scopes,
+    verified_accounts_only,
   }: AuthorizationUrlParams) {
     const params = new URLSearchParams({
       client_id: this.client_id,
@@ -73,6 +75,10 @@ export class Gw2MeClient {
 
     if(include_granted_scopes) {
       params.append('include_granted_scopes', 'true');
+    }
+
+    if(verified_accounts_only) {
+      params.append('verified_accounts_only', 'true');
     }
 
     return `${this.#getUrl()}oauth2/authorize?${params.toString()}`;

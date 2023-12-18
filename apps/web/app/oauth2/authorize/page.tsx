@@ -22,6 +22,7 @@ import { AuthorizationType } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
 import { LoginForm } from 'app/login/form';
 import { Metadata } from 'next';
+import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 
 interface AuthorizePageProps {
   searchParams: Partial<AuthorizeRequestParams> & Record<string, string>
@@ -141,8 +142,8 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
                     <div>Select accounts</div>
                     <div className={styles.accountSelection}>
                       {accounts.map((account) => (
-                        <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id)} name="accounts" formValue={account.id}>
-                          {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                        <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id) && (account.verified || request.verified_accounts_only !== 'true')} name="accounts" formValue={account.id} disabled={!account.verified && request.verified_accounts_only === 'true'}>
+                          {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName} <Tip tip={account.verified ? 'Verified' : 'Not verified'}><Icon icon={account.verified ? 'verified' : 'unverified'}/></Tip>
                         </Checkbox>
                       ))}
                       <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
@@ -164,8 +165,8 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
                       <div>Select accounts</div>
                       <div className={styles.accountSelection}>
                         {accounts.map((account) => (
-                          <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id)} name="accounts" formValue={account.id}>
-                            {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                          <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id) && (account.verified || request.verified_accounts_only !== 'true')} name="accounts" formValue={account.id} disabled={!account.verified && request.verified_accounts_only === 'true'}>
+                            {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName} <Tip tip={account.verified ? 'Verified' : 'Not verified'}><Icon icon={account.verified ? 'verified' : 'unverified'}/></Tip>
                           </Checkbox>
                         ))}
                         <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>

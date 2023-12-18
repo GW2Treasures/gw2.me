@@ -8,7 +8,7 @@ import { notFound, redirect } from 'next/navigation';
 import { deleteApiKey, updateDisplayName } from './actions';
 import { Form } from '@/components/Form/Form';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
-import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Code } from '@/components/Layout/Code';
 import { PermissionList } from '@/components/Permissions/PermissionList';
 import { Icon } from '@gw2treasures/ui';
@@ -59,7 +59,12 @@ export default async function AccountPage({ params: { id }}: AccountPageProps) {
 
   return (
     <PageLayout>
-      <Headline id="account">{account.accountName}</Headline>
+      <Headline id="account" actions={!account.verified && (<LinkButton href={`/accounts/${account.id}/verify`} icon="verified">Verify</LinkButton>)}>
+        <FlexRow>
+          {account.accountName}
+          {account.verified && <Tip tip="Verified"><Icon icon="verified"/></Tip>}
+        </FlexRow>
+      </Headline>
 
       <Form action={updateDisplayName.bind(null, id)}>
         <Label label="Custom Name">
@@ -70,7 +75,7 @@ export default async function AccountPage({ params: { id }}: AccountPageProps) {
         </FlexRow>
       </Form>
 
-      <Headline id="api-keys">API Keys</Headline>
+      <Headline id="api-keys" actions={<LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>}>API Keys</Headline>
 
       <Form action={deleteApiKey}>
         <Table>
