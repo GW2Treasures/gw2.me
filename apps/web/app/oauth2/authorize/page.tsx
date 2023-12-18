@@ -114,7 +114,8 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
     <>
       <div className={layoutStyles.header}>
         <ApplicationImage fileId={application.imageId} size={64}/>
-        {application.name}
+        <span className={layoutStyles.title}>{application.name}</span>
+        <span className={layoutStyles.subTitle}>by {application.owner.name}</span>
       </div>
       {!session || !user ? (
         <>
