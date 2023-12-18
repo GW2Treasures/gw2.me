@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { getUser } from '@/lib/session';
 import { Icon } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { DataTableContext } from '@gw2treasures/ui/components/Table/DataTableContext';
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -52,7 +53,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               <LinkButton appearance="menu" href={user ? '/profile' : '/login'} icon="user">{user ? user.name : 'Login'}</LinkButton>
             </div>
           </div>
-          {children}
+          <DataTableContext>
+            {children}
+          </DataTableContext>
           <div className={styles.footer}>
             <div className={styles.copyright}><b>gw2.me</b> by <a href="https://next.gw2treasures.com/">gw2treasures.com</a> © {new Date().getFullYear()}</div>
             <div className={styles.footerLinks}>

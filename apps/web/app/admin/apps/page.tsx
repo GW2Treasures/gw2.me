@@ -6,13 +6,14 @@ import { db } from '@/lib/db';
 import { Icon } from '@gw2treasures/ui';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { Table } from '@gw2treasures/ui/components/Table/Table';
+import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 
 function getApps() {
   return db.application.findMany({
     include: {
       owner: { select: { name: true }},
-      _count: { select: { authorizations: true }}
+      _count: { select: { authorizations: true }},
+      authorizations: { take: 1, orderBy: { usedAt: 'desc' }, select: { usedAt: true }},
     },
     orderBy: { createdAt: 'asc' }
   });
@@ -20,32 +21,20 @@ function getApps() {
 
 export default async function AdminUserPage() {
   const apps = await getApps();
+  const Apps = createDataTable(apps, (app) => app.id);
 
   return (
     <PageLayout>
       <Headline id="users">Apps ({apps.length})</Headline>
-      <Table>
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Owner</th>
-            <th>Authorizations</th>
-            <th>Created at</th>
-          </tr>
-        </thead>
-        <tbody>
-          {apps.map((app) => (
-            <tr key={app.id}>
-              <td><Code inline borderless>{app.id}</Code></td>
-              <td><FlexRow><ApplicationImage fileId={app.imageId}/> {app.name}</FlexRow></td>
-              <td><FlexRow><Icon icon="user"/>{app.owner.name}</FlexRow></td>
-              <td>{app._count.authorizations}</td>
-              <td><FormatDate date={app.createdAt}/></td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+
+      <Apps.Table>
+        <Apps.Column id="id" title="Id">{({ id }) => <Code inline borderless>{id}</Code>}</Apps.Column>
+        <Apps.Column id="name" title="Name" sortBy="name">{({ name, imageId }) => <FlexRow><ApplicationImage fileId={imageId}/> {name}</FlexRow>}</Apps.Column>
+        <Apps.Column id="owner" title="Owner" sortBy={({ owner }) => owner.name}>{({ owner }) => <FlexRow><Icon icon="user"/>{owner.name}</FlexRow>}</Apps.Column>
+        <Apps.Column id="auths" title="Authorizations" sortBy={({ _count }) => _count.authorizations} align="right">{({ _count }) => _count.authorizations}</Apps.Column>
+        <Apps.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Apps.Column>
+        <Apps.Column id="session" title="Last used" sortBy={({ authorizations }) => authorizations[0]?.usedAt}>{({ authorizations }) => authorizations[0]?.usedAt ? <FormatDate date={authorizations[0].usedAt}/> : '-'}</Apps.Column>
+      </Apps.Table>
     </PageLayout>
   );
 }
