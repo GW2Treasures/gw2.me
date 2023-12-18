@@ -11,7 +11,7 @@
     "@gw2me/client": "*",
     "@gw2me/database": "*",
     "@gw2treasures/icons": "0.0.16",
-    "@gw2treasures/ui": "0.0.20",
+    "@gw2treasures/ui": "0.0.21",
     "next": "14.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
