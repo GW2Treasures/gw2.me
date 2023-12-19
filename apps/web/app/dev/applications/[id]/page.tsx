@@ -107,7 +107,7 @@ export default async function EditApplicationPage({ params }: EditApplicationPag
 
         <FlexRow wrap>
           <SubmitButton>Save</SubmitButton>
-          <LinkButton target="_blank" href={new Gw2MeClient({ client_id: application.clientId }, { url: '/' }).getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], scopes: [Scope.Identify], prompt: 'consent' })}>Test Link <Icon icon="external"/></LinkButton>
+          <LinkButton target="_blank" href={new Gw2MeClient({ client_id: application.clientId }, { url: '/' }).getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], scopes: [Scope.Identify], prompt: 'consent', include_granted_scopes: true })}>Test Link <Icon icon="external"/></LinkButton>
           <LinkButton href={`/dev/applications/${application.id}/delete`} icon="delete">Delete Application</LinkButton>
         </FlexRow>
       </Form>
