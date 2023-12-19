@@ -25,10 +25,10 @@ export default async function AdminUserPage() {
 
   return (
     <PageLayout>
-      <Headline id="users">Apps ({apps.length})</Headline>
+      <Headline id="users" actions={<Apps.ColumnSelection>Columns</Apps.ColumnSelection>}>Apps ({apps.length})</Headline>
 
       <Apps.Table>
-        <Apps.Column id="id" title="Id">{({ id }) => <Code inline borderless>{id}</Code>}</Apps.Column>
+        <Apps.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Apps.Column>
         <Apps.Column id="name" title="Name" sortBy="name">{({ name, imageId }) => <FlexRow><ApplicationImage fileId={imageId}/> {name}</FlexRow>}</Apps.Column>
         <Apps.Column id="owner" title="Owner" sortBy={({ owner }) => owner.name}>{({ owner }) => <FlexRow><Icon icon="user"/>{owner.name}</FlexRow>}</Apps.Column>
         <Apps.Column id="auths" title="Authorizations" sortBy={({ _count }) => _count.authorizations} align="right">{({ _count }) => _count.authorizations}</Apps.Column>
