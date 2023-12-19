@@ -37,9 +37,9 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
 
       <Headline id="authorizations" actions={<Authorizations.ColumnSelection>Columns</Authorizations.ColumnSelection>}>Authorizations ({user.authorizations.length})</Headline>
       <Authorizations.Table>
-        <Authorizations.Column id="id" title="Id">{({ id }) => <Code inline borderless>{id}</Code>}</Authorizations.Column>
-        <Authorizations.Column id="type" title="Type" sortBy="type">{({ type }) => type}</Authorizations.Column>
+        <Authorizations.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Authorizations.Column>
         <Authorizations.Column id="app" title="App">{({ application }) => <FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow>}</Authorizations.Column>
+        <Authorizations.Column id="type" title="Type" sortBy="type">{({ type }) => type}</Authorizations.Column>
         <Authorizations.Column id="scope" title="Scope" hidden>{({ scope }) => scope.join(' ')}</Authorizations.Column>
         <Authorizations.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Authorizations.Column>
         <Authorizations.Column id="expiresAt" title="Expires At" sortBy="expiresAt">{({ expiresAt }) => expiresAt ? <FormatDate date={expiresAt}/> : 'Never'}</Authorizations.Column>
@@ -48,8 +48,8 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
 
       <Headline id="accounts" actions={<Accounts.ColumnSelection>Columns</Accounts.ColumnSelection>}>Accounts ({user.accounts.length})</Headline>
       <Accounts.Table>
-        <Accounts.Column id="id" title="Id">{({ id }) => <Code inline borderless>{id}</Code>}</Accounts.Column>
-        <Accounts.Column id="accountId" title="Account Id">{({ accountId }) => <Code inline borderless>{accountId}</Code>}</Accounts.Column>
+        <Accounts.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Accounts.Column>
+        <Accounts.Column id="accountId" title="Account Id" hidden>{({ accountId }) => <Code inline borderless>{accountId}</Code>}</Accounts.Column>
         <Accounts.Column id="name" title="Name">{({ accountName }) => accountName}</Accounts.Column>
         <Accounts.Column id="display" title="Display Name">{({ displayName }) => displayName}</Accounts.Column>
         <Accounts.Column id="verified" title="Verified">{({ verified }) => verified ? 'Yes' : 'No'}</Accounts.Column>

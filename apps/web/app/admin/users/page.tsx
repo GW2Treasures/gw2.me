@@ -23,13 +23,13 @@ export default async function AdminUserPage() {
 
   return (
     <PageLayout>
-      <Headline id="users">Users ({users.length})</Headline>
+      <Headline id="users" actions={<Users.ColumnSelection>Columns</Users.ColumnSelection>}>Users ({users.length})</Headline>
 
       <Users.Table>
-        <Users.Column id="id" title="Id">{({ id }) => <Code inline borderless>{id}</Code>}</Users.Column>
+        <Users.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Users.Column>
         <Users.Column id="name" title="Username" sortBy="name">{({ name }) => name}</Users.Column>
-        <Users.Column id="email" title="Email" sortBy="email">{({ email }) => email}</Users.Column>
-        <Users.Column id="roles" title="Roles" sortBy={({ roles }) => roles.length}>{({ roles }) => roles.join(', ')}</Users.Column>
+        <Users.Column id="email" title="Email" sortBy="email" hidden>{({ email }) => email}</Users.Column>
+        <Users.Column id="roles" title="Roles" sortBy={({ roles }) => roles.length} hidden>{({ roles }) => roles.join(', ')}</Users.Column>
         <Users.Column id="apps" title="Apps" sortBy={({ _count }) => _count.applications} align="right">{({ _count }) => _count.applications}</Users.Column>
         <Users.Column id="auths" title="Authorizations" sortBy={({ _count }) => _count.authorizations} align="right">{({ _count }) => _count.authorizations}</Users.Column>
         <Users.Column id="accounts" title="Accounts" sortBy={({ _count }) => _count.accounts} align="right">{({ _count }) => _count.accounts}</Users.Column>
