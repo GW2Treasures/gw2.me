@@ -3,7 +3,7 @@
 import { FormState } from '@/components/Form/Form';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
-import { ApplicationType } from '@gw2me/database';
+import { ApplicationType, Prisma } from '@gw2me/database';
 import { randomUUID } from 'crypto';
 import { redirect } from 'next/navigation';
 
@@ -42,7 +42,15 @@ export async function createApplication(_: FormState, data: FormData): Promise<F
     });
 
     applicationId = application.id;
-  } catch {
+  } catch(e) {
+    if(e instanceof Prisma.PrismaClientKnownRequestError) {
+      // unique constraint failed - https://www.prisma.io/docs/orm/reference/error-reference#p2002
+      if(e.code === 'P2002') {
+        return { error: 'Name already in use' };
+      }
+    }
+
+    console.error(e);
     return { error: 'Unknown error' };
   }
 
