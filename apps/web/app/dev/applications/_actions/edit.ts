@@ -3,6 +3,7 @@
 import { FormState } from '@/components/Form/Form';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
+import { Prisma } from '@gw2me/database';
 import { createHash } from 'crypto';
 import { revalidatePath } from 'next/cache';
 import sharp from 'sharp';
@@ -139,7 +140,15 @@ export async function editApplication(id: string, _: FormState, form: FormData):
         imageId,
       }
     });
-  } catch {
+  } catch(e) {
+    if(e instanceof Prisma.PrismaClientKnownRequestError) {
+      // unique constraint failed - https://www.prisma.io/docs/orm/reference/error-reference#p2002
+      if(e.code === 'P2002') {
+        return { error: 'Name already in use' };
+      }
+    }
+
+    console.error(e);
     return { error: 'Unknown error' };
   }
 

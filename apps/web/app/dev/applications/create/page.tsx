@@ -21,7 +21,7 @@ export default function CreateApplicationPage() {
             <TextInput name="name"/>
           </Label>
 
-          <Label label={<>Type (See <Link href="/dev/docs">documentation</Link> for distinction)</>}>
+          <Label label={<>Type (See <Link href="/dev/docs/register-app#public-confidential">documentation</Link> for distinction)</>}>
             <Select name="type" options={[{ value: '', label: '' }, ...ApplicationTypeOptions]}/>
           </Label>
 
