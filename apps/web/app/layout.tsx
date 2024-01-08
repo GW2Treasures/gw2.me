@@ -57,7 +57,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             {children}
           </DataTableContext>
           <div className={styles.footer}>
-            <div className={styles.copyright}><b>gw2.me</b> by <a href="https://next.gw2treasures.com/">gw2treasures.com</a> © {new Date().getFullYear()}</div>
+            <div className={styles.copyright}><b>gw2.me</b> by <a href="https://gw2treasures.com/">gw2treasures.com</a> © {new Date().getFullYear()}</div>
             <div className={styles.footerLinks}>
               <Link href="/dev/docs">Developer Documentation</Link>
               <Link href="/legal">Legal Notice</Link>
