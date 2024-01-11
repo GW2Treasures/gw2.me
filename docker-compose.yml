@@ -2,7 +2,7 @@ version: '3'
 
 services:
   web:
-    image: gw2me/web
+    image: ghcr.io/gw2treasures/gw2.me/web:${IMAGE_VERSION:-latest}
     build:
       context: .
       dockerfile: apps/web/Dockerfile
@@ -28,7 +28,7 @@ services:
       - 54327:5432
 
   database-migration:
-    image: gw2me/database-migration
+    image: ghcr.io/gw2treasures/gw2.me/database-migration:${IMAGE_VERSION:-latest}
     build:
       context: .
       dockerfile: apps/database-migration/Dockerfile

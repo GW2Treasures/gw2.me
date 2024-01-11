@@ -17,6 +17,11 @@ spec:
       labels:
         name: database
     spec:
+      tolerations:
+      - key: arch
+        operator: Equal
+        value: arm64
+        effect: NoSchedule
       volumes:
       - name: database-data
         persistentVolumeClaim:
