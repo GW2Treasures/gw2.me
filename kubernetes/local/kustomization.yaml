@@ -13,8 +13,6 @@ resources:
 images:
 - name: ghcr.io/gw2treasures/gw2.me/web
   newTag: latest
-  newName: gw2me/web
 
 - name: ghcr.io/gw2treasures/gw2.me/database-migration
   newTag: latest
-  newName: gw2me/database-migration
