@@ -50,4 +50,4 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-CMD [ "exit", "1" ]
+CMD [ "node", "apps/web/server.js" ]
