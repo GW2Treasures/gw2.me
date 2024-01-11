@@ -57,8 +57,8 @@ jobs:
         files: ./docker-compose.yml
         targets: ${{ matrix.target }}
         set: |
+          ${{ matrix.target }}.output=type=oci,dest=/tmp/image-${{ matrix.target }}.tar
           *.platform=linux/amd64,linux/arm64
-          *.output=type=docker,dest=/tmp/image-${{ matrix.target }}.tar
           *.cache-from=type=gha,scope=build-${{ matrix.target }}
           *.cache-to=type=gha,scope=build-${{ matrix.target }},mode=max
     - uses: actions/upload-artifact@v4
