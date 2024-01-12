@@ -1,0 +1,32 @@
+.toolbar {
+  border: 1px solid var(--color-border-dark);
+  border-left: none;
+  background-color: var(--color-background-light);
+  border-radius: 0 2px 2px 0;
+  position: sticky;
+  top: calc(var(--table-sticky-top, 48px) - 2px);
+  z-index: 1;
+  margin: 16px 0 16px -16px;
+  padding: 16px;
+  display: flex;
+  gap: 32px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.children {
+  --table-sticky-top: 128px;
+}
+
+@media (max-width: 1279px) {
+  .toolbar {
+    margin-right: -16px;
+    border-radius: 0;
+    border-right: 0;
+  }
+}
