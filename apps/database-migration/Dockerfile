@@ -9,7 +9,9 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 worker
 
-RUN npm i -g prisma
+RUN npm i -g prisma \
+  && rm -rf /root/.cache/ \
+  && rm -rf /root/.npm/
 
 COPY --chown=worker:nodejs packages/database/prisma ./prisma
 
