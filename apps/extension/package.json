@@ -23,7 +23,7 @@
   "devDependencies": {
     "@types/archiver": "6.0.2",
     "@types/chrome": "0.0.256",
-    "@types/react": "18.2.47",
+    "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
     "archiver": "6.0.1",
     "copy-webpack-plugin": "12.0.1",
