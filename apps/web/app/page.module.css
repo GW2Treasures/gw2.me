@@ -17,7 +17,7 @@
 }
 
 .content {
-  padding: 128px 16px 0;
+  padding: 128px 16px 32px;
   background: radial-gradient(ellipse 1200px 500px at center 500px, #b7000d33, transparent);
   /* background-size: auto 200px; */
   background-repeat: no-repeat;
@@ -71,9 +71,15 @@
   margin-bottom: 16px;
 }
 
+.discoverButton {
+  --icon-color: var(--color-brand);
+}
+
 .authMock {
-  background: #fff;
-  color: #000;
+  composes: global(theme-light);
+
+  background: var(--color-background);
+  color: var(--color-text);
   border-radius: 8px;
   position: absolute;
   bottom: -64px;
@@ -86,7 +92,7 @@
 .authMock > hr {
   height: 0;
   border: none;
-  border-top: 2px solid #eee;
+  border-top: 2px solid var(--color-border);
   margin: 16px 0;
 }
 
@@ -97,23 +103,13 @@
 }
 
 .scope {
-  border: 1px solid #eee;
+  border: 1px solid var(--color-border);
   border-radius: 2px;
   padding: 8px 16px;
   margin-bottom: 8px;
   display: grid;
   gap: 12px;
   grid-template-columns: 16px auto;
-}
-
-.scopePermission {
-  border: 1px solid #ddd;
-  background-color: #f4f4f4;
-  display: inline-block;
-  margin: 12px 8px 0 0;
-  font-size: 14px;
-  border-radius: 500px;
-  padding: 4px 8px;
 }
 
 .checkbox {
@@ -136,46 +132,68 @@
 .checkboxBox {
   composes: addAccountCheckbox;
 
-  background-color: #245dc1;
-  color: #fff;
+  background-color: var(--color-focus);
+  --icon-color: var(--color-background);
   border-radius: 2px;
 }
 
 .authButton {
   padding: 12px;
   text-align: center;
-  background-color: #F1F8E9;
-  color: #33691E;
-  box-shadow: inset 0 0 0 1px #8BC34A;
+  background-color: var(--color-background-green);
+  color: var(--color-text-green);
+  box-shadow: inset 0 0 0 1px var(--color-border-green);
   border-radius: 2px;
 }
 
-.accountTable {
+.accountsSection {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  margin: 32px 0 64px;
+}
+
+.table {
   composes: browserBg;
   white-space: nowrap;
   width: 400px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), inset 0 2px 1px -1px #ffffff22;
   border-radius: 8px;
-  margin: 32px 48px 32px 0px;
+  padding-top: 4px;
 }
 
-.accountTable > div { margin-bottom: 0; }
+.table > div { margin-bottom: 0; }
 
-.accountTable th { background-color: transparent !important; position: static !important; }
+.table th { background-color: transparent !important; position: static !important; }
 
 .verified {
   color: var(--color-focus);
 }
 
+.healthy {
+  color: var(--color-text-green);
+}
+
+.gw2treasures {
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  background: #b7000d;
+  border-radius: 2px;
+  margin-right: 8px;
+  vertical-align: -4px;
+}
 
 .loginButton {
   margin: 32px auto 0;
-  display: block;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
   width: 200px;
   text-align: center;
   background-color: #b7000d;
   color: #fff;
-  padding: 16px 32px;
+  padding: 12px;
   border-radius: 2px;
   box-shadow: var(--shadow);
   transition: all .3s ease;
