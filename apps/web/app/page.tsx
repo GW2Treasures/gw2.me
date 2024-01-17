@@ -34,8 +34,8 @@ export default async function HomePage() {
             </div>
             <div className={styles.browserContent}>
               <div className={styles.sectionHeader}>Connect Applications</div>
-              <p>Connect your Guild Wars 2 accounts directly to applications. You don&apos;t have to create an API key and copy-paste it for every application anymore. If you have multiple accounts, you can simply choose the accounts the application should have access to.</p>
-              <p>For all applications with gw2.me integration it is just one click to authorize access to your Guild Wars 2 accounts. You review the requested permissions, and authorize them using the secure OAuth 2.0 protocol. The application will only receive the permissions you granted.</p>
+              <p>Connect your Guild Wars 2 accounts directly to applications. You do not have to create an API key and copy-paste it for every application anymore. If you have multiple accounts, you can simply choose the accounts the application should have access to.</p>
+              <p>For all applications with gw2.me integration it is just one click to authorize access to your Guild Wars 2 accounts. You review the requested permissions and authorize them using the secure OAuth 2.0 protocol. The application will only receive the permissions you granted.</p>
               <LinkButton href="/discover" icon="chevron-right" appearance="menu" className={styles.discoverButton}><span>Discover Applications</span></LinkButton>
             </div>
             <div className={styles.authMock}>
@@ -68,7 +68,7 @@ export default async function HomePage() {
               <Table>
                 <thead><tr><th>Account</th><th>Verified</th><th>Status</th></tr></thead>
                 <tbody>
-                  <tr><td>account.1234</td><td className={styles.verified}><Icon icon="verified"/> Verfied</td><td className={styles.healthy}><Icon icon="status"/> Healthy</td></tr>
+                  <tr><td>account.1234</td><td className={styles.verified}><Icon icon="verified"/> Verified</td><td className={styles.healthy}><Icon icon="status"/> Healthy</td></tr>
                   <tr><td>another.9876</td><td/><td className={styles.healthy}><Icon icon="status"/> Healthy</td></tr>
                   <tr><td colSpan={3} className={styles.addAccountButton}><Icon icon="add"/> Add Account</td></tr>
                 </tbody>
@@ -77,9 +77,9 @@ export default async function HomePage() {
 
             <div>
               <div className={styles.sectionHeader}>Manage your Guild Wars 2 Accounts</div>
-              <p>Manage all of your Guild Wars 2 Accounts in a single place. Applications will only be able to access the information from the accounts you authorize. You can update the accounts an application has access to at any time.</p>
+              <p>Manage all your Guild Wars 2 Accounts in a single place. Applications will only be able to access the information from the accounts you authorize. You can update the accounts an application has access to at any time.</p>
               <p>You will be guided through the process of adding new accounts to gw2.me. You can also verify your ownership of accounts, and applications will be able to use this information.</p>
-              <p>gw2.me will monitor the status of your API keys and inform you, when you need to take action.</p>
+              <p>gw2.me will monitor the status of your API keys and inform you when you need to take action.</p>
               <LinkButton href="/accounts" icon="chevron-right" appearance="menu" className={styles.discoverButton}><span>Add your Accounts</span></LinkButton>
             </div>
           </div>
@@ -88,7 +88,7 @@ export default async function HomePage() {
           <div className={styles.accountsSection}>
             <div>
               <div className={styles.sectionHeader}>Review and Revoke Access</div>
-              <p>Keep an overview over which applications are currently authorized to access your Guild Wars 2 accounts. You can also revoke access for each applcation at any time.</p>
+              <p>Keep an overview over which applications are currently authorized to access your Guild Wars 2 accounts. You can also revoke access for each application at any time.</p>
               <LinkButton href="/applications" icon="chevron-right" appearance="menu" className={styles.discoverButton}><span>Review your Applications</span></LinkButton>
             </div>
 
@@ -104,8 +104,8 @@ export default async function HomePage() {
           </div>
 
           <div className={styles.sectionHeader}>For Developers</div>
-          <p>If you are a developer you can integrate gw2.me into your applications. gw2.me will take care of the authorization and Guild Wars 2 account management, so you can focus on developing your application.</p>
-          <p>Since gw2.me is a OAuth 2.0 provider, you can use existing libraries to use gw2.me in your application. Or use our extensive developer documentation to call the few API endpoints yourself.</p>
+          <p>If you are a developer, you can integrate gw2.me into your applications. gw2.me will take care of the authorization and Guild Wars 2 account management, so you can focus on developing your application.</p>
+          <p>Since gw2.me is an OAuth 2.0 provider, you can use existing libraries to use gw2.me in your application. Or use our extensive developer documentation to call the few API endpoints yourself.</p>
           <LinkButton href="/dev/docs" icon="chevron-right" appearance="menu" className={styles.discoverButton}><span>Check Documentation</span></LinkButton>
         </div>
       </div>
