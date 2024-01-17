@@ -35,7 +35,7 @@ export default async function HomePage() {
             <div className={styles.browserContent}>
               <div className={styles.sectionHeader}>Connect Applications</div>
               <p>Connect your Guild Wars 2 accounts directly to applications. You don&apos;t have to create an API key and copy-paste it for every application anymore. If you have multiple accounts, you can simply choose the accounts the application should have access to.</p>
-              <p>For all applications with gw2.me integration it is just one click to authorize access to your Guild Wars 2 accounts. You see the requested permissions, and authorize them using the secure OAuth 2.0 protocol. The application will only receive the permissions you granted, not more.</p>
+              <p>For all applications with gw2.me integration it is just one click to authorize access to your Guild Wars 2 accounts. You review the requested permissions, and authorize them using the secure OAuth 2.0 protocol. The application will only receive the permissions you granted.</p>
               <LinkButton href="/discover" icon="chevron-right" appearance="menu" className={styles.discoverButton}><span>Discover Applications</span></LinkButton>
             </div>
             <div className={styles.authMock}>
@@ -78,7 +78,7 @@ export default async function HomePage() {
             <div>
               <div className={styles.sectionHeader}>Manage your Guild Wars 2 Accounts</div>
               <p>Manage all of your Guild Wars 2 Accounts in a single place. Applications will only be able to access the information from the accounts you authorize. You can update the accounts an application has access to at any time.</p>
-              <p>When adding accounts to gw2.me, you will be guided through the process. You can also verify your ownership of accounts once, and applications will be able to use this information.</p>
+              <p>You will be guided through the process of adding new accounts to gw2.me. You can also verify your ownership of accounts, and applications will be able to use this information.</p>
               <p>gw2.me will monitor the status of your API keys and inform you, when you need to take action.</p>
               <LinkButton href="/accounts" icon="chevron-right" appearance="menu" className={styles.discoverButton}><span>Add your Accounts</span></LinkButton>
             </div>
@@ -114,5 +114,5 @@ export default async function HomePage() {
 }
 
 export const metadata = {
-  title: 'gw2.me · Securely manage your Guild Wars 2 API keys'
+  title: 'gw2.me · Securely manage your Guild Wars 2 API keys',
 };
