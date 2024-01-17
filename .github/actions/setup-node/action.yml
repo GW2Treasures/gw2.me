@@ -32,7 +32,7 @@ runs:
       run: npm ci
     - name: Cache turbo
       if: inputs.turbo-cache-key != 'false'
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ./node_modules/.cache/turbo
         key: turbo-cache-${{ inputs.turbo-cache-key }}-${{ runner.os }}-${{ github.sha }}
