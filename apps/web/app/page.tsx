@@ -6,7 +6,6 @@ import localFont from 'next/font/local';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
-import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { PermissionList } from '@/components/Permissions/PermissionList';
 
 const wotfard = localFont({
@@ -22,7 +21,7 @@ export default async function HomePage() {
     <div className={styles.page}>
       <div className={styles.hero}>
         <div className={styles.intro}>
-          <div className={styles.title} style={wotfard.style}>Securely manage your<br/>Guild Wars 2 API keys</div>
+          <div className={styles.title} style={wotfard.style}>Securely Manage your<br/>Guild Wars 2 API Keys</div>
           {!session && (<Link className={styles.loginButton} href="/login"><Icon icon="chevron-right"/> Get Started</Link>)}
         </div>
       </div>
@@ -35,7 +34,7 @@ export default async function HomePage() {
             </div>
             <div className={styles.browserContent}>
               <div className={styles.sectionHeader}>Connect Applications</div>
-              <p>Connect your Guild Wars 2 accounts directly to applications. You don&apos;t have to create an API key and copy/paste it for every application anymore. If you have multiple accounts, you can simply choose the accounts the application should have access to.</p>
+              <p>Connect your Guild Wars 2 accounts directly to applications. You don&apos;t have to create an API key and copy-paste it for every application anymore. If you have multiple accounts, you can simply choose the accounts the application should have access to.</p>
               <p>For all applications with gw2.me integration it is just one click to authorize access to your Guild Wars 2 accounts. You see the requested permissions, and authorize them using the secure OAuth 2.0 protocol. The application will only receive the permissions you granted, not more.</p>
               <LinkButton href="/discover" icon="chevron-right" appearance="menu" className={styles.discoverButton}><span>Discover Applications</span></LinkButton>
             </div>

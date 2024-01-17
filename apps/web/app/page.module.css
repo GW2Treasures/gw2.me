@@ -11,13 +11,13 @@
   line-height: 1.25;
   text-align: center;
   color: transparent;
-  background-image: linear-gradient(to right, #5d0007, var(--color-brand));
+  background-image: linear-gradient(to right, #8c040f, var(--color-brand));
   background-clip: text;
   width: fit-content;
 }
 
 .content {
-  padding: 128px 16px 32px;
+  padding: 128px 16px 64px;
   background: radial-gradient(ellipse 1200px 500px at center 500px, #b7000d33, transparent);
   /* background-size: auto 200px; */
   background-repeat: no-repeat;
@@ -39,6 +39,7 @@
   max-height: 920px;
   height: 100%;
   border-radius: 8px;
+  padding: 0 16px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -58,7 +59,7 @@
 }
 
 .browserContent {
-  margin: 0 16px 16px;
+  margin: 0 0 16px;
   border-radius: 8px;
   padding: 32px 460px 16px 16px;
   flex: 1;
@@ -68,6 +69,7 @@
   font-family: var(--font-bitter);
   font-weight: 700;
   font-size: 32px;
+  line-height: 40px;
   margin-bottom: 16px;
 }
 
@@ -84,7 +86,7 @@
   position: absolute;
   bottom: -64px;
   right: -32px;
-  width: 460px;
+  max-width: 460px;
   padding: 32px;
   box-shadow: var(--shadow);
 }
@@ -157,12 +159,15 @@
   composes: browserBg;
   white-space: nowrap;
   width: 400px;
+  flex-shrink: 0;
   box-shadow: var(--shadow), inset 0 2px 1px -1px #ffffff22;
   border-radius: 8px;
   padding-top: 4px;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
-.table > div { margin-bottom: 0; }
+.table > div { margin: 0; padding: 0; width: 100%; }
 
 .table th { background-color: transparent !important; position: static !important; }
 
@@ -179,6 +184,7 @@
   height: 20px;
   padding: 2px;
   background: #b7000d;
+  --icon-color: #fff;
   border-radius: 2px;
   margin-right: 8px;
   vertical-align: -4px;
@@ -213,4 +219,23 @@
 @media(prefers-color-scheme: dark) {
   .title { background-image: linear-gradient(to right, #ff969d, var(--color-brand)); }
   .browserBg { background-color: #00000033; }
+}
+
+@media(max-width: 960px) {
+  .title { font-size: 48px; }
+  .content { padding-top: 64px; }
+  .accountsSection { flex-direction: column; align-items: center; }
+  .table { order: 1; }
+  .authMock { position: static; margin: 0 auto -64px; }
+  .browser { margin: 16px -32px 128px; max-height: initial; }
+  .browserContent { padding-right: 16px; }
+  .sectionHeader { font-size: 28px; }
+}
+
+@media(max-width: 640px) {
+  .title { font-size: 32px; }
+  .addressBar { margin: 16px; }
+  .browserContent { padding: 16px 0; }
+  .contentWidth { padding: 0; }
+  .browser { margin: 16px 0 128px; }
 }
