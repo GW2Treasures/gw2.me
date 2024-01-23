@@ -11,6 +11,7 @@ body {
   line-height: 1;
   scroll-padding: 64px 16px 16px;
 
+  -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   text-size-adjust: none;
 }
