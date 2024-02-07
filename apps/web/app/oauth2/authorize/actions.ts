@@ -3,7 +3,7 @@
 import { expiresAt } from '@/lib/date';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
-import { isString } from '@/lib/is';
+import { isString } from '@gw2treasures/helper/is';
 import { generateCode } from '@/lib/token';
 import { Authorization, AuthorizationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';

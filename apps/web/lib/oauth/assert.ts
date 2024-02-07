@@ -1,4 +1,4 @@
-import { Falsy } from '../is';
+import { Falsy } from '@gw2treasures/helper/is';
 import { OAuth2ErrorCode, OAuth2Error } from './error';
 
 /**

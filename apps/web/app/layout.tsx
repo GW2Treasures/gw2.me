@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { Bitter } from 'next/font/google';
 import localFont from 'next/font/local';
-import { cx } from '@/lib/classNames';
 
 import './global.css';
 import './variables.css';
@@ -10,7 +9,7 @@ import '@gw2treasures/icons/styles.css';
 import styles from './layout.module.css';
 import Link from 'next/link';
 import { getUser } from '@/lib/session';
-import { Icon } from '@gw2treasures/ui';
+import { Icon, cx } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { DataTableContext } from '@gw2treasures/ui/components/Table/DataTableContext';
 
