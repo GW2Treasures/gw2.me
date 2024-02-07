@@ -1,4 +1,4 @@
-import { isDefinied } from './is';
+import { isDefinied } from '@gw2treasures/helper/is';
 import { OAuth2ErrorCode } from './oauth/error';
 
 type RedirectUrlSearchParamsCommon = {
