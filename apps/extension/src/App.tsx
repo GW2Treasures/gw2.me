@@ -106,8 +106,21 @@ export const App: FC<AppProps> = ({ }) => {
 
     setTimeout(() => {
       setAccountState((accounts) => ({ ...accounts, [accountId]: undefined }));
-    }, 500);
+    }, 1000);
   }, [state]);
+
+  const manageAccounts = useCallback(async () => {
+    const token = await setup(true);
+
+    if(!token) {
+      return;
+    }
+
+    const { access_token } = token;
+
+    await self.chrome.storage.sync.set({ access_token });
+    setState({ step: Step.LOADING_ACCOUNTS, access_token })
+  }, []);
 
   return (
     <div>
@@ -144,6 +157,9 @@ export const App: FC<AppProps> = ({ }) => {
                       </Button>
                     </li>
                   ))}
+                  <li>
+                    <Button flex icon="gw2me-outline" appearance="menu" onClick={manageAccounts}>Manage Accounts</Button>
+                  </li>
                 </ul>
               </>
             )}
@@ -154,14 +170,14 @@ export const App: FC<AppProps> = ({ }) => {
   );
 };
 
-async function setup() {
+async function setup(consent = false) {
   try {
     const redirect_uri = chrome.identity.getRedirectURL();
     console.log(redirect_uri);
 
     const { code_challenge, code_challenge_method, code_verifier } = await generatePKCEChallenge();
 
-    const authUrl = client.getAuthorizationUrl({ redirect_uri, code_challenge, code_challenge_method, scopes: [
+    const scopes = [
       Scope.GW2_Account,
       Scope.GW2_Inventories,
       Scope.GW2_Characters,
@@ -172,7 +188,15 @@ async function setup() {
       Scope.GW2_Builds,
       Scope.GW2_Progression,
       Scope.GW2_Guilds,
-    ]});
+    ];
+
+    const authUrl = client.getAuthorizationUrl({
+      prompt: consent ? 'consent' : undefined,
+      redirect_uri,
+      code_challenge,
+      code_challenge_method,
+      scopes
+    });
 
     const callback = await chrome.identity.launchWebAuthFlow({
       interactive: true,
