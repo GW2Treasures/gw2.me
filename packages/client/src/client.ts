@@ -1,5 +1,5 @@
 import { Gw2MeApi } from './api';
-import { ClientInfo, Options, Scope } from './types';
+import { type ClientInfo, type Options, Scope } from './types';
 
 export interface AuthorizationUrlParams {
   redirect_uri: string;

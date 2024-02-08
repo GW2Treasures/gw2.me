@@ -1,6 +1,9 @@
 {
   "extends": "@gw2treasures/tsconfig/nextjs",
   "compilerOptions": {
+    // TODO: remove verbatimModuleSyntax override
+    "verbatimModuleSyntax": false,
+
     "baseUrl": "./",
     "paths": {
       "@/components/*": ["components/*"],

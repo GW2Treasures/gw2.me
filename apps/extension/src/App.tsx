@@ -1,9 +1,8 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { type FC, useCallback, useEffect, useState } from 'react';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
 import { Icon } from '@gw2treasures/ui/icons/Icon';
-import { AccountsResponse, Scope } from '@gw2me/client';
+import { type AccountsResponse, Scope } from '@gw2me/client';
 import { client } from './client';
 import styles from './App.module.css';
 

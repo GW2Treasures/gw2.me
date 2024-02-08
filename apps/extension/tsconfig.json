@@ -1,6 +1,7 @@
 {
   "extends": "@gw2treasures/tsconfig/react",
   "compilerOptions": {
+    "noEmit": false,
     "jsx": "react-jsx",
     "baseUrl": "./"
   },
