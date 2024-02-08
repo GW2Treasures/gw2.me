@@ -1,4 +1,4 @@
-import { isDefinied } from '@gw2treasures/helper/is';
+import { isDefined } from '@gw2treasures/helper/is';
 import { OAuth2ErrorCode } from './oauth/error';
 
 type RedirectUrlSearchParamsCommon = {
@@ -38,7 +38,7 @@ export function createRedirectUrl(base: string | URL, searchParams: RedirectUrlS
   const url = new URL(base);
 
   Object.entries(searchParams)
-    .filter(([, value]) => isDefinied(value))
+    .filter(([, value]) => isDefined(value))
     .forEach(([key, value]) => url.searchParams.set(key, value!));
 
   return url;
