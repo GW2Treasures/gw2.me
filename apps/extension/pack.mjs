@@ -43,7 +43,7 @@ function buildSource() {
   const archive = archiver('zip');
   archive.pipe(output);
 
-  archive.glob('**', { ignore: ['artifacts', 'dist', 'node_modules'] });
+  archive.glob('**', { ignore: ['artifacts/**', 'dist/**', 'node_modules/**'] });
 
   archive.finalize();
 }
