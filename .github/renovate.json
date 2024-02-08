@@ -4,5 +4,11 @@
   "addLabels": ["dependencies"],
   "kubernetes": {
     "fileMatch": ["kubernetes/.+\\.yaml$"]
-  }
+  },
+  "packageRules": [
+    {
+      "matchSourceUrls": "https://github.com/GW2Treasures/gw2treasures.com",
+      "groupName": "gw2treasures"
+    }
+  ]
 }
