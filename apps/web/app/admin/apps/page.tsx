@@ -13,7 +13,12 @@ function getApps() {
     include: {
       owner: { select: { name: true }},
       _count: { select: { authorizations: true }},
-      authorizations: { take: 1, orderBy: { usedAt: 'desc' }, select: { usedAt: true }},
+      authorizations: {
+        take: 1,
+        where: { usedAt: { not: null }},
+        orderBy: { usedAt: 'desc' },
+        select: { usedAt: true }
+      },
     },
     orderBy: { createdAt: 'asc' }
   });
@@ -30,6 +35,7 @@ export default async function AdminUserPage() {
       <Apps.Table>
         <Apps.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Apps.Column>
         <Apps.Column id="name" title="Name" sortBy="name">{({ name, imageId }) => <FlexRow><ApplicationImage fileId={imageId}/> {name}</FlexRow>}</Apps.Column>
+        <Apps.Column id="public" title="Public URL" sortBy="publicUrl" hidden>{({ publicUrl }) => publicUrl}</Apps.Column>
         <Apps.Column id="owner" title="Owner" sortBy={({ owner }) => owner.name}>{({ owner }) => <FlexRow><Icon icon="user"/>{owner.name}</FlexRow>}</Apps.Column>
         <Apps.Column id="auths" title="Authorizations" sortBy={({ _count }) => _count.authorizations} align="right">{({ _count }) => _count.authorizations}</Apps.Column>
         <Apps.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Apps.Column>
