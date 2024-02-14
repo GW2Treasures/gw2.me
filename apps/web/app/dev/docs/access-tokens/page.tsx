@@ -113,7 +113,7 @@ export default function DevDocsAccessTokensPage() {
 
       <p>Next you will have to exchange the authorization code obtained in the first step for an access token (and refresh token).</p>
 
-      <p>You will have to make a POST request to <Code inline>https://gw2.me/api/token</Code> with the following parameters.</p>
+      <p>You will have to make a POST request with <Code inline>Content-Type: application/x-www-form-urlencoded</Code> to <Code inline>https://gw2.me/api/token</Code> with the following parameters included in the body.</p>
 
       <Table>
         <thead>

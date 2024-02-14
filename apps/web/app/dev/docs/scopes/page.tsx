@@ -31,43 +31,43 @@ export default function DevDocsScopePage() {
 
           <tr>
             <td><Code inline>gw2:account</Code></td>
-            <td>GW2 API Subtokens will include the <Code inline>account</Code> permission</td>
+            <td>Guild Wars 2 API subtokens will include the <Code inline>account</Code> permission</td>
           </tr>
           <tr>
             <td><Code inline>gw2:inventories</Code></td>
-            <td>GW2 API Subtokens will include the <Code inline>inventories</Code> permission</td>
+            <td>Guild Wars 2 API subtokens will include the <Code inline>inventories</Code> permission</td>
           </tr>
           <tr>
             <td><Code inline>gw2:characters</Code></td>
-            <td>GW2 API Subtokens will include the <Code inline>characters</Code> permission</td>
+            <td>Guild Wars 2 API subtokens will include the <Code inline>characters</Code> permission</td>
           </tr>
           <tr>
             <td><Code inline>gw2:tradingpost</Code></td>
-            <td>GW2 API Subtokens will include the <Code inline>tradingpost</Code> permission</td>
+            <td>Guild Wars 2 API subtokens will include the <Code inline>tradingpost</Code> permission</td>
           </tr>
           <tr>
             <td><Code inline>gw2:wallet</Code></td>
-            <td>GW2 API Subtokens will include the <Code inline>wallet</Code> permission</td>
+            <td>Guild Wars 2 API subtokens will include the <Code inline>wallet</Code> permission</td>
           </tr>
           <tr>
             <td><Code inline>gw2:unlocks</Code></td>
-            <td>GW2 API Subtokens will include the <Code inline>unlocks</Code> permission</td>
+            <td>Guild Wars 2 API subtokens will include the <Code inline>unlocks</Code> permission</td>
           </tr>
           <tr>
             <td><Code inline>gw2:pvp</Code></td>
-            <td>GW2 API Subtokens will include the <Code inline>pvp</Code> permission</td>
+            <td>Guild Wars 2 API subtokens will include the <Code inline>pvp</Code> permission</td>
           </tr>
           <tr>
             <td><Code inline>gw2:builds</Code></td>
-            <td>GW2 API Subtokens will include the <Code inline>builds</Code> permission</td>
+            <td>Guild Wars 2 API subtokens will include the <Code inline>builds</Code> permission</td>
           </tr>
           <tr>
             <td><Code inline>gw2:progression</Code></td>
-            <td>GW2 API Subtokens will include the <Code inline>progression</Code> permission</td>
+            <td>Guild Wars 2 API subtokens will include the <Code inline>progression</Code> permission</td>
           </tr>
           <tr>
             <td><Code inline>gw2:guilds</Code></td>
-            <td>GW2 API Subtokens will include the <Code inline>guilds</Code> permission</td>
+            <td>Guild Wars 2 API subtokens will include the <Code inline>guilds</Code> permission</td>
           </tr>
         </tbody>
       </Table>
