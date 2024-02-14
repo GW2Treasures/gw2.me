@@ -34,7 +34,7 @@ export default function Docs() {
         </div>
       </Steps>
 
-      <p>Most of these steps can be handled by using existing OAuth2 libraries.</p>
+      <p>Most of these steps can be handled by using existing OAuth2 libraries or the gw2.me specific <Link href="/dev/docs/libraries">client libraries</Link>.</p>
 
       <Headline id="urls">OAuth2 URLs</Headline>
       <Table>
