@@ -1,6 +1,7 @@
 import { FormatDate } from '@/components/Format/FormatDate';
 import { Code } from '@/components/Layout/Code';
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { ColumnSelection } from '@/components/Table/ColumnSelection';
 import { db } from '@/lib/db';
 import { Icon } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
@@ -23,7 +24,7 @@ export default async function AdminUserPage() {
 
   return (
     <PageLayout>
-      <Headline id="users" actions={<Users.ColumnSelection>Columns</Users.ColumnSelection>}>Users ({users.length})</Headline>
+      <Headline id="users" actions={<ColumnSelection table={Users}/>}>Users ({users.length})</Headline>
 
       <Users.Table>
         <Users.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Users.Column>

@@ -3,6 +3,7 @@ import { FormatDate } from '@/components/Format/FormatDate';
 import { Code } from '@/components/Layout/Code';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageTitle } from '@/components/Layout/PageTitle';
+import { ColumnSelection } from '@/components/Table/ColumnSelection';
 import { db } from '@/lib/db';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
@@ -35,7 +36,7 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
     <PageLayout>
       <PageTitle>{user.name}</PageTitle>
 
-      <Headline id="authorizations" actions={<Authorizations.ColumnSelection>Columns</Authorizations.ColumnSelection>}>Authorizations ({user.authorizations.length})</Headline>
+      <Headline id="authorizations" actions={<ColumnSelection table={Authorizations}/>}>Authorizations ({user.authorizations.length})</Headline>
       <Authorizations.Table>
         <Authorizations.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Authorizations.Column>
         <Authorizations.Column id="app" title="App">{({ application }) => <FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow>}</Authorizations.Column>
@@ -46,7 +47,7 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
         <Authorizations.Column id="usedAt" title="Used At" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'Never'}</Authorizations.Column>
       </Authorizations.Table>
 
-      <Headline id="accounts" actions={<Accounts.ColumnSelection>Columns</Accounts.ColumnSelection>}>Accounts ({user.accounts.length})</Headline>
+      <Headline id="accounts" actions={<ColumnSelection table={Accounts}/>}>Accounts ({user.accounts.length})</Headline>
       <Accounts.Table>
         <Accounts.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Accounts.Column>
         <Accounts.Column id="accountId" title="Account Id" hidden>{({ accountId }) => <Code inline borderless>{accountId}</Code>}</Accounts.Column>
@@ -56,7 +57,7 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
         <Accounts.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Accounts.Column>
       </Accounts.Table>
 
-      <Headline id="providers" actions={<Providers.ColumnSelection>Columns</Providers.ColumnSelection>}>Providers ({user.providers.length})</Headline>
+      <Headline id="providers" actions={<ColumnSelection table={Providers}/>}>Providers ({user.providers.length})</Headline>
       <Providers.Table>
         <Providers.Column id="provider" title="Provider">{({ provider }) => provider}</Providers.Column>
         <Providers.Column id="providerId" title="Provider Id">{({ providerAccountId }) => <Code inline borderless>{providerAccountId}</Code>}</Providers.Column>
