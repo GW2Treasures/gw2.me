@@ -39,7 +39,7 @@
     "@fontsource/bitter": "5.0.16",
     "@gw2me/client": "0.2.1",
     "@gw2treasures/icons": "0.0.17",
-    "@gw2treasures/ui": "0.1.4",
+    "@gw2treasures/ui": "0.1.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   }
