@@ -207,3 +207,17 @@ model File {
   // relations
   applicationImage Application[] @relation("applicationImage")
 }
+
+model ApiRequest {
+  id String @id @default(uuid())
+
+  endpoint String
+  queryParameters String
+  apiKey String?
+  
+  status Int
+  response String?
+  responseTimeMs Float
+  
+  createdAt DateTime @default(now()) 
+}

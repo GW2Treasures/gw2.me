@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import { Gw2Scopes, withAuthorization } from '../../../auth';
 import { Authorization } from '@gw2me/database';
 import { corsHeaders } from '@/lib/cors-header';
+import { fetchGw2Api } from '@/lib/gw2-api-request';
 
 interface Context {
   params: { id: string }
@@ -40,12 +41,10 @@ export const GET = withAuthorization<Context>({ oneOf: Gw2Scopes })(
     expire.setMinutes(expire.getMinutes() + 10);
 
     // create subtoken
-    const apiResponse = await fetch(`https://api.guildwars2.com/v2/createsubtoken?expire=${expire.toISOString()}&permissions=${requiredPermissions.join(',')}`, {
-      headers: { 'Authorization': `Bearer ${ apiToken.token }` }
-    });
-
-    // handle API error
-    if(apiResponse.status !== 200) {
+    let apiResponse: { subtoken: string };
+    try {
+      apiResponse = await fetchGw2Api<typeof apiResponse>(`/v2/createsubtoken?expire=${expire.toISOString()}&permissions=${requiredPermissions.join(',')}`, apiToken.token);
+    } catch(e) {
       // increase errorCount for this token in API
       await db.apiToken.update({
         data: {
@@ -56,7 +55,7 @@ export const GET = withAuthorization<Context>({ oneOf: Gw2Scopes })(
       });
 
       // return error response
-      return NextResponse.json({ error: true, error_message: 'The Guild Wars 2 API returned a non 200 status when creating the subtoken' }, { status: 500 });
+      return NextResponse.json({ error: true, error_message: 'The Guild Wars 2 API returned an error when creating the subtoken' }, { status: 500 });
     }
 
     // reset errorCount and set usedAt
@@ -68,12 +67,9 @@ export const GET = withAuthorization<Context>({ oneOf: Gw2Scopes })(
       where: { id: apiToken.id },
     });
 
-    // get subtoken from api response
-    const { subtoken } = await apiResponse.json();
-
     // create response
     const response: SubtokenResponse = {
-      subtoken,
+      subtoken: apiResponse.subtoken,
       expiresAt: expire.toISOString()
     };
 

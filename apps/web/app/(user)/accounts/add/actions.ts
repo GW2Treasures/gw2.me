@@ -3,6 +3,7 @@
 import { FormState } from '@/components/Form/Form';
 import { getApiKeyVerificationName } from '@/lib/api-key-verification-name';
 import { db } from '@/lib/db';
+import { fetchGw2Api } from '@/lib/gw2-api-request';
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 
@@ -26,16 +27,14 @@ export async function addAccount(returnTo: string | undefined, requireVerificati
     return { error: 'Invalid Format (JWT Subtokens are not supported)' };
   }
 
-  const headers = { Authorization: `Bearer ${apiKey}` };
-
   // verify token
-  const response = await fetch('https://api.guildwars2.com/v2/tokeninfo', { headers });
-
-  if(response.status !== 200) {
+  let tokeninfo: { id: string, name: string, permissions: string[] };
+  try {
+    tokeninfo = await fetchGw2Api('/v2/tokeninfo', apiKey);
+  } catch {
     return { error: 'Could not verify API key' };
   }
 
-  const tokeninfo = await response.json();
   const tokenName = tokeninfo.name.trim();
 
   const verificationKeyName = await getApiKeyVerificationName();
@@ -46,12 +45,17 @@ export async function addAccount(returnTo: string | undefined, requireVerificati
     return { error: 'Wrong API key name. Make sure to create a new API key and not rename an already existing API key.' };
   }
 
-  const account = await (await fetch('https://api.guildwars2.com/v2/account', { headers })).json();
+  let account: { id: string, name: string };
+  try {
+    account = await fetchGw2Api('/v2/account', apiKey);
+  } catch {
+    return { error: 'Could not load account from Guild Wars 2 API.' };
+  }
 
-  // check if api key is already known for this user
+  // check if this exact api key is already known
   const tokenExists = await db.apiToken.count({ where: { id: tokeninfo.id }});
   if(tokenExists > 0) {
-    return { error: 'This exact API key already exists. Please generate a new one.' };
+    return { error: 'This API key was already added to gw2.me. Please generate a new one.' };
   }
 
   // check if account is already verified for a different user
