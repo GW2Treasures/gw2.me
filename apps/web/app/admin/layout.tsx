@@ -21,6 +21,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
       <Navigation prefix="/admin/" items={[
         { segment: 'users', icon: 'user', label: 'Users' },
         { segment: 'apps', icon: 'developer', label: 'Apps' },
+        { segment: 'api-keys', icon: 'key', label: 'API Keys' },
       ]}/>
     </NavLayout>
   );
