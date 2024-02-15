@@ -22,7 +22,7 @@ export const GET = withAuthorization<Context>({ oneOf: Gw2Scopes })(
       select: {
         apiTokens: {
           where: { permissions: { hasEvery: requiredPermissions }},
-          select: { token: true },
+          select: { id: true, token: true },
         }
       }
     });
@@ -44,17 +44,40 @@ export const GET = withAuthorization<Context>({ oneOf: Gw2Scopes })(
       headers: { 'Authorization': `Bearer ${ apiToken.token }` }
     });
 
+    // handle API error
     if(apiResponse.status !== 200) {
-      return NextResponse.json({ error: true }, { status: 500 });
+      // increase errorCount for this token in API
+      await db.apiToken.update({
+        data: {
+          errorCount: { increment: 1 },
+          usedAt: new Date(),
+        },
+        where: { id: apiToken.id }
+      });
+
+      // return error response
+      return NextResponse.json({ error: true, error_message: 'The Guild Wars 2 API returned a non 200 status when creating the subtoken' }, { status: 500 });
     }
 
+    // reset errorCount and set usedAt
+    await db.apiToken.update({
+      data: {
+        errorCount: 0,
+        usedAt: new Date(),
+      },
+      where: { id: apiToken.id },
+    });
+
+    // get subtoken from api response
     const { subtoken } = await apiResponse.json();
 
+    // create response
     const response: SubtokenResponse = {
       subtoken,
       expiresAt: expire.toISOString()
     };
 
+    // return response
     return NextResponse.json(response);
   }
 );

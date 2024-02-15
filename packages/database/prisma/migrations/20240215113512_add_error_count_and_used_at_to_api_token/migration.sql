@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "ApiToken" ADD COLUMN     "errorCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "usedAt" TIMESTAMP(3);
