@@ -1,5 +1,6 @@
 import { Gw2MeApi } from './api';
 import { type ClientInfo, type Options, Scope } from './types';
+import { jsonOrError } from './util';
 
 export interface AuthorizationUrlParams {
   redirect_uri: string;
@@ -39,8 +40,8 @@ export class Gw2MeClient {
     this.client_secret = client_secret;
   }
 
-  #getUrl() {
-    return this.options?.url || 'https://gw2.me/';
+  #getUrl(url: string) {
+    return new URL(url, this.options?.url || 'https://gw2.me/');
   }
 
   public getAuthorizationUrl({
@@ -52,7 +53,7 @@ export class Gw2MeClient {
     prompt,
     include_granted_scopes,
     verified_accounts_only,
-  }: AuthorizationUrlParams) {
+  }: AuthorizationUrlParams): string {
     const params = new URLSearchParams({
       client_id: this.client_id,
       response_type: 'code',
@@ -81,7 +82,7 @@ export class Gw2MeClient {
       params.append('verified_accounts_only', 'true');
     }
 
-    return `${this.#getUrl()}oauth2/authorize?${params.toString()}`;
+    return this.#getUrl(`/oauth2/authorize?${params.toString()}`).toString();
   }
 
   async getAccessToken({ code, redirect_uri, code_verifier }: AuthTokenParams): Promise<TokenResponse> {
@@ -98,13 +99,12 @@ export class Gw2MeClient {
       data.set('code_verifier', code_verifier);
     }
 
-    // get discord token
-    const token = await fetch(`${this.#getUrl()}api/token`, {
+    const token = await fetch(this.#getUrl('/api/token'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: data,
       cache: 'no-store'
-    }).then((r) => r.json());
+    }).then(jsonOrError);
 
     return token;
   }
@@ -119,13 +119,12 @@ export class Gw2MeClient {
       refresh_token, client_id: this.client_id, client_secret: this.client_secret,
     });
 
-    // get discord token
-    const token = await fetch(`${this.#getUrl()}api/token`, {
+    const token = await fetch(this.#getUrl('/api/token'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: data,
       cache: 'no-store',
-    }).then((r) => r.json());
+    }).then(jsonOrError);
 
     return token;
   }
