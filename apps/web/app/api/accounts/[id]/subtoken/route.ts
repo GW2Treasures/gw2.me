@@ -33,45 +33,31 @@ export const GET = withAuthorization<Context>({ oneOf: Gw2Scopes })(
       return NextResponse.json({ error: true, error_message: 'Account or token not found' }, { status: 404 });
     }
 
-    // get random api token
-    const apiToken = account.apiTokens[Math.floor(Math.random() * account.apiTokens.length)];
+    // shuffle api tokens
+    const apiTokens = account.apiTokens
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
 
-    // create expiration time in 10 minutes
-    const expire = new Date();
-    expire.setMinutes(expire.getMinutes() + 10);
-
-    // create subtoken
-    let apiResponse: { subtoken: string };
+    // create the subtoken, fallback once if we have multiple api keys available
+    let response: SubtokenResponse;
     try {
-      apiResponse = await fetchGw2Api<typeof apiResponse>(`/v2/createsubtoken?expire=${expire.toISOString()}&permissions=${requiredPermissions.join(',')}`, apiToken.token);
-    } catch(e) {
-      // increase errorCount for this token in API
-      await db.apiToken.update({
-        data: {
-          errorCount: { increment: 1 },
-          usedAt: new Date(),
-        },
-        where: { id: apiToken.id }
-      });
+      try {
+        response = await createSubtoken(apiTokens[0], requiredPermissions);
+      } catch(error) {
+        if(account.apiTokens.length > 1) {
+          console.error(error);
+          console.log('creating subtoken failed, trying again');
+          response = await createSubtoken(apiTokens[1], requiredPermissions);
+        } else {
+          throw error;
+        }
+      }
+    } catch(error) {
+      console.error(error);
 
-      // return error response
       return NextResponse.json({ error: true, error_message: 'The Guild Wars 2 API returned an error when creating the subtoken' }, { status: 500 });
     }
-
-    // reset errorCount and set usedAt
-    await db.apiToken.update({
-      data: {
-        errorCount: 0,
-        usedAt: new Date(),
-      },
-      where: { id: apiToken.id },
-    });
-
-    // create response
-    const response: SubtokenResponse = {
-      subtoken: apiResponse.subtoken,
-      expiresAt: expire.toISOString()
-    };
 
     // return response
     return NextResponse.json(response);
@@ -83,3 +69,41 @@ export const OPTIONS = (request: Request) => {
     headers: corsHeaders(request)
   });
 };
+
+async function createSubtoken(apiToken: { id: string, token: string }, requiredPermissions: string[]): Promise<SubtokenResponse> {
+  // create expiration time in 10 minutes
+  const expire = new Date();
+  expire.setMinutes(expire.getMinutes() + 10);
+
+  // create subtoken
+  let apiResponse: { subtoken: string };
+  try {
+    apiResponse = await fetchGw2Api<typeof apiResponse>(`/v2/createsubtoken?expire=${expire.toISOString()}&permissions=${requiredPermissions.join(',')}`, apiToken.token);
+  } catch(e) {
+    // increase errorCount for this token in API
+    await db.apiToken.update({
+      data: {
+        errorCount: { increment: 1 },
+        usedAt: new Date(),
+      },
+      where: { id: apiToken.id }
+    });
+
+    // return error response
+    throw new Error('The Guild Wars 2 API returned an error when creating the subtoken');
+  }
+
+  // reset errorCount and set usedAt
+  await db.apiToken.update({
+    data: {
+      errorCount: 0,
+      usedAt: new Date(),
+    },
+    where: { id: apiToken.id },
+  });
+
+  return {
+    subtoken: apiResponse.subtoken,
+    expiresAt: expire.toString()
+  };
+}
