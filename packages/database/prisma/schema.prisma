@@ -164,6 +164,10 @@ model ApiToken {
   accountId String
   account   Account @relation("accountApiToken", fields: [accountId], references: [id], onDelete: Cascade)
 
+  errorCount Int @default(0)
+
+  usedAt DateTime?
+  
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
