@@ -124,7 +124,7 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
       </div>
       {!session || !user ? (
         <>
-          <p className={styles.intro}>To authorize this application, you need to login in first.</p>
+          <p className={styles.intro}>To authorize this application, you need to log in first.</p>
           <LoginForm returnTo={returnUrl}/>
           <LinkButton external href={cancelUrl.toString()} flex appearance="tertiary" className={styles.button}>Cancel</LinkButton>
         </>
