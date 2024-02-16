@@ -57,5 +57,5 @@ export default function DevDocsScopePage() {
 }
 
 export const metadata = {
-  title: 'Scopes',
+  title: 'Branding',
 };
