@@ -26,20 +26,18 @@ export default function DevDocsScopePage() {
       <Headline id="logo">Logo</Headline>
       <p>Use the following logos and colors to refer to gw2.me.</p>
 
-      <p>
-        <FlexRow wrap>
-          <div className={styles.icon}><div className={styles.iconBox}><Icon icon="gw2me" color="#b7000d"/></div><Code inline borderless>#b7000d</Code></div>
-          <div className={styles.icon}><div className={styles.iconBox}><Icon icon="gw2me" color="#000000"/></div><Code inline borderless>#000000</Code></div>
-          <div className={styles.icon}><div className={styles.iconBoxDark}><Icon icon="gw2me" color="#e34c57"/></div><Code inline borderless>#e34c57</Code></div>
-          <div className={styles.icon}><div className={styles.iconBoxDark}><Icon icon="gw2me" color="#ffffff"/></div><Code inline borderless>#ffffff</Code></div>
-        </FlexRow>
-        <FlexRow wrap>
-          <div className={styles.icon}><div className={styles.iconBox}><Icon icon="gw2me-outline" color="#b7000d"/></div><Code inline borderless>#b7000d</Code></div>
-          <div className={styles.icon}><div className={styles.iconBox}><Icon icon="gw2me-outline" color="#000000"/></div><Code inline borderless>#000000</Code></div>
-          <div className={styles.icon}><div className={styles.iconBoxDark}><Icon icon="gw2me-outline" color="#e34c57"/></div><Code inline borderless>#e34c57</Code></div>
-          <div className={styles.icon}><div className={styles.iconBoxDark}><Icon icon="gw2me-outline" color="#ffffff"/></div><Code inline borderless>#ffffff</Code></div>
-        </FlexRow>
-      </p>
+      <FlexRow wrap>
+        <div className={styles.icon}><div className={styles.iconBox}><Icon icon="gw2me" color="#b7000d"/></div><Code inline borderless>#b7000d</Code></div>
+        <div className={styles.icon}><div className={styles.iconBox}><Icon icon="gw2me" color="#000000"/></div><Code inline borderless>#000000</Code></div>
+        <div className={styles.icon}><div className={styles.iconBoxDark}><Icon icon="gw2me" color="#e34c57"/></div><Code inline borderless>#e34c57</Code></div>
+        <div className={styles.icon}><div className={styles.iconBoxDark}><Icon icon="gw2me" color="#ffffff"/></div><Code inline borderless>#ffffff</Code></div>
+      </FlexRow>
+      <FlexRow wrap>
+        <div className={styles.icon}><div className={styles.iconBox}><Icon icon="gw2me-outline" color="#b7000d"/></div><Code inline borderless>#b7000d</Code></div>
+        <div className={styles.icon}><div className={styles.iconBox}><Icon icon="gw2me-outline" color="#000000"/></div><Code inline borderless>#000000</Code></div>
+        <div className={styles.icon}><div className={styles.iconBoxDark}><Icon icon="gw2me-outline" color="#e34c57"/></div><Code inline borderless>#e34c57</Code></div>
+        <div className={styles.icon}><div className={styles.iconBoxDark}><Icon icon="gw2me-outline" color="#ffffff"/></div><Code inline borderless>#ffffff</Code></div>
+      </FlexRow>
 
       <p style={{ '--icon-color': 'var(--color-brand)' }}><LinkButton href="/dev/docs/branding/gw2.me-icons.zip" external icon="chevron-right" appearance="menu">Download Icons</LinkButton></p>
 
