@@ -20,7 +20,7 @@ export default function DevDocsScopePage() {
       <p>If you have questions or need help, please <Link href="/dev/docs#support">contact us</Link>.</p>
 
       <Headline id="name">Name</Headline>
-      <p>This service is called <b>gw2.me</b>, that is all lowercase with a dot between gw2 and me. Not GW2ME, gw2me, Gw2-Me or any other spelling. If need to use the name in a place that does not allow special characters, you can use gw2me.</p>
+      <p>This service is called <b>gw2.me</b> (all lowercase with a dot between gw2 and me). Not GW2ME, gw2me, Gw2-Me or any other spelling. If you need to use the name in a place that does not allow special characters, you can use gw2me.</p>
 
       <Headline id="logo">Logo</Headline>
       <p>Use the following logos and colors to refer to gw2.me.</p>
@@ -43,7 +43,7 @@ export default function DevDocsScopePage() {
       <List>
         <li>Always prefer the red versions.</li>
         <li>Always prefer the solid variant over the outlined variant.</li>
-        <li>Display the logo at least 16px &times; 16px.</li>
+        <li>Display the logo at a minimum size of 16px &times; 16px.</li>
         <li>Make sure the logo has sufficient contrast to the background.</li>
         <li>Use the correct color depending on light/dark background.</li>
         <li>Use a solid color as the background.</li>
