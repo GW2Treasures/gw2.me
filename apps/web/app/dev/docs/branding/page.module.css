@@ -17,3 +17,32 @@
   composes: iconBox;
   background-color: #303339;
 }
+
+.loginExample {
+  max-width: 480px;
+  align-self: flex-start;
+}
+
+.label {
+  margin: 2px 0 8px;
+  background-color: red;
+  color: #fff;
+  padding: 8px;
+}
+
+.loginExample > img {
+  border-radius: 2px 2px 0 0;
+  max-width: 100%;
+  height: auto;
+}
+
+.do {
+  composes: loginExample;
+}
+
+.dont {
+  composes: loginExample;
+}
+
+.do .label { background-color: #388e3c; }
+.dont .label { background-color: #e53935; }
