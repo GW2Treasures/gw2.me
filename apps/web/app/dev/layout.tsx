@@ -13,6 +13,8 @@ export default function DevLayout({ children }: { children: ReactNode }) {
         { segment: ['docs', 'refresh-tokens'], label: 'Refreshing Tokens' },
         { segment: ['docs', 'gw2-api'], label: 'Guild Wars 2 API' },
         { segment: ['docs', 'scopes'], label: 'Scopes' },
+        { segment: ['docs', 'best-practices'], label: 'Best Practices' },
+        { segment: ['docs', 'branding'], label: 'Branding' },
         { segment: ['docs', 'api-reference'], label: 'API Reference' },
         { segment: ['docs', 'libraries'], label: 'Client Libraries' },
       ]}/>
