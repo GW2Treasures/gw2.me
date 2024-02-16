@@ -11,6 +11,7 @@ import { List } from '@gw2treasures/ui/components/Layout/List';
 import Link from 'next/link';
 import doImg from './gw2me-login-do.png';
 import dontImg from './gw2me-login-dont.png';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 export default function DevDocsScopePage() {
   return (
@@ -39,6 +40,8 @@ export default function DevDocsScopePage() {
           <div className={styles.icon}><div className={styles.iconBoxDark}><Icon icon="gw2me-outline" color="#ffffff"/></div><Code inline borderless>#ffffff</Code></div>
         </FlexRow>
       </p>
+
+      <p style={{ '--icon-color': 'var(--color-brand)' }}><LinkButton href="/dev/docs/branding/gw2.me-icons.zip" external icon="chevron-right" appearance="menu">Download Icons</LinkButton></p>
 
       <List>
         <li>Always prefer the red versions.</li>
