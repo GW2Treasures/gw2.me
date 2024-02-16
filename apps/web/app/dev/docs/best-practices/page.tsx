@@ -26,7 +26,7 @@ export default function DevDocsScopePage() {
       <p>If you want to allow users to change the account selection, consider adding a &quot;Manage accounts&quot; button after login that starts the flow with <Code inline>prompt=consent</Code> in your application instead.</p>
 
       <Headline id="security">Security</Headline>
-      <p>Make sure your application is secure and does not leak any user data. gw2.me might deactivate authorization for you if we learn about any security issues with your application.</p>
+      <p>Make sure your application follows security best practices and does not leak any user data.</p>
 
       <Headline id="branding">Branding</Headline>
       <p>Follow our <Link href="/dev/docs/branding">branding guidelines</Link>.</p>
