@@ -1,6 +1,6 @@
 'use server';
 
-import { FormState } from '@/components/Form/Form';
+import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { getApiKeyVerificationName } from '@/lib/api-key-verification-name';
 import { db } from '@/lib/db';
 import { fetchGw2Api } from '@/lib/gw2-api-request';

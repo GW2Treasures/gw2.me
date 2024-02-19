@@ -1,4 +1,4 @@
-import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
+import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
@@ -6,7 +6,7 @@ import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { notFound, redirect } from 'next/navigation';
 import { deleteApiKey, updateDisplayName } from './actions';
-import { Form } from '@/components/Form/Form';
+import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Code } from '@/components/Layout/Code';

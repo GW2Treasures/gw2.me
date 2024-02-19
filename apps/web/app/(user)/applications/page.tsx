@@ -10,7 +10,7 @@ import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Prisma } from '@gw2me/database';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
-import { Form } from '@/components/Form/Form';
+import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { revokeAccess } from './actions';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { FormatDate } from '@/components/Format/FormatDate';
