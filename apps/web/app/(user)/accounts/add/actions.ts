@@ -93,7 +93,7 @@ export async function addAccount(returnTo: string | undefined, requireVerificati
       },
       update: {
         accountName: account.name,
-        verified,
+        verified: verified || undefined,
         apiTokens: {
           create: {
             id: tokeninfo.id,

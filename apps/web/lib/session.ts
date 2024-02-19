@@ -5,6 +5,7 @@ import { db } from '@/lib/db';
 import { cache } from 'react';
 import { SessionCookieName } from './cookie';
 import { Prisma, User } from '@gw2me/database';
+import { redirect } from 'next/navigation';
 
 /** Get the current session */
 export const getSession = cache(async function getSession(): Promise<{ id: string, userId: string } | undefined> {
@@ -14,6 +15,16 @@ export const getSession = cache(async function getSession(): Promise<{ id: strin
     ? await getSessionFromDb(sessionId)
     : undefined;
 });
+
+export async function getSessionOrRedirect() {
+  const session = await getSession();
+
+  if (!session) {
+    redirect('/login');
+  }
+
+  return session;
+}
 
 /** Get the user for the current session */
 export const getUser = cache(async function getUser(): Promise<User | undefined> {
