@@ -6,6 +6,7 @@
     "dev": "PORT=4000 next dev",
     "build": "next build",
     "start": "next start",
+    "lint": "next lint",
     "test": "jest"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
     "sharp": "0.33.2"
   },
   "devDependencies": {
+    "@gw2treasures/eslint-plugin-nextjs": "0.0.1",
     "@gw2treasures/tsconfig": "0.0.1",
     "@testing-library/jest-dom": "6.4.2",
     "@testing-library/react": "14.2.1",

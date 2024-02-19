@@ -27,3 +27,10 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     </NavLayout>
   );
 }
+
+export const metadata = {
+  title: {
+    template: 'Admin: %s',
+    default: ''
+  }
+};
