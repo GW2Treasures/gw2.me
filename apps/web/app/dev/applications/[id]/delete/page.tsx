@@ -1,8 +1,8 @@
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { deleteApplication } from '../../_actions/delete';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
-import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
-import { Form } from '@/components/Form/Form';
+import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
+import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { notFound, redirect } from 'next/navigation';

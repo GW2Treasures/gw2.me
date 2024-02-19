@@ -10,9 +10,9 @@ import Link from 'next/link';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
-import { Form, FormState } from '@/components/Form/Form';
+import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { SubmitButton } from '@/components/SubmitButton/SubmitButton';
+import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { revalidatePath } from 'next/cache';
 import { getFormDataString } from '@/lib/form-data';
 

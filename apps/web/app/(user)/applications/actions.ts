@@ -1,6 +1,6 @@
 'use server';
 
-import { FormState } from '@/components/Form/Form';
+import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 
