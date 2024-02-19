@@ -67,3 +67,7 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
     </PageLayout>
   );
 }
+
+export const metadata = {
+  title: 'User'
+};

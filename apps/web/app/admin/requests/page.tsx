@@ -51,3 +51,7 @@ function getUrlFromApiRequest(apiRequest: ApiRequest) {
 
   return url;
 }
+
+export const metadata = {
+  title: 'Requests'
+};

@@ -46,3 +46,7 @@ export default async function AdminAppsPage() {
     </PageLayout>
   );
 }
+
+export const metadata = {
+  title: 'Apps'
+};

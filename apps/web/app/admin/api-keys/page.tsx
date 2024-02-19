@@ -56,3 +56,7 @@ export default async function AdminApiKeysPage() {
     </PageLayout>
   );
 }
+
+export const metadata = {
+  title: 'API keys'
+};

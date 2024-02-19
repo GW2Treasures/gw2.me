@@ -33,3 +33,7 @@ export default function CreateApplicationPage() {
     </PageLayout>
   );
 }
+
+export const metadata = {
+  title: 'Create Application'
+};
