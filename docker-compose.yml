@@ -11,6 +11,7 @@ services:
       - DATABASE_URL=postgresql://gw2me:gw2me@database:5432/gw2me?schema=public
       - BASE_DOMAIN=localhost
       - FORCE_COLOR=1
+      - JWT_SECRET=gw2.me-secret
     ports:
       - 4000:3000
 

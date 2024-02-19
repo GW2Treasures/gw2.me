@@ -47,6 +47,11 @@ spec:
             configMapKeyRef:
               name: web
               key: domain
+        - name: JWT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: web
+              key: jwt_secret
         - name: DISCORD_CLIENT_ID
           valueFrom:
             configMapKeyRef:
