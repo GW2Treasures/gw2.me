@@ -11,11 +11,12 @@
     "prisma:studio": "npm run prisma:studio -w @gw2me/database",
     "prisma:migrate-dev": "npm run prisma:migrate-dev -w @gw2me/database",
     "build": "turbo run build",
-    "lint": "turbo run lint",
+    "lint": "turbo run lint -- -f gha",
     "test": "turbo run test",
     "publish-package": "turbo run publish-package"
   },
   "devDependencies": {
+    "eslint-formatter-gha": "1.4.3",
     "turbo": "1.12.4"
   }
 }
