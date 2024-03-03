@@ -40,6 +40,6 @@
     "eslint": "8.57.0",
     "tsup": "8.0.2",
     "typescript": "5.3.3",
-    "undici-types": "6.6.2"
+    "undici-types": "6.7.0"
   }
 }
