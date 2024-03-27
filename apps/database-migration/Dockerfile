@@ -1,4 +1,4 @@
-ARG node_version=20.11.1-alpine
+ARG node_version=20.12.0-alpine
 
 FROM node:${node_version} AS source
 WORKDIR /app
