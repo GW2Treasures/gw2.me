@@ -12,6 +12,9 @@ import { FormatDate } from '@/components/Format/FormatDate';
 import { DiscordIcon } from 'app/auth/discord';
 import { GitHubIcon } from 'app/auth/github';
 import { SteamIcon } from 'app/auth/steam';
+import { GoogleIcon } from 'app/auth/google';
+import { UserProviderType } from '@gw2me/database';
+import { providers as availableProviders } from 'app/auth/providers';
 
 const getUserData = cache(async () => {
   const currentSession = await getSession();
@@ -64,6 +67,7 @@ export default async function ProfilePage() {
                   provider.provider === 'discord' ? <FlexRow><DiscordIcon/>Discord</FlexRow> :
                   provider.provider === 'github' ? <FlexRow><GitHubIcon/>GitHub</FlexRow> :
                   provider.provider === 'steam' ? <FlexRow><SteamIcon/>Steam</FlexRow> :
+                  provider.provider === 'google' ? <FlexRow><GoogleIcon/>Google</FlexRow> :
                   provider.provider
                 }
               </td>
@@ -77,9 +81,10 @@ export default async function ProfilePage() {
       <form method="POST">
         <input type="hidden" name="type" value="add"/>
         <FlexRow>
-          <Button type="submit" formAction="/auth/login/discord" icon={<DiscordIcon/>}>Add Discord</Button>
-          <Button type="submit" formAction="/auth/login/github" icon={<GitHubIcon/>}>Add GitHub</Button>
-          <Button type="submit" formAction="/auth/login/steam" icon={<SteamIcon/>}>Add Steam</Button>
+          {availableProviders[UserProviderType.discord] && (<Button type="submit" formAction="/auth/login/discord" icon={<DiscordIcon/>}>Add Discord</Button>)}
+          {availableProviders[UserProviderType.google] && (<Button type="submit" formAction="/auth/login/google" icon={<GoogleIcon/>}>Add Google</Button>)}
+          {availableProviders[UserProviderType.github] && (<Button type="submit" formAction="/auth/login/github" icon={<GitHubIcon/>}>Add GitHub</Button>)}
+          {availableProviders[UserProviderType.steam] && (<Button type="submit" formAction="/auth/login/steam" icon={<SteamIcon/>}>Add Steam</Button>)}
         </FlexRow>
       </form>
 

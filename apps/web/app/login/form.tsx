@@ -8,6 +8,7 @@ import { UserProviderType } from '@gw2me/database';
 import { DiscordIcon } from 'app/auth/discord';
 import { GitHubIcon } from 'app/auth/github';
 import { SteamIcon } from 'app/auth/steam';
+import { GoogleIcon } from 'app/auth/google';
 
 interface LoginFormProps {
   returnTo?: string;
@@ -23,6 +24,7 @@ export const LoginForm: FC<LoginFormProps> = ({ returnTo }) => {
 
       <div className={styles.buttons}>
         {providers[UserProviderType.discord] && (<Button className={styles.button} type="submit" formAction="/auth/login/discord" icon={<DiscordIcon/>}>Login with Discord</Button>)}
+        {providers[UserProviderType.google] && (<Button className={styles.button} type="submit" formAction="/auth/login/google" icon={<GoogleIcon/>}>Login with Google</Button>)}
         {providers[UserProviderType.github] && (<Button className={styles.button} type="submit" formAction="/auth/login/github" icon={<GitHubIcon/>}>Login with GitHub</Button>)}
         {providers[UserProviderType.steam] && (<Button className={styles.button} type="submit" formAction="/auth/login/steam" icon={<SteamIcon/>}>Login with Steam</Button>)}
         {process.env.NODE_ENV !== 'production' && (<DevLogin/>)}

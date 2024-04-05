@@ -80,6 +80,7 @@ enum UserProviderType {
   discord
   github
   steam
+  google
 }
 
 enum UserProviderRequestType {
