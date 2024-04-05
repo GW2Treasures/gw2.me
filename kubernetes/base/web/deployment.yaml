@@ -82,6 +82,18 @@ spec:
               name: web
               key: steam_api_key
               optional: true
+        - name: GOOGLE_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: web
+              key: google_client_id
+              optional: true
+        - name: GOOGLE_CLIENT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: web
+              key: google_client_secret
+              optional: true
         ports:
         - containerPort: 3000
           protocol: TCP

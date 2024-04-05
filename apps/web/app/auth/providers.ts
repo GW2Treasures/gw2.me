@@ -4,6 +4,7 @@ import 'server-only';
 import { discord } from './discord';
 import { github } from './github';
 import { steam } from './steam';
+import { google } from './google';
 
 export interface ProviderConfig {
   id: UserProviderType,
@@ -35,6 +36,7 @@ export const providers: Record<string, ProviderConfig | undefined> = {
   [UserProviderType.discord]: discord(),
   [UserProviderType.github]: github(),
   [UserProviderType.steam]: steam(),
+  [UserProviderType.google]: google(),
 } satisfies Record<UserProviderType, ProviderConfig | undefined>;
 
 export function getJsonIfOk(response: Response) {
