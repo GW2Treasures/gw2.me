@@ -28,9 +28,9 @@ export async function addAccount(returnTo: string | undefined, requireVerificati
   }
 
   // verify token
-  let tokeninfo: { id: string, name: string, permissions: string[] };
+  let tokeninfo;
   try {
-    tokeninfo = await fetchGw2Api('/v2/tokeninfo', apiKey);
+    tokeninfo = await fetchGw2Api('/v2/tokeninfo', { accessToken: apiKey });
   } catch {
     return { error: 'Could not verify API key' };
   }
@@ -45,9 +45,9 @@ export async function addAccount(returnTo: string | undefined, requireVerificati
     return { error: 'Wrong API key name. Make sure to create a new API key and not rename an already existing API key.' };
   }
 
-  let account: { id: string, name: string };
+  let account;
   try {
-    account = await fetchGw2Api('/v2/account', apiKey);
+    account = await fetchGw2Api('/v2/account', { accessToken: apiKey });
   } catch {
     return { error: 'Could not load account from Guild Wars 2 API.' };
   }

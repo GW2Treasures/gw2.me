@@ -76,9 +76,9 @@ async function createSubtoken(apiToken: { id: string, token: string }, requiredP
   expire.setMinutes(expire.getMinutes() + 10);
 
   // create subtoken
-  let apiResponse: { subtoken: string };
+  let apiResponse;
   try {
-    apiResponse = await fetchGw2Api<typeof apiResponse>(`/v2/createsubtoken?expire=${expire.toISOString()}&permissions=${requiredPermissions.join(',')}`, apiToken.token);
+    apiResponse = await fetchGw2Api(`/v2/createsubtoken?expire=${expire.toISOString()}&permissions=${requiredPermissions.join(',')}`, { accessToken: apiToken.token });
   } catch(e) {
     // increase errorCount for this token in API
     await db.apiToken.update({
@@ -90,7 +90,7 @@ async function createSubtoken(apiToken: { id: string, token: string }, requiredP
     });
 
     // return error response
-    throw new Error('The Guild Wars 2 API returned an error when creating the subtoken');
+    throw new Error('The Guild Wars 2 API returned an error when creating the subtoken', { cause: e });
   }
 
   // reset errorCount and set usedAt

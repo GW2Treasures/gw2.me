@@ -1,54 +1,69 @@
+import { Gw2ApiError, fetchGw2Api as fetch } from '@gw2api/fetch';
 import { db } from './db';
+import { AuthenticatedOptions, EndpointType, KnownEndpoint, OptionsByEndpoint } from '@gw2api/types/endpoints';
 
 const schema = '2022-03-23T19:00:00.000Z';
+type Schema = typeof schema;
+
+// TODO: use custom userAgent
 const userAgent = 'Mozilla/5.0 (compatible; gw2.me/1.0; +https://gw2.me)';
 
-export function fetchGw2Api<T>(endpoint: `/v2/${string}`, apiKey?: string): Promise<T> {
+export async function fetchGw2Api<Url extends KnownEndpoint | (string & {})>(endpoint: Url, options: OptionsByEndpoint<Url>): Promise<EndpointType<Url, Schema>> {
   const url = new URL(endpoint, 'https://api.guildwars2.com/');
 
   const startTime = performance.now();
 
-  const authorizationHeader: { Authorization: string } | {} = apiKey
-    ? { 'Authorization': `Bearer ${apiKey}` }
-    : {};
+  let response;
+  try {
+    response = await fetch<Url, Schema>(endpoint, { schema, ...options });
 
-  return fetch(url, {
-    headers: {
-      'X-Schema-Version': schema,
-      'User-Agent': userAgent,
-      ...authorizationHeader,
-    },
-    redirect: 'manual',
-  }).then(async (response) => {
+    if(Array.isArray(response) && response.length === 2 && response[0] === 'v1' && response[1] === 'v2') {
+      throw new Error(`${endpoint} returned an invalid response (["v1","v2"]).`);
+    }
+  } catch(error) {
+    console.error(error);
+
+    const status = error instanceof Gw2ApiError
+      ? error.response.status
+      : -1;
+
     const endTime = performance.now();
-
-    const isError = response.status !== 200;
-    const error = isError
-      ? await response.text()
-      : undefined;
 
     await db.apiRequest.create({
       select: { id: true },
       data: {
         endpoint: url.pathname,
         queryParameters: url.search,
-        apiKey,
-        status: response.status,
+        apiKey: getAccessTokenFromOptions(options),
+        status,
         responseTimeMs: endTime - startTime,
-        response: error
+        response: `${error}`
       }
     });
 
-    if(isError) {
-      throw new Error(`${url.pathname} returned ${response.status}`);
+    throw error;
+  }
+
+  const endTime = performance.now();
+
+  await db.apiRequest.create({
+    select: { id: true },
+    data: {
+      endpoint: url.pathname,
+      queryParameters: url.search,
+      apiKey: getAccessTokenFromOptions(options),
+      status: 200,
+      responseTimeMs: endTime - startTime,
     }
-
-    const json = response.json();
-
-    if(Array.isArray(json) && json.length === 2 && json[0] && json[1]) {
-      throw new Error(`${url.pathname} returned an invalid response.`);
-    }
-
-    return json;
   });
+
+  return response;
+}
+
+function getAccessTokenFromOptions(options: AuthenticatedOptions | {}): string | undefined {
+  if('accessToken' in options) {
+    return options.accessToken;
+  }
+
+  return undefined;
 }
