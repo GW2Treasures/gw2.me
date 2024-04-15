@@ -78,8 +78,11 @@ async function createSubtoken(apiToken: { id: string, token: string }, requiredP
   // create subtoken
   let apiResponse;
   try {
+    console.log('request subtoken for', apiToken.token);
     apiResponse = await fetchGw2Api(`/v2/createsubtoken?expire=${expire.toISOString()}&permissions=${requiredPermissions.join(',')}`, { accessToken: apiToken.token });
   } catch(e) {
+    console.error(e);
+
     // increase errorCount for this token in API
     await db.apiToken.update({
       data: {
