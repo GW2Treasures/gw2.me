@@ -8,7 +8,7 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { useFormState } from 'react-dom';
-import { CommerceTransactionsCurrentSells, VerifyChallengeActionResult } from './verify-challenge.action';
+import { VerifyChallengeActionResult } from './verify-challenge.action';
 import { FormatDate } from '@/components/Format/FormatDate';
 import { Coins } from '@/components/Format/Coins';
 import { Icon } from '@gw2treasures/ui';
@@ -16,6 +16,7 @@ import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
 import { renderError } from './render-error';
 import { useHydrated } from '@/lib/use-hydrated';
 import { useIsExpired } from '../../../../../../lib/is-expired';
+import { fetchGw2Api } from '@gw2api/fetch';
 
 export interface TpOrderChallengeFormProps {
   challenge: TpOrderChallengeJwtPayload,
@@ -54,12 +55,13 @@ export const TpOrderChallengeForm: FC<TpOrderChallengeFormProps> = ({ challenge,
 
     // check API every 5 seconds
     const checkInterval = setInterval(async () => {
-      const url = `https://api.guildwars2.com/v2/commerce/transactions/current/buys?access_token=${apiKey}`;
-      const response = await fetch(url, { signal: abortController.signal, cache: 'no-store' });
+      const transactions = await fetchGw2Api('/v2/commerce/transactions/current/buys', {
+        accessToken: apiKey,
+        signal: abortController.signal,
+        cache: 'reload',
+      });
 
       // TODO: handle error response
-
-      const transactions: CommerceTransactionsCurrentSells = await response.json();
 
       // check if challenge would be completed
       const challengeCompleted = transactions.some(({ item_id, price }) => item_id === challenge.itm && price === challenge.cns);
@@ -81,7 +83,7 @@ export const TpOrderChallengeForm: FC<TpOrderChallengeFormProps> = ({ challenge,
     <>
       {isSuccess ? (
         <>
-          <p>Account successfuly verified. You can now cancel your buy order for {item.name}.</p>
+          <p>Account successfully verified. You can now cancel your buy order for {item.name}.</p>
           <LinkButton href={`/accounts/${challenge.sub}`} icon="chevron-right">Continue</LinkButton>
         </>
       ) : (state.error === 'invalid_challenge' || isExpired) ? (

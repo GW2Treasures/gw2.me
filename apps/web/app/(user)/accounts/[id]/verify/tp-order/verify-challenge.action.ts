@@ -52,7 +52,7 @@ export async function verifyChallenge(challengeJwt: string): Promise<VerifyChall
     // fetch transaction from gw2 api
     let transactions;
     try {
-      transactions = await fetchGw2Api<CommerceTransactionsCurrentSells>('/v2/commerce/transactions/current/buys', apiKey);
+      transactions = await fetchGw2Api('/v2/commerce/transactions/current/buys', { accessToken: apiKey });
     } catch(e) {
       console.error(e);
       return { error: 'gw2api_error' };
@@ -82,11 +82,3 @@ export async function verifyChallenge(challengeJwt: string): Promise<VerifyChall
     return { error: 'unknown' };
   }
 }
-
-export type CommerceTransactionsCurrentSells = {
-  id: number,
-  item_id: number,
-  price: number,
-  quantity: number,
-  created: string
-}[]

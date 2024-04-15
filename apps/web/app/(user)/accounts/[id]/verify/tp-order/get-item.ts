@@ -5,7 +5,7 @@ import { unstable_cache } from 'next/cache';
 // TODO: in the future we need to load all languages to show item in correct language.
 //       maybe replace this with a gw2treasures.com endpoint to load just icon and names in a single request.
 export const getItem = unstable_cache(
-  (itemId: number) => fetchGw2Api<{ name: string, icon: string }>(`/v2/items/${itemId}`),
+  (itemId: number) => fetchGw2Api(`/v2/items/${itemId}`, { language: 'en' }),
   ['get-item'],
   { revalidate: 600 }
 );
