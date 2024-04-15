@@ -1,4 +1,4 @@
-import { Gw2ApiError, fetchGw2Api as fetch } from '@gw2api/fetch';
+import { FetchOptions, Gw2ApiError, fetchGw2Api as fetch } from '@gw2api/fetch';
 import { db } from './db';
 import { AuthenticatedOptions, EndpointType, KnownEndpoint, OptionsByEndpoint } from '@gw2api/types/endpoints';
 
@@ -7,6 +7,7 @@ type Schema = typeof schema;
 
 // TODO: use custom userAgent
 const userAgent = 'Mozilla/5.0 (compatible; gw2.me/1.0; +https://gw2.me)';
+const fetchOptions: FetchOptions = {};
 
 export async function fetchGw2Api<Url extends KnownEndpoint | (string & {})>(endpoint: Url, options: OptionsByEndpoint<Url>): Promise<EndpointType<Url, Schema>> {
   const url = new URL(endpoint, 'https://api.guildwars2.com/');
@@ -15,7 +16,7 @@ export async function fetchGw2Api<Url extends KnownEndpoint | (string & {})>(end
 
   let response;
   try {
-    response = await fetch<Url, Schema>(endpoint, { schema, ...options });
+    response = await fetch<Url, Schema>(endpoint, { schema, ...options, ...fetchOptions });
 
     if(Array.isArray(response) && response.length === 2 && response[0] === 'v1' && response[1] === 'v2') {
       throw new Error(`${endpoint} returned an invalid response (["v1","v2"]).`);
