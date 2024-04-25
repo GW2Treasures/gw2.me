@@ -13,9 +13,11 @@ export async function GET(request: NextRequest) {
   // get the session id
   const sessionId = cookies().get(SessionCookieName)!.value;
 
-  // try to delete session in db
+  // try to delete session in db if set
   // use deleteMany instead of delete so it doesn't fail if there is no matching session in db
-  await db.userSession.deleteMany({ where: { id: sessionId }});
+  if(sessionId) {
+    await db.userSession.deleteMany({ where: { id: sessionId }});
+  }
 
   // delete session cookie
   cookies().delete(SessionCookieName);

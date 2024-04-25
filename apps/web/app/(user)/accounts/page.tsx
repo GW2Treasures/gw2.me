@@ -1,9 +1,8 @@
-import { getSession } from '@/lib/session';
+import { getSessionOrRedirect } from '@/lib/session';
 import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
-import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { AuthorizationType } from '@gw2me/database';
@@ -12,11 +11,7 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 
 const getAccounts = cache(async () => {
-  const session = await getSession();
-
-  if(!session) {
-    redirect('/login');
-  }
+  const session = await getSessionOrRedirect();
 
   const accounts = await db.account.findMany({
     where: { userId: session.userId },

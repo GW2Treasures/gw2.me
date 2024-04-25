@@ -4,17 +4,13 @@ import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { db } from '@/lib/db';
-import { getSession } from '@/lib/session';
-import { notFound, redirect } from 'next/navigation';
+import { getSessionOrRedirect } from '@/lib/session';
+import { notFound } from 'next/navigation';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { PageLayout } from '@/components/Layout/PageLayout';
 
 async function getApplication(id: string) {
-  const session = await getSession();
-
-  if(!session) {
-    redirect('/login');
-  }
+  const session = await getSessionOrRedirect();
 
   const application = await db.application.findUnique({
     where: { id, ownerId: session.userId },

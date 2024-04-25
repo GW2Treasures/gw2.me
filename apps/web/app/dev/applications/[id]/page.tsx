@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
-import { getSession } from '@/lib/session';
+import { getSessionOrRedirect } from '@/lib/session';
 import Link from 'next/link';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { Textarea } from '@/components/Textarea/Textarea';
 import { editApplication } from '../_actions/edit';
@@ -22,11 +22,7 @@ import { Icon } from '@gw2treasures/ui';
 import { PageLayout } from '@/components/Layout/PageLayout';
 
 const getApplication = cache(async (id: string) => {
-  const session = await getSession();
-
-  if(!session) {
-    redirect('/login');
-  }
+  const session = await getSessionOrRedirect();
 
   const application = await db.application.findFirst({
     where: { id, ownerId: session.userId }

@@ -1,6 +1,5 @@
-import { getSession } from '@/lib/session';
+import { getSession, getSessionOrRedirect } from '@/lib/session';
 import { db } from '@/lib/db';
-import { notFound, redirect } from 'next/navigation';
 import { cache } from 'react';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
@@ -18,11 +17,7 @@ import { providers as availableProviders } from 'app/auth/providers';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 
 const getUserData = cache(async () => {
-  const currentSession = await getSession();
-
-  if(!currentSession) {
-    redirect('/login');
-  }
+  const currentSession = await getSessionOrRedirect();
 
   const [sessions, providers] = await Promise.all([
     db.userSession.findMany({
