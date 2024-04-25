@@ -1,6 +1,5 @@
-import { getSession } from '@/lib/session';
+import { getSessionOrRedirect } from '@/lib/session';
 import { db } from '@/lib/db';
-import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import Link from 'next/link';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
@@ -16,11 +15,7 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { FormatDate } from '@/components/Format/FormatDate';
 
 const getUserData = cache(async () => {
-  const session = await getSession();
-
-  if(!session) {
-    redirect('/login');
-  }
+  const session = await getSessionOrRedirect();
 
   const authorizationFilter: Prisma.AuthorizationWhereInput = {
     userId: session.userId,

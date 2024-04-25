@@ -4,17 +4,13 @@ import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { getApiKeyVerificationName } from '@/lib/api-key-verification-name';
 import { db } from '@/lib/db';
 import { fetchGw2Api } from '@/lib/gw2-api-request';
-import { getSession } from '@/lib/session';
+import { getSessionOrRedirect } from '@/lib/session';
 import { redirect } from 'next/navigation';
 
 const apiKeyRegex = /^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{20}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/;
 
 export async function addAccount(returnTo: string | undefined, requireVerification: boolean, _: FormState, payload: FormData): Promise<FormState> {
-  const session = await getSession();
-
-  if(!session) {
-    redirect('/login');
-  }
+  const session = await getSessionOrRedirect();
 
   const apiKey = payload.get('api-key');
 

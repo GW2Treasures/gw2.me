@@ -1,22 +1,17 @@
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { db } from '@/lib/db';
-import { getSession } from '@/lib/session';
+import { getSessionOrRedirect } from '@/lib/session';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
-import { redirect } from 'next/navigation';
 import { cache } from 'react';
 
 export const dynamic = 'force-dynamic';
 
 const getApplications = cache(async () => {
-  const session = await getSession();
-
-  if(!session) {
-    redirect('/login');
-  }
+  const session = await getSessionOrRedirect();
 
   return db.application.findMany({
     where: { ownerId: session.userId },

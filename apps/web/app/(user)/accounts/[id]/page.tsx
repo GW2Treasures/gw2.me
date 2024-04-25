@@ -1,10 +1,10 @@
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { db } from '@/lib/db';
-import { getSession } from '@/lib/session';
+import { getSessionOrRedirect } from '@/lib/session';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { deleteApiKey, updateDisplayName } from './actions';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
@@ -20,11 +20,7 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { cache } from 'react';
 
 const getAccount = cache(async function getAccount(id: string) {
-  const session = await getSession();
-
-  if(!session) {
-    redirect('/login');
-  }
+  const session = await getSessionOrRedirect()
 
   const account = await db.account.findUnique({
     where: { id, userId: session.userId },

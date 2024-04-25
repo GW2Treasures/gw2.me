@@ -1,13 +1,8 @@
-import { redirect } from 'next/navigation';
-import { getSession } from './session';
+import { getSessionOrRedirect } from './session';
 import { createHash } from 'crypto';
 
 export async function getApiKeyVerificationName() {
-  const session = await getSession();
-
-  if(!session) {
-    redirect('/login');
-  }
+  const session = await getSessionOrRedirect();
 
   const verifyKey = createHash('sha256').update(session.userId).digest('base64url').substring(0, 8);
 

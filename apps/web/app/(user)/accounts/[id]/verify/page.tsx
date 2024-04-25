@@ -1,27 +1,23 @@
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { db } from '@/lib/db';
-import { getSession } from '@/lib/session';
+import { getSessionOrRedirect } from '@/lib/session';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { startChallenge } from './tp-order/start-challenge.action';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 
-interface VerifiyAccountPageProps {
+interface VerifyAccountPageProps {
   params: {
     id: string;
   };
 }
 
 const getAccount = cache(async function getAccount(id: string) {
-  const session = await getSession();
-
-  if(!session) {
-    redirect('/login');
-  }
+  const session = await getSessionOrRedirect();
 
   const account = await db.account.findUnique({
     where: { id, userId: session.userId },
@@ -34,7 +30,7 @@ const getAccount = cache(async function getAccount(id: string) {
   return account;
 });
 
-export default async function VerifiyAccountPage({ params }: VerifiyAccountPageProps) {
+export default async function VerifyAccountPage({ params }: VerifyAccountPageProps) {
   const account = await getAccount(params.id);
 
   return (
