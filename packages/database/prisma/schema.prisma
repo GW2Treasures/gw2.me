@@ -55,9 +55,10 @@ model UserProvider {
   
   userId String
   user   User   @relation("provider", fields: [userId], references: [id], onDelete: Cascade)
-  
+
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+  usedAt         DateTime?
 }
 
 model UserProviderRequest {
