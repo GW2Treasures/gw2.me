@@ -9,6 +9,8 @@ import { DiscordIcon } from 'app/auth/discord';
 import { GitHubIcon } from 'app/auth/github';
 import { SteamIcon } from 'app/auth/steam';
 import { GoogleIcon } from 'app/auth/google';
+import { Icon } from '@gw2treasures/ui';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 
 interface LoginFormProps {
   returnTo?: string;
@@ -18,9 +20,9 @@ export const LoginForm: FC<LoginFormProps> = ({ returnTo }) => {
   // TODO: update RETURN_TO to only handle trusted urls (encode it? JWT?)
 
   return (
-    <form method="POST">
+    <form method="POST" className={styles.form}>
       {returnTo && (<input type="hidden" name="RETURN_TO" value={returnTo}/>)}
-      <Notice type="warning">If you have used gw2.me before, please use the same login provider.</Notice>
+      <Notice type="warning">If you have used gw2.me before, please <b>use the same login provider</b> to access your account. You can add additional providers after login.</Notice>
 
       <div className={styles.buttons}>
         {providers[UserProviderType.discord] && (<Button className={styles.button} type="submit" formAction="/auth/login/discord" icon={<DiscordIcon/>}>Login with Discord</Button>)}
@@ -28,6 +30,13 @@ export const LoginForm: FC<LoginFormProps> = ({ returnTo }) => {
         {providers[UserProviderType.github] && (<Button className={styles.button} type="submit" formAction="/auth/login/github" icon={<GitHubIcon/>}>Login with GitHub</Button>)}
         {providers[UserProviderType.steam] && (<Button className={styles.button} type="submit" formAction="/auth/login/steam" icon={<SteamIcon/>}>Login with Steam</Button>)}
         {process.env.NODE_ENV !== 'production' && (<DevLogin/>)}
+      </div>
+
+      <div className={styles.cookie}>
+        <FlexRow>
+          <Icon icon="cookie"/>
+          <p>By logging in you accept that gw2.me will store cookies in your browser.</p>
+        </FlexRow>
       </div>
     </form>
   );

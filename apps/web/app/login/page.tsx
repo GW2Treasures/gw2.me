@@ -17,7 +17,7 @@ export default async function LoginPage({ searchParams }: { searchParams: { logo
   }
 
   return (
-    <PageLayout>
+    <PageLayout thin>
       <Headline id="login">Login</Headline>
 
       {searchParams.error !== undefined && (
