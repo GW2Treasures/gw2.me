@@ -10,7 +10,7 @@ import { startChallenge } from './tp-order/start-challenge.action';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 
-interface VerifiyAccountPageProps {
+interface VerifyAccountPageProps {
   params: {
     id: string;
   };
@@ -30,7 +30,7 @@ const getAccount = cache(async function getAccount(id: string) {
   return account;
 });
 
-export default async function VerifiyAccountPage({ params }: VerifiyAccountPageProps) {
+export default async function VerifyAccountPage({ params }: VerifyAccountPageProps) {
   const account = await getAccount(params.id);
 
   return (
