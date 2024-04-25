@@ -75,12 +75,14 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
         token: profile.token,
         user: authRequest.type === UserProviderRequestType.login
           ? { create: { name: username, email: profile.email }}
-          : { connect: { id: authRequest.userId! }}
+          : { connect: { id: authRequest.userId! }},
+        usedAt: new Date(),
       },
       // if that provider profile is already known we update the displayname (might have changed) and the token
       update: {
         displayName: profile.accountName,
-        token: profile.token
+        token: profile.token,
+        usedAt: new Date(),
       }
     });
 

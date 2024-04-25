@@ -15,6 +15,7 @@ import { SteamIcon } from 'app/auth/steam';
 import { GoogleIcon } from 'app/auth/google';
 import { UserProviderType } from '@gw2me/database';
 import { providers as availableProviders } from 'app/auth/providers';
+import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 
 const getUserData = cache(async () => {
   const currentSession = await getSession();
@@ -45,38 +46,32 @@ const getUserData = cache(async () => {
 export default async function ProfilePage() {
   const { currentSession, sessions, providers } = await getUserData();
 
+  const Providers = createDataTable(providers, ({ provider, providerAccountId }) => `${provider}.${providerAccountId}`);
+
   return (
     <PageLayout>
       <Headline id="providers">Login Providers</Headline>
 
       <p>Add additional login providers to make sure you can always login.</p>
 
-      <Table>
-        <thead>
-          <tr>
-            <th>Provider</th>
-            <th>User</th>
-            <th>Created</th>
-          </tr>
-        </thead>
-        <tbody>
-          {providers.map((provider) => (
-            <tr key={`${provider.provider}-${provider.providerAccountId}`}>
-              <td>
-                {
-                  provider.provider === 'discord' ? <FlexRow><DiscordIcon/>Discord</FlexRow> :
-                  provider.provider === 'github' ? <FlexRow><GitHubIcon/>GitHub</FlexRow> :
-                  provider.provider === 'steam' ? <FlexRow><SteamIcon/>Steam</FlexRow> :
-                  provider.provider === 'google' ? <FlexRow><GoogleIcon/>Google</FlexRow> :
-                  provider.provider
-                }
-              </td>
-              <td>{provider.displayName}</td>
-              <td><FormatDate date={provider.createdAt}/></td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <Providers.Table>
+        <Providers.Column id="provider" title="Provider" sortBy="provider">
+          {({ provider }) =>
+            provider === 'discord' ? <FlexRow><DiscordIcon/>Discord</FlexRow> :
+            provider === 'github' ? <FlexRow><GitHubIcon/>GitHub</FlexRow> :
+            provider === 'steam' ? <FlexRow><SteamIcon/>Steam</FlexRow> :
+            provider === 'google' ? <FlexRow><GoogleIcon/>Google</FlexRow> :
+            provider
+          }
+        </Providers.Column>
+        <Providers.Column id="user" title="User" sortBy="displayName">{({ displayName }) => displayName}</Providers.Column>
+        <Providers.Column id="createdAt" title="Created" sortBy="createdAt" align="right">
+          {({ createdAt }) => <FormatDate date={createdAt}/>}
+        </Providers.Column>
+        <Providers.Column id="usedAt" title="Last Used" sortBy="usedAt" align="right">
+          {({ usedAt, updatedAt }) => usedAt ? <FormatDate date={usedAt}/> : <FormatDate date={updatedAt}/>}
+        </Providers.Column>
+      </Providers.Table>
 
       <form method="POST">
         <input type="hidden" name="type" value="add"/>
