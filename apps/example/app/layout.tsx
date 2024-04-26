@@ -3,9 +3,8 @@ import { Bitter } from 'next/font/google';
 import './global.css';
 import './variables.css';
 import styles from './layout.module.css';
-import icon from './icon.svg';
-import Image from 'next/image';
 import Link from 'next/link';
+import { Icon } from '@gw2treasures/ui';
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -21,10 +20,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={bitter.variable}>
       <body>
-        <div className={styles.header}>
-          <Image src={icon} alt=""/>
-          <Link href="/" className={styles.title}>Example App</Link>
-        </div>
+        <Link href="/" className={styles.header}>
+          <Icon icon="gw2me-outline"/>
+          <div className={styles.title}>Example App</div>
+        </Link>
         <div className={styles.content}>
           {children}
         </div>
