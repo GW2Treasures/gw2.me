@@ -18,7 +18,7 @@ export function discord(): ProviderConfig | undefined {
     id: UserProviderType.discord,
     supportsPKCE: true,
 
-    getAuthUrl({ redirect_uri, state, code_challenge, code_challenge_method }) {
+    getAuthUrl({ redirect_uri, state, code_challenge, code_challenge_method, prompt }) {
       // build discord url
       const searchParams = new URLSearchParams({
         client_id,
@@ -30,6 +30,10 @@ export function discord(): ProviderConfig | undefined {
         redirect_uri,
         state,
       });
+
+      if(prompt) {
+        searchParams.append('prompt', 'consent');
+      }
 
       // redirect to discord
       return `https://discord.com/oauth2/authorize?${searchParams.toString()}`;

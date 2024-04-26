@@ -36,11 +36,15 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     cookies().delete(`${state}.return`);
   }
 
+  let requestType: UserProviderRequestType | undefined;
+
   try {
     // get request from db
     const authRequest = await db.userProviderRequest.findUniqueOrThrow({
       where: { state, provider: provider.id }
     });
+
+    requestType = authRequest.type;
 
     if(!returnUrl) {
       returnUrl = authRequest.type === UserProviderRequestType.add
@@ -118,6 +122,6 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     }
 
     console.error(error);
-    redirect('/login?error');
+    redirect(requestType === 'add' ? '/providers?error' : '/login?error');
   }
 }
