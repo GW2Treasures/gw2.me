@@ -14,11 +14,11 @@ export function authCookie(sessionId: string, secure: boolean): ResponseCookie {
     value: sessionId,
 
     domain: baseDomain,
-    sameSite: 'lax',
+    sameSite: 'none',
     httpOnly: true,
     priority: 'high',
     path: '/',
-    secure,
+    secure: true,
   };
 }
 
