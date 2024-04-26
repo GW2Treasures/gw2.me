@@ -1,13 +1,14 @@
 import { redirect } from 'next/navigation';
 import { NextRequest, userAgent } from 'next/server';
 import { db } from '@/lib/db';
-import { authCookie, userCookie } from '@/lib/cookie';
+import { authCookie, loginErrorCookie, userCookie } from '@/lib/cookie';
 import { Prisma, UserProviderRequestType } from '@gw2me/database';
 import { cookies } from 'next/headers';
 import { isRedirectError } from 'next/dist/client/components/redirect';
 import { providers } from 'app/auth/providers';
 import { getSession } from '@/lib/session';
 import { randomBytes } from 'crypto';
+import { LoginError } from 'app/login/form';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,14 +19,16 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
   // make sure provider exists and is configured
   if(!provider) {
     console.error(`Invalid provider ${provider}`);
-    redirect('/login?error');
+    cookies().set(loginErrorCookie(LoginError.Unknown));
+    redirect('/login');
   }
 
   // get state from querystring
   const { state, ...searchParams } = Object.fromEntries(new URL(request.url).searchParams.entries());
 
   if(!state) {
-    redirect('/login?error');
+    cookies().set(loginErrorCookie(LoginError.Unknown));
+    redirect('/login');
   }
 
   // handle return url
@@ -45,12 +48,6 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     });
 
     requestType = authRequest.type;
-
-    if(!returnUrl) {
-      returnUrl = authRequest.type === UserProviderRequestType.add
-        ? '/providers'
-        : '/profile';
-    }
 
     // get user profile from provider
     const profile = await provider.getUser({ searchParams, authRequest });
@@ -76,18 +73,18 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
 
     if(existingProvider) {
       if(existingSession && existingSession.userId !== existingProvider.userId) {
-        // TODO: just login as that user? also show modal?
-        throw new Error('Already logged in as a different user (session does not match provider)');
+        // TODO: just login as that user? show modal?
+        throw new LoginCallbackError(LoginError.WrongUser, 'Already logged in as a different user (session does not match provider)');
       }
 
       // check that this is a provider for the user we are expecting (either login as existing user or add)
       if(authRequest.userId && authRequest.userId !== existingProvider.userId) {
         if(authRequest.type === 'add') {
-          throw new Error('Tried to add a provider that is already linked to a different user');
+          throw new LoginCallbackError(LoginError.WrongUser, 'Tried to add a provider that is already linked to a different user');
         }
 
-        // TODO: show a modal letting the user choose a user
-        throw new Error('Tried to login as a different user than expected (existing provider)');
+        // TODO: show a modal letting the user choose a user?
+        throw new LoginCallbackError(LoginError.WrongUser, 'Tried to login as a different user than expected (existing provider)');
       }
 
       // update provider
@@ -106,7 +103,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
 
       // check if we are trying to login as a specific user
       if(authRequest.type === 'login' && authRequest.userId) {
-        throw new Error('Tried to login as a specific user with an unknown provider');
+        throw new LoginCallbackError(LoginError.WrongUser, 'Tried to login as a specific user with an unknown provider');
       }
 
       let user: Prisma.UserCreateNestedOneWithoutProvidersInput;
@@ -137,6 +134,12 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
       });
 
       userId = newUserId;
+    }
+
+    if(!returnUrl) {
+      returnUrl = authRequest.type === UserProviderRequestType.add
+        ? '/providers'
+        : '/profile';
     }
 
     // handle existing session
@@ -170,6 +173,23 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     }
 
     console.error(error);
-    redirect(requestType === 'add' ? '/providers?error' : '/login?error');
+
+    // get error code if this was a LoginCallbackError
+    const errorCode = error instanceof LoginCallbackError ? error.errorCode : LoginError.Unknown;
+
+    // set error cookie
+    cookies().set(loginErrorCookie(errorCode));
+
+    // redirect to return URL
+    const redirectTo = returnUrl ?? (requestType === 'add' ? '/providers' : '/login');
+    console.log('redirecting to', redirectTo);
+
+    redirect(redirectTo);
+  }
+}
+
+class LoginCallbackError extends Error {
+  constructor(public errorCode: LoginError, message: string) {
+    super(message);
   }
 }

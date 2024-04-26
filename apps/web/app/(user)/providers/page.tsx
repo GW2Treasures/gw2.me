@@ -18,6 +18,7 @@ import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { login } from 'app/login/action';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
+import { LoginError, getLoginErrorCookieValue } from 'app/login/form';
 
 const getUserData = cache(async () => {
   const currentSession = await getSessionOrRedirect();
@@ -41,8 +42,9 @@ const getUserData = cache(async () => {
   };
 });
 
-export default async function ProfilePage({ searchParams }: { searchParams: { error?: '' }}) {
+export default async function ProfilePage() {
   const { currentSession, sessions, providers } = await getUserData();
+  const providerError = getLoginErrorCookieValue();
 
   const Providers = createDataTable(providers, ({ provider, providerAccountId }) => `${provider}.${providerAccountId}`);
 
@@ -72,9 +74,8 @@ export default async function ProfilePage({ searchParams }: { searchParams: { er
       </Providers.Table>
 
       <Form action={login.bind(null, 'add', {})}>
-        {searchParams.error !== undefined && (
-          <Notice type="error">Unknown error</Notice>
-        )}
+        {providerError === LoginError.Unknown && (<Notice type="error">Unknown error</Notice>)}
+        {providerError === LoginError.WrongUser && (<Notice type="error">The login provider you tried to add is already linked to a different user.</Notice>)}
 
         <FlexRow>
           {availableProviders[UserProviderType.discord] && (<Button type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Add Discord</Button>)}

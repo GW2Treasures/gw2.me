@@ -17,7 +17,7 @@ import { cookies } from 'next/headers';
 import { createVerifier } from '@/lib/jwt';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import { UserCookieName } from '@/lib/cookie';
+import { LoginErrorCookieName, UserCookieName } from '@/lib/cookie';
 
 interface LoginFormProps {
   returnTo?: string;
@@ -35,9 +35,14 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
     ([provider, config]) => [provider, config !== undefined && (!prevUser || prevUser.providers.some((p) => p.provider === provider))] as const
   )) as Record<UserProviderType, boolean>;
 
+  const error = getLoginErrorCookieValue();
+
   return (
     <div className={styles.form}>
       <Form action={login.bind(null, 'login', options)}>
+        {error === LoginError.Unknown && (<Notice type="error">Unknown error</Notice>)}
+        {error === LoginError.WrongUser && (<Notice type="error">The login provider you tried to login with is not linked to your user.<br/>Please login with the login provider you have previously used. You can add additional login providers in your profile after successfully logging in.</Notice>)}
+
         {prevUser ? (
           <div style={{ marginBottom: 16 }}>
             <FlexRow align="space-between">
@@ -105,4 +110,28 @@ async function switchUser() {
   cookies().delete(UserCookieName);
 
   revalidatePath('/login');
+}
+
+export const enum LoginError {
+  Unknown,
+
+  /** Tried to login as a specific user but provided a different token */
+  WrongUser,
+}
+
+export function getLoginErrorCookieValue(): LoginError | undefined {
+  const errorCookie = cookies().get(LoginErrorCookieName)?.value;
+
+  if(errorCookie === undefined) {
+    return undefined;
+  }
+
+  const verifyJwt = createVerifier();
+
+  try {
+    const error: { err: LoginError } = verifyJwt(errorCookie);
+    return error.err;
+  } catch {
+    return LoginError.Unknown;
+  }
 }
