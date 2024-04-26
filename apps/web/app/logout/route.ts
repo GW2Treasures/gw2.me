@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
-import { SessionCookieName } from '@/lib/cookie';
+import { LoginErrorCookieName, SessionCookieName } from '@/lib/cookie';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
 
   // delete session cookie
   cookies().delete(SessionCookieName);
+  cookies().delete(LoginErrorCookieName);
 
   // redirect to login and show logout
   redirect('/login?logout');

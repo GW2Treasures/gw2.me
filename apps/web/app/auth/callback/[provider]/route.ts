@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { NextRequest, userAgent } from 'next/server';
 import { db } from '@/lib/db';
-import { authCookie, loginErrorCookie, userCookie } from '@/lib/cookie';
+import { LoginErrorCookieName, authCookie, loginErrorCookie, userCookie } from '@/lib/cookie';
 import { Prisma, UserProviderRequestType } from '@gw2me/database';
 import { cookies } from 'next/headers';
 import { isRedirectError } from 'next/dist/client/components/redirect';
@@ -164,6 +164,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     const isHttps = new URL(authRequest.redirect_uri).protocol === 'https:';
     cookies().set(authCookie(session.id, isHttps));
     cookies().set(userCookie(userId));
+    cookies().delete(LoginErrorCookieName);
 
     // redirect
     redirect(returnUrl);
