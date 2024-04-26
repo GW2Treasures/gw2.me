@@ -15,6 +15,8 @@ import { GoogleIcon } from 'app/auth/google';
 import { UserProviderType } from '@gw2me/database';
 import { providers as availableProviders } from 'app/auth/providers';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
+import { Form } from '@gw2treasures/ui/components/Form/Form';
+import { login } from 'app/login/action';
 
 const getUserData = cache(async () => {
   const currentSession = await getSessionOrRedirect();
@@ -68,15 +70,14 @@ export default async function ProfilePage() {
         </Providers.Column>
       </Providers.Table>
 
-      <form method="POST">
-        <input type="hidden" name="type" value="add"/>
+      <Form action={login.bind(null, 'add', {})}>
         <FlexRow>
-          {availableProviders[UserProviderType.discord] && (<Button type="submit" formAction="/auth/login/discord" icon={<DiscordIcon/>}>Add Discord</Button>)}
-          {availableProviders[UserProviderType.google] && (<Button type="submit" formAction="/auth/login/google" icon={<GoogleIcon/>}>Add Google</Button>)}
-          {availableProviders[UserProviderType.github] && (<Button type="submit" formAction="/auth/login/github" icon={<GitHubIcon/>}>Add GitHub</Button>)}
-          {availableProviders[UserProviderType.steam] && (<Button type="submit" formAction="/auth/login/steam" icon={<SteamIcon/>}>Add Steam</Button>)}
+          {availableProviders[UserProviderType.discord] && (<Button type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Add Discord</Button>)}
+          {availableProviders[UserProviderType.google] && (<Button type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Add Google</Button>)}
+          {availableProviders[UserProviderType.github] && (<Button type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Add GitHub</Button>)}
+          {availableProviders[UserProviderType.steam] && (<Button type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Add Steam</Button>)}
         </FlexRow>
-      </form>
+      </Form>
 
       <Headline id="sessions" actions={<form action={revokeAllSessions}><Button type="submit" icon="delete">Revoke all</Button></form>}>Sessions</Headline>
       <Table>
