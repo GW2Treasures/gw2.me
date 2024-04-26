@@ -36,8 +36,11 @@ export async function login(type: UserProviderRequestType, options: LoginOptions
     getBaseUrlFromHeaders()
   ).toString();
 
+  // the userId that tries to authorize. This is either set when logging in as a previous logged in user,
+  // or when adding additional providers. If the userId doesn't match in the callback we will reject the auth request.
+  let userId: string | undefined = options.userId;
+
   // if this is a 'add' request make sure the user is logged in
-  let userId: string | undefined;
   if(type === UserProviderRequestType.add) {
     const session = await getSessionOrRedirect();
 
