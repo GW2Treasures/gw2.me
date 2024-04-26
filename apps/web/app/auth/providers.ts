@@ -11,7 +11,7 @@ export interface ProviderConfig {
 
   supportsPKCE: boolean,
 
-  getAuthUrl(options: { redirect_uri: string, state: string, code_challenge?: string, code_challenge_method?: string }): string
+  getAuthUrl(options: { redirect_uri: string, state: string, code_challenge?: string, code_challenge_method?: string, prompt?: boolean }): string
 
   getUser(params: { searchParams: { code?: string } & Record<string, string | undefined>, authRequest: UserProviderRequest }): Promise<{
     /** identifier used by the provider */

@@ -19,7 +19,7 @@ export function github(): ProviderConfig | undefined {
     id: UserProviderType.github,
     supportsPKCE: false,
 
-    getAuthUrl({ redirect_uri, state }) {
+    getAuthUrl({ redirect_uri, state, prompt }) {
       // build search params url
       const searchParams = new URLSearchParams({
         client_id,
@@ -28,6 +28,10 @@ export function github(): ProviderConfig | undefined {
         redirect_uri,
         state,
       });
+
+      if(prompt) {
+        searchParams.append('prompt', 'consent');
+      }
 
       // redirect to github
       return `https://github.com/login/oauth/authorize?${searchParams.toString()}`;

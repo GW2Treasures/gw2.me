@@ -74,6 +74,7 @@ export async function login(type: UserProviderRequestType, options: LoginOptions
     redirect_uri,
     code_challenge: pkce?.code_challenge,
     code_challenge_method: pkce?.code_challenge_method,
+    prompt: type === 'add'
   });
 
   // redirect to provider

@@ -18,7 +18,7 @@ export function google(): ProviderConfig | undefined {
     id: UserProviderType.google,
     supportsPKCE: false,
 
-    getAuthUrl({ redirect_uri, state }) {
+    getAuthUrl({ redirect_uri, state, prompt }) {
       // build search params url
       const searchParams = new URLSearchParams({
         client_id,
@@ -28,6 +28,10 @@ export function google(): ProviderConfig | undefined {
         state,
         access_type: 'online',
       });
+
+      if(prompt) {
+        searchParams.append('prompt', 'select_account');
+      }
 
       // redirect to google
       return `https://accounts.google.com/o/oauth2/v2/auth?${searchParams.toString()}`;
