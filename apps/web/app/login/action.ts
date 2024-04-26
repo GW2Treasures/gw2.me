@@ -14,6 +14,7 @@ import { getFormDataString } from '@/lib/form-data';
 
 export interface LoginOptions {
   returnTo?: string;
+  userId?: string;
 }
 
 export async function login(type: UserProviderRequestType, options: LoginOptions, _prevState: FormState, payload: FormData): Promise<FormState> {
@@ -48,6 +49,7 @@ export async function login(type: UserProviderRequestType, options: LoginOptions
 
   // set return cookie
   // TODO: we could also save this in the db instead of as a cookie
+  // TODO: update returnTo to only handle trusted urls (encode it? JWT?)
   if(options.returnTo) {
     cookies().set(`${state}.return`, options.returnTo, { maxAge: 300 });
   }

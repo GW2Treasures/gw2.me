@@ -1,13 +1,14 @@
 import { redirect } from 'next/navigation';
 import { NextRequest, userAgent } from 'next/server';
 import { db } from '@/lib/db';
-import { authCookie } from '@/lib/cookie';
+import { authCookie, userCookie } from '@/lib/cookie';
 import { UserProviderRequestType } from '@gw2me/database';
 import { cookies } from 'next/headers';
 import { isRedirectError } from 'next/dist/client/components/redirect';
 import { providers } from 'app/auth/providers';
 import { getSession } from '@/lib/session';
 import { randomBytes } from 'crypto';
+import { createSigner } from '@/lib/jwt';
 
 export const dynamic = 'force-dynamic';
 
@@ -113,6 +114,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     // set session cookie
     const isHttps = new URL(authRequest.redirect_uri).protocol === 'https:';
     cookies().set(authCookie(session.id, isHttps));
+    cookies().set(userCookie(userId));
 
     // redirect
     redirect(returnUrl);
