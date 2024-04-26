@@ -17,6 +17,7 @@ import { providers as availableProviders } from 'app/auth/providers';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { login } from 'app/login/action';
+import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 
 const getUserData = cache(async () => {
   const currentSession = await getSessionOrRedirect();
@@ -40,7 +41,7 @@ const getUserData = cache(async () => {
   };
 });
 
-export default async function ProfilePage() {
+export default async function ProfilePage({ searchParams }: { searchParams: { error?: '' }}) {
   const { currentSession, sessions, providers } = await getUserData();
 
   const Providers = createDataTable(providers, ({ provider, providerAccountId }) => `${provider}.${providerAccountId}`);
@@ -71,6 +72,10 @@ export default async function ProfilePage() {
       </Providers.Table>
 
       <Form action={login.bind(null, 'add', {})}>
+        {searchParams.error !== undefined && (
+          <Notice type="error">Unknown error</Notice>
+        )}
+
         <FlexRow>
           {availableProviders[UserProviderType.discord] && (<Button type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Add Discord</Button>)}
           {availableProviders[UserProviderType.google] && (<Button type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Add Google</Button>)}
