@@ -11,6 +11,8 @@ import { hasGW2Scopes } from '@/lib/scope';
 import { Scope } from '@gw2me/client';
 import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { createRedirectUrl } from '@/lib/redirectUrl';
+import { cookies } from 'next/headers';
+import { userCookie } from '@/lib/cookie';
 
 export interface AuthorizeActionParams {
   applicationId: string,
@@ -24,6 +26,13 @@ export interface AuthorizeActionParams {
 export async function authorize(params: AuthorizeActionParams, _: FormState, formData: FormData): Promise<FormState> {
   // get account ids from form
   const accountIds = formData.getAll('accounts').filter(isString);
+
+  const session = await getSession();
+
+  if(session) {
+    // make sure user cookie is set for better login flow later
+    cookies().set(userCookie(session.userId));
+  }
 
   return authorizeInternal(params, accountIds);
 };
@@ -53,21 +62,23 @@ export async function authorizeInternal(
       userId: session.userId
     };
 
-    // delete old pending authorization codes for this app
-    await db.authorization.deleteMany({ where: identifier });
+    [, authorization] = await db.$transaction([
+      // delete old pending authorization codes for this app
+      db.authorization.deleteMany({ where: identifier }),
 
-    // create code authorization in db
-    authorization = await db.authorization.create({
-      data: {
-        ...identifier,
-        scope: scopes,
-        redirectUri: redirect_uri,
-        codeChallenge,
-        token: generateCode(),
-        expiresAt: expiresAt(60),
-        accounts: { connect: accountIds.map((id) => ({ id })) },
-      },
-    });
+      // create code authorization in db
+      db.authorization.create({
+        data: {
+          ...identifier,
+          scope: scopes,
+          redirectUri: redirect_uri,
+          codeChallenge,
+          token: generateCode(),
+          expiresAt: expiresAt(60),
+          accounts: { connect: accountIds.map((id) => ({ id })) },
+        },
+      }),
+    ]);
   } catch(error) {
     console.log(error);
 
