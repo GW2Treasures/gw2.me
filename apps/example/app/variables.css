@@ -1,6 +1,8 @@
 :root {
   color-scheme: light;
 
+  --color-brand: #b7000d;
+
   --color-text: #000;
   --color-text-muted: #555;
 
@@ -21,6 +23,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
+
+    --color-brand: #e34c57;
 
     --color-text: #dcddde;
     --color-text-muted: #999;
