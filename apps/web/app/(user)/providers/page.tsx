@@ -19,6 +19,8 @@ import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { login } from 'app/login/action';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { LoginError, getLoginErrorCookieValue } from 'app/login/form';
+import { AddPasskeyButton } from '@/components/Passkey/AddPasskeyButton';
+import { Icon } from '@gw2treasures/ui';
 
 const getUserData = cache(async () => {
   const currentSession = await getSessionOrRedirect();
@@ -61,6 +63,7 @@ export default async function ProfilePage() {
             provider === 'github' ? <FlexRow><GitHubIcon/>GitHub</FlexRow> :
             provider === 'steam' ? <FlexRow><SteamIcon/>Steam</FlexRow> :
             provider === 'google' ? <FlexRow><GoogleIcon/>Google</FlexRow> :
+            provider === 'passkey' ? <FlexRow><Icon icon="passkey"/>Passkey</FlexRow> :
             provider
           }
         </Providers.Column>
@@ -77,7 +80,8 @@ export default async function ProfilePage() {
         {providerError === LoginError.Unknown && (<Notice type="error">Unknown error</Notice>)}
         {providerError === LoginError.WrongUser && (<Notice type="error">The login provider you tried to add is already linked to a different user.</Notice>)}
 
-        <FlexRow>
+        <FlexRow wrap>
+          <AddPasskeyButton/>
           {availableProviders[UserProviderType.discord] && (<Button type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Add Discord</Button>)}
           {availableProviders[UserProviderType.google] && (<Button type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Add Google</Button>)}
           {availableProviders[UserProviderType.github] && (<Button type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Add GitHub</Button>)}

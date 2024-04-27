@@ -18,6 +18,7 @@ model User {
 
   sessions  UserSession[]  @relation("session")
   providers UserProvider[] @relation("provider")
+  passkeys  Passkey[]      @relation("userPasskeys")
 
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
@@ -47,12 +48,15 @@ model UserSession {
 model UserProvider {
   provider          UserProviderType
   providerAccountId String
-
   @@id([provider, providerAccountId])
 
   displayName String
-  token Json
   
+  token Json?
+  
+  passkey   Passkey?
+  passkeyId String? @unique
+
   userId String
   user   User   @relation("provider", fields: [userId], references: [id], onDelete: Cascade)
 
@@ -82,11 +86,29 @@ enum UserProviderType {
   github
   steam
   google
+  passkey
 }
 
 enum UserProviderRequestType {
   login
   add
+}
+
+model Passkey {
+  id        String @id
+  publicKey Bytes
+
+  provider UserProvider @relation(fields: [id], references: [passkeyId])
+  
+  user           User   @relation("userPasskeys", fields: [userId], references: [id])
+  userId         String
+  webAuthnUserId String
+  @@unique([webAuthnUserId, userId])
+
+  counter    BigInt
+  deviceType String
+  backedUp   Boolean
+  transports String[]
 }
 
 model Application {
