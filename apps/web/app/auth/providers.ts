@@ -31,13 +31,15 @@ export interface ProviderConfig {
   }>
 }
 
+type OAuth2ProviderType = Exclude<UserProviderType, 'passkey'>;
+
 // map user provider keys to provider configs
 export const providers: Record<string, ProviderConfig | undefined> = {
   [UserProviderType.discord]: discord(),
   [UserProviderType.github]: github(),
   [UserProviderType.steam]: steam(),
   [UserProviderType.google]: google(),
-} satisfies Record<UserProviderType, ProviderConfig | undefined>;
+} satisfies Record<OAuth2ProviderType, ProviderConfig | undefined>;
 
 export function getJsonIfOk(response: Response) {
   if(!response.ok) {

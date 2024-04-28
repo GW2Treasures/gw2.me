@@ -5,7 +5,7 @@ import { getSession, getUser } from '@/lib/session';
 import { getBaseUrlFromHeaders } from '@/lib/url';
 import { generateRegistrationOptions, verifyRegistrationResponse } from '@simplewebauthn/server';
 import { getAndDeleteChallengeCookie, setChallengeCookie } from './challenge-cookie';
-import { AuthenticatorTransportFuture, RegistrationResponseJSON } from '@simplewebauthn/types';
+import { RegistrationResponseJSON } from '@simplewebauthn/types';
 import { db } from '@/lib/db';
 import { userAgent } from 'next/server';
 import { headers } from 'next/headers';
@@ -98,7 +98,3 @@ export async function submitRegistration(registration: RegistrationResponseJSON)
   });
 }
 
-interface PasskeyData {
-  transports: AuthenticatorTransportFuture[],
-
-}
