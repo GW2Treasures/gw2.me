@@ -44,7 +44,7 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
       await submitAuthentication(authentication);
     } else {
       const registration = await startRegistration(authenticationOnRegistration.options);
-      await submitRegistration(registration);
+      await submitRegistration({ type: 'new', username }, registration);
     }
   }), [username]);
 

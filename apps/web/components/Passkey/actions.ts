@@ -10,7 +10,7 @@ import { db } from '@/lib/db';
 import { userAgent } from 'next/server';
 import { cookies, headers } from 'next/headers';
 import { getPreviousUser } from 'app/login/form';
-import { Passkey } from '@gw2me/database';
+import { Passkey, UserSession } from '@gw2me/database';
 import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, authCookie, userCookie } from '@/lib/cookie';
 import { redirect } from 'next/navigation';
@@ -25,9 +25,13 @@ function getRelayingParty() {
   };
 }
 
-export async function getRegistrationOptions(registrationOptions: { type: 'add' } | { type: 'new', username: string }) {
+export type RegistrationParams =
+  | { type: 'add' }
+  | { type: 'new', username: string }
+
+export async function getRegistrationOptions(params: RegistrationParams) {
   let user;
-  if(registrationOptions.type === 'add') {
+  if(params.type === 'add') {
     user = await getUser();
 
     if(!user) {
@@ -37,7 +41,7 @@ export async function getRegistrationOptions(registrationOptions: { type: 'add' 
 
   const { rpID, rpName } = getRelayingParty();
 
-  const existingPasskeys = registrationOptions.type === 'add' ? await db.passkey.findMany({
+  const existingPasskeys = params.type === 'add' ? await db.passkey.findMany({
     where: { userId: user!.id },
     select: { id: true, transports: true },
   }) : [];
@@ -45,7 +49,7 @@ export async function getRegistrationOptions(registrationOptions: { type: 'add' 
   const options = await generateRegistrationOptions({
     rpID,
     rpName,
-    userName: registrationOptions.type === 'add' ? user!.name : registrationOptions.username,
+    userName: params.type === 'add' ? user!.name : params.username,
     attestationType: 'none',
     timeout: 60000,
     excludeCredentials: existingPasskeys.map(mapPasskeyToCredentials),
@@ -93,13 +97,7 @@ export async function getAuthenticationOrRegistrationOptions(username: string) {
   }
 }
 
-export async function submitRegistration(registration: RegistrationResponseJSON) {
-  const session = await getSession();
-
-  if(!session) {
-    throw new Error('Not logged in');
-  }
-
+export async function submitRegistration(params: RegistrationParams & { returnTo?: string }, registration: RegistrationResponseJSON) {
   console.log(registration); // TODO: remove
 
   const { origin, rpID } = getRelayingParty();
@@ -119,14 +117,34 @@ export async function submitRegistration(registration: RegistrationResponseJSON)
     throw new Error('Verification failed');
   }
 
-  const { credentialID, credentialPublicKey, counter, credentialDeviceType, credentialBackedUp } = verification.registrationInfo;
-
   const ua = userAgent({ headers: headers() });
-  const displayName = ua.browser && ua.os ? `${ua.browser.name} on ${ua.os.name}` : 'New Passkey';
+  const displayName = ua.browser && ua.os ? `${ua.browser.name} on ${ua.os.name}` : undefined;
+
+  let session: { id: string; userId: string; };
+  if(params.type === 'add') {
+    const currentSession = await getSession();
+
+    if(!currentSession) {
+      throw new Error('Not logged in');
+    }
+
+    session = currentSession;
+  } else {
+    // create user and new session
+    session = await db.userSession.create({
+      data: {
+        info: displayName ?? 'Session',
+        user: { create: { name: params.username }}
+      },
+      select: { id: true, userId: true }
+    });
+  }
+
+  const { credentialID, credentialPublicKey, counter, credentialDeviceType, credentialBackedUp } = verification.registrationInfo;
 
   await db.userProvider.create({
     data: {
-      displayName,
+      displayName: displayName ?? 'New Passkey',
       provider: 'passkey',
       providerAccountId: credentialID,
       userId: session.userId,
@@ -146,6 +164,9 @@ export async function submitRegistration(registration: RegistrationResponseJSON)
   });
 
   revalidatePath('/providers');
+  // redirect
+  // TODO: verify returnTo to only redirect to to trusted URLs
+  redirect(params.returnTo ?? '/providers');
 }
 
 export async function submitAuthentication(authentication: AuthenticationResponseJSON, returnTo?: string) {
