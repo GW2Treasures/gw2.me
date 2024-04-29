@@ -10,7 +10,7 @@ import { db } from '@/lib/db';
 import { userAgent } from 'next/server';
 import { cookies, headers } from 'next/headers';
 import { getPreviousUser } from 'app/login/form';
-import { Passkey, UserSession } from '@gw2me/database';
+import { Passkey } from '@gw2me/database';
 import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, authCookie, userCookie } from '@/lib/cookie';
 import { redirect } from 'next/navigation';
@@ -137,6 +137,10 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
       },
       select: { id: true, userId: true }
     });
+
+    cookies().set(authCookie(session.id, true));
+    cookies().set(userCookie(session.userId));
+    cookies().delete(LoginErrorCookieName);
   }
 
   const { credentialID, credentialPublicKey, counter, credentialDeviceType, credentialBackedUp } = verification.registrationInfo;
@@ -165,7 +169,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
   revalidatePath('/providers');
   // redirect
   // TODO: verify returnTo to only redirect to to trusted URLs
-  redirect(params.returnTo ?? '/providers');
+  redirect(params.returnTo ?? (params.type === 'add' ? '/providers' : '/profile'));
 }
 
 export async function submitAuthentication(challengeJwt: string, authentication: AuthenticationResponseJSON, returnTo?: string) {

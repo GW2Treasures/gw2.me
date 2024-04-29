@@ -100,7 +100,7 @@ model Passkey {
 
   provider UserProvider @relation(fields: [id], references: [passkeyId], onDelete: Cascade)
   
-  user           User   @relation("userPasskeys", fields: [userId], references: [id])
+  user           User   @relation("userPasskeys", fields: [userId], references: [id], onDelete: Cascade)
   userId         String
   webAuthnUserId String
   @@unique([webAuthnUserId, userId])
