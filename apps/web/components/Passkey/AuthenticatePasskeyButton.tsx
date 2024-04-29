@@ -30,15 +30,24 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
       const authentication = await startAuthentication(options);
       await submitAuthentication(authentication);
     } else {
-      const options = await getAuthenticationOptions();
       setDialogOpen(true);
-
-      // start authentication using "Conditional UI"
-      // this promise only resolves when the users clicks on the autocomplete options of the text input
-      const authentication = await startAuthentication(options, true);
-      await submitAuthentication(authentication);
     }
   }), [loginOptions.userId]);
+
+  useEffect(() => {
+    if(dialogOpen) {
+      const showConditionalUi = async () => {
+        const options = await getAuthenticationOptions();
+
+        // start authentication using "Conditional UI"
+        // this promise only resolves when the users clicks on the autocomplete options of the text input
+        const authentication = await startAuthentication(options, true);
+        await submitAuthentication(authentication);
+      };
+
+      showConditionalUi();
+    }
+  }, [dialogOpen]);
 
   return (
     <>
