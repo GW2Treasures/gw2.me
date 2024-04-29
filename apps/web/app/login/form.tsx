@@ -18,6 +18,7 @@ import { createVerifier } from '@/lib/jwt';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, UserCookieName } from '@/lib/cookie';
+import { AuthenticatePasskeyButton } from '@/components/Passkey/AuthenticatePasskeyButton';
 
 interface LoginFormProps {
   returnTo?: string;
@@ -59,6 +60,7 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
           {availableProviders[UserProviderType.google] && (<Button className={styles.button} type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Login with Google</Button>)}
           {availableProviders[UserProviderType.github] && (<Button className={styles.button} type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Login with GitHub</Button>)}
           {availableProviders[UserProviderType.steam] && (<Button className={styles.button} type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Login with Steam</Button>)}
+          <AuthenticatePasskeyButton className={styles.button}/>
           {process.env.NODE_ENV !== 'production' && (<DevLogin username={prevUser?.name}/>)}
         </div>
 
@@ -73,11 +75,11 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
   );
 };
 
-async function getPreviousUser() {
+export async function getPreviousUser() {
   const jwt = cookies().get(UserCookieName)?.value;
 
   if(!jwt) {
-    return;
+    return undefined;
   }
 
   const verifyJwt = createVerifier();
@@ -101,9 +103,10 @@ async function getPreviousUser() {
     }
   });
 
-  return user;
+  return user ?? undefined;
 }
 
+// eslint-disable-next-line require-await
 async function switchUser() {
   'use server';
 

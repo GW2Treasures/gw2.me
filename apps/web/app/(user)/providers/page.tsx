@@ -72,7 +72,7 @@ export default async function ProfilePage() {
           {({ createdAt }) => <FormatDate date={createdAt}/>}
         </Providers.Column>
         <Providers.Column id="usedAt" title="Last Used" sortBy="usedAt" align="right">
-          {({ usedAt, updatedAt }) => usedAt ? <FormatDate date={usedAt}/> : <FormatDate date={updatedAt}/>}
+          {({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'never'}
         </Providers.Column>
       </Providers.Table>
 

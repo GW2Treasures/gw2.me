@@ -1,10 +1,13 @@
 import { createSigner, createVerifier } from '@/lib/jwt';
-import { PublicKeyCredentialCreationOptionsJSON } from '@simplewebauthn/types';
+import { PublicKeyCredentialCreationOptionsJSON, PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
 import { cookies } from 'next/headers';
 
 const cookieName = 'gw2me-passkey-challenge';
 
-export function setChallengeCookie({ challenge, user: { id: userId }}: PublicKeyCredentialCreationOptionsJSON): void {
+export function setChallengeCookie(data: PublicKeyCredentialCreationOptionsJSON | PublicKeyCredentialRequestOptionsJSON): void {
+  const challenge = data.challenge;
+  const userId = 'user' in data ? data.user.id : undefined;
+
   const signJwt = createSigner();
   const errorJwt = signJwt({ userId, challenge });
 
