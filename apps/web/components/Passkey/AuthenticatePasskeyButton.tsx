@@ -2,7 +2,7 @@
 
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { browserSupportsWebAuthn, startAuthentication } from '@simplewebauthn/browser';
-import { useCallback, useEffect, useState, useTransition, type FC } from 'react';
+import { useCallback, useEffect, useRef, useState, useTransition, type FC } from 'react';
 import { getAuthenticationOptions, submitAuthentication } from './actions';
 import { LoginOptions } from 'app/login/action';
 import { Dialog } from '@gw2treasures/ui/components/Dialog/Dialog';
@@ -20,6 +20,8 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
   const [pending, startTransition] = useTransition();
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  const [authenticationTimeout, startAuthenticationTimeout, clearAuthenticationTimeout] = useTimeout();
+
   useEffect(() => {
     setSupportsPasskeys(browserSupportsWebAuthn());
   }, []);
@@ -34,32 +36,75 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
     }
   }), [loginOptions.userId]);
 
+  const initializeConditionalUi = useCallback(async () => {
+    console.log('initializeConditionalUi');
+    const options = await getAuthenticationOptions();
+
+    if(options.timeout) {
+      startAuthenticationTimeout(options.timeout);
+    }
+
+    // start authentication using "Conditional UI"
+    // this promise only resolves when the users clicks on the autocomplete options of the text input
+    const authentication = await startAuthentication(options, true);
+    await submitAuthentication(authentication);
+  }, [startAuthenticationTimeout]);
+
   useEffect(() => {
     if(dialogOpen) {
-      const showConditionalUi = async () => {
-        const options = await getAuthenticationOptions();
-
-        // start authentication using "Conditional UI"
-        // this promise only resolves when the users clicks on the autocomplete options of the text input
-        const authentication = await startAuthentication(options, true);
-        await submitAuthentication(authentication);
-      };
-
-      showConditionalUi();
+      initializeConditionalUi();
+    } else {
+      clearAuthenticationTimeout();
     }
-  }, [dialogOpen]);
+  }, [clearAuthenticationTimeout, dialogOpen, initializeConditionalUi]);
 
   return (
     <>
       <Button icon={pending ? 'loading' : 'passkey'} disabled={!supportsPasskeys || pending} onClick={handleClick} className={className}>Login with Passkey</Button>
       <Dialog open={dialogOpen} title="Passkey" onClose={() => setDialogOpen(false)}>
-        <Label label="Username">
-          <TextInput autoComplete="username webauthn"/>
-        </Label>
-        <DialogActions>
-          <Button>Continue</Button>
-        </DialogActions>
+        {!authenticationTimeout ? (
+          <>
+            <Label label="Username">
+              <TextInput autoComplete="username webauthn"/>
+            </Label>
+            <DialogActions>
+              <Button>Continue</Button>
+            </DialogActions>
+          </>
+        ) : (
+          <>
+            <p>Authentication challenge has expired</p>
+            <Button onClick={() => initializeConditionalUi()}>Restart</Button>
+          </>
+        )}
       </Dialog>
     </>
   );
 };
+
+function useTimeout() {
+  const [isTimedOut, setIsTimedOut] = useState(false);
+  const ref = useRef<NodeJS.Timeout>();
+
+  const stopTimeout = useCallback(() => {
+    setIsTimedOut(false);
+
+    if(ref.current) {
+      clearTimeout(ref.current);
+    }
+  }, []);
+
+  const startTimeout = useCallback((ms: number) => {
+    stopTimeout();
+    ref.current = setTimeout(() => setIsTimedOut(true), ms);
+  }, [stopTimeout]);
+
+  // clear timeout on unmount
+  useEffect(() => () => {
+    if(ref.current) {
+      clearTimeout(ref.current);
+    }
+  }, []);
+
+  return [isTimedOut, startTimeout, stopTimeout] as const;
+}
