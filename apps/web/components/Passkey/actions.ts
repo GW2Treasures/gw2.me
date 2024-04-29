@@ -4,7 +4,7 @@ import 'server-only';
 import { getSession, getUser } from '@/lib/session';
 import { getBaseUrlFromHeaders } from '@/lib/url';
 import { generateAuthenticationOptions, generateRegistrationOptions, verifyAuthenticationResponse, verifyRegistrationResponse } from '@simplewebauthn/server';
-import { getAndDeleteChallengeCookie, setChallengeCookie } from './challenge-cookie';
+import { createChallengeJwt, verifyChallengeJwt } from './challenge';
 import { AuthenticationResponseJSON, AuthenticatorTransportFuture, RegistrationResponseJSON } from '@simplewebauthn/types';
 import { db } from '@/lib/db';
 import { userAgent } from 'next/server';
@@ -59,10 +59,9 @@ export async function getRegistrationOptions(params: RegistrationParams) {
     }
   });
 
-  setChallengeCookie(options);
   console.log(options); // TODO: remove
 
-  return { options };
+  return { options, challenge: createChallengeJwt(options) };
 }
 
 export async function getAuthenticationOptions() {
@@ -80,28 +79,28 @@ export async function getAuthenticationOptions() {
     allowCredentials: passkeys.map(mapPasskeyToCredentials),
   });
 
-  setChallengeCookie(options);
   console.log(options);
 
-  return options;
+  return { options, challenge: createChallengeJwt(options) };
 }
 
 export async function getAuthenticationOrRegistrationOptions(username: string) {
   const user = await db.user.findUnique({ where: { name: username.trim() }});
 
   if(user) {
-    return { type: 'authentication', options: await getAuthenticationOptions() } as const;
+    const { options, challenge } = await getAuthenticationOptions();
+    return { type: 'authentication', options, challenge } as const;
   } else {
-    const { options } = await getRegistrationOptions({ type: 'new', username });
-    return { type: 'registration', options } as const;
+    const { options, challenge } = await getRegistrationOptions({ type: 'new', username });
+    return { type: 'registration', options, challenge } as const;
   }
 }
 
-export async function submitRegistration(params: RegistrationParams & { returnTo?: string }, registration: RegistrationResponseJSON) {
+export async function submitRegistration(params: RegistrationParams & { returnTo?: string }, challengeJwt: string, registration: RegistrationResponseJSON) {
   console.log(registration); // TODO: remove
 
   const { origin, rpID } = getRelayingParty();
-  const { challenge, webAuthnUserId } = getAndDeleteChallengeCookie();
+  const { challenge, webAuthnUserId } = verifyChallengeJwt(challengeJwt);
 
   const verification = await verifyRegistrationResponse({
     expectedChallenge: challenge,
@@ -113,7 +112,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
 
   console.log(verification); // TODO: remove
 
-  if(!verification.verified || !verification.registrationInfo) {
+  if(!verification.verified || !verification.registrationInfo || !webAuthnUserId) {
     throw new Error('Verification failed');
   }
 
@@ -169,7 +168,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
   redirect(params.returnTo ?? '/providers');
 }
 
-export async function submitAuthentication(authentication: AuthenticationResponseJSON, returnTo?: string) {
+export async function submitAuthentication(challengeJwt: string, authentication: AuthenticationResponseJSON, returnTo?: string) {
   const rememberedUser = await getPreviousUser();
 
   const passkey = await db.passkey.findUnique({
@@ -181,7 +180,7 @@ export async function submitAuthentication(authentication: AuthenticationRespons
   }
 
   const { rpID, origin } = getRelayingParty();
-  const { challenge } = getAndDeleteChallengeCookie();
+  const { challenge } = verifyChallengeJwt(challengeJwt);
 
   const { verified, authenticationInfo } = await verifyAuthenticationResponse({
     response: authentication,

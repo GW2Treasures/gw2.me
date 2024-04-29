@@ -28,9 +28,9 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
 
   const handleClick = useCallback(() => startTransition(async () => {
     if(loginOptions.userId) {
-      const options = await getAuthenticationOptions();
+      const { options, challenge } = await getAuthenticationOptions();
       const authentication = await startAuthentication(options);
-      await submitAuthentication(authentication);
+      await submitAuthentication(challenge, authentication);
     } else {
       setDialogOpen(true);
     }
@@ -41,15 +41,15 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
 
     if(authenticationOnRegistration.type === 'authentication') {
       const authentication = await startAuthentication(authenticationOnRegistration.options);
-      await submitAuthentication(authentication);
+      await submitAuthentication(authenticationOnRegistration.challenge, authentication);
     } else {
       const registration = await startRegistration(authenticationOnRegistration.options);
-      await submitRegistration({ type: 'new', username }, registration);
+      await submitRegistration({ type: 'new', username }, authenticationOnRegistration.challenge, registration);
     }
   }), [username]);
 
   const initializeConditionalUi = useCallback(async () => {
-    const options = await getAuthenticationOptions();
+    const { options, challenge } = await getAuthenticationOptions();
 
     if(options.timeout) {
       startAuthenticationTimeout(options.timeout);
@@ -58,7 +58,7 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
     // start authentication using "Conditional UI"
     // this promise only resolves when the users clicks on the autocomplete options of the text input
     const authentication = await startAuthentication(options, true);
-    await startTransition(() => submitAuthentication(authentication));
+    await startTransition(() => submitAuthentication(challenge, authentication));
   }, [startAuthenticationTimeout]);
 
   useEffect(() => {
