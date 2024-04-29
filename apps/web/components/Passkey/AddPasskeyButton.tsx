@@ -16,7 +16,7 @@ export const AddPasskeyButton: FC<AddPasskeyButtonProps> = ({}) => {
   }, []);
 
   const handleClick = useCallback(() => startTransition(async () => {
-    const options = await getRegistrationOptions();
+    const { options } = await getRegistrationOptions({ type: 'add' });
     const registration = await startRegistration(options);
     await submitRegistration(registration);
   }), []);

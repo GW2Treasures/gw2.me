@@ -25,24 +25,27 @@ function getRelayingParty() {
   };
 }
 
-export async function getRegistrationOptions() {
-  const user = await getUser();
+export async function getRegistrationOptions(registrationOptions: { type: 'add' } | { type: 'new', username: string }) {
+  let user;
+  if(registrationOptions.type === 'add') {
+    user = await getUser();
 
-  if(!user) {
-    throw new Error('Not logged in');
-  }
+    if(!user) {
+      throw new Error('Not logged in');
+    }
+  };
 
   const { rpID, rpName } = getRelayingParty();
 
-  const existingPasskeys = await db.passkey.findMany({
-    where: { userId: user.id },
+  const existingPasskeys = registrationOptions.type === 'add' ? await db.passkey.findMany({
+    where: { userId: user!.id },
     select: { id: true, transports: true },
-  });
+  }) : [];
 
   const options = await generateRegistrationOptions({
     rpID,
     rpName,
-    userName: user.name,
+    userName: registrationOptions.type === 'add' ? user!.name : registrationOptions.username,
     attestationType: 'none',
     timeout: 60000,
     excludeCredentials: existingPasskeys.map(mapPasskeyToCredentials),
@@ -55,7 +58,7 @@ export async function getRegistrationOptions() {
   setChallengeCookie(options);
   console.log(options); // TODO: remove
 
-  return options;
+  return { options };
 }
 
 export async function getAuthenticationOptions() {
@@ -85,7 +88,8 @@ export async function getAuthenticationOrRegistrationOptions(username: string) {
   if(user) {
     return { type: 'authentication', options: await getAuthenticationOptions() } as const;
   } else {
-    return { type: 'registration', options: await getRegistrationOptions() } as const;
+    const { options } = await getRegistrationOptions({ type: 'new', username });
+    return { type: 'registration', options } as const;
   }
 }
 
