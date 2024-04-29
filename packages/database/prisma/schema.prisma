@@ -98,7 +98,7 @@ model Passkey {
   id        String @id
   publicKey Bytes
 
-  provider UserProvider @relation(fields: [id], references: [passkeyId])
+  provider UserProvider @relation(fields: [id], references: [passkeyId], onDelete: Cascade)
   
   user           User   @relation("userPasskeys", fields: [userId], references: [id])
   userId         String

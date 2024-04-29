@@ -134,7 +134,7 @@ export async function submitRegistration(registration: RegistrationResponseJSON)
   revalidatePath('/providers');
 }
 
-export async function submitAuthentication(authentication: AuthenticationResponseJSON) {
+export async function submitAuthentication(authentication: AuthenticationResponseJSON, returnTo?: string) {
   const rememberedUser = await getPreviousUser();
 
   const passkey = await db.passkey.findUnique({
@@ -188,11 +188,9 @@ export async function submitAuthentication(authentication: AuthenticationRespons
   cookies().set(userCookie(passkey.userId));
   cookies().delete(LoginErrorCookieName);
 
-  // TODO: get correct return url
-  const returnUrl = '/profile';
-
   // redirect
-  redirect(returnUrl);
+  // TODO: verify returnTo to only redirect to to trusted URLs
+  redirect(returnTo ?? '/profile');
 }
 
 function mapPasskeyToCredentials({ id, transports }: Pick<Passkey, 'id' | 'transports'>) {

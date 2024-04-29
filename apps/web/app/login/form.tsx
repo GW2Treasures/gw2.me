@@ -56,11 +56,11 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
         )}
 
         <div className={styles.buttons}>
+          <AuthenticatePasskeyButton className={styles.button} options={options}/>
           {availableProviders[UserProviderType.discord] && (<Button className={styles.button} type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Login with Discord</Button>)}
           {availableProviders[UserProviderType.google] && (<Button className={styles.button} type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Login with Google</Button>)}
           {availableProviders[UserProviderType.github] && (<Button className={styles.button} type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Login with GitHub</Button>)}
           {availableProviders[UserProviderType.steam] && (<Button className={styles.button} type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Login with Steam</Button>)}
-          <AuthenticatePasskeyButton className={styles.button}/>
           {process.env.NODE_ENV !== 'production' && (<DevLogin username={prevUser?.name}/>)}
         </div>
 
