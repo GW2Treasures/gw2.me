@@ -79,6 +79,16 @@ export async function getAuthenticationOptions() {
   return options;
 }
 
+export async function getAuthenticationOrRegistrationOptions(username: string) {
+  const user = await db.user.findUnique({ where: { name: username.trim() }});
+
+  if(user) {
+    return { type: 'authentication', options: await getAuthenticationOptions() } as const;
+  } else {
+    return { type: 'registration', options: await getRegistrationOptions() } as const;
+  }
+}
+
 export async function submitRegistration(registration: RegistrationResponseJSON) {
   const session = await getSession();
 

@@ -1,9 +1,9 @@
 'use client';
 
 import { Button } from '@gw2treasures/ui/components/Form/Button';
-import { browserSupportsWebAuthn, startAuthentication } from '@simplewebauthn/browser';
+import { browserSupportsWebAuthn, startAuthentication, startRegistration } from '@simplewebauthn/browser';
 import { useCallback, useEffect, useRef, useState, useTransition, type FC } from 'react';
-import { getAuthenticationOptions, submitAuthentication } from './actions';
+import { getAuthenticationOptions, getAuthenticationOrRegistrationOptions, submitAuthentication, submitRegistration } from './actions';
 import { LoginOptions } from 'app/login/action';
 import { Dialog } from '@gw2treasures/ui/components/Dialog/Dialog';
 import { DialogActions } from '@gw2treasures/ui/components/Dialog/DialogActions';
@@ -19,7 +19,7 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
   const [supportsPasskeys, setSupportsPasskeys] = useState(false);
   const [pending, startTransition] = useTransition();
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const [username, setUsername] = useState('');
   const [authenticationTimeout, startAuthenticationTimeout, clearAuthenticationTimeout] = useTimeout();
 
   useEffect(() => {
@@ -36,8 +36,19 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
     }
   }), [loginOptions.userId]);
 
+  const handleAuthenticateOrRegister = useCallback(() => startTransition(async () => {
+    const authenticationOnRegistration = await getAuthenticationOrRegistrationOptions(username);
+
+    if(authenticationOnRegistration.type === 'authentication') {
+      const authentication = await startAuthentication(authenticationOnRegistration.options);
+      await submitAuthentication(authentication);
+    } else {
+      const registration = await startRegistration(authenticationOnRegistration.options);
+      await submitRegistration(registration);
+    }
+  }), [username]);
+
   const initializeConditionalUi = useCallback(async () => {
-    console.log('initializeConditionalUi');
     const options = await getAuthenticationOptions();
 
     if(options.timeout) {
@@ -47,7 +58,7 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
     // start authentication using "Conditional UI"
     // this promise only resolves when the users clicks on the autocomplete options of the text input
     const authentication = await startAuthentication(options, true);
-    await submitAuthentication(authentication);
+    await startTransition(() => submitAuthentication(authentication));
   }, [startAuthenticationTimeout]);
 
   useEffect(() => {
@@ -65,16 +76,18 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
         {!authenticationTimeout ? (
           <>
             <Label label="Username">
-              <TextInput autoComplete="username webauthn"/>
+              <TextInput value={username} onChange={setUsername} readOnly={pending} autoComplete="username webauthn"/>
             </Label>
             <DialogActions>
-              <Button>Continue</Button>
+              <Button onClick={handleAuthenticateOrRegister} disabled={pending} icon={pending ? 'loading' : 'passkey'}>Continue</Button>
             </DialogActions>
           </>
         ) : (
           <>
-            <p>Authentication challenge has expired</p>
-            <Button onClick={() => initializeConditionalUi()}>Restart</Button>
+            <p>Passkey authentication challenge has expired.</p>
+            <DialogActions>
+              <Button onClick={() => initializeConditionalUi()} icon="revision">Restart</Button>
+            </DialogActions>
           </>
         )}
       </Dialog>
