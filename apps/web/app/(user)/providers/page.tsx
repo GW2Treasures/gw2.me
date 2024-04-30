@@ -54,7 +54,11 @@ export default async function ProfilePage() {
     <PageLayout>
       <Headline id="providers">Login Providers</Headline>
 
-      <p>Add additional login providers to make sure you can always login.</p>
+      {providers.length <= 1 && (
+        <Notice>You currently only have one login provider. You should add an additional backup login provider in case you lose access to your current login provider.</Notice>
+      )}
+
+      <p>You can login with any of the login providers listed below.</p>
 
       <Providers.Table>
         <Providers.Column id="provider" title="Provider" sortBy="provider">
@@ -75,6 +79,8 @@ export default async function ProfilePage() {
           {({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'never'}
         </Providers.Column>
       </Providers.Table>
+
+      <p>Add additional login providers to make sure you can always login.</p>
 
       <Form action={login.bind(null, 'add', {})}>
         {providerError === LoginError.Unknown && (<Notice type="error">Unknown error</Notice>)}
