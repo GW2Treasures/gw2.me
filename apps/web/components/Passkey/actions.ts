@@ -129,6 +129,11 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
 
     session = currentSession;
   } else {
+    const invalidUsernameRegex = /[^a-z0-9._-]/i;
+    if(invalidUsernameRegex.test(params.username)) {
+      throw new Error('Invalid username');
+    }
+
     // create user and new session
     session = await db.userSession.create({
       data: {

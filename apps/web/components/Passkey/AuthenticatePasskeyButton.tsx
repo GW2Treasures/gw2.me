@@ -15,6 +15,8 @@ export interface AuthenticatePasskeyButtonProps {
   options: LoginOptions;
 }
 
+const invalidUsernameRegex = /[^a-z0-9._-]/i;
+
 export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ className, options: loginOptions }) => {
   const [supportsPasskeys, setSupportsPasskeys] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -69,6 +71,8 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
     }
   }, [clearAuthenticationTimeout, dialogOpen, initializeConditionalUi]);
 
+  const isInvalidUsername = invalidUsernameRegex.test(username);
+
   return (
     <>
       <Button icon={pending ? 'loading' : 'passkey'} disabled={!supportsPasskeys || pending} onClick={handleClick} className={className}>Login with Passkey</Button>
@@ -76,10 +80,13 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
         {!authenticationTimeout ? (
           <>
             <Label label="Username">
-              <TextInput value={username} onChange={setUsername} readOnly={pending} autoComplete="username webauthn"/>
+              <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                <TextInput value={username} onChange={setUsername} readOnly={pending} autoComplete="username webauthn"/>
+                {isInvalidUsername && <div style={{ marginTop: 8, color: 'var(--color-error)' }}>Invalid username</div>}
+              </div>
             </Label>
             <DialogActions>
-              <Button onClick={handleAuthenticateOrRegister} disabled={pending} icon={pending ? 'loading' : 'passkey'}>Continue</Button>
+              <Button onClick={handleAuthenticateOrRegister} disabled={pending || isInvalidUsername || !username} icon={pending ? 'loading' : 'passkey'}>Continue</Button>
             </DialogActions>
           </>
         ) : (
