@@ -21,6 +21,7 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { LoginError, getLoginErrorCookieValue } from 'app/login/form';
 import { AddPasskeyButton } from '@/components/Passkey/AddPasskeyButton';
 import { Icon } from '@gw2treasures/ui';
+import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
 
 const getUserData = cache(async () => {
   const currentSession = await getSessionOrRedirect();
@@ -86,13 +87,15 @@ export default async function ProfilePage() {
         {providerError === LoginError.Unknown && (<Notice type="error">Unknown error</Notice>)}
         {providerError === LoginError.WrongUser && (<Notice type="error">The login provider you tried to add is already linked to a different user.</Notice>)}
 
-        <FlexRow wrap>
-          <AddPasskeyButton/>
-          {availableProviders[UserProviderType.discord] && (<Button type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Add Discord</Button>)}
-          {availableProviders[UserProviderType.google] && (<Button type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Add Google</Button>)}
-          {availableProviders[UserProviderType.github] && (<Button type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Add GitHub</Button>)}
-          {availableProviders[UserProviderType.steam] && (<Button type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Add Steam</Button>)}
-        </FlexRow>
+        <NoticeContext>
+          <FlexRow wrap>
+            <AddPasskeyButton/>
+            {availableProviders[UserProviderType.discord] && (<Button type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Add Discord</Button>)}
+            {availableProviders[UserProviderType.google] && (<Button type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Add Google</Button>)}
+            {availableProviders[UserProviderType.github] && (<Button type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Add GitHub</Button>)}
+            {availableProviders[UserProviderType.steam] && (<Button type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Add Steam</Button>)}
+          </FlexRow>
+        </NoticeContext>
       </Form>
 
       <Headline id="sessions" actions={<form action={revokeAllSessions}><Button type="submit" icon="delete">Revoke all</Button></form>}>Sessions</Headline>
