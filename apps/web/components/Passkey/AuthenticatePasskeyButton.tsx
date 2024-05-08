@@ -9,6 +9,7 @@ import { Dialog } from '@gw2treasures/ui/components/Dialog/Dialog';
 import { DialogActions } from '@gw2treasures/ui/components/Dialog/DialogActions';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
+import { useShowNotice } from '../NoticeContext/NoticeContext';
 
 export interface AuthenticatePasskeyButtonProps {
   className?: string;
@@ -23,20 +24,42 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [username, setUsername] = useState('');
   const [authenticationTimeout, startAuthenticationTimeout, clearAuthenticationTimeout] = useTimeout();
+  const notice = useShowNotice();
 
   useEffect(() => {
     setSupportsPasskeys(browserSupportsWebAuthn());
   }, []);
 
   const handleClick = useCallback(() => startTransition(async () => {
+    // hide any notice that might still be visible
+    notice.show(null);
+
     if(loginOptions.userId) {
-      const { options, challenge } = await getAuthenticationOptions();
-      const authentication = await startAuthentication(options);
-      await submitAuthentication(challenge, authentication);
+      try {
+        // get authentication options from server
+        const { options, challenge } = await getAuthenticationOptions();
+
+        // start passkey authentication
+        const authentication = await startAuthentication(options);
+
+        // submit authentication to server to verify challenge and start session
+        await submitAuthentication(challenge, authentication);
+      } catch(e) {
+        console.error(e);
+        if(e instanceof Error) {
+          if(e.name === 'NotAllowedError') {
+            // user has canceled
+            notice.show({ type: 'error', children: 'Passkey authentication canceled.' });
+            return;
+          }
+        }
+
+        notice.show({ type: 'error', icon: 'warning', children: 'Unknown error during passkey authentication.' });
+      }
     } else {
       setDialogOpen(true);
     }
-  }), [loginOptions.userId]);
+  }), [loginOptions.userId, notice]);
 
   const handleAuthenticateOrRegister = useCallback(() => startTransition(async () => {
     const authenticationOnRegistration = await getAuthenticationOrRegistrationOptions(username);
@@ -75,7 +98,9 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
 
   return (
     <>
-      <Button icon={pending ? 'loading' : 'passkey'} disabled={!supportsPasskeys || pending} onClick={handleClick} className={className}>Login with Passkey</Button>
+      <Button icon={pending ? 'loading' : 'passkey'} disabled={!supportsPasskeys || pending} onClick={handleClick} className={className}>
+        Login with Passkey
+      </Button>
       <Dialog open={dialogOpen} title="Passkey" onClose={() => setDialogOpen(false)}>
         {!authenticationTimeout ? (
           <>

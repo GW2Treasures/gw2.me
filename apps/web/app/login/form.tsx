@@ -19,6 +19,7 @@ import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, UserCookieName } from '@/lib/cookie';
 import { AuthenticatePasskeyButton } from '@/components/Passkey/AuthenticatePasskeyButton';
+import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
 
 interface LoginFormProps {
   returnTo?: string;
@@ -43,26 +44,27 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
       <Form action={login.bind(null, 'login', options)}>
         {error === LoginError.Unknown && (<Notice type="error">Unknown error</Notice>)}
         {error === LoginError.WrongUser && (<Notice type="error">The login provider you tried to login with is not linked to your user.<br/>Please login with the login provider you have previously used. You can add additional login providers in your profile after successfully logging in.</Notice>)}
+        <NoticeContext>
+          {prevUser ? (
+            <div style={{ marginBottom: 16 }}>
+              <FlexRow align="space-between">
+                <span>Login as <b>{prevUser.name}</b></span>
+                <Button type="submit" formAction={switchUser} appearance="tertiary">Not you?</Button>
+              </FlexRow>
+            </div>
+          ) : (
+            <Notice type="warning">If you have used gw2.me before, please <b>use the same login provider</b> to access your account. You can add additional providers after login.</Notice>
+          )}
 
-        {prevUser ? (
-          <div style={{ marginBottom: 16 }}>
-            <FlexRow align="space-between">
-              <span>Login as <b>{prevUser.name}</b></span>
-              <Button type="submit" formAction={switchUser} appearance="tertiary">Not you?</Button>
-            </FlexRow>
+          <div className={styles.buttons}>
+            <AuthenticatePasskeyButton className={styles.button} options={options}/>
+            {availableProviders[UserProviderType.discord] && (<Button className={styles.button} type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Login with Discord</Button>)}
+            {availableProviders[UserProviderType.google] && (<Button className={styles.button} type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Login with Google</Button>)}
+            {availableProviders[UserProviderType.github] && (<Button className={styles.button} type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Login with GitHub</Button>)}
+            {availableProviders[UserProviderType.steam] && (<Button className={styles.button} type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Login with Steam</Button>)}
+            {process.env.NODE_ENV !== 'production' && (<DevLogin username={prevUser?.name}/>)}
           </div>
-        ) : (
-          <Notice type="warning">If you have used gw2.me before, please <b>use the same login provider</b> to access your account. You can add additional providers after login.</Notice>
-        )}
-
-        <div className={styles.buttons}>
-          <AuthenticatePasskeyButton className={styles.button} options={options}/>
-          {availableProviders[UserProviderType.discord] && (<Button className={styles.button} type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Login with Discord</Button>)}
-          {availableProviders[UserProviderType.google] && (<Button className={styles.button} type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Login with Google</Button>)}
-          {availableProviders[UserProviderType.github] && (<Button className={styles.button} type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Login with GitHub</Button>)}
-          {availableProviders[UserProviderType.steam] && (<Button className={styles.button} type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Login with Steam</Button>)}
-          {process.env.NODE_ENV !== 'production' && (<DevLogin username={prevUser?.name}/>)}
-        </div>
+        </NoticeContext>
 
         <div className={styles.cookie}>
           <FlexRow>
