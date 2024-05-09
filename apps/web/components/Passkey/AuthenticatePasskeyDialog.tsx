@@ -116,6 +116,12 @@ export const AuthenticatePasskeyDialog: FC<AuthenticatePasskeyDialogProps> = ({ 
 
   return (
     <>
+      <p style={{ maxWidth: 500 }}>
+        Passkeys enable you to securely sign in to your gw2.me account using your fingerprint, face, screen lock, or hardware security key.
+      </p>
+      <p>
+        Enter the username of the account you want to create or sign in to.
+      </p>
       <Label label="Username">
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
           <TextInput value={username} onChange={setUsername} readOnly={pending} autoComplete="username webauthn"/>
