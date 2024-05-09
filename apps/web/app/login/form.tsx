@@ -20,6 +20,7 @@ import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, UserCookieName } from '@/lib/cookie';
 import { AuthenticatePasskeyButton } from '@/components/Passkey/AuthenticatePasskeyButton';
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
+import { redirect } from 'next/navigation';
 
 interface LoginFormProps {
   returnTo?: string;
@@ -115,6 +116,7 @@ async function switchUser() {
   cookies().delete(UserCookieName);
 
   revalidatePath('/login');
+  redirect('/login');
 }
 
 export const enum LoginError {
