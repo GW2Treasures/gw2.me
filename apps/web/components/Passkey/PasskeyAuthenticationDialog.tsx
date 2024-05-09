@@ -9,11 +9,11 @@ import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { useShowNotice } from '../NoticeContext/NoticeContext';
 
-export interface AuthenticatePasskeyDialogProps {}
+export interface PasskeyAuthenticationDialogProps {}
 
 const invalidUsernameRegex = /[^a-z0-9._-]/i;
 
-export const AuthenticatePasskeyDialog: FC<AuthenticatePasskeyDialogProps> = ({ }) => {
+export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> = ({ }) => {
   const [pending, startTransition] = useTransition();
   const [username, setUsername] = useState('');
   const [authenticationTimeout, startAuthenticationTimeout, stopAuthenticationTimeout] = useTimeout();
