@@ -1,7 +1,7 @@
 'use client';
 
 import { Notice, NoticeProps } from '@gw2treasures/ui/components/Notice/Notice';
-import { FC, ReactNode, createContext, useContext, useState } from 'react';
+import { FC, ReactNode, createContext, useContext, useMemo, useState } from 'react';
 
 export interface NoticeContext {
   show: (notice: NoticeProps | null) => void
@@ -16,8 +16,11 @@ interface NoticeContextProps {
 export const NoticeContext: FC<NoticeContextProps> = ({ children }) => {
   const [notice, setNotice] = useState<NoticeProps | null>(null);
 
+  // memoize context value to prevent rerenders
+  const value = useMemo(() => ({ show: setNotice }), [setNotice]);
+
   return (
-    <context.Provider value={{ show: setNotice }}>
+    <context.Provider value={value}>
       {notice && <Notice {...notice}/>}
       {children}
     </context.Provider>

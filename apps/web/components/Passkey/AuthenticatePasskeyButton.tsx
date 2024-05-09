@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState, useTransition, type FC } from
 import { getAuthenticationOptions, submitAuthentication } from './actions';
 import { LoginOptions } from 'app/login/action';
 import { Dialog } from '@gw2treasures/ui/components/Dialog/Dialog';
-import { useShowNotice } from '../NoticeContext/NoticeContext';
+import { NoticeContext, useShowNotice } from '../NoticeContext/NoticeContext';
 import { AuthenticatePasskeyDialog } from './AuthenticatePasskeyDialog';
 
 export interface AuthenticatePasskeyButtonProps {
@@ -63,7 +63,9 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
         Login with Passkey
       </Button>
       <Dialog open={dialogOpen} title="Passkey" onClose={() => setDialogOpen(false)}>
-        <AuthenticatePasskeyDialog/>
+        <NoticeContext>
+          <AuthenticatePasskeyDialog/>
+        </NoticeContext>
       </Dialog>
     </>
   );

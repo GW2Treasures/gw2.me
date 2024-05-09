@@ -1,12 +1,13 @@
 'use client';
 
 import { Button } from '@gw2treasures/ui/components/Form/Button';
-import { startAuthentication, startRegistration } from '@simplewebauthn/browser';
+import { startAuthentication, startRegistration, browserSupportsWebAuthnAutofill } from '@simplewebauthn/browser';
 import { useCallback, useEffect, useRef, useState, useTransition, type FC } from 'react';
 import { getAuthenticationOptions, getAuthenticationOrRegistrationOptions, submitAuthentication, submitRegistration } from './actions';
 import { DialogActions } from '@gw2treasures/ui/components/Dialog/DialogActions';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
+import { useShowNotice } from '../NoticeContext/NoticeContext';
 
 export interface AuthenticatePasskeyDialogProps {
   // TODO: define props
@@ -17,7 +18,8 @@ const invalidUsernameRegex = /[^a-z0-9._-]/i;
 export const AuthenticatePasskeyDialog: FC<AuthenticatePasskeyDialogProps> = ({ }) => {
   const [pending, startTransition] = useTransition();
   const [username, setUsername] = useState('');
-  const [authenticationTimeout, startAuthenticationTimeout, clearAuthenticationTimeout] = useTimeout();
+  const [authenticationTimeout, startAuthenticationTimeout] = useTimeout();
+  const notice = useShowNotice();
 
   const handleAuthenticateOrRegister = useCallback(() => startTransition(async () => {
     const authenticationOnRegistration = await getAuthenticationOrRegistrationOptions(username);
@@ -32,17 +34,36 @@ export const AuthenticatePasskeyDialog: FC<AuthenticatePasskeyDialogProps> = ({ 
   }), [username]);
 
   const initializeConditionalUi = useCallback(async () => {
-    const { options, challenge } = await getAuthenticationOptions();
+    const supported = await browserSupportsWebAuthnAutofill();
 
-    if(options.timeout) {
-      startAuthenticationTimeout(options.timeout);
+    if(!supported) {
+      console.warn('webauthn conditional UI not supported');
+      return;
     }
 
-    // start authentication using "Conditional UI"
-    // this promise only resolves when the users clicks on the autocomplete options of the text input
-    const authentication = await startAuthentication(options, true);
-    await startTransition(() => submitAuthentication(challenge, authentication));
-  }, [startAuthenticationTimeout]);
+    try {
+      const { options, challenge } = await getAuthenticationOptions();
+
+      if(options.timeout) {
+        startAuthenticationTimeout(options.timeout);
+      }
+
+      // start authentication using "Conditional UI"
+      // this promise only resolves when the users clicks on the autocomplete options of the text input
+      const authentication = await startAuthentication(options, true);
+      await startTransition(() => submitAuthentication(challenge, authentication));
+    } catch(e) {
+      console.error(e);
+
+      if(e instanceof Error && e.name === 'AbortError') {
+        // silently ignore abort errors, these are 99% because we started a different authorization request,
+        // either by restarting the conditional ui (especially in dev with react strict mode) or by submiting the form
+        return;
+      }
+
+      notice.show({ type: 'error', children: 'Unknown error during passkey authentication' });
+    }
+  }, [notice, startAuthenticationTimeout]);
 
   useEffect(() => {
     initializeConditionalUi();
