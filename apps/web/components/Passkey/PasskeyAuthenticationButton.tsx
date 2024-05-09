@@ -2,19 +2,19 @@
 
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { browserSupportsWebAuthn, startAuthentication } from '@simplewebauthn/browser';
-import { useCallback, useEffect, useRef, useState, useTransition, type FC } from 'react';
+import { useCallback, useEffect, useState, useTransition, type FC } from 'react';
 import { getAuthenticationOptions, submitAuthentication } from './actions';
 import { LoginOptions } from 'app/login/action';
 import { Dialog } from '@gw2treasures/ui/components/Dialog/Dialog';
 import { NoticeContext, useShowNotice } from '../NoticeContext/NoticeContext';
 import { AuthenticatePasskeyDialog } from './AuthenticatePasskeyDialog';
 
-export interface AuthenticatePasskeyButtonProps {
+export interface PasskeyAuthenticationButtonProps {
   className?: string;
   options: LoginOptions;
 }
 
-export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ className, options: loginOptions }) => {
+export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> = ({ className, options: loginOptions }) => {
   const [supportsPasskeys, setSupportsPasskeys] = useState(false);
   const [pending, startTransition] = useTransition();
   const [dialogOpen, setDialogOpen] = useState(false);

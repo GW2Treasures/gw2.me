@@ -18,7 +18,7 @@ import { createVerifier } from '@/lib/jwt';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, UserCookieName } from '@/lib/cookie';
-import { AuthenticatePasskeyButton } from '@/components/Passkey/AuthenticatePasskeyButton';
+import { PasskeyAuthenticationButton } from '@/components/Passkey/PasskeyAuthenticationButton';
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
 import { redirect } from 'next/navigation';
 
@@ -58,7 +58,7 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
           )}
 
           <div className={styles.buttons}>
-            <AuthenticatePasskeyButton className={styles.button} options={options}/>
+            <PasskeyAuthenticationButton className={styles.button} options={options}/>
             {availableProviders[UserProviderType.discord] && (<Button className={styles.button} type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Login with Discord</Button>)}
             {availableProviders[UserProviderType.google] && (<Button className={styles.button} type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Login with Google</Button>)}
             {availableProviders[UserProviderType.github] && (<Button className={styles.button} type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Login with GitHub</Button>)}
