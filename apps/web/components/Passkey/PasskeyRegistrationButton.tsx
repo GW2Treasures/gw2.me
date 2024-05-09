@@ -6,9 +6,9 @@ import { useCallback, useEffect, useState, useTransition, type FC } from 'react'
 import { getRegistrationOptions, submitRegistration } from './actions';
 import { useShowNotice } from '../NoticeContext/NoticeContext';
 
-export interface AddPasskeyButtonProps {}
+export interface PasskeyRegistrationButtonProps {}
 
-export const AddPasskeyButton: FC<AddPasskeyButtonProps> = ({}) => {
+export const PasskeyRegistrationButton: FC<PasskeyRegistrationButtonProps> = ({}) => {
   const [supportsPasskeys, setSupportsPasskeys] = useState(false);
   const [pending, startTransition] = useTransition();
   const notice = useShowNotice();

@@ -19,7 +19,7 @@ import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { login } from 'app/login/action';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { LoginError, getLoginErrorCookieValue } from 'app/login/form';
-import { AddPasskeyButton } from '@/components/Passkey/AddPasskeyButton';
+import { PasskeyRegistrationButton } from '@/components/Passkey/PasskeyRegistrationButton';
 import { Icon } from '@gw2treasures/ui';
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
 
@@ -89,7 +89,7 @@ export default async function ProfilePage() {
 
         <NoticeContext>
           <FlexRow wrap>
-            <AddPasskeyButton/>
+            <PasskeyRegistrationButton/>
             {availableProviders[UserProviderType.discord] && (<Button type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Add Discord</Button>)}
             {availableProviders[UserProviderType.google] && (<Button type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Add Google</Button>)}
             {availableProviders[UserProviderType.github] && (<Button type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Add GitHub</Button>)}
