@@ -49,7 +49,7 @@ export const AuthenticatePasskeyButton: FC<AuthenticatePasskeyButtonProps> = ({ 
             }
           }
 
-          notice.show({ type: 'error', icon: 'warning', children: 'Unknown error during passkey authentication.' });
+          notice.show({ type: 'error', children: 'Unknown error during passkey authentication.' });
         }
       });
     } else {

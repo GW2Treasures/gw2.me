@@ -9,29 +9,15 @@ import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { useShowNotice } from '../NoticeContext/NoticeContext';
 
-export interface AuthenticatePasskeyDialogProps {
-  // TODO: define props
-}
+export interface AuthenticatePasskeyDialogProps {}
 
 const invalidUsernameRegex = /[^a-z0-9._-]/i;
 
 export const AuthenticatePasskeyDialog: FC<AuthenticatePasskeyDialogProps> = ({ }) => {
   const [pending, startTransition] = useTransition();
   const [username, setUsername] = useState('');
-  const [authenticationTimeout, startAuthenticationTimeout] = useTimeout();
+  const [authenticationTimeout, startAuthenticationTimeout, stopAuthenticationTimeout] = useTimeout();
   const notice = useShowNotice();
-
-  const handleAuthenticateOrRegister = useCallback(() => startTransition(async () => {
-    const authenticationOnRegistration = await getAuthenticationOrRegistrationOptions(username);
-
-    if(authenticationOnRegistration.type === 'authentication') {
-      const authentication = await startAuthentication(authenticationOnRegistration.options);
-      await submitAuthentication(authenticationOnRegistration.challenge, authentication);
-    } else {
-      const registration = await startRegistration(authenticationOnRegistration.options);
-      await submitRegistration({ type: 'new', username }, authenticationOnRegistration.challenge, registration);
-    }
-  }), [username]);
 
   const initializeConditionalUi = useCallback(async () => {
     const supported = await browserSupportsWebAuthnAutofill();
@@ -40,6 +26,8 @@ export const AuthenticatePasskeyDialog: FC<AuthenticatePasskeyDialogProps> = ({ 
       console.warn('webauthn conditional UI not supported');
       return;
     }
+
+    console.log('initializing webauthn condition ui');
 
     try {
       const { options, challenge } = await getAuthenticationOptions();
@@ -65,9 +53,53 @@ export const AuthenticatePasskeyDialog: FC<AuthenticatePasskeyDialogProps> = ({ 
     }
   }, [notice, startAuthenticationTimeout]);
 
+  // form submit handler
+  const handleAuthenticateOrRegister = useCallback(() => startTransition(async () => {
+    // hide any error messages that are currently shown
+    notice.show(null);
+
+    // stop timout timer for conditional ui
+    stopAuthenticationTimeout();
+
+    try {
+      const authenticationOnRegistration = await getAuthenticationOrRegistrationOptions(username);
+
+      if(authenticationOnRegistration.type === 'authentication') {
+        const authentication = await startAuthentication(authenticationOnRegistration.options);
+        await submitAuthentication(authenticationOnRegistration.challenge, authentication);
+      } else {
+        const registration = await startRegistration(authenticationOnRegistration.options);
+        await submitRegistration({ type: 'new', username }, authenticationOnRegistration.challenge, registration);
+      }
+    } catch(e) {
+      console.error(e);
+
+      // restart conditional ui
+      initializeConditionalUi();
+
+      // check if user has canceled
+      if(e instanceof Error && e.name === 'NotAllowedError') {
+        notice.show({ type: 'error', children: 'Passkey authentication canceled.' });
+        return;
+      }
+
+      // show error
+      notice.show({ type: 'error', children: 'Unknown error during passkey authentication.' });
+
+      // restart conditional ui
+      initializeConditionalUi();
+    }
+  }), [notice, stopAuthenticationTimeout, username, initializeConditionalUi]);
+
+  // init conditional ui on mount
   useEffect(() => {
     initializeConditionalUi();
   }, [initializeConditionalUi]);
+
+  // hide errors when timeout is exceeded
+  useEffect(() => {
+    notice.show(null);
+  }, [authenticationTimeout, notice]);
 
   const isInvalidUsername = invalidUsernameRegex.test(username);
 
