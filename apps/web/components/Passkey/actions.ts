@@ -85,7 +85,7 @@ export async function getAuthenticationOptions() {
 }
 
 export async function getAuthenticationOrRegistrationOptions(username: string) {
-  // since this is publicly accessable and checks if usernames exist in the db we use a rate limiter
+  // since this is publicly accessible and checks if usernames exist in the db we use a rate limiter
   const ip = headers().get('x-forwarded-for') ?? 'anonymous';
 
   if(!checkRateLimit(ip)) {

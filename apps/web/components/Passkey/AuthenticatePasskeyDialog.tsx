@@ -45,7 +45,7 @@ export const AuthenticatePasskeyDialog: FC<AuthenticatePasskeyDialogProps> = ({ 
 
       if(e instanceof Error && e.name === 'AbortError') {
         // silently ignore abort errors, these are 99% because we started a different authorization request,
-        // either by restarting the conditional ui (especially in dev with react strict mode) or by submiting the form
+        // either by restarting the conditional ui (especially in dev with react strict mode) or by submitting the form
         return;
       }
 
@@ -58,7 +58,7 @@ export const AuthenticatePasskeyDialog: FC<AuthenticatePasskeyDialogProps> = ({ 
     // hide any error messages that are currently shown
     notice.show(null);
 
-    // stop timout timer for conditional ui
+    // stop timeout timer for conditional ui
     stopAuthenticationTimeout();
 
     try {
