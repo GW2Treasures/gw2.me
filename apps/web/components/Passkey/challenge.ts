@@ -5,16 +5,16 @@ export function createChallengeJwt(data: PublicKeyCredentialCreationOptionsJSON 
   const challenge = data.challenge;
   const userId = 'user' in data ? data.user.id : undefined;
 
-  const signJwt = createSigner();
-  const challengeJwt = signJwt({ userId, challenge });
+  const signJwt = createSigner({ expiresIn: data.timeout });
+  const challengeJwt = signJwt({ sub: userId, challenge });
 
   return challengeJwt;
 }
 
 export function verifyChallengeJwt(challengeJwt: string): { webAuthnUserId?: string, challenge: string } {
   try {
-    const { userId, challenge } = createVerifier()(challengeJwt);
-    return { webAuthnUserId: userId, challenge };
+    const { sub, challenge } = createVerifier()(challengeJwt);
+    return { webAuthnUserId: sub, challenge };
   } catch(e) {
     throw new Error('Passkey challenge invalid', { cause: e });
   }

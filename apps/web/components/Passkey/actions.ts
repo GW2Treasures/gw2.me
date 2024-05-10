@@ -77,6 +77,7 @@ export async function getAuthenticationOptions() {
     rpID,
     userVerification: 'preferred',
     allowCredentials: passkeys.map(mapPasskeyToCredentials),
+    timeout: 3 * 60 * 1000, // 3 minutes
   });
 
   console.log(options);
