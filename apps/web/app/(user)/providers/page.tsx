@@ -56,7 +56,7 @@ export default async function ProfilePage() {
       <Headline id="providers">Login Providers</Headline>
 
       {providers.length <= 1 && (
-        <Notice>You currently only have one login provider. You should add an additional backup login provider in case you lose access to your current login provider.</Notice>
+        <Notice>You currently only have one login provider. For added security, it&apos;s recommended to have at least one backup login method.</Notice>
       )}
 
       <p>You can login with any of the login providers listed below.</p>

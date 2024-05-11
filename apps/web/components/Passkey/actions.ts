@@ -88,25 +88,6 @@ export async function getAuthenticationOptions() {
   return { options, challenge: createChallengeJwt(options) };
 }
 
-export async function getAuthenticationOrRegistrationOptions(username: string) {
-  // since this is publicly accessible and checks if usernames exist in the db we use a rate limiter
-  const ip = headers().get('x-forwarded-for') ?? 'anonymous';
-
-  if(!checkRateLimit(ip)) {
-    throw new Error('IP rate limit reached');
-  }
-
-  const user = await db.user.findUnique({ where: { name: username.trim() }});
-
-  if(user) {
-    const { options, challenge } = await getAuthenticationOptions();
-    return { type: 'authentication', options, challenge } as const;
-  } else {
-    const { options, challenge } = await getRegistrationOptions({ type: 'new', username });
-    return { type: 'registration', options, challenge } as const;
-  }
-}
-
 export async function submitRegistration(params: RegistrationParams & { returnTo?: string }, challengeJwt: string, registration: RegistrationResponseJSON) {
   console.log(registration); // TODO: remove
 
@@ -258,40 +239,4 @@ function mapPasskeyToCredentials({ id, transports }: Pick<Passkey, 'id' | 'trans
     id,
     transports: transports as AuthenticatorTransportFuture[]
   };
-}
-
-// map to store ip address - rate limit info
-const loginAttempts: Map<string, { count: number; timestamp: number }> = new Map();
-const maxAttempts = 5;
-const resetTime = 60;
-
-function checkRateLimit(ip: string): boolean {
-  // get the current timestamp
-  const now = Date.now();
-
-  // check if an entry exists for this IP address
-  let entry = loginAttempts.get(ip);
-
-  if (entry) {
-    // check if within the reset window based on timestamp difference
-    if (now - entry.timestamp < resetTime * 1000) {
-      if (entry.count >= maxAttempts) {
-        // rate limit exceeded
-        return false;
-      }
-      // increment attempt count
-      entry.count++;
-    } else {
-      // reset count
-      entry.count = 1;
-      entry.timestamp = now;
-    }
-  } else {
-    // create a new entry for the IP address with initial count and timestamp
-    entry = { count: 1, timestamp: now };
-    loginAttempts.set(ip, entry);
-  }
-
-  // user is not rate limited
-  return true;
 }

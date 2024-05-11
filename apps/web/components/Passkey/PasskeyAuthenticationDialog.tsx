@@ -1,13 +1,14 @@
 'use client';
 
 import { Button } from '@gw2treasures/ui/components/Form/Button';
-import { startAuthentication, startRegistration, browserSupportsWebAuthnAutofill } from '@simplewebauthn/browser';
+import { startAuthentication, startRegistration, browserSupportsWebAuthnAutofill, WebAuthnAbortService } from '@simplewebauthn/browser';
 import { useCallback, useEffect, useRef, useState, useTransition, type FC } from 'react';
-import { getAuthenticationOptions, getAuthenticationOrRegistrationOptions, submitAuthentication, submitRegistration } from './actions';
+import { getAuthenticationOptions, getRegistrationOptions, submitAuthentication, submitRegistration } from './actions';
 import { DialogActions } from '@gw2treasures/ui/components/Dialog/DialogActions';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { useShowNotice } from '../NoticeContext/NoticeContext';
+import { ButtonLink } from '../ButtonLink/ButtonLink';
 
 export interface PasskeyAuthenticationDialogProps {}
 
@@ -15,6 +16,7 @@ const invalidUsernameRegex = /[^a-z0-9._-]/i;
 
 export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> = ({ }) => {
   const [pending, startTransition] = useTransition();
+  const [isRegistration, setIsRegistration] = useState(false);
   const [username, setUsername] = useState('');
   const [authenticationTimeout, startAuthenticationTimeout, stopAuthenticationTimeout] = useTimeout();
   const notice = useShowNotice();
@@ -53,8 +55,31 @@ export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> =
     }
   }, [notice, startAuthenticationTimeout]);
 
-  // form submit handler
-  const handleAuthenticateOrRegister = useCallback(() => startTransition(async () => {
+  // authentication submit handler
+  const handleAuthenticate = useCallback(() => startTransition(async () => {
+    // hide any error messages that are currently shown
+    notice.show(null);
+
+    try {
+      const authenticationOnRegistration = await getAuthenticationOptions();
+      const authentication = await startAuthentication(authenticationOnRegistration.options);
+      await submitAuthentication(authenticationOnRegistration.challenge, authentication);
+    } catch(e) {
+      console.error(e);
+
+      // check if user has canceled
+      if(e instanceof Error && e.name === 'NotAllowedError') {
+        notice.show({ type: 'error', children: 'Passkey authentication canceled.' });
+        return;
+      }
+
+      // show error
+      notice.show({ type: 'error', children: 'Unknown error during passkey authentication.' });
+    }
+  }), [notice]);
+
+  // registration submit handler
+  const handleRegister = useCallback(() => startTransition(async () => {
     // hide any error messages that are currently shown
     notice.show(null);
 
@@ -62,15 +87,9 @@ export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> =
     stopAuthenticationTimeout();
 
     try {
-      const authenticationOnRegistration = await getAuthenticationOrRegistrationOptions(username);
-
-      if(authenticationOnRegistration.type === 'authentication') {
-        const authentication = await startAuthentication(authenticationOnRegistration.options);
-        await submitAuthentication(authenticationOnRegistration.challenge, authentication);
-      } else {
-        const registration = await startRegistration(authenticationOnRegistration.options);
-        await submitRegistration({ type: 'new', username }, authenticationOnRegistration.challenge, registration);
-      }
+      const authenticationOnRegistration = await getRegistrationOptions({ type: 'new', username });
+      const registration = await startRegistration(authenticationOnRegistration.options);
+      await submitRegistration({ type: 'new', username }, authenticationOnRegistration.challenge, registration);
     } catch(e) {
       console.error(e);
 
@@ -85,21 +104,25 @@ export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> =
 
       // show error
       notice.show({ type: 'error', children: 'Unknown error during passkey authentication.' });
-
-      // restart conditional ui
-      initializeConditionalUi();
     }
   }), [notice, stopAuthenticationTimeout, username, initializeConditionalUi]);
 
-  // init conditional ui on mount
+  // init conditional on registration page
   useEffect(() => {
-    initializeConditionalUi();
-  }, [initializeConditionalUi]);
+    if(isRegistration) {
+      initializeConditionalUi();
 
-  // hide errors when timeout is exceeded
+      return () => {
+        WebAuthnAbortService.cancelCeremony();
+        stopAuthenticationTimeout();
+      };
+    }
+  }, [initializeConditionalUi, isRegistration, stopAuthenticationTimeout]);
+
+  // hide errors when toggling between signin/registration or when timeout is exceeded
   useEffect(() => {
     notice.show(null);
-  }, [authenticationTimeout, notice]);
+  }, [authenticationTimeout, isRegistration, notice]);
 
   const isInvalidUsername = invalidUsernameRegex.test(username);
 
@@ -119,18 +142,23 @@ export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> =
       <p style={{ maxWidth: 500 }}>
         Passkeys enable you to securely sign in to your gw2.me account using your fingerprint, face, screen lock, or hardware security key.
       </p>
-      <p>
-        Enter the username of the account you want to create or sign in to.
-      </p>
-      <Label label="Username">
-        <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-          <TextInput value={username} onChange={setUsername} readOnly={pending} autoComplete="username webauthn"/>
-          {isInvalidUsername && <div style={{ marginTop: 8, color: 'var(--color-error)' }}>Invalid username</div>}
-        </div>
-      </Label>
-      <DialogActions>
-        <Button onClick={handleAuthenticateOrRegister} disabled={pending || isInvalidUsername || !username} icon={pending ? 'loading' : 'passkey'}>Continue</Button>
-      </DialogActions>
+      {isRegistration ? (
+        <>
+          <Label label="Username">
+            <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+              <TextInput value={username} onChange={setUsername} readOnly={pending} autoComplete="username webauthn"/>
+              {isInvalidUsername && <div style={{ marginTop: 8, color: 'var(--color-error)' }}>Invalid username</div>}
+            </div>
+          </Label>
+          <DialogActions description={<>Already have an account? <ButtonLink onClick={() => setIsRegistration(false)}>Sign In</ButtonLink></>}>
+            <Button onClick={handleRegister} disabled={pending || username.length < 2 || isInvalidUsername} icon={pending ? 'loading' : 'passkey'}>Register</Button>
+          </DialogActions>
+        </>
+      ) : (
+        <DialogActions description={<>Don&apos;t have an account? <ButtonLink onClick={() => setIsRegistration(true)}>Register Now</ButtonLink></>}>
+          <Button onClick={handleAuthenticate} disabled={pending} icon={pending ? 'loading' : 'passkey'}>Sign In</Button>
+        </DialogActions>
+      )}
     </>
   );
 };
