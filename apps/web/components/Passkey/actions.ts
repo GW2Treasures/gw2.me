@@ -14,6 +14,7 @@ import { Passkey } from '@gw2me/database';
 import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, authCookie, userCookie } from '@/lib/cookie';
 import { redirect } from 'next/navigation';
+import aaguids from 'aaguids';
 
 function getRelayingParty() {
   const url = getBaseUrlFromHeaders();
@@ -56,6 +57,9 @@ export async function getRegistrationOptions(params: RegistrationParams) {
     authenticatorSelection: {
       residentKey: 'required',
       userVerification: 'preferred'
+    },
+    extensions: {
+      credProps: true
     }
   });
 
@@ -71,7 +75,6 @@ export async function getAuthenticationOptions() {
   const passkeys = rememberedUser ? await db.passkey.findMany({
     where: { userId: rememberedUser.id }
   }) : [];
-
 
   const options = await generateAuthenticationOptions({
     rpID,
@@ -125,7 +128,13 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
   }
 
   const ua = userAgent({ headers: headers() });
-  const displayName = ua.browser && ua.os ? `${ua.browser.name} on ${ua.os.name}` : undefined;
+
+  // get the name of the session from the useragent
+  const sessionDisplayName = ua.browser && ua.os ? `${ua.browser.name} on ${ua.os.name}` : undefined;
+
+  // get the name of the passkey using either `credProps.authenticatorDisplayName` or the AAGUID
+  const passkeyDisplayName = (registration.clientExtensionResults.credProps as any)?.authenticatorDisplayName
+    ?? aaguids[verification.registrationInfo.aaguid];
 
   let session: { id: string; userId: string; };
   if(params.type === 'add') {
@@ -145,7 +154,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
     // create user and new session
     session = await db.userSession.create({
       data: {
-        info: displayName ?? 'Session',
+        info: sessionDisplayName ?? 'Session',
         user: { create: { name: params.username }}
       },
       select: { id: true, userId: true }
@@ -160,7 +169,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
 
   await db.userProvider.create({
     data: {
-      displayName: displayName ?? 'New Passkey',
+      displayName: passkeyDisplayName ?? sessionDisplayName ?? 'New Passkey',
       provider: 'passkey',
       providerAccountId: credentialID,
       userId: session.userId,
