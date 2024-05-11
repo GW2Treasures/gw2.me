@@ -129,7 +129,6 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
           displayName: profile.accountName,
           token: profile.token,
           user,
-          usedAt: new Date(),
         },
       });
 

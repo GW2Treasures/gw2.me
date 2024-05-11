@@ -19,6 +19,9 @@ import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { login } from 'app/login/action';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { LoginError, getLoginErrorCookieValue } from 'app/login/form';
+import { PasskeyRegistrationButton } from '@/components/Passkey/PasskeyRegistrationButton';
+import { Icon } from '@gw2treasures/ui';
+import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
 
 const getUserData = cache(async () => {
   const currentSession = await getSessionOrRedirect();
@@ -52,7 +55,11 @@ export default async function ProfilePage() {
     <PageLayout>
       <Headline id="providers">Login Providers</Headline>
 
-      <p>Add additional login providers to make sure you can always login.</p>
+      {providers.length <= 1 && (
+        <Notice>You currently only have one login provider. For added security, it&apos;s recommended to have at least one backup login method.</Notice>
+      )}
+
+      <p>You can login with any of the login providers listed below.</p>
 
       <Providers.Table>
         <Providers.Column id="provider" title="Provider" sortBy="provider">
@@ -61,6 +68,7 @@ export default async function ProfilePage() {
             provider === 'github' ? <FlexRow><GitHubIcon/>GitHub</FlexRow> :
             provider === 'steam' ? <FlexRow><SteamIcon/>Steam</FlexRow> :
             provider === 'google' ? <FlexRow><GoogleIcon/>Google</FlexRow> :
+            provider === 'passkey' ? <FlexRow><Icon icon="passkey"/>Passkey</FlexRow> :
             provider
           }
         </Providers.Column>
@@ -69,20 +77,25 @@ export default async function ProfilePage() {
           {({ createdAt }) => <FormatDate date={createdAt}/>}
         </Providers.Column>
         <Providers.Column id="usedAt" title="Last Used" sortBy="usedAt" align="right">
-          {({ usedAt, updatedAt }) => usedAt ? <FormatDate date={usedAt}/> : <FormatDate date={updatedAt}/>}
+          {({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'never'}
         </Providers.Column>
       </Providers.Table>
+
+      <p>Add additional login providers to make sure you can always login.</p>
 
       <Form action={login.bind(null, 'add', {})}>
         {providerError === LoginError.Unknown && (<Notice type="error">Unknown error</Notice>)}
         {providerError === LoginError.WrongUser && (<Notice type="error">The login provider you tried to add is already linked to a different user.</Notice>)}
 
-        <FlexRow>
-          {availableProviders[UserProviderType.discord] && (<Button type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Add Discord</Button>)}
-          {availableProviders[UserProviderType.google] && (<Button type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Add Google</Button>)}
-          {availableProviders[UserProviderType.github] && (<Button type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Add GitHub</Button>)}
-          {availableProviders[UserProviderType.steam] && (<Button type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Add Steam</Button>)}
-        </FlexRow>
+        <NoticeContext>
+          <FlexRow wrap>
+            <PasskeyRegistrationButton/>
+            {availableProviders[UserProviderType.discord] && (<Button type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Add Discord</Button>)}
+            {availableProviders[UserProviderType.google] && (<Button type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Add Google</Button>)}
+            {availableProviders[UserProviderType.github] && (<Button type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Add GitHub</Button>)}
+            {availableProviders[UserProviderType.steam] && (<Button type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Add Steam</Button>)}
+          </FlexRow>
+        </NoticeContext>
       </Form>
 
       <Headline id="sessions" actions={<form action={revokeAllSessions}><Button type="submit" icon="delete">Revoke all</Button></form>}>Sessions</Headline>
