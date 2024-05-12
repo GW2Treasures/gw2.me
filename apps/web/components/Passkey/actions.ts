@@ -56,7 +56,7 @@ export async function getRegistrationOptions(params: RegistrationParams) {
     excludeCredentials: existingPasskeys.map(mapPasskeyToCredentials),
     authenticatorSelection: {
       residentKey: 'required',
-      userVerification: 'preferred'
+      userVerification: 'required'
     },
     extensions: {
       credProps: true
@@ -78,7 +78,7 @@ export async function getAuthenticationOptions() {
 
   const options = await generateAuthenticationOptions({
     rpID,
-    userVerification: 'preferred',
+    userVerification: 'required',
     allowCredentials: passkeys.map(mapPasskeyToCredentials),
     timeout: 3 * 60 * 1000, // 3 minutes
   });
