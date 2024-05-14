@@ -35,8 +35,8 @@ export default async function TokenPage({ searchParams }: { searchParams: { acce
   const access_token = searchParams.access_token;
 
   const api = gw2me.api(access_token);
-  const user = await api.user();
-  const accounts = await api.accounts().catch(() => {});
+  const user = await api.user().catch((e) => String(e));
+  const accounts = await api.accounts().catch((e) => String(e));
 
   return (
     <form>
@@ -50,12 +50,15 @@ export default async function TokenPage({ searchParams }: { searchParams: { acce
       <FlexRow>
         <Button icon="revision" type="submit" formAction={refreshTokenAction}>Refresh Token</Button>
       </FlexRow>
+      <br/>
 
+      <b>/api/user</b>
       <pre>{JSON.stringify(user, undefined, '  ')}</pre>
+      <b>/api/accounts</b>
       <pre>{JSON.stringify(accounts, undefined, '  ')}</pre>
 
       <FlexRow>
-        {accounts?.accounts?.map((account) => (
+        {typeof accounts === 'object' && accounts?.accounts?.map((account) => (
           <Button key={account.id} icon="key" type="submit" formAction={getSubtoken.bind(null, account.id)}>Get Subtoken ({account.name})</Button>
         ))}
       </FlexRow>
