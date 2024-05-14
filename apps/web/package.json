@@ -14,7 +14,7 @@
     "@gw2me/client": "*",
     "@gw2me/database": "*",
     "@gw2treasures/helper": "0.0.4",
-    "@gw2treasures/icons": "0.0.18",
+    "@gw2treasures/icons": "0.0.19",
     "@gw2treasures/ui": "0.1.8",
     "@simplewebauthn/browser": "10.0.0",
     "@simplewebauthn/server": "10.0.0",
