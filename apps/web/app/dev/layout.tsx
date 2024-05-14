@@ -20,7 +20,7 @@ export default function DevLayout({ children }: { children: ReactNode }) {
       ]}/>
       <Separator/>
       <Navigation prefix="/dev/" items={[
-        { segment: 'applications', label: 'Your Applications' },
+        { segment: 'applications', icon: 'apps', label: 'Your Applications' },
       ]}/>
     </NavLayout>
   );
