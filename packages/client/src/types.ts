@@ -2,6 +2,10 @@ export enum Scope {
   Identify = 'identify',
   Email = 'email',
 
+  Accounts = 'accounts',
+  Accounts_Verified = 'accounts.verified',
+  Accounts_DisplayName = 'accounts.displayName',
+
   GW2_Account = 'gw2:account',
   GW2_Inventories = 'gw2:inventories',
   GW2_Characters = 'gw2:characters',

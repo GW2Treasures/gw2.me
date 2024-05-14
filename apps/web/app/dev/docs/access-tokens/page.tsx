@@ -87,7 +87,7 @@ export default function DevDocsAccessTokensPage() {
           <tr>
             <td><Code inline>verified_accounts_only</Code> (optional)</td>
             <td><Code inline borderless>&quot;true&quot;</Code></td>
-            <td>Only allow the user to select verified accounts.</td>
+            <td>Only allow the user to select verified accounts. This requires the <Link href="/dev/docs/scopes"><Code inline>accounts.verified</Code> scope</Link>.</td>
           </tr>
         </tbody>
       </Table>
@@ -105,7 +105,7 @@ export default function DevDocsAccessTokensPage() {
       <p>If the authorization was successful, the url will contain the query parameter <Code inline>code</Code> with an authorization code that needs to be exchanged for an access token in the next step.</p>
       <Code>https://example.com/callback<br/>  ?state=ocbBQyUo1G6551bD5sNMdA<br/>  &<strong>code=ciA-F7NVbINw1dcEVeYdww</strong></Code>
 
-      <p>If the authoriztion was not successful, the url will contain the <Code inline>error</Code> and <Code inline>error_description</Code> query parameters detailing the reason.</p>
+      <p>If the authorization was not successful, the url will contain the <Code inline>error</Code> and <Code inline>error_description</Code> query parameters detailing the reason.</p>
       <Code>https://example.com/callback<br/>  ?state=yuUK87DIP1NSCfL8XdHM2A<br/>  &<strong>error=access_denied</strong><br/>  &<strong>error_description=user+canceled+authorization</strong></Code>
 
 
@@ -165,7 +165,7 @@ export default function DevDocsAccessTokensPage() {
           'token_type': 'Bearer',
           'expires_in': 604800,
           'refresh_token': 'mcn6FMwoiufzqcBDVwzOnz_NvGn-1ezzRKIm7vN_bsk',
-          'scope': 'identify email gw2:account'
+          'scope': 'identify accounts gw2:account'
         }, null, 2)}
       </Code>
 
