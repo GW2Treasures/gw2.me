@@ -13,7 +13,8 @@ export interface AccountsResponse {
   accounts: {
     id: string;
     name: string;
-    verified: boolean;
+    verified?: boolean;
+    displayName?: string | null;
   }[]
 }
 

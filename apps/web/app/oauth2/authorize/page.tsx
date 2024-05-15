@@ -47,29 +47,33 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
   // declare some variables for easier access
   const application = await getApplicationByClientId(request.client_id);
   const previousAuthorization = session ? await getPreviousAuthorization(application.id, session.userId) : undefined;
-  const previousScope = (previousAuthorization?.scope ?? []) as Scope[];
-  const previousScopeMap = scopesToMap(previousScope);
+  const previousScope = new Set(previousAuthorization?.scope as Scope[]);
   const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
-  const scopes = decodeURIComponent(request.scope).split(' ') as Scope[];
-  const verifiedAccountsOnly = request.verified_accounts_only === 'true';
+  const scopes = new Set(decodeURIComponent(request.scope).split(' ') as Scope[]);
+  const redirect_uri = new URL(request.redirect_uri);
 
+  // normalize the previous scopes
+  normalizeScopes(previousScope);
+
+  // if `include_granted_scopes` is set add all previous scopes to the current scopes
   if(request.include_granted_scopes) {
-    previousScope.forEach((scope) => {
-      if(!scopes.includes(scope)) {
-        scopes.push(scope);
-      }
-    });
+    previousScope.forEach((scope) => scopes.add(scope));
   }
 
-  const scopeMap = scopesToMap(scopes);
-  const redirect_uri = new URL(request.redirect_uri);
-  const newScopes = scopes.filter((scope) => !previousScopeMap[scope]);
-  const oldScopes = previousScope.filter((scope) => scopeMap[scope]);
+  // normalize the current scopes
+  normalizeScopes(scopes);
 
+  const verifiedAccountsOnly = scopes.has(Scope.Accounts_Verified) && request.verified_accounts_only === 'true';
+
+  // get new/existing scopes
+  const newScopes = Array.from(scopes).filter((scope) => !previousScope.has(scope));
+  const oldScopes = Array.from(previousScope).filter((scope) => scopes.has(scope));
+
+  // build params for the authorize action
   const authorizeActionParams: AuthorizeActionParams = {
     applicationId: application.id,
     redirect_uri: redirect_uri.toString(),
-    scopes,
+    scopes: Array.from(scopes),
     state: request.state,
     codeChallenge: request.code_challenge ? `${request.code_challenge_method}:${request.code_challenge}` : undefined,
   };
@@ -93,8 +97,8 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
   }
 
   // get accounts
-  const gw2Permissions = scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4));
-  const accounts = session && hasGW2Scopes(scopes)
+  const gw2Permissions = Array.from(scopes).filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4));
+  const accounts = session && scopes.has(Scope.Accounts)
     ? await db.account.findMany({
         where: { userId: session.userId },
         orderBy: { createdAt: 'asc' },
@@ -147,14 +151,14 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
               </Expandable>
             )}
 
-            {hasGW2Scopes(scopes) && (
+            {scopes.has(Scope.Accounts) && (
               <div className={styles.accountSection}>
                 Select Accounts {verifiedAccountsOnly && '(Verified only)'}
                 <div className={styles.accountSelection}>
                   {accounts.map((account) => (
-                    <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id) && (account.verified || request.verified_accounts_only !== 'true')} name="accounts" formValue={account.id} disabled={!account.verified && request.verified_accounts_only === 'true'}>
+                    <Checkbox key={account.id} defaultChecked={previousAccountIds.includes(account.id) && (account.verified || !verifiedAccountsOnly)} name="accounts" formValue={account.id} disabled={!account.verified && verifiedAccountsOnly}>
                       <FlexRow>
-                        {account.displayName ? `${account.displayName} (${account.accountName})` : account.accountName}
+                        {account.displayName ? <>{account.displayName} <span style={{ color: 'var(--color-text-muted)' }}>({account.accountName})</span></> : account.accountName}
                         {verifiedAccountsOnly && !account.verified && (<Tip tip="Not verified"><Icon icon="unverified"/></Tip>)}
                         {!verifiedAccountsOnly && account.verified && (<Tip tip="Verified"><Icon icon="verified"/></Tip>)}
                         {account._count.apiTokens === 0 && (
@@ -217,10 +221,13 @@ function getPreviousAuthorization(applicationId: string, userId: string) {
   });
 }
 
-const emptyScopeMap = Object.fromEntries(Object.values(Scope).map((scope) => [scope, false])) as Record<Scope, boolean>;
+const gw2Scopes = Object.values(Scope).filter((scope) => scope.startsWith('gw2:'));
 
-function scopesToMap(scopes: Scope[]): Record<Scope, boolean> {
-  return scopes.reduce((map, scope) => ({ ...map, [scope]: true }), emptyScopeMap);
+function normalizeScopes(scopes: Set<Scope>): void {
+  // include `accounts` if any gw2 or sub scope is included
+  if(gw2Scopes.some((scope) => scopes.has(scope)) || scopes.has(Scope.Accounts_DisplayName) || scopes.has(Scope.Accounts_Verified)) {
+    scopes.add(Scope.Accounts);
+  }
 }
 
 function renderScopes(scopes: Scope[], user: User) {
@@ -228,6 +235,14 @@ function renderScopes(scopes: Scope[], user: User) {
     <ul className={styles.scopeList}>
       {scopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
       {scopes.includes(Scope.Email) && <ScopeItem icon="mail">Your email address</ScopeItem>}
+      {(scopes.includes(Scope.Accounts_DisplayName) && scopes.includes(Scope.Accounts)) ? (
+        <ScopeItem icon="nametag">Your Guild Wars 2 account names and custom display names</ScopeItem>
+      ) : scopes.includes(Scope.Accounts) ? (
+        <ScopeItem icon="nametag">Your Guild Wars 2 account names</ScopeItem>
+      ) : scopes.includes(Scope.Accounts_DisplayName) && (
+        <ScopeItem icon="nametag">Custom display names for your Guild Wars 2 accounts</ScopeItem>
+      )}
+      {scopes.includes(Scope.Accounts_Verified) && <ScopeItem icon="verified">Your Guild Wars 2 account verification status</ScopeItem>}
       {hasGW2Scopes(scopes) && (
         <ScopeItem icon="developer">
           <p className={styles.p}>Read-only access to the Guild Wars 2 API</p>

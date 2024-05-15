@@ -28,6 +28,18 @@ export default function DevDocsScopePage() {
             <td><Code inline>email</Code></td>
             <td>Include the email in /api/user</td>
           </tr>
+          <tr>
+            <td><Code inline>accounts</Code></td>
+            <td>Get the list of accounts from /api/accounts. This scope is always implied when any <Code inline>gw2:*</Code> scope is included.</td>
+          </tr>
+          <tr>
+            <td><Code inline>accounts.displayName</Code></td>
+            <td>Include the user-defined displa name in the account list</td>
+          </tr>
+          <tr>
+            <td><Code inline>accounts.verified</Code></td>
+            <td>Include the account verification status.</td>
+          </tr>
 
           <tr>
             <td><Code inline>gw2:account</Code></td>

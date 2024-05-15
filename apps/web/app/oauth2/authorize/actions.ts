@@ -42,7 +42,7 @@ export async function authorizeInternal(
   accountIds: string[]
 ) {
   // verify at least one account was selected
-  if(hasGW2Scopes(scopes) && accountIds.length === 0) {
+  if((hasGW2Scopes(scopes) || scopes.includes(Scope.Accounts)) && accountIds.length === 0) {
     return { error: 'At least one account has to be selected.' };
   }
 
