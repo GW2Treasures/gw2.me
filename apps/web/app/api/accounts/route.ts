@@ -9,6 +9,7 @@ export const GET = withAuthorization({ oneOf: [...Gw2Scopes, Scope.Accounts] })(
   async (authorization: Authorization) => {
     const accounts = await db.account.findMany({
       where: { authorizations: { some: { id: authorization.id }}},
+      orderBy: { createdAt: 'asc' },
       select: {
         accountId: true,
         accountName: true,
