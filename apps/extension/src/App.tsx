@@ -6,10 +6,6 @@ import { type AccountsResponse, Scope } from '@gw2me/client';
 import { client } from './client';
 import styles from './App.module.css';
 
-export interface AppProps {
-  // TODO: add props
-}
-
 enum Step {
   INITIAL,
   LOADING_ACCESS_TOKEN,
@@ -37,7 +33,7 @@ type State = {
   accounts: AccountsResponse['accounts']
 };
 
-export const App: FC<AppProps> = ({ }) => {
+export const App: FC = () => {
   const [state, setState] = useState<State>({ step: Step.INITIAL });
   const [accountState, setAccountState] = useState<Record<string, undefined | 'loading' | 'copied'>>({});
 
@@ -48,7 +44,16 @@ export const App: FC<AppProps> = ({ }) => {
       if('access_token' in value && value.access_token) {
         setState({ step: Step.LOADING_ACCOUNTS, access_token: value.access_token });
       } else {
-        setState({ step: Step.AUTH_REQUIRED });
+        const token = await setup('none');
+
+        if(!token) {
+          setState({ step: Step.AUTH_REQUIRED });
+        } else {
+          const { access_token } = token;
+
+          await self.chrome.storage.sync.set({ access_token });
+          setState({ step: Step.LOADING_ACCOUNTS, access_token })
+        }
       }
     }
 
@@ -110,7 +115,7 @@ export const App: FC<AppProps> = ({ }) => {
   }, [state]);
 
   const manageAccounts = useCallback(async () => {
-    const token = await setup(true);
+    const token = await setup('consent');
 
     if(!token) {
       return;
@@ -150,16 +155,17 @@ export const App: FC<AppProps> = ({ }) => {
             {state.step === Step.READY && (
               <>
                 <ul className={styles.accountList}>
-                  {state.accounts.map((account) => (
-                    <li key={account.id}>
-                      <Button flex icon={accountState[account.id] === 'copied' ? 'checkmark' : accountState[account.id] === 'loading' ? 'loading' : 'copy'} onClick={() => createSubtoken(account.id)} appearance="menu">
-                        {account.name}
-                      </Button>
-                    </li>
-                  ))}
                   <li>
                     <Button flex icon="gw2me-outline" appearance="menu" onClick={manageAccounts}>Manage Accounts</Button>
                   </li>
+                  {state.accounts.map((account) => (
+                    <li key={account.id}>
+                      <Button flex icon={accountState[account.id] === 'copied' ? 'checkmark' : accountState[account.id] === 'loading' ? 'loading' : 'copy'} onClick={() => createSubtoken(account.id)} appearance="menu">
+                        {account.displayName ?? account.name}
+                        {account.displayName && (<div style={{ color: 'var(--color-text-muted)' }}>{account.name}</div>)}
+                      </Button>
+                    </li>
+                  ))}
                 </ul>
               </>
             )}
@@ -170,14 +176,16 @@ export const App: FC<AppProps> = ({ }) => {
   );
 };
 
-async function setup(consent = false) {
+async function setup(prompt?: 'consent' | 'none') {
   try {
     const redirect_uri = chrome.identity.getRedirectURL();
-    console.log(redirect_uri);
+    console.log('auth', prompt);
 
     const { code_challenge, code_challenge_method, code_verifier } = await generatePKCEChallenge();
 
     const scopes = [
+      Scope.Accounts,
+      Scope.Accounts_DisplayName,
       Scope.GW2_Account,
       Scope.GW2_Inventories,
       Scope.GW2_Characters,
@@ -191,7 +199,7 @@ async function setup(consent = false) {
     ];
 
     const authUrl = client.getAuthorizationUrl({
-      prompt: consent ? 'consent' : undefined,
+      prompt,
       redirect_uri,
       code_challenge,
       code_challenge_method,
@@ -199,7 +207,7 @@ async function setup(consent = false) {
     });
 
     const callback = await chrome.identity.launchWebAuthFlow({
-      interactive: true,
+      interactive: prompt !== 'none',
       url: authUrl,
     });
 
@@ -228,8 +236,6 @@ async function generatePKCEChallenge() {
   crypto.getRandomValues(data);
 
   const code_verifier = toBase64String(data);
-
-  // const code_verifier = btoa(new TextDecoder().decode(data));
   const code_challenge = toBase64String(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(code_verifier))));
 
   return {

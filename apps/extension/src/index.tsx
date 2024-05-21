@@ -4,6 +4,10 @@ import './global.css';
 import "@fontsource/bitter/latin-700.css";
 import { App } from './App';
 
+if(process.env.NODE_ENV === 'development') {
+  self.chrome.action.setBadgeText({ text: 'DEV' });
+}
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
