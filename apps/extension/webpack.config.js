@@ -11,7 +11,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', { loader: 'css-loader', options: { esModule: true }}],
+      },
+      {
+        test: /\.(svg|woff2?)$/,
+        type: 'asset/resource'
       },
     ],
   },
