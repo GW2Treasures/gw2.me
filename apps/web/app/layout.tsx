@@ -4,7 +4,6 @@ import localFont from 'next/font/local';
 
 import './global.css';
 import './variables.css';
-import '@gw2treasures/icons/styles.css';
 
 import styles from './layout.module.css';
 import Link from 'next/link';
