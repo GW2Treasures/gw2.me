@@ -178,6 +178,8 @@ async function setup(consent = false) {
     const { code_challenge, code_challenge_method, code_verifier } = await generatePKCEChallenge();
 
     const scopes = [
+      Scope.Accounts,
+      Scope.Accounts_DisplayName,
       Scope.GW2_Account,
       Scope.GW2_Inventories,
       Scope.GW2_Characters,
