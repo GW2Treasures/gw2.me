@@ -150,16 +150,17 @@ export const App: FC<AppProps> = ({ }) => {
             {state.step === Step.READY && (
               <>
                 <ul className={styles.accountList}>
-                  {state.accounts.map((account) => (
-                    <li key={account.id}>
-                      <Button flex icon={accountState[account.id] === 'copied' ? 'checkmark' : accountState[account.id] === 'loading' ? 'loading' : 'copy'} onClick={() => createSubtoken(account.id)} appearance="menu">
-                        {account.name}
-                      </Button>
-                    </li>
-                  ))}
                   <li>
                     <Button flex icon="gw2me-outline" appearance="menu" onClick={manageAccounts}>Manage Accounts</Button>
                   </li>
+                  {state.accounts.map((account) => (
+                    <li key={account.id}>
+                      <Button flex icon={accountState[account.id] === 'copied' ? 'checkmark' : accountState[account.id] === 'loading' ? 'loading' : 'copy'} onClick={() => createSubtoken(account.id)} appearance="menu">
+                        {account.displayName ?? account.name}
+                        {account.displayName && (<div style={{ color: 'var(--color-text-muted)' }}>{account.name}</div>)}
+                      </Button>
+                    </li>
+                  ))}
                 </ul>
               </>
             )}
