@@ -180,6 +180,12 @@ export const App: FC = () => {
 
 async function authorize(prompt?: 'consent' | 'none'): Promise<TokenResponse | undefined> {
   return new Promise((resolve) => {
-    chrome.runtime.sendMessage({ type: 'authorize', prompt }, resolve);
+    // instead of running the authorization flow directly, send a message to the background script and run it there.
+    // this is done so the authorization flow can be completed even if the popup is closed.
+    // This (annoyingly) always happens in firefox, because the authorization page steals the focus of the popup,
+    // which will close it (unless `ui.popup.disable_autohide` is set, which has another set of problems (like not closing context menus...)).
+    // chromium browsers keep the popup open while the authorization page has focus, so this is not required for chromium browsers, but
+    // handling it the same way in every browser makes the code more uniform.
+    chrome.runtime.sendMessage({ type: 'gw2.me:authorize', prompt }, resolve);
   });
 }

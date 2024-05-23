@@ -1,5 +1,5 @@
 const path = require('path');
-const CopyPlugin = require("copy-webpack-plugin");
+const CopyPlugin = require('copy-webpack-plugin');
 
 const getConfig = (browser) => (env, argv) => ({
   name: browser,
@@ -8,44 +8,45 @@ const getConfig = (browser) => (env, argv) => ({
     background: './src/background.ts',
   },
   module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        use: [{ loader: 'ts-loader', options: { allowTsInNodeModules: true }}],
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', { loader: 'css-loader', options: { esModule: false }}],
-      },
-      {
-        test: /\.(svg|woff2?)$/,
-        type: 'asset/resource'
-      },
-    ],
+    rules: [{
+      test: /\.tsx?$/,
+      use: [{ loader: 'ts-loader', options: { allowTsInNodeModules: true }}],
+    }, {
+      test: /\.css$/,
+      use: ['style-loader', { loader: 'css-loader', options: { esModule: false }}],
+    }, {
+      test: /\.(svg|woff2?)$/,
+      type: 'asset/resource'
+    }],
   },
   plugins: [
     new CopyPlugin({
       patterns: [
+        // build manifest depending on the browser
         { from: 'manifest.json', transform(input) {
-          const json = JSON.parse(input);
+          const manifest = JSON.parse(input);
 
+          // if we are in development mode append -dev to name to distinguish it from the prod extension
           if(argv.mode === 'development') {
-            json.name += '-dev';
+            manifest.name += '-dev';
           }
           
+          // chromium does not like browser_specific_settings in the manifest
           const supportsBrowserSpecificSettings = browser !== 'chromium';
           if(!supportsBrowserSpecificSettings) {
-            delete json['browser_specific_settings'];
+            delete manifest['browser_specific_settings'];
           }
 
+          // chromium wants background.service_worker, firefox only supports background.scripts
           const supportsServiceWorker = browser === 'chromium';
           if(!supportsServiceWorker) {
-            delete json.background.service_worker;
+            delete manifest.background.service_worker;
           } else {
-            delete json.background.scripts;
+            delete manifest.background.scripts;
           }
 
-          return JSON.stringify(json, null, '  ');
+          // return new manifest
+          return JSON.stringify(manifest, null, '  ');
         }},
         { from: 'src/popup.html' },
         { from: 'assets/**/*' },
