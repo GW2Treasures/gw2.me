@@ -1,8 +1,11 @@
 const path = require('path');
 const CopyPlugin = require("copy-webpack-plugin");
 
-module.exports = {
-  entry: './src/index.tsx',
+const getConfig = (browser) => ({
+  name: browser,
+  entry: {
+    popup: './src/popup/index.tsx',
+  },
   module: {
     rules: [
       {
@@ -23,7 +26,6 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: 'manifest.json', transform(input) {
-          const browser = process.env.EXTENSION_BROWSER || 'chromium';
           const supportsBrowserSpecificSettings = browser !== 'chromium';
 
           if(!supportsBrowserSpecificSettings) {
@@ -34,7 +36,7 @@ module.exports = {
 
           return input;
         }},
-        { from: 'popup.html' },
+        { from: 'src/popup.html' },
         { from: 'assets/**/*' },
       ]
     })
@@ -46,8 +48,13 @@ module.exports = {
     }
   },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js',
+    path: path.resolve(__dirname, `dist/${browser}`),
   },
   devtool: 'source-map'
-};
+});
+
+module.exports = [
+  getConfig('chromium'),
+  getConfig('firefox'),
+];

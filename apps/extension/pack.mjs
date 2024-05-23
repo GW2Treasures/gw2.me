@@ -12,28 +12,17 @@ function buildChromium() {
   const archive = archiver('zip');
   archive.pipe(output);
 
-  // add all files from dist except manifest
-  archive.glob('**', { cwd: 'dist', ignore: ['manifest.json'],  });
-
-  // remove browser_specific_settings from manifest
-  const manifest = JSON.parse(fs.readFileSync('dist/manifest.json', 'utf-8'));
-  delete manifest['browser_specific_settings'];
-
-  // add custom manifest
-  archive.append(
-    JSON.stringify(manifest, null, '  '),
-    { name: 'manifest.json' }
-  );
+  archive.directory('dist/chromium', false);
 
   archive.finalize();
 }
 
 function buildOther() {
-  const output = fs.createWriteStream(path.resolve(artifactsDir, 'extension-other.zip'));
+  const output = fs.createWriteStream(path.resolve(artifactsDir, 'extension-firefox.zip'));
   const archive = archiver('zip');
   archive.pipe(output);
 
-  archive.directory('dist', false);
+  archive.directory('dist/firefox', false);
 
   archive.finalize();
 }
@@ -43,7 +32,7 @@ function buildSource() {
   const archive = archiver('zip');
   archive.pipe(output);
 
-  archive.glob('**', { ignore: ['artifacts/**', 'dist/**', 'node_modules/**'] });
+  archive.glob('**', { ignore: ['artifacts/**', 'dist/**', 'node_modules/**', '.turbo/**'] });
 
   archive.finalize();
 }

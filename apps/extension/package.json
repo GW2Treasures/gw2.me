@@ -4,11 +4,11 @@
   "version": "0.0.4",
   "description": "Generate Guild Wars 2 Subtokens",
   "scripts": {
-    "build": "npm run clean && EXTENSION_BROWSER=firefox webpack build --mode=production --no-devtool",
+    "build": "npm run clean && webpack build --mode=production --no-devtool",
     "clean": "rm -rf dist/ artifacts/",
     "watch": "npm run watch:chromium",
-    "watch:chromium": "npm run clean && EXTENSION_BROWSER=chromium webpack watch --mode=development",
-    "watch:firefox": "npm run clean && EXTENSION_BROWSER=chromium webpack watch --mode=development",
+    "watch:chromium": "npm run clean && webpack watch --mode=development --config-name=chromium",
+    "watch:firefox": "npm run clean && webpack watch --mode=development --config-name=firefox",
     "pack": "npm run build && node pack.mjs"
   },
   "repository": {
