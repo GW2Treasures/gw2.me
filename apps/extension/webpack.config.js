@@ -1,40 +1,54 @@
 const path = require('path');
-const CopyPlugin = require("copy-webpack-plugin");
+const CopyPlugin = require('copy-webpack-plugin');
 
-module.exports = {
-  entry: './src/index.tsx',
+const getConfig = (browser) => (env, argv) => ({
+  name: browser,
+  entry: {
+    popup: './src/popup/index.tsx',
+    background: './src/background.ts',
+  },
   module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        use: [{ loader: 'ts-loader', options: { allowTsInNodeModules: true }}],
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', { loader: 'css-loader', options: { esModule: false }}],
-      },
-      {
-        test: /\.(svg|woff2?)$/,
-        type: 'asset/resource'
-      },
-    ],
+    rules: [{
+      test: /\.tsx?$/,
+      use: [{ loader: 'ts-loader', options: { allowTsInNodeModules: true }}],
+    }, {
+      test: /\.css$/,
+      use: ['style-loader', { loader: 'css-loader', options: { esModule: false }}],
+    }, {
+      test: /\.(svg|woff2?)$/,
+      type: 'asset/resource'
+    }],
   },
   plugins: [
     new CopyPlugin({
       patterns: [
+        // build manifest depending on the browser
         { from: 'manifest.json', transform(input) {
-          const browser = process.env.EXTENSION_BROWSER || 'chromium';
-          const supportsBrowserSpecificSettings = browser !== 'chromium';
+          const manifest = JSON.parse(input);
 
+          // if we are in development mode append -dev to name to distinguish it from the prod extension
+          if(argv.mode === 'development') {
+            manifest.name += '-dev';
+          }
+          
+          // chromium does not like browser_specific_settings in the manifest
+          const supportsBrowserSpecificSettings = browser !== 'chromium';
           if(!supportsBrowserSpecificSettings) {
-            const json = JSON.parse(input);
-            delete json['browser_specific_settings'];
-            return JSON.stringify(json, null, '  ');
+            delete manifest['browser_specific_settings'];
           }
 
-          return input;
+          // chromium wants background.service_worker, firefox only supports background.scripts
+          const supportsServiceWorker = browser === 'chromium';
+          if(!supportsServiceWorker) {
+            delete manifest.background.service_worker;
+          } else {
+            delete manifest.background.scripts;
+          }
+
+          // return new manifest
+          return JSON.stringify(manifest, null, '  ');
         }},
-        { from: 'popup.html' },
+        { from: 'src/popup.html' },
         { from: 'assets/**/*' },
       ]
     })
@@ -46,8 +60,13 @@ module.exports = {
     }
   },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js',
+    path: path.resolve(__dirname, `dist/${browser}`),
   },
   devtool: 'source-map'
-};
+});
+
+module.exports = [
+  getConfig('chromium'),
+  getConfig('firefox'),
+];
