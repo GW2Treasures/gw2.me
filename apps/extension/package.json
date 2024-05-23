@@ -1,7 +1,7 @@
 {
   "name": "extension",
   "private": true,
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Generate Guild Wars 2 Subtokens",
   "scripts": {
     "build": "npm run clean && webpack build --mode=production --no-devtool",
