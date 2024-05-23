@@ -1,10 +1,11 @@
 const path = require('path');
 const CopyPlugin = require("copy-webpack-plugin");
 
-const getConfig = (browser) => ({
+const getConfig = (browser) => (env, argv) => ({
   name: browser,
   entry: {
     popup: './src/popup/index.tsx',
+    background: './src/background.ts',
   },
   module: {
     rules: [
@@ -26,15 +27,25 @@ const getConfig = (browser) => ({
     new CopyPlugin({
       patterns: [
         { from: 'manifest.json', transform(input) {
-          const supportsBrowserSpecificSettings = browser !== 'chromium';
+          const json = JSON.parse(input);
 
+          if(argv.mode === 'development') {
+            json.name += '-dev';
+          }
+          
+          const supportsBrowserSpecificSettings = browser !== 'chromium';
           if(!supportsBrowserSpecificSettings) {
-            const json = JSON.parse(input);
             delete json['browser_specific_settings'];
-            return JSON.stringify(json, null, '  ');
           }
 
-          return input;
+          const supportsServiceWorker = browser === 'chromium';
+          if(!supportsServiceWorker) {
+            delete json.background.service_worker;
+          } else {
+            delete json.background.scripts;
+          }
+
+          return JSON.stringify(json, null, '  ');
         }},
         { from: 'src/popup.html' },
         { from: 'assets/**/*' },

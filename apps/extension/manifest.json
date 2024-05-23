@@ -7,6 +7,10 @@
   "action": {
     "default_popup": "popup.html"
   },
+  "background": {
+    "service_worker": "background.js",
+    "scripts": ["background.js"]
+  },
   "icons": {
     "128": "assets/gw2.me-128.png",
     "48": "assets/gw2.me-48.png",

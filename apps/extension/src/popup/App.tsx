@@ -2,7 +2,7 @@ import { type FC, useCallback, useEffect, useState } from 'react';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Icon } from '@gw2treasures/ui/icons/Icon';
-import { type AccountsResponse, Scope } from '@gw2me/client';
+import { type AccountsResponse, type TokenResponse } from '@gw2me/client';
 import { client } from './client';
 import styles from './App.module.css';
 
@@ -44,7 +44,7 @@ export const App: FC = () => {
       if('access_token' in value && value.access_token) {
         setState({ step: Step.LOADING_ACCOUNTS, access_token: value.access_token });
       } else {
-        const token = await setup('none');
+        const token = await authorize('none');
 
         if(!token) {
           setState({ step: Step.AUTH_REQUIRED });
@@ -68,6 +68,8 @@ export const App: FC = () => {
       (window as any).client = client;
       (window as any).access_token = state.access_token;
 
+      console.log('loading accounts', state);
+
       client.api(state.access_token).accounts().then((({ accounts }) => {
         setState({ step: Step.READY, access_token: state.access_token, accounts });
       })).catch(() => {
@@ -79,7 +81,7 @@ export const App: FC = () => {
   const login = useCallback(async () => {
     setState({ step: Step.AUTH_IN_PROGRESS });
 
-    const token = await setup();
+    const token = await authorize();
 
     if(!token) {
       setState({ step: Step.AUTH_FAILED });
@@ -115,7 +117,7 @@ export const App: FC = () => {
   }, [state]);
 
   const manageAccounts = useCallback(async () => {
-    const token = await setup('consent');
+    const token = await authorize('consent');
 
     if(!token) {
       return;
@@ -176,83 +178,8 @@ export const App: FC = () => {
   );
 };
 
-async function setup(prompt?: 'consent' | 'none') {
-  try {
-    const redirect_uri = chrome.identity.getRedirectURL();
-    console.log('auth', prompt);
-
-    const { code_challenge, code_challenge_method, code_verifier } = await generatePKCEChallenge();
-
-    const scopes = [
-      Scope.Accounts,
-      Scope.Accounts_DisplayName,
-      Scope.GW2_Account,
-      Scope.GW2_Inventories,
-      Scope.GW2_Characters,
-      Scope.GW2_Tradingpost,
-      Scope.GW2_Wallet,
-      Scope.GW2_Unlocks,
-      Scope.GW2_Pvp,
-      Scope.GW2_Builds,
-      Scope.GW2_Progression,
-      Scope.GW2_Guilds,
-    ];
-
-    const authUrl = client.getAuthorizationUrl({
-      prompt,
-      redirect_uri,
-      code_challenge,
-      code_challenge_method,
-      scopes
-    });
-
-    const callback = await chrome.identity.launchWebAuthFlow({
-      interactive: prompt !== 'none',
-      url: authUrl,
-    });
-
-    if(!callback) {
-      return undefined;
-    }
-
-    const url = new URL(callback);
-    const code = url.searchParams.get('code');
-
-    if(!code) {
-      return undefined;
-    }
-
-    const token = await client.getAccessToken({ code, redirect_uri, code_verifier });
-
-    return token;
-  } catch(error) {
-    console.log(error);
-    return undefined;
-  }
-}
-
-async function generatePKCEChallenge() {
-  const data = new Uint8Array(32);
-  crypto.getRandomValues(data);
-
-  const code_verifier = toBase64String(data);
-  const code_challenge = toBase64String(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(code_verifier))));
-
-  return {
-    code_verifier,
-    code_challenge,
-    code_challenge_method: 'S256' as const
-  }
-}
-
-/**
- *
- * @param {Uint8Array} data
- * @returns
- */
-function toBase64String(data: Uint8Array) {
-  return btoa(String.fromCharCode(...data))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
+async function authorize(prompt?: 'consent' | 'none'): Promise<TokenResponse | undefined> {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ type: 'authorize', prompt }, resolve);
+  });
 }
