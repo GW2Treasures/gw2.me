@@ -8,7 +8,17 @@
   "packageRules": [
     {
       "matchSourceUrls": "https://github.com/GW2Treasures/gw2treasures.com",
-      "groupName": "gw2treasures"
+      "groupName": "gw2treasures packages"
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update version variables in Dockerfiles",
+      "fileMatch": ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:ENV|ARG) .+?_version=(?<currentValue>.+?)\\s"
+      ]
     }
   ]
 }
