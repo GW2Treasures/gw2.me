@@ -1,6 +1,10 @@
 ARG node_version=20.14.0-alpine
 
+# renovate: datasource=npm packageName=prisma
+ARG prisma_version=5.14.0
+
 FROM node:${node_version} AS source
+ARG prisma_version
 WORKDIR /app
 
 ENV NODE_ENV production
@@ -9,7 +13,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 worker
 
-RUN npm i -g prisma \
+RUN npm i -g prisma@${prisma_version} \
   && rm -rf /root/.cache/ \
   && rm -rf /root/.npm/
 
