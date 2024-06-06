@@ -1,7 +1,7 @@
 ARG node_version=20.14.0-alpine
 
 # renovate: datasource=npm packageName=turbo
-ARG turbo_version=1.13.4
+ARG turbo_version=2.0.1
 # renovate: datasource=npm packageName=rollup
 ARG rollup_version=4.18.0
 # renovate: datasource=npm packageName=sharp
@@ -14,7 +14,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /source
 RUN npm i -g turbo@${turbo_version}
 COPY . .
-RUN turbo prune --scope=web --docker
+RUN turbo prune web --docker
 
 # Install dependencies only when needed
 FROM --platform=$BUILDPLATFORM node:${node_version} AS builder
