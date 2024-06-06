@@ -14,7 +14,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /source
 RUN npm i -g turbo@${turbo_version}
 COPY . .
-RUN turbo prune --scope=web --docker
+RUN turbo prune web --docker
 
 # Install dependencies only when needed
 FROM --platform=$BUILDPLATFORM node:${node_version} AS builder
