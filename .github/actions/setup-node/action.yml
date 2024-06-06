@@ -34,7 +34,7 @@ runs:
       if: inputs.turbo-cache-key != 'false'
       uses: actions/cache@v4
       with:
-        path: ./node_modules/.cache/turbo
-        key: turbo-cache-${{ inputs.turbo-cache-key }}-${{ runner.os }}-${{ github.sha }}
+        path: ./.turbo/cache
+        key: turbo2-cache-${{ inputs.turbo-cache-key }}-${{ runner.os }}-${{ github.sha }}
         restore-keys: |
-          turbo-cache-${{ inputs.turbo-cache-key }}-${{ runner.os }}-
+          turbo2-cache-${{ inputs.turbo-cache-key }}-${{ runner.os }}-
