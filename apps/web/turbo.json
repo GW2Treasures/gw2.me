@@ -11,6 +11,7 @@
       ]
     },
     "dev": {
+      "persistent": true,
       "dependsOn": [
         "^build",
         "@gw2me/database#prisma:migrate"
