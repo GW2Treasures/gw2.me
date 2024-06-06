@@ -29,6 +29,10 @@
       "cache": false,
       "dependsOn": [
         "build"
+      ],
+      "env": [
+        "GITHUB_EVENT_NAME",
+        "GITHUB_OUTPUT"
       ]
     }
   }
