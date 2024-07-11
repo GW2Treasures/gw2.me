@@ -51,6 +51,7 @@ async function authorize(prompt?: 'consent' | 'none') {
       Scope.GW2_Wallet,
       Scope.GW2_Unlocks,
       Scope.GW2_Pvp,
+      Scope.GW2_Wvw,
       Scope.GW2_Builds,
       Scope.GW2_Progression,
       Scope.GW2_Guilds,

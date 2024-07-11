@@ -70,6 +70,10 @@ export default function DevDocsScopePage() {
             <td>Guild Wars 2 API subtokens will include the <Code inline>pvp</Code> permission</td>
           </tr>
           <tr>
+            <td><Code inline>gw2:wvw</Code></td>
+            <td>Guild Wars 2 API subtokens will include the <Code inline>wvw</Code> permission</td>
+          </tr>
+          <tr>
             <td><Code inline>gw2:builds</Code></td>
             <td>Guild Wars 2 API subtokens will include the <Code inline>builds</Code> permission</td>
           </tr>
