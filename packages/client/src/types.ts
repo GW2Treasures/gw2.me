@@ -13,6 +13,7 @@ export enum Scope {
   GW2_Wallet = 'gw2:wallet',
   GW2_Unlocks = 'gw2:unlocks',
   GW2_Pvp = 'gw2:pvp',
+  GW2_Wvw = 'gw2:wvw',
   GW2_Builds = 'gw2:builds',
   GW2_Progression = 'gw2:progression',
   GW2_Guilds = 'gw2:guilds',
