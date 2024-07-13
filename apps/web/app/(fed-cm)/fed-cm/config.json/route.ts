@@ -11,8 +11,8 @@ export function GET(request: NextRequest) {
     id_assertion_endpoint: '/fed-cm/assert',
     login_url: '/login',
     branding: {
-      background_color: '#ffffff',
-      color: '#B7000D',
+      background_color: '#b7000d',
+      color: '#ffffff',
       icons: [{ url: new URL(icon.src, baseUrl) }]
     }
   });
