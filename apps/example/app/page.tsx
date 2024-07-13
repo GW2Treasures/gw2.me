@@ -7,6 +7,7 @@ import { Scope } from '@gw2me/client';
 import { randomBytes, scryptSync } from 'crypto';
 import { client_id, code_challenge, gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
+import { FedCm } from './fed-cm';
 
 export default function HomePage() {
   return (
@@ -34,6 +35,8 @@ export default function HomePage() {
       <div style={{ '--icon-color': 'var(--color-brand)' }}>
         <Button type="submit" icon="gw2me">Login with gw2.me</Button>
       </div>
+
+      <FedCm gw2meUrl={process.env.GW2ME_URL!}/>
     </form>
   );
 }
