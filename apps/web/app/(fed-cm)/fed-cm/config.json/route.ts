@@ -9,7 +9,7 @@ export function GET(request: NextRequest) {
     accounts_endpoint: '/fed-cm/accounts',
     client_metadata_endpoint: '/fed-cm/client-metadata',
     id_assertion_endpoint: '/fed-cm/assert',
-    login_url: '/login',
+    login_url: '/fed-cm/login',
     branding: {
       background_color: '#b7000d',
       color: '#ffffff',
