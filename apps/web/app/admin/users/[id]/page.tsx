@@ -8,6 +8,7 @@ import { db } from '@/lib/db';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
+import { ensureUserIsAdmin } from 'app/admin/admin';
 import { notFound } from 'next/navigation';
 
 function getUser(id: string) {
@@ -22,6 +23,7 @@ function getUser(id: string) {
 }
 
 export default async function AdminUserDetailPage({ params }: { params: { id: string }}) {
+  await ensureUserIsAdmin();
   const user = await getUser(params.id);
 
   if(!user) {

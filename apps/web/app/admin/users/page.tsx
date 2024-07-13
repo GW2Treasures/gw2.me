@@ -7,6 +7,7 @@ import { Icon } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
+import { ensureUserIsAdmin } from '../admin';
 
 function getUsers() {
   return db.user.findMany({
@@ -19,6 +20,7 @@ function getUsers() {
 }
 
 export default async function AdminUserPage() {
+  await ensureUserIsAdmin();
   const users = await getUsers();
   const Users = createDataTable(users, (user) => user.id);
 

@@ -10,6 +10,7 @@ import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton'
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
+import { ensureUserIsAdmin } from '../admin';
 
 function getRequests() {
   return db.apiRequest.findMany({
@@ -19,6 +20,7 @@ function getRequests() {
 }
 
 export default async function AdminRequestsPage() {
+  await ensureUserIsAdmin();
   const requests = await getRequests();
   const Requests = createDataTable(requests, (request) => request.id);
 

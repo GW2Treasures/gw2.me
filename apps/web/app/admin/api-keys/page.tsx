@@ -10,6 +10,7 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import Link from 'next/link';
+import { ensureUserIsAdmin } from '../admin';
 
 function getApiKeys() {
   return db.apiToken.findMany({
@@ -31,6 +32,7 @@ function getApiKeys() {
 }
 
 export default async function AdminApiKeysPage() {
+  await ensureUserIsAdmin();
   const apiKeys = await getApiKeys();
   const ApiKeys = createDataTable(apiKeys, (apiKey) => apiKey.id);
 

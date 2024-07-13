@@ -9,6 +9,7 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import Link from 'next/link';
+import { ensureUserIsAdmin } from '../admin';
 
 function getApps() {
   return db.application.findMany({
@@ -27,6 +28,7 @@ function getApps() {
 }
 
 export default async function AdminAppsPage() {
+  await ensureUserIsAdmin();
   const apps = await getApps();
   const Apps = createDataTable(apps, (app) => app.id);
 
