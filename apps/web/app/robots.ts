@@ -8,6 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       disallow: [
         '/api',
         '/auth',
+        '/fed-cm'
       ]
     },
     sitemap: 'https://gw2.me/sitemap.xml',
