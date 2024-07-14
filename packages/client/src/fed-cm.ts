@@ -29,6 +29,6 @@ export class Gw2MeFedCM {
           clientId: this.#clientId,
         }]
       }
-    } as CredentialCreationOptions);
+    } as CredentialCreationOptions) as Promise<null | { token: string, type: 'identity' }>;
   }
 }

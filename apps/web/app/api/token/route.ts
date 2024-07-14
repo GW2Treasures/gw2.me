@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
         !authorization ||
         isExpired(authorization.expiresAt) ||
         authorization.application.clientId !== client_id ||
-        authorization.redirectUri !== redirect_uri ||
+        (authorization.redirectUri !== null && authorization.redirectUri !== redirect_uri) ||
         !verifyCodeChallenge(authorization.codeChallenge, code_verifier) ||
         (authorization.application.type === ApplicationType.Confidential && (!client_secret || !validClientSecret(client_secret, authorization.application.clientSecret)))
       ) {
