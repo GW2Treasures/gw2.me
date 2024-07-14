@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import icon from '../../../icon.svg';
+import icon40 from './fed-cm-40.png';
 import { getUrlFromRequest } from '@/lib/url';
 
 export function GET(request: NextRequest) {
@@ -13,7 +13,7 @@ export function GET(request: NextRequest) {
     branding: {
       background_color: '#b7000d',
       color: '#ffffff',
-      icons: [{ url: new URL(icon.src, baseUrl) }]
+      icons: [{ url: new URL(icon40.src, baseUrl), size: 40 }]
     }
   });
 }
