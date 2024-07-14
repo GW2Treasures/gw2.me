@@ -10,11 +10,12 @@ export interface DevLoginProps {
 }
 
 export const DevLogin: FC<DevLoginProps> = ({ username }) => {
-  const login = useCallback(() => {
+  const login = useCallback(async () => {
     const name = username ?? prompt('username');
 
     if(name) {
-      devLogin(name);
+      await devLogin(name);
+      ('login' in navigator) && (navigator.login as any).setStatus('logged-in');
     }
   }, [username]);
 
