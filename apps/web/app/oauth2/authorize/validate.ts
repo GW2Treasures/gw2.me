@@ -25,7 +25,16 @@ export const getApplicationByClientId = cache(async function getApplicationByCli
 
   const application = await db.application.findUnique({
     where: { clientId },
-    select: { id: true, name: true, callbackUrls: true, type: true, imageId: true, owner: { select: { name: true }}}
+    select: {
+      id: true,
+      name: true,
+      privacyPolicyUrl: true,
+      termsOfServiceUrl: true,
+      callbackUrls: true,
+      type: true,
+      imageId: true,
+      owner: { select: { name: true }}
+    }
   });
 
   assert(application, OAuth2ErrorCode.invalid_request, 'invalid client_id');

@@ -24,6 +24,8 @@ import { LoginForm } from 'app/login/form';
 import { Metadata } from 'next';
 import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
+import Link from 'next/link';
 
 interface AuthorizePageProps {
   searchParams: Partial<AuthorizeRequestParams> & Record<string, string>
@@ -174,7 +176,12 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
               </div>
             )}
 
-            <p className={styles.outro}>You can revoke access at anytime from your gw2.me profile.</p>
+            <p className={styles.outro}>
+              The above data will be shared with {application.name} in accordance with their
+              {' '}{application.privacyPolicyUrl ? <ExternalLink href={application.privacyPolicyUrl}>privacy policy</ExternalLink> : 'privacy policy'} and
+              {' '}{application.termsOfServiceUrl ? <ExternalLink href={application.termsOfServiceUrl}>terms of service</ExternalLink> : 'terms of service'}.
+              You can revoke access at anytime from your <Link href="/profile">gw2.me profile</Link>.
+            </p>
 
             <div className={styles.buttons}>
               <LinkButton external href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
