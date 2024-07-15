@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { NextRequest, userAgent } from 'next/server';
+import { NextRequest, NextResponse, userAgent } from 'next/server';
 import { db } from '@/lib/db';
 import { LoginErrorCookieName, authCookie, loginErrorCookie, userCookie } from '@/lib/cookie';
 import { Prisma, UserProviderRequestType } from '@gw2me/database';
@@ -166,7 +166,10 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     cookies().delete(LoginErrorCookieName);
 
     // redirect
-    redirect(returnUrl);
+    return NextResponse.redirect(
+      new URL(returnUrl, authRequest.redirect_uri),
+      { headers: { 'Set-Login': 'logged-in' }}
+    );
   } catch(error) {
     if(isRedirectError(error)) {
       throw error;

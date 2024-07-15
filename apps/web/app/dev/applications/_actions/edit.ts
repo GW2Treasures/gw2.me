@@ -28,6 +28,8 @@ export async function editApplication(id: string, _: FormState, form: FormData):
   const description = form.get('description');
   const publicRaw = form.get('public');
   const publicUrl = form.get('publicUrl');
+  const privacyPolicyUrl = form.get('privacyPolicyUrl');
+  const termsOfServiceUrl = form.get('termsOfServiceUrl');
   const callbackUrlsRaw = form.get('callbackUrls');
   const imageRaw = form.get('image');
 
@@ -42,24 +44,21 @@ export async function editApplication(id: string, _: FormState, form: FormData):
   }
   const isPublic = !!publicRaw;
 
-  if(publicUrl == null || typeof publicUrl !== 'string' || (isPublic && publicUrl.trim() === '')) {
+  if(publicUrl == null || typeof publicUrl !== 'string' || (isPublic && (publicUrl.trim() === '' || !isValidUrl(publicUrl)))) {
     return { error: 'Invalid public URL' };
   }
+
+  if(privacyPolicyUrl == null || typeof privacyPolicyUrl !== 'string' || (privacyPolicyUrl && !isValidUrl(privacyPolicyUrl))) {
+    return { error: 'Invalid Privacy Policy URL' };
+  }
+  if(termsOfServiceUrl == null || typeof termsOfServiceUrl !== 'string' || (termsOfServiceUrl && !isValidUrl(termsOfServiceUrl))) {
+    return { error: 'Invalid Terms of Service URL' };
+  }
+
   if(callbackUrlsRaw == null || typeof callbackUrlsRaw !== 'string') {
     return { error: 'Invalid redirect URLs' };
   }
 
-  // verify publicUrl
-  try {
-    if(publicUrl) {
-      const url = new URL(publicUrl);
-      if(url.protocol !== 'http:' && url.protocol !== 'https:') {
-        return { error: 'Invalid public URL' };
-      }
-    }
-  } catch {
-    return { error: 'Invalid public URL' };
-  }
 
   // verify callbackUrls
   let callbackUrls: string[];
@@ -136,6 +135,8 @@ export async function editApplication(id: string, _: FormState, form: FormData):
         description: description.trim(),
         public: !!publicRaw,
         publicUrl: publicUrl.trim(),
+        privacyPolicyUrl: privacyPolicyUrl.trim(),
+        termsOfServiceUrl: termsOfServiceUrl.trim(),
         callbackUrls,
         imageId,
       }
@@ -156,3 +157,19 @@ export async function editApplication(id: string, _: FormState, form: FormData):
 
   return { success: 'Application saved' };
 };
+
+function isValidUrl(urlString: string): boolean {
+  try {
+    // try parsing as url
+    const url = new URL(urlString);
+
+    // only allow http and https urls
+    if(url.protocol !== 'http:' && url.protocol !== 'https:') {
+      return false;
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+}

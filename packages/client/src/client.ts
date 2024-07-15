@@ -1,4 +1,5 @@
 import { Gw2MeApi } from './api';
+import { Gw2MeFedCM } from './fed-cm';
 import { type ClientInfo, type Options, Scope } from './types';
 import { jsonOrError } from './util';
 
@@ -32,12 +33,15 @@ export interface TokenResponse {
 }
 
 export class Gw2MeClient {
-  private client_id: string;
-  private client_secret?: string;
+  #client_id: string;
+  #client_secret?: string;
+
+  #fedCM;
 
   constructor({ client_id, client_secret }: ClientInfo, private options?: Partial<Options>) {
-    this.client_id = client_id;
-    this.client_secret = client_secret;
+    this.#client_id = client_id;
+    this.#client_secret = client_secret;
+    this.#fedCM = new Gw2MeFedCM(this.#getUrl('/fed-cm/config.json'), this.#client_id);
   }
 
   #getUrl(url: string) {
@@ -55,7 +59,7 @@ export class Gw2MeClient {
     verified_accounts_only,
   }: AuthorizationUrlParams): string {
     const params = new URLSearchParams({
-      client_id: this.client_id,
+      client_id: this.#client_id,
       response_type: 'code',
       redirect_uri,
       scope: scopes.join(' ')
@@ -88,11 +92,11 @@ export class Gw2MeClient {
   async getAccessToken({ code, redirect_uri, code_verifier }: AuthTokenParams): Promise<TokenResponse> {
     const data = new URLSearchParams({
       grant_type: 'authorization_code',
-      code, client_id: this.client_id, redirect_uri,
+      code, client_id: this.#client_id, redirect_uri,
     });
 
-    if(this.client_secret) {
-      data.set('client_secret', this.client_secret);
+    if(this.#client_secret) {
+      data.set('client_secret', this.#client_secret);
     }
 
     if(code_verifier) {
@@ -110,13 +114,13 @@ export class Gw2MeClient {
   }
 
   async refreshToken({ refresh_token }: RefreshTokenParams): Promise<TokenResponse> {
-    if(!this.client_secret) {
+    if(!this.#client_secret) {
       throw new Error('client_secret required');
     }
 
     const data = new URLSearchParams({
       grant_type: 'refresh_token',
-      refresh_token, client_id: this.client_id, client_secret: this.client_secret,
+      refresh_token, client_id: this.#client_id, client_secret: this.#client_secret,
     });
 
     const token = await fetch(this.#getUrl('/api/token'), {
@@ -131,5 +135,9 @@ export class Gw2MeClient {
 
   api(access_token: string) {
     return new Gw2MeApi(access_token, this.options);
+  }
+
+  get fedCM() {
+    return this.#fedCM;
   }
 }

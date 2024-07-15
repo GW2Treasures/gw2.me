@@ -75,6 +75,14 @@ export default async function EditApplicationPage({ params }: EditApplicationPag
             <TextInput name="publicUrl" defaultValue={application.publicUrl} value={undefined}/>
           </Label>
 
+          <Label label="Privacy Policy URL">
+            <TextInput name="privacyPolicyUrl" defaultValue={application.privacyPolicyUrl} value={undefined}/>
+          </Label>
+
+          <Label label="Terms of Service URL">
+            <TextInput name="termsOfServiceUrl" defaultValue={application.termsOfServiceUrl} value={undefined}/>
+          </Label>
+
           <b style={{ marginTop: 16 }}>OAuth2 Client Information</b>
 
           <Label label="Type">

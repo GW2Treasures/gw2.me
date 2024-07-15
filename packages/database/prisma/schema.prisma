@@ -120,6 +120,9 @@ model Application {
   description  String   @default("")
   public       Boolean  @default(false)
   publicUrl    String   @default("")
+
+  privacyPolicyUrl  String @default("")
+  termsOfServiceUrl String @default("")
   
   imageId      String?
   image        File?    @relation("applicationImage", fields: [imageId], references: [id], onDelete: SetNull)
