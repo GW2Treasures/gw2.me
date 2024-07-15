@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
   if(!session) {
     return Response.json(
-      { error: { code: OAuth2ErrorCode.access_denied }},
+      { error: { code: OAuth2ErrorCode.access_denied, details: 'no session' }},
       { status: 401, headers: corsHeaders(request) }
     );
   }
@@ -23,10 +23,11 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const clientId = getFormDataString(formData, 'client_id');
   const accountId = getFormDataString(formData, 'account_id');
+  const origin = request.headers.get('Origin');
 
-  if(!clientId || !accountId || accountId !== session.userId) {
+  if(!clientId || !accountId || accountId !== session.userId || !origin) {
     return Response.json(
-      { error: { code: OAuth2ErrorCode.invalid_request }},
+      { error: { code: OAuth2ErrorCode.invalid_request, details: 'missing required fields' }},
       { status: 400, headers: corsHeaders(request) }
     );
   }
@@ -34,14 +35,23 @@ export async function POST(request: NextRequest) {
   // load application
   const application = await db.application.findUnique({
     where: { clientId },
-    select: { id: true }
+    select: { id: true, callbackUrls: true }
   });
 
   // check that application exists
   if(!application) {
     return Response.json(
-      { error: { code: OAuth2ErrorCode.invalid_client }},
+      { error: { code: OAuth2ErrorCode.invalid_client, details: 'invalid client_id' }},
       { status: 404, headers: corsHeaders(request) }
+    );
+  }
+
+  // verify origin matches a registered callback url
+  const validOrigin = application.callbackUrls.some((url) => new URL(url).origin === origin);
+  if(!validOrigin) {
+    return Response.json(
+      { error: { code: OAuth2ErrorCode.invalid_request, details: 'wrong origin' }},
+      { status: 400, headers: corsHeaders(request) }
     );
   }
 
