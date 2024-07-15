@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const clientId = getFormDataString(formData, 'client_id');
   const accountId = getFormDataString(formData, 'account_id');
+  const disclosureTextShown = getFormDataString(formData, 'disclosure_text_shown') === 'true';
   const origin = request.headers.get('Origin');
 
   if(!clientId || !accountId || accountId !== session.userId || !origin) {
@@ -70,8 +71,18 @@ export async function POST(request: NextRequest) {
     select: { scope: true, accounts: { select: { id: true }}}
   });
 
-  // include previous scopes and identify + email
+  // always include previous scopes if available (as if `include_granted_scopes` is set during OAuth authorization)
   const scopes = new Set<Scope>(previousAuthorization?.scope as Scope[]);
+
+  // if the disclose text was not shown don't add additional scopes
+  if(!disclosureTextShown && (!scopes.has(Scope.Identify) || !scopes.has(Scope.Email))) {
+    return Response.json(
+      { error: { code: OAuth2ErrorCode.invalid_scope, details: 'disclosure_text_shown = false and previous authorization does not include scopes "identify email"' }},
+      { status: 400, headers: corsHeaders(request) }
+    );
+  }
+
+  // always include identify + email until FedCM gets a way to define scopes
   scopes.add(Scope.Identify);
   scopes.add(Scope.Email);
 
