@@ -5,10 +5,15 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import Link from 'next/link';
 import styles from '../layout.module.css';
 import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
+import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 
 export default function DevDocsFedCmPage() {
   return (
     <PageLayout className={styles.layout}>
+      <Notice icon="warning">
+        FedCM support in gw2.me is still <b>experimental</b>.
+      </Notice>
+
       <PageTitle>Federated Credential Management (FedCM)</PageTitle>
 
       <p>
