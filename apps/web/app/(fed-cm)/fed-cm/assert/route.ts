@@ -10,6 +10,15 @@ import { expiresAt } from '@/lib/date';
 import { Scope } from '@gw2me/client';
 
 export async function POST(request: NextRequest) {
+  // verify `Sec-Fetch-Dest: webidentity` header is set
+  if(request.headers.get('Sec-Fetch-Dest') !== 'webidentity') {
+    return Response.json(
+      { error: { code: OAuth2ErrorCode.invalid_request, details: 'Missing `Sec-Fetch-Dest: webidentity` header' }},
+      { status: 400, headers: corsHeaders(request) }
+    );
+  }
+
+  // get user session
   const session = await getSession();
 
   if(!session) {
