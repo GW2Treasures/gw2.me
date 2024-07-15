@@ -5,6 +5,7 @@ import { getUrlFromRequest } from '@/lib/url';
 import { db } from '@/lib/db';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { corsHeaders } from '@/lib/cors-header';
+import { Scope } from '@gw2me/client';
 
 export async function GET(request: NextRequest) {
   // verify `Sec-Fetch-Dest: webidentity` header is set
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // get approved application
+  // get approved applications that are not expired and include the scopes "identify email"
   const notExpired = {
     OR: [
       { expiresAt: { gte: new Date() }},
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
     ]
   };
   const approvedApplications = await db.application.findMany({
-    where: { authorizations: { some: { type: 'AccessToken', userId: user.id, ...notExpired }}},
+    where: { authorizations: { some: { type: 'AccessToken', userId: user.id, ...notExpired, scope: { hasEvery: [Scope.Identify, Scope.Email] }}}},
     select: { clientId: true }
   });
 
