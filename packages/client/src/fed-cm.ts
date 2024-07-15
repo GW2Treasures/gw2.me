@@ -1,5 +1,6 @@
 export interface FedCMRequestOptions {
   mediation?: CredentialMediationRequirement;
+  mode?: 'button';
   signal?: AbortSignal;
 }
 
@@ -16,7 +17,7 @@ export class Gw2MeFedCM {
     return typeof window !== 'undefined' && 'IdentityCredential' in window;
   }
 
-  request({ mediation, signal }: FedCMRequestOptions) {
+  request({ mediation, signal, mode }: FedCMRequestOptions) {
     if(!this.isSupported()) {
       throw new Error('FedCM is not supported');
     }
@@ -27,7 +28,8 @@ export class Gw2MeFedCM {
         providers: [{
           configURL: this.#configUrl,
           clientId: this.#clientId,
-        }]
+        }],
+        mode
       }
     } as CredentialCreationOptions) as Promise<null | { token: string, type: 'identity' }>;
   }
