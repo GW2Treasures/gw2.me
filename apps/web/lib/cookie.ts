@@ -8,12 +8,13 @@ export const SessionCookieName = 'gw2me-session';
 export const UserCookieName = 'gw2me-user';
 export const LoginErrorCookieName = 'gw2me-login-error';
 
-export function authCookie(sessionId: string, secure: boolean): ResponseCookie {
+export function authCookie(sessionId: string): ResponseCookie {
   return {
     name: SessionCookieName,
     value: sessionId,
 
     domain: baseDomain,
+    // SameSite=none is required for FedCM (see https://github.com/fedidcg/FedCM/issues/587)
     sameSite: 'none',
     httpOnly: true,
     priority: 'high',
