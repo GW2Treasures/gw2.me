@@ -1,6 +1,7 @@
 import 'server-only';
 import { Gw2MeClient } from '@gw2me/client';
 import { createHash, randomBytes } from 'crypto';
+import { unstable_noStore } from 'next/cache';
 
 export const code_verifier = randomBytes(32).toString('base64url');
 export const code_challenge = createHash('sha256').update(code_verifier).digest('base64url');
@@ -13,5 +14,11 @@ export const gw2me = new Gw2MeClient({
 });
 
 export function getGw2MeUrl() {
+  unstable_noStore();
   return process.env.GW2ME_URL ?? 'https://gw2.me';
+}
+
+export function getCallback() {
+  unstable_noStore();
+  return process.env.CALLBACK_URL ?? 'https://demo.gw2.me/callback';
 }

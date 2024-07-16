@@ -3,7 +3,7 @@ import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { redirect } from 'next/navigation';
 import { Scope } from '@gw2me/client';
-import { code_challenge, gw2me } from '@/lib/client';
+import { code_challenge, getCallback, gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 
 export default function HomePage() {
@@ -50,7 +50,7 @@ async function login(formData: FormData) {
   const verified_accounts_only = formData.get('verified_accounts_only') === 'true';
 
   const authUrl = gw2me.getAuthorizationUrl({
-    redirect_uri: 'http://localhost:4001/callback',
+    redirect_uri: getCallback(),
     scopes,
     state: 'example',
     code_challenge,
