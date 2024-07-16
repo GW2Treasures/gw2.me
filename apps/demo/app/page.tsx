@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation';
 import { Scope } from '@gw2me/client';
 import { code_challenge, gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
-import { FedCm } from './fed-cm';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 
 export default function HomePage() {
@@ -32,10 +31,7 @@ export default function HomePage() {
       </div>
 
       <div style={{ '--icon-color': 'var(--color-brand)' }}>
-        <FlexRow>
-          <Button type="submit" icon="gw2me">Login with gw2.me</Button>
-          <FedCm gw2meUrl={process.env.GW2ME_URL!}/>
-        </FlexRow>
+        <Button type="submit" icon="gw2me">Login with gw2.me</Button>
       </div>
 
     </form>

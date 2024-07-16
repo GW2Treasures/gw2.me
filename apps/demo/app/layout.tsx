@@ -27,6 +27,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <Icon icon="gw2me-outline"/>
             gw2.me Demo
           </Link>
+          <LinkButton appearance="menu" href="/fed-cm">FedCM</LinkButton>
 
           <LinkButton appearance="menu" href={getGw2MeUrl()} external icon="gw2me" className={styles.right}>Return to gw2.me</LinkButton>
         </div>
