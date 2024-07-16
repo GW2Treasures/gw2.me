@@ -141,7 +141,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
       select: { id: true, userId: true }
     });
 
-    cookies().set(authCookie(session.id, true));
+    cookies().set(authCookie(session.id));
     cookies().set(userCookie(session.userId));
     cookies().delete(LoginErrorCookieName);
   }
@@ -225,7 +225,7 @@ export async function submitAuthentication(challengeJwt: string, authentication:
   const session = await db.userSession.create({ data: { info: sessionName, userId: passkey.userId }});
 
   // set session cookie
-  cookies().set(authCookie(session.id, true));
+  cookies().set(authCookie(session.id));
   cookies().set(userCookie(passkey.userId));
   cookies().delete(LoginErrorCookieName);
 

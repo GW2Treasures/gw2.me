@@ -27,6 +27,6 @@ export async function devLogin(name: string) {
     select: { id: true }
   });
 
-  cookies().set(authCookie(session.id, false));
+  cookies().set(authCookie(session.id));
   cookies().set(userCookie(userId));
 }

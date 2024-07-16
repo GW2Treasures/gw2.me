@@ -160,8 +160,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
     const session = await db.userSession.create({ data: { info: sessionName, userId }});
 
     // set session cookie
-    const isHttps = new URL(authRequest.redirect_uri).protocol === 'https:';
-    cookies().set(authCookie(session.id, isHttps));
+    cookies().set(authCookie(session.id));
     cookies().set(userCookie(userId));
     cookies().delete(LoginErrorCookieName);
 
