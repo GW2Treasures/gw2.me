@@ -13,7 +13,8 @@
     "dev": {
       "dependsOn": [
         "^build",
-        "@gw2me/database#prisma:migrate"
+        "@gw2me/database#prisma:migrate",
+        "demo-setup#demo-setup"
       ]
     }
   }

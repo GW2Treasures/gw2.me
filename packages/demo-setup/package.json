@@ -1,0 +1,14 @@
+{
+  "name": "demo-setup",
+  "private": true,
+  "scripts": {
+    "demo-setup": "ts-node ./setup.ts"
+  },
+  "dependencies": {
+    "@gw2me/database": "*",
+    "ts-node": "10.9.2"
+  },
+  "devDependencies": {
+    "typescript": "5.5.3"
+  }
+}
