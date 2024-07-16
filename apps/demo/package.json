@@ -1,16 +1,16 @@
 {
-  "name": "example",
+  "name": "demo",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "PORT=4001 next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "demo-setup": "demo-setup"
   },
   "dependencies": {
     "@gw2me/client": "*",
-    "@gw2me/database": "*",
     "@gw2treasures/icons": "0.1.0",
     "@gw2treasures/ui": "0.2.1",
     "next": "14.2.5",
@@ -19,9 +19,11 @@
     "server-only": "0.0.1"
   },
   "devDependencies": {
+    "@gw2me/demo-setup": "*",
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/node": "20.14.10",
     "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
     "@typescript-eslint/eslint-plugin": "7.16.1",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.5",

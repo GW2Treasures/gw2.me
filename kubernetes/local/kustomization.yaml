@@ -9,10 +9,14 @@ resources:
 - ../base
 - database
 - web
+- demo
 
 images:
 - name: ghcr.io/gw2treasures/gw2.me/web
   newTag: latest
 
 - name: ghcr.io/gw2treasures/gw2.me/database-migration
+  newTag: latest
+
+- name: ghcr.io/gw2treasures/gw2.me/demo
   newTag: latest

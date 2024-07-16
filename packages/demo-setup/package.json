@@ -1,0 +1,16 @@
+{
+  "name": "@gw2me/demo-setup",
+  "private": true,
+  "type": "module",
+  "bin": "./dist/setup.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@gw2me/database": "*"
+  },
+  "devDependencies": {
+    "@gw2treasures/tsconfig": "0.0.1",
+    "typescript": "5.5.3"
+  }
+}

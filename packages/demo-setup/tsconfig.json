@@ -1,0 +1,8 @@
+{
+  "extends": "@gw2treasures/tsconfig/base",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "target": "es2020"
+  },
+  "include": ["./setup.ts"]
+}

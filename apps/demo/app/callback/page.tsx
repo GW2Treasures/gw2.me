@@ -28,3 +28,7 @@ export default async function CallbackPage({ searchParams }: { searchParams: { c
     </div>
   );
 }
+
+export const metadata = {
+  title: 'OAuth2 Callback'
+};

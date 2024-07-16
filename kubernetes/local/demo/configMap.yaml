@@ -1,0 +1,9 @@
+kind: ConfigMap
+apiVersion: v1
+
+metadata:
+  name: demo
+
+data:
+  clientId: postgresql://gw2me:857a45cc-3a98-4e66-b352-1ffdfe76ad1c@database:5432/gw2me?schema=public
+  clientSecret: gw2me.kubernetes.localhost
