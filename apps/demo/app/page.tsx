@@ -1,11 +1,9 @@
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
-import { db } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { Scope } from '@gw2me/client';
-import { randomBytes, scryptSync } from 'crypto';
-import { client_id, code_challenge, gw2me } from '@/lib/client';
+import { code_challenge, gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { FedCm } from './fed-cm';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
@@ -56,21 +54,6 @@ async function login(formData: FormData) {
   const include_granted_scopes = formData.get('include_granted_scopes') === 'true';
   const verified_accounts_only = formData.get('verified_accounts_only') === 'true';
 
-  // make sure example app exists
-  const user = await db.user.upsert({
-    where: { name: 'example' },
-    create: { name: 'example' },
-    update: {}
-  });
-
-  const clientSecret = generateClientSecret();
-
-  await db.application.upsert({
-    where: { id: '1e3d49dd-bbda-4780-a51a-e24db5d87826' },
-    create: { id: '1e3d49dd-bbda-4780-a51a-e24db5d87826', clientId: client_id, clientSecret, name: 'Example App', ownerId: user.id, description: 'This is the gw2.me example app', callbackUrls: ['http://localhost:4001/callback'], type: 'Confidential' },
-    update: { clientId: client_id, clientSecret, name: 'Example App', ownerId: user.id, description: 'This is the gw2.me example app', callbackUrls: ['http://localhost:4001/callback'] }
-  });
-
   const authUrl = gw2me.getAuthorizationUrl({
     redirect_uri: 'http://localhost:4001/callback',
     scopes,
@@ -83,11 +66,4 @@ async function login(formData: FormData) {
   });
 
   redirect(authUrl);
-}
-
-function generateClientSecret() {
-  const secret = Buffer.from('example_client_secret', 'utf-8');
-  const salt = randomBytes(16);
-  const hash = scryptSync(secret, salt, 32);
-  return `${salt.toString('base64')}:${hash.toString('base64')}`;
 }
