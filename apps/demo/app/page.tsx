@@ -25,7 +25,7 @@ export default function HomePage() {
         </Label>
         <Label label="Options">
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <Checkbox name="include_granted_scopes" formValue="true">Include granted scopes</Checkbox>
+            <Checkbox name="include_granted_scopes" formValue="true">include_granted_scopes</Checkbox>
             <Checkbox name="verified_accounts_only" formValue="true">verified_accounts_only</Checkbox>
           </div>
         </Label>
@@ -43,7 +43,7 @@ export default function HomePage() {
 }
 
 export const metadata = {
-  title: 'Demo'
+  title: 'gw2.me Demo'
 };
 
 async function login(formData: FormData) {

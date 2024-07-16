@@ -9,5 +9,9 @@ export const gw2me = new Gw2MeClient({
   client_id: process.env.DEMO_CLIENT_ID!,
   client_secret: process.env.DEMO_CLIENT_SECRET!,
 }, {
-  url: process.env.GW2ME_URL,
+  url: getGw2MeUrl(),
 });
+
+export function getGw2MeUrl() {
+  return process.env.GW2ME_URL ?? 'https://gw2.me';
+}
