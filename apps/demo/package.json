@@ -20,11 +20,12 @@
     "server-only": "0.0.1"
   },
   "devDependencies": {
+    "@gw2me/demo-setup": "*",
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/node": "20.14.10",
     "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
     "@typescript-eslint/eslint-plugin": "7.16.1",
-    "@gw2me/demo-setup": "*",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.5",
     "typescript": "5.5.3"
