@@ -17,3 +17,8 @@ export function getGw2MeUrl() {
   unstable_noStore();
   return process.env.GW2ME_URL ?? 'https://gw2.me';
 }
+
+export function getCallback() {
+  unstable_noStore();
+  return process.env.CALLBACK_URL ?? 'https://demo.gw2.me/callback';
+}
