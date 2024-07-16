@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation';
 import { Scope } from '@gw2me/client';
 import { code_challenge, gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
-import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 
 export default function HomePage() {
   return (

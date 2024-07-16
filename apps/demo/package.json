@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@gw2me/client": "*",
-    "@gw2me/database": "*",
     "@gw2treasures/icons": "0.1.0",
     "@gw2treasures/ui": "0.2.1",
     "next": "14.2.5",

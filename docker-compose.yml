@@ -22,7 +22,6 @@ services:
       dockerfile: apps/demo/Dockerfile
     restart: unless-stopped
     environment:
-      - DATABASE_URL=postgresql://gw2me:gw2me@database:5432/gw2me?schema=public
       - FORCE_COLOR=1
       - GW2ME_URL=http://localhost:4000
     ports:
