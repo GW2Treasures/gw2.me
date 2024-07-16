@@ -45,7 +45,7 @@ export default function HomePage() {
 }
 
 export const metadata = {
-  title: 'gw2.me Example'
+  title: 'Demo'
 };
 
 async function login(formData: FormData) {

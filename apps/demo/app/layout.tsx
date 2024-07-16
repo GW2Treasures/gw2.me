@@ -22,7 +22,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body>
         <Link href="/" className={styles.header}>
           <Icon icon="gw2me-outline"/>
-          <div className={styles.title}>Example App</div>
+          <div className={styles.title}>gw2.me Demo</div>
         </Link>
         <div className={styles.content}>
           {children}
@@ -34,7 +34,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
 export const metadata = {
   title: {
-    template: '%s · example@gw2.me',
+    template: '%s · gw2.me Demo',
     default: ''
   },
   description: 'Securely manage GW2 API access',
