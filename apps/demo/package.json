@@ -6,7 +6,8 @@
     "dev": "PORT=4001 next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "demo-setup": "demo-setup"
   },
   "dependencies": {
     "@gw2me/client": "*",
@@ -23,6 +24,7 @@
     "@types/node": "20.14.10",
     "@types/react": "18.3.3",
     "@typescript-eslint/eslint-plugin": "7.16.1",
+    "@gw2me/demo-setup": "*",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.5",
     "typescript": "5.5.3"

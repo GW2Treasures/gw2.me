@@ -1,11 +1,11 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
 import { randomUUID, randomBytes, scrypt } from 'crypto';
 import { PrismaClient } from '@gw2me/database';
 
 async function run() {
-  const demoDir = resolve('../../apps/demo');
+  const demoDir = resolve('.');
   console.log(`Setting up demo (${demoDir})`);
 
   // check if .env.local exists

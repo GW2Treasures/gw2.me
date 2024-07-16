@@ -14,7 +14,14 @@
       "dependsOn": [
         "^build",
         "@gw2me/database#prisma:migrate",
-        "demo-setup#demo-setup"
+        "demo-setup"
+      ]
+    },
+    "demo-setup": {
+      "cache": false,
+      "dependsOn": [
+        "^build",
+        "@gw2me/database#prisma:migrate"
       ]
     }
   }
