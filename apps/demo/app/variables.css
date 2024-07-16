@@ -1,3 +1,4 @@
+
 :root {
   color-scheme: light;
 
@@ -14,10 +15,16 @@
   --color-border-dark: #ddd;
   --color-border-transparent: rgba(0 0 0 / .066);
 
+  --color-background-green: #F1F8E9;
+  --color-text-green: #33691E;
+  --color-border-green: #8BC34A;
+
   --color-focus: #245dc1;
   --shadow-focus: inset 0 0 0 2px var(--color-focus);
 
   --shadow: 0 0 2px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.14);
+
+  --color-error: #f44336;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -37,7 +44,13 @@
     --color-border-dark: #222428;
     --color-border-transparent: rgba(0 0 0 / .37);
 
+    --color-background-green: #33691E;
+    --color-text-green: #c5e1a5;
+    --color-border-green: #13280b;
+
     --color-focus: #2196f3;
+
+    --color-error: #ff6b60;
 
     --shadow: 0 0 2px rgba(0,0,0,0.24), 0 4px 8px rgba(0,0,0,0.28)
   }
