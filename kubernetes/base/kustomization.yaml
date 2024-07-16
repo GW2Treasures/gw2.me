@@ -10,3 +10,5 @@ resources:
 - database
 - database-migration
 - web
+- demo
+
