@@ -8,17 +8,14 @@ import { ApplicationType, AuthorizationType } from '@gw2me/database';
 import { createHash, scryptSync, timingSafeEqual } from 'crypto';
 
 // 7 days
-const EXPIRES_IN = 604800;
-
-function isValidGrantType(grant_type: string | undefined): grant_type is 'authorization_code' | 'refresh_token' {
-  return grant_type === 'authorization_code' || grant_type === 'refresh_token';
-}
+const ACCESS_TOKEN_EXPIRATION = 604800;
 
 export async function handleTokenRequest(params: Record<string, string | undefined>): Promise<TokenResponse> {
   const client_id = params['client_id'];
   const client_secret = params['client_secret'];
   const grant_type = params['grant_type'];
 
+  // validate client_id and grant_type
   assert(client_id, OAuth2ErrorCode.invalid_request, 'Missing client_id');
   assert(isValidGrantType(grant_type), OAuth2ErrorCode.unsupported_grant_type, 'Invalid grant_type');
 
@@ -28,6 +25,7 @@ export async function handleTokenRequest(params: Record<string, string | undefin
       const redirect_uri = params['redirect_uri'];
       const code_verifier = params['code_verifier'];
 
+      // make sure code and redirect_uri are set
       assert(code, OAuth2ErrorCode.invalid_request, 'Missing code');
       assert(redirect_uri, OAuth2ErrorCode.invalid_request, 'Missing redirect_uri');
 
@@ -45,14 +43,17 @@ export async function handleTokenRequest(params: Record<string, string | undefin
       assert(!isExpired(authorization.expiresAt), OAuth2ErrorCode.invalid_grant, 'code expired');
 
       if(authorization.redirectUri !== null) {
+        // authorization.redirectUri is currently only `null` for FedCM
+        // TODO: maybe set to "fed-cm" or something instead?
         assert(authorization.redirectUri === redirect_uri, OAuth2ErrorCode.invalid_grant, 'Invalid redirect_url');
       }
 
-      assert(verifyCodeChallenge(authorization.codeChallenge, code_verifier), OAuth2ErrorCode.invalid_request, 'code challenge verification failed');
+      assert(verifyPKCECodeChallenge(authorization.codeChallenge, code_verifier), OAuth2ErrorCode.invalid_request, 'code challenge verification failed');
 
+      // confidential applications need a valid client_secret
       if(authorization.application.type === ApplicationType.Confidential) {
         assert(client_secret, OAuth2ErrorCode.invalid_request, 'Missing client_secret');
-        assert(validClientSecret(client_secret, authorization.application.clientSecret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
+        assert(isValidClientSecret(client_secret, authorization.application.clientSecret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
       }
 
       const { applicationId, userId, scope, accounts } = authorization;
@@ -70,23 +71,21 @@ export async function handleTokenRequest(params: Record<string, string | undefin
         // create access token
         db.authorization.upsert({
           where: { type_applicationId_userId: { type: AuthorizationType.AccessToken, applicationId, userId }},
-          create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN), accounts: { connect: accounts }},
-          update: { scope, accounts: { set: accounts }, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN) }
+          create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), accounts: { connect: accounts }},
+          update: { scope, accounts: { set: accounts }, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
         }),
 
         // delete used code token
         db.authorization.delete({ where: { id: authorization.id }})
       ]);
 
-      const response: TokenResponse = {
+      return {
         access_token: accessAuthorization.token,
         token_type: 'Bearer',
-        expires_in: EXPIRES_IN,
+        expires_in: ACCESS_TOKEN_EXPIRATION,
         refresh_token: refreshAuthorization?.token,
         scope: scope.join(' ')
       };
-
-      return response;
     }
 
     case 'refresh_token': {
@@ -107,34 +106,36 @@ export async function handleTokenRequest(params: Record<string, string | undefin
       assert(refreshAuthorization, OAuth2ErrorCode.invalid_grant, 'Invalid refresh_token');
       assert(!isExpired(refreshAuthorization.expiresAt), OAuth2ErrorCode.invalid_grant, 'refresh_token expired');
 
-      assert(validClientSecret(client_secret, refreshAuthorization.application.clientSecret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
+      assert(isValidClientSecret(client_secret, refreshAuthorization.application.clientSecret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
 
       const { applicationId, userId, scope } = refreshAuthorization;
 
       // create new access token
       const accessAuthorization = await db.authorization.upsert({
         where: { type_applicationId_userId: { type: AuthorizationType.AccessToken, applicationId, userId }},
-        create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN) },
-        update: { scope, token: generateAccessToken(), expiresAt: expiresAt(EXPIRES_IN) }
+        create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
+        update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
       });
 
       // set last used to refresh token
       await db.authorization.update({ where: { id: refreshAuthorization.id }, data: { usedAt: new Date() }});
 
-      const response: TokenResponse = {
+      return {
         access_token: accessAuthorization.token,
         token_type: 'Bearer',
-        expires_in: EXPIRES_IN,
+        expires_in: ACCESS_TOKEN_EXPIRATION,
         refresh_token: refreshAuthorization.token,
         scope: scope.join(' ')
       };
-
-      return response;
     }
   }
 }
 
-function validClientSecret(clientSecret: string, saltedHash: string | null) {
+function isValidGrantType(grant_type: string | undefined): grant_type is 'authorization_code' | 'refresh_token' {
+  return grant_type === 'authorization_code' || grant_type === 'refresh_token';
+}
+
+function isValidClientSecret(clientSecret: string, saltedHash: string | null): boolean {
   if(saltedHash === null) {
     return false;
   }
@@ -149,7 +150,8 @@ function validClientSecret(clientSecret: string, saltedHash: string | null) {
   return timingSafeEqual(hashBuffer, derived);
 }
 
-function verifyCodeChallenge(codeChallenge: string | null, codeVerifier: string | undefined) {
+// instead of returning false if some check fails, throw OAuth2Error with description why code challenge failed
+function verifyPKCECodeChallenge(codeChallenge: string | null, codeVerifier: string | undefined): boolean {
   // no challenge needs to be completed
   if(!codeChallenge) {
     return true;
