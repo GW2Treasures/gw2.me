@@ -11,7 +11,8 @@ const config: Config = {
   // Add more setup options before each test is run
   setupFilesAfterEnv: [
     'next',
-    './lib/oauth/to-be-oauth2-error.jest.ts'
+    './lib/oauth/to-be-oauth2-error.jest.ts',
+    './lib/db.mock.ts',
   ],
 
   testEnvironment: 'jest-environment-jsdom',
