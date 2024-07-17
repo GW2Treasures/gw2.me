@@ -35,8 +35,10 @@ export async function handleTokenRequest(params: Record<string, string | undefin
           type_token: { token: code, type: AuthorizationType.Code },
           application: { clientId: client_id }
         },
-        // TODO: replace with select to only load necessary fields
-        include: { application: true, accounts: { select: { id: true }}}
+        include: {
+          application: { select: { type: true, clientSecret: true }},
+          accounts: { select: { id: true }}
+        }
       });
 
       assert(authorization, OAuth2ErrorCode.invalid_grant, 'Invalid code');
