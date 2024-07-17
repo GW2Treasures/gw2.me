@@ -20,7 +20,7 @@ export async function handleTokenRequest(params: Record<string, string | undefin
   const grant_type = params['grant_type'];
 
   assert(client_id, OAuth2ErrorCode.invalid_request, 'Missing client_id');
-  assert(isValidGrantType(grant_type), OAuth2ErrorCode.invalid_request, 'Invalid grant_type');
+  assert(isValidGrantType(grant_type), OAuth2ErrorCode.unsupported_grant_type, 'Invalid grant_type');
 
   switch(grant_type) {
     case 'authorization_code': {
@@ -41,18 +41,18 @@ export async function handleTokenRequest(params: Record<string, string | undefin
         include: { application: true, accounts: { select: { id: true }}}
       });
 
-      assert(authorization, OAuth2ErrorCode.invalid_request, 'Invalid code');
-      assert(!isExpired(authorization.expiresAt), OAuth2ErrorCode.invalid_request, 'code expired');
+      assert(authorization, OAuth2ErrorCode.invalid_grant, 'Invalid code');
+      assert(!isExpired(authorization.expiresAt), OAuth2ErrorCode.invalid_grant, 'code expired');
 
       if(authorization.redirectUri !== null) {
-        assert(authorization.redirectUri === redirect_uri, OAuth2ErrorCode.invalid_request, 'Invalid redirect_url');
+        assert(authorization.redirectUri === redirect_uri, OAuth2ErrorCode.invalid_grant, 'Invalid redirect_url');
       }
 
       assert(verifyCodeChallenge(authorization.codeChallenge, code_verifier), OAuth2ErrorCode.invalid_request, 'code challenge verification failed');
 
       if(authorization.application.type === ApplicationType.Confidential) {
         assert(client_secret, OAuth2ErrorCode.invalid_request, 'Missing client_secret');
-        assert(validClientSecret(client_secret, authorization.application.clientSecret), OAuth2ErrorCode.invalid_request, 'Invalid client_secret');
+        assert(validClientSecret(client_secret, authorization.application.clientSecret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
       }
 
       const { applicationId, userId, scope, accounts } = authorization;
@@ -104,10 +104,10 @@ export async function handleTokenRequest(params: Record<string, string | undefin
         include: { application: true }
       });
 
-      assert(refreshAuthorization, OAuth2ErrorCode.invalid_request, 'Invalid refresh_token');
-      assert(!isExpired(refreshAuthorization.expiresAt), OAuth2ErrorCode.invalid_request, 'refresh_token expired');
+      assert(refreshAuthorization, OAuth2ErrorCode.invalid_grant, 'Invalid refresh_token');
+      assert(!isExpired(refreshAuthorization.expiresAt), OAuth2ErrorCode.invalid_grant, 'refresh_token expired');
 
-      assert(validClientSecret(client_secret, refreshAuthorization.application.clientSecret), OAuth2ErrorCode.invalid_request, 'Invalid client_secret');
+      assert(validClientSecret(client_secret, refreshAuthorization.application.clientSecret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
 
       const { applicationId, userId, scope } = refreshAuthorization;
 
