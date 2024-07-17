@@ -1,7 +1,7 @@
 /** @jest-environment node */
 import { expect, describe, it } from '@jest/globals';
-import { handleTokenRequest } from './route';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
+import { handleTokenRequest } from './token';
 
 describe('/api/token', () => {
   describe('errors', () => {
