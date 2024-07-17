@@ -1,6 +1,8 @@
 import { corsHeaders } from '@/lib/cors-header';
 import { expiresAt, isExpired } from '@/lib/date';
 import { db } from '@/lib/db';
+import { assert } from '@/lib/oauth/assert';
+import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
 import { TokenResponse } from '@gw2me/client';
 import { ApplicationType, AuthorizationType } from '@gw2me/database';
@@ -16,39 +18,45 @@ function isValidGrantType(grant_type: string | undefined): grant_type is 'author
   return grant_type === 'authorization_code' || grant_type === 'refresh_token';
 }
 
-export async function POST(request: NextRequest) {
-  const params = await request.formData();
+export async function handleTokenRequest(params: Record<string, string | undefined>): Promise<TokenResponse> {
+  const client_id = params['client_id'];
+  const client_secret = params['client_secret'];
+  const grant_type = params['grant_type'];
 
-  const client_id = params.get('client_id')?.toString();
-  const client_secret = params.get('client_secret')?.toString();
-  const grant_type = params.get('grant_type')?.toString();
-
-  if(!client_id || !isValidGrantType(grant_type)) {
-    return NextResponse.json({ error: true }, { status: 400 });
-  }
+  assert(client_id, OAuth2ErrorCode.invalid_request, 'Missing client_id');
+  assert(isValidGrantType(grant_type), OAuth2ErrorCode.invalid_request, 'Invalid grant_type');
 
   switch(grant_type) {
     case 'authorization_code': {
-      const code = params.get('code')?.toString();
-      const redirect_uri = params.get('redirect_uri')?.toString();
-      const code_verifier = params.get('code_verifier')?.toString();
+      const code = params['code'];
+      const redirect_uri = params['redirect_uri'];
+      const code_verifier = params['code_verifier'];
 
-      if(!code || !redirect_uri) {
-        return NextResponse.json({ error: true }, { status: 400 });
-      }
+      assert(code, OAuth2ErrorCode.invalid_request, 'Missing code');
+      assert(redirect_uri, OAuth2ErrorCode.invalid_request, 'Missing redirect_uri');
 
       // find code
-      const authorization = await db.authorization.findUnique({ where: { type_token: { token: code, type: AuthorizationType.Code }}, include: { application: true, accounts: { select: { id: true }}}});
+      const authorization = await db.authorization.findUnique({
+        where: {
+          type_token: { token: code, type: AuthorizationType.Code },
+          application: { clientId: client_id }
+        },
+        // TODO: replace with select to only load necessary fields
+        include: { application: true, accounts: { select: { id: true }}}
+      });
 
-      if(
-        !authorization ||
-        isExpired(authorization.expiresAt) ||
-        authorization.application.clientId !== client_id ||
-        (authorization.redirectUri !== null && authorization.redirectUri !== redirect_uri) ||
-        !verifyCodeChallenge(authorization.codeChallenge, code_verifier) ||
-        (authorization.application.type === ApplicationType.Confidential && (!client_secret || !validClientSecret(client_secret, authorization.application.clientSecret)))
-      ) {
-        return NextResponse.json({ error: true }, { status: 400 });
+      assert(authorization, OAuth2ErrorCode.invalid_request, 'Invalid code');
+      assert(!isExpired(authorization.expiresAt), OAuth2ErrorCode.invalid_request, 'code expired');
+
+      if(authorization.redirectUri !== null) {
+        assert(authorization.redirectUri === redirect_uri, OAuth2ErrorCode.invalid_request, 'Invalid redirect_url');
+      }
+
+      assert(verifyCodeChallenge(authorization.codeChallenge, code_verifier), OAuth2ErrorCode.invalid_request, 'code challenge verification failed');
+
+      if(authorization.application.type === ApplicationType.Confidential) {
+        assert(client_secret, OAuth2ErrorCode.invalid_request, 'Missing client_secret');
+        assert(validClientSecret(client_secret, authorization.application.clientSecret), OAuth2ErrorCode.invalid_request, 'Invalid client_secret');
       }
 
       const { applicationId, userId, scope, accounts } = authorization;
@@ -82,23 +90,28 @@ export async function POST(request: NextRequest) {
         scope: scope.join(' ')
       };
 
-      return NextResponse.json(response, {
-        headers: corsHeaders(request)
-      });
+      return response;
     }
 
     case 'refresh_token': {
-      const refresh_token = params.get('refresh_token')?.toString();
+      const refresh_token = params['refresh_token'];
 
-      if(!refresh_token || !client_secret) {
-        return NextResponse.json({ error: true }, { status: 400 });
-      }
+      assert(refresh_token, OAuth2ErrorCode.invalid_request, 'Missing refresh_token');
+      assert(client_secret, OAuth2ErrorCode.invalid_request, 'Missing client_secret');
 
-      const refreshAuthorization = await db.authorization.findUnique({ where: { type_token: { token: refresh_token, type: AuthorizationType.RefreshToken }}, include: { application: true }});
+      const refreshAuthorization = await db.authorization.findUnique({
+        where: {
+          type_token: { token: refresh_token, type: AuthorizationType.RefreshToken },
+          application: { clientId: client_id, type: ApplicationType.Confidential }
+        },
+        // TODO: replace with select to only load necessary fields
+        include: { application: true }
+      });
 
-      if(!refreshAuthorization || isExpired(refreshAuthorization.expiresAt) || refreshAuthorization.application.clientId !== client_id || !validClientSecret(client_secret, refreshAuthorization.application.clientSecret)) {
-        return NextResponse.json({ error: true }, { status: 400 });
-      }
+      assert(refreshAuthorization, OAuth2ErrorCode.invalid_request, 'Invalid refresh_token');
+      assert(!isExpired(refreshAuthorization.expiresAt), OAuth2ErrorCode.invalid_request, 'refresh_token expired');
+
+      assert(validClientSecret(client_secret, refreshAuthorization.application.clientSecret), OAuth2ErrorCode.invalid_request, 'Invalid client_secret');
 
       const { applicationId, userId, scope } = refreshAuthorization;
 
@@ -120,10 +133,37 @@ export async function POST(request: NextRequest) {
         scope: scope.join(' ')
       };
 
-      return NextResponse.json(response, {
-        headers: corsHeaders(request)
-      });
+      return response;
     }
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const params = await request.formData();
+
+    // get all string params as object
+    const parsedParams = Object.fromEntries(Array.from(params.entries()).filter(([key, value]) => typeof value === 'string')) as Record<string, string>;
+
+    const response = await handleTokenRequest(parsedParams);
+
+    return NextResponse.json(response, { headers: corsHeaders(request) });
+
+  } catch (error) {
+    console.error(error);
+
+    if(error instanceof OAuth2Error) {
+      // TODO: use better http status based on error.code
+      return NextResponse.json(
+        { error: error.code, error_description: error.description },
+        { status: 500, headers: corsHeaders(request) }
+      );
+    }
+
+    return NextResponse.json(
+      { error: OAuth2ErrorCode.server_error, error_description: 'Internal server error' },
+      { status: 500, headers: corsHeaders(request) }
+    );
   }
 }
 
