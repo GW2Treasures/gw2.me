@@ -1,7 +1,7 @@
 /** @jest-environment node */
 import { expect, describe, it } from '@jest/globals';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
-import { handleTokenRequest } from './token';
+import { assertPKCECodeChallenge, handleTokenRequest } from './token';
 import { dbMock } from '@/lib/db.mock';
 import { Account, Application, Authorization } from '@gw2me/database';
 import { expiresAt } from '@/lib/date';
@@ -54,5 +54,13 @@ describe('/api/token', () => {
     });
 
     // TODO: add additional tests
+  });
+
+  describe('PKCE challenge', () => {
+    it('no challenge', () => expect(() => assertPKCECodeChallenge(null, undefined)).not.toThrowError());
+    it('missing verifier', () => expect(() => assertPKCECodeChallenge('S256:challenge', undefined)).toThrowOAuth2Error(OAuth2ErrorCode.invalid_request, 'code_verifier missing'));
+    it('unknown method', () => expect(() => assertPKCECodeChallenge('foo:challenge', 'bar')).toThrowOAuth2Error(OAuth2ErrorCode.invalid_request, 'Unsupported code challenge'));
+    it('wrong verifier', () => expect(() => assertPKCECodeChallenge('S256:challenge', 'wrong')).toThrowOAuth2Error(OAuth2ErrorCode.invalid_request, 'code challenge verification failed'));
+    it('success', () => expect(() => assertPKCECodeChallenge('S256:w6uP8Tcg6K2QR905Rms8iXTlksL6OD1KOWBxTK7wxPI', 'foobar')).not.toThrowError());
   });
 });

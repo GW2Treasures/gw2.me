@@ -1,7 +1,7 @@
 import { expiresAt, isExpired } from '@/lib/date';
 import { db } from '@/lib/db';
 import { assert } from '@/lib/oauth/assert';
-import { OAuth2ErrorCode } from '@/lib/oauth/error';
+import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
 import { TokenResponse } from '@gw2me/client';
 import { ApplicationType, AuthorizationType } from '@gw2me/database';
@@ -50,7 +50,7 @@ export async function handleTokenRequest(params: Record<string, string | undefin
         assert(authorization.redirectUri === redirect_uri, OAuth2ErrorCode.invalid_grant, 'Invalid redirect_url');
       }
 
-      assert(verifyPKCECodeChallenge(authorization.codeChallenge, code_verifier), OAuth2ErrorCode.invalid_request, 'code challenge verification failed');
+      assertPKCECodeChallenge(authorization.codeChallenge, code_verifier);
 
       // confidential applications need a valid client_secret
       if(authorization.application.type === ApplicationType.Confidential) {
@@ -101,8 +101,9 @@ export async function handleTokenRequest(params: Record<string, string | undefin
           type_token: { token: refresh_token, type: AuthorizationType.RefreshToken },
           application: { clientId: client_id, type: ApplicationType.Confidential }
         },
-        // TODO: replace with select to only load necessary fields
-        include: { application: true }
+        include: {
+          application: { select: { clientSecret: true }}
+        }
       });
 
       assert(refreshAuthorization, OAuth2ErrorCode.invalid_grant, 'Invalid refresh_token');
@@ -153,15 +154,15 @@ function isValidClientSecret(clientSecret: string, saltedHash: string | null): b
 }
 
 // instead of returning false if some check fails, throw OAuth2Error with description why code challenge failed
-function verifyPKCECodeChallenge(codeChallenge: string | null, codeVerifier: string | undefined): boolean {
+export function assertPKCECodeChallenge(codeChallenge: string | null, codeVerifier: string | undefined): void {
   // no challenge needs to be completed
   if(!codeChallenge) {
-    return true;
+    return;
   }
 
   // handle missing code verifier
   if(!codeVerifier) {
-    return false;
+    throw new OAuth2Error(OAuth2ErrorCode.invalid_request, { description: 'code_verifier missing' });
   }
 
   // parse stored challenge
@@ -169,10 +170,11 @@ function verifyPKCECodeChallenge(codeChallenge: string | null, codeVerifier: str
 
   // calculate hash and compare
   switch(method) {
-    case 'S256':
-      return challenge === createHash('sha256').update(codeVerifier).digest('base64url');
+    case 'S256': {
+      const hash = createHash('sha256').update(codeVerifier).digest('base64url');
+      return assert(challenge === hash, OAuth2ErrorCode.invalid_request, 'code challenge verification failed');
+    }
+    default:
+      throw new OAuth2Error(OAuth2ErrorCode.invalid_request, { description: 'Unsupported code challenge' });
   }
-
-  // method not supported -> fail
-  return false;
 }
