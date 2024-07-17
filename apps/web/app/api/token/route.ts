@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     const params = await request.formData();
 
     // get all string params as object
-    const parsedParams = Object.fromEntries(Array.from(params.entries()).filter(([key, value]) => typeof value === 'string')) as Record<string, string>;
+    const parsedParams = Object.fromEntries(Array.from(params.entries()).filter(([, value]) => typeof value === 'string')) as Record<string, string>;
 
     const response = await handleTokenRequest(parsedParams);
 
