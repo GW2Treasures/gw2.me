@@ -6,7 +6,11 @@
         "^build"
       ]
     },
-    "lint": {},
+    "lint": {
+      "env": [
+        "GITHUB_ACTIONS"
+      ]
+    },
     "test": {
       "dependsOn": [
         "^build"
