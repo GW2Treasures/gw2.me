@@ -8,7 +8,7 @@ export async function jsonOrError(response: Response) {
     if(isJson) {
       const error = await response.json();
 
-      errorMessage = error.error_message;
+      errorMessage = error.error_description;
     }
 
     throw new Error(`gw2.me returned an error: ${errorMessage ?? 'Unknown error'}`);
