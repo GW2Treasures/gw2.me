@@ -7,10 +7,12 @@ import { Account, Application, Authorization } from '@gw2me/database';
 import { expiresAt } from '@/lib/date';
 import { Scope } from '@gw2me/client';
 
-const mockAuthorization: Authorization & { application: Pick<Application, 'type' | 'clientSecret'>, accounts: Pick<Account, 'id'>[] } = {
+type MockAuthorization = Authorization & { application: Pick<Application, 'type' | 'clientSecret'>, accounts: Pick<Account, 'id'>[] };
+
+const mockAuthorization: MockAuthorization = {
   id: 'id',
   applicationId: 'app-id',
-  codeChallenge: 'challenge',
+  codeChallenge: null,
   expiresAt: expiresAt(60),
   redirectUri: '/redirect',
   createdAt: new Date(),
@@ -22,7 +24,7 @@ const mockAuthorization: Authorization & { application: Pick<Application, 'type'
   userId: 'user-id',
   application: {
     clientSecret: 'client-secret',
-    type: 'Confidential'
+    type: 'Public'
   },
   accounts: []
 };
@@ -51,9 +53,29 @@ describe('/api/token', () => {
         dbMock.authorization.findUnique.mockResolvedValue(mockAuthorization);
         await expect(handleTokenRequest({ client_id: 'test', grant_type: 'authorization_code', code: 'foo', redirect_uri: '/wrong' })).rejects.toBeOAuth2Error(OAuth2ErrorCode.invalid_grant, 'Invalid redirect_url');
       });
+
+      it('Requires code_verifier', async () => {
+        dbMock.authorization.findUnique.mockResolvedValue({ ...mockAuthorization, codeChallenge: 'challenge' });
+        await expect(handleTokenRequest({ client_id: 'test', grant_type: 'authorization_code', code: 'foo', redirect_uri: '/redirect' })).rejects.toBeOAuth2Error(OAuth2ErrorCode.invalid_request, 'code_verifier missing');
+      });
+
+      it('Missing client secret', async () => {
+        dbMock.authorization.findUnique.mockResolvedValue({ ...mockAuthorization, application: { type: 'Confidential', clientSecret: '' }} as MockAuthorization);
+        await expect(handleTokenRequest({ client_id: 'test', grant_type: 'authorization_code', code: 'foo', redirect_uri: '/redirect' })).rejects.toBeOAuth2Error(OAuth2ErrorCode.invalid_request, 'Missing client_secret');
+      });
+
+      it('returns token', async () => {
+        dbMock.authorization.findUnique.mockResolvedValue(mockAuthorization);
+        dbMock.authorization.upsert.mockResolvedValue({ token: 'token' } as any);
+
+        const response = await handleTokenRequest({ client_id: 'test', grant_type: 'authorization_code', code: 'foo', redirect_uri: '/redirect', client_secret: '' });
+        expect(response).toHaveProperty('access_token');
+      });
     });
 
-    // TODO: add additional tests
+    describe('refresh_token', () => {
+      // TODO: add refresh token tests
+    });
   });
 
   describe('PKCE challenge', () => {

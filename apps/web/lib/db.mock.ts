@@ -10,6 +10,9 @@ jest.mock('./db', () => ({
 
 beforeEach(() => {
   mockReset(dbMock);
+  dbMock.$transaction.mockImplementation(
+    (arrayOrCallback) => typeof arrayOrCallback === 'function' ? arrayOrCallback(dbMock) : Promise.all(arrayOrCallback)
+  );
 });
 
 export const dbMock = db as unknown as DeepMockProxy<PrismaClient>;
