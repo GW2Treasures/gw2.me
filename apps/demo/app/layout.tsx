@@ -21,6 +21,9 @@ const bitter = Bitter({
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={bitter.variable}>
+      <head>
+        <meta httpEquiv="origin-trial" content="AqIdXXdSth39NobxjPyrc6vcnnc5WEGmxpT2m5Y4b6GbjMIp+QCMxDrUk16wBGzPTVAGTmc1LXVmIiZr8Od3CwoAAABUeyJvcmlnaW4iOiJodHRwczovL2RlbW8uZ3cyLm1lOjQ0MyIsImZlYXR1cmUiOiJGZWRDbUJ1dHRvbk1vZGUiLCJleHBpcnkiOjE3MzY4MTI4MDB9"/>
+      </head>
       <body>
         <div className={styles.header}>
           <Link href="/" className={styles.title}>
