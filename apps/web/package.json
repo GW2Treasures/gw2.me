@@ -17,7 +17,7 @@
     "@gw2treasures/icons": "0.1.0",
     "@gw2treasures/ui": "0.2.1",
     "@simplewebauthn/browser": "10.0.0",
-    "@simplewebauthn/server": "10.0.0",
+    "@simplewebauthn/server": "10.0.1",
     "aaguids": "0.0.6",
     "fast-jwt": "4.0.2",
     "next": "14.2.5",
