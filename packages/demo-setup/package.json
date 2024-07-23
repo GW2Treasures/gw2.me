@@ -11,6 +11,6 @@
   },
   "devDependencies": {
     "@gw2treasures/tsconfig": "0.0.1",
-    "typescript": "5.5.3"
+    "typescript": "5.5.4"
   }
 }
