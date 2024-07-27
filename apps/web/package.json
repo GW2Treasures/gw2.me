@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@gw2api/fetch": "0.3.0",
+    "@gw2api/fetch": "0.4.0",
     "@gw2me/client": "*",
     "@gw2me/database": "*",
     "@gw2treasures/helper": "0.0.4",
