@@ -27,7 +27,7 @@
     "sharp": "0.33.4"
   },
   "devDependencies": {
-    "@gw2api/types": "0.0.14",
+    "@gw2api/types": "0.0.15",
     "@gw2treasures/eslint-plugin-nextjs": "0.0.1",
     "@gw2treasures/tsconfig": "0.0.1",
     "@simplewebauthn/types": "10.0.0",
