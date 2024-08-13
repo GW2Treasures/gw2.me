@@ -11,7 +11,6 @@ import { getUser } from '@/lib/session';
 import { Icon, cx } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { DataTableContext } from '@gw2treasures/ui/components/Table/DataTableContext';
-import { FormatDate } from '@/components/Format/FormatDate';
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -52,6 +51,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               <LinkButton appearance="menu" href={user ? '/profile' : '/login'} icon="user">{user ? user.name : 'Login'}</LinkButton>
             </div>
           </div>
+          <hr className={styles.border}/>
           <DataTableContext>
             {children}
           </DataTableContext>
