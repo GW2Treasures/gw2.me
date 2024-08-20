@@ -24,7 +24,7 @@ import { redirect } from 'next/navigation';
 
 interface LoginFormProps {
   returnTo?: string;
-};
+}
 
 export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
   const prevUser = await getPreviousUser();

@@ -165,7 +165,7 @@ function verifyCodeChallenge(codeChallenge: string | null, codeVerifier: string 
   // calculate hash and compare
   switch(method) {
     case 'S256':
-      return challenge === createHash('sha256').update(codeVerifier).digest('base64url');;
+      return challenge === createHash('sha256').update(codeVerifier).digest('base64url');
   }
 
   // method not supported -> fail

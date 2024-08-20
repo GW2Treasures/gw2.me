@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './global.css';
-import "@fontsource/bitter/latin-700.css";
+import '@fontsource/bitter/latin-700.css';
 import { App } from './App';
 
 const root = ReactDOM.createRoot(

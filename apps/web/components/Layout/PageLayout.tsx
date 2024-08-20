@@ -6,7 +6,7 @@ interface PageLayoutProps {
   children: ReactNode;
   thin?: boolean;
   className?: string;
-};
+}
 
 export const PageLayout: FC<PageLayoutProps> = ({ children, thin = false, className }) => {
   return (

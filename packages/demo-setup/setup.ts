@@ -74,5 +74,5 @@ export async function createClientSecret() {
   return {
     clientSecretHashed: `${saltHex}:${hashHex}`,
     clientSecret: clientSecretBuffer.toString('base64url')
-  }
-};
+  };
+}

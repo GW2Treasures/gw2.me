@@ -20,7 +20,7 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { cache } from 'react';
 
 const getAccount = cache(async function getAccount(id: string) {
-  const session = await getSessionOrRedirect()
+  const session = await getSessionOrRedirect();
 
   const account = await db.account.findUnique({
     where: { id, userId: session.userId },

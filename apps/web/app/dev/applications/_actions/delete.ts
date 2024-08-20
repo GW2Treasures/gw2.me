@@ -21,4 +21,4 @@ export async function deleteApplication(id: string, _: FormState, data: FormData
   }
 
   redirect('/dev/applications');
-};
+}

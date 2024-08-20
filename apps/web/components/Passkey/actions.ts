@@ -28,7 +28,7 @@ function getRelayingParty() {
 
 export type RegistrationParams =
   | { type: 'add' }
-  | { type: 'new', username: string }
+  | { type: 'new', username: string };
 
 export async function getRegistrationOptions(params: RegistrationParams) {
   let user;
@@ -38,7 +38,7 @@ export async function getRegistrationOptions(params: RegistrationParams) {
     if(!user) {
       throw new Error('Not logged in');
     }
-  };
+  }
 
   const { rpID, rpName } = getRelayingParty();
 

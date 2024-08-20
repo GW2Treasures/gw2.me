@@ -11,7 +11,7 @@ function getToken(code: string) {
   });
 }
 
-export default async function CallbackPage({ searchParams }: { searchParams: { code: string } | object}) {
+export default async function CallbackPage({ searchParams }: { searchParams: { code: string } | object }) {
   const data = 'code' in searchParams
     ? await getToken(searchParams.code)
     : searchParams;

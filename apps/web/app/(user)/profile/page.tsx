@@ -68,7 +68,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: user.name,
   };
-};
+}
 
 async function updateSettings(_: FormState, formData: FormData): Promise<FormState> {
   'use server';

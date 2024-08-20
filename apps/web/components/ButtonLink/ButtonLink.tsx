@@ -4,7 +4,7 @@ import styles from './ButtonLink.module.css';
 interface ButtonLinkProps {
   children: ReactNode;
   onClick: () => void;
-};
+}
 
 export const ButtonLink: FC<ButtonLinkProps> = ({ children, onClick }) => {
   return (

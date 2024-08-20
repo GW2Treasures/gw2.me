@@ -7,11 +7,11 @@ import { NextRequest, NextResponse } from 'next/server';
 type AuthorizedRouteHandler<Context> =
  | ((authorization: Authorization) => Promise<Response>)
  | ((authorization: Authorization, request: NextRequest) => Promise<Response>)
- | ((authorization: Authorization, request: NextRequest, context: Context) => Promise<Response>)
+ | ((authorization: Authorization, request: NextRequest, context: Context) => Promise<Response>);
 
-type RouteHandler<Context> = ((request: NextRequest, context: Context) => Promise<Response>)
+type RouteHandler<Context> = ((request: NextRequest, context: Context) => Promise<Response>);
 
-export function withAuthorization<Context>(scopes?: Scope[] | { oneOf: Scope[]}): (handler: AuthorizedRouteHandler<Context>) => RouteHandler<Context> {
+export function withAuthorization<Context>(scopes?: Scope[] | { oneOf: Scope[] }): (handler: AuthorizedRouteHandler<Context>) => RouteHandler<Context> {
   return function(handler) {
     return async function(request: NextRequest, context: Context) {
       // get authorization header

@@ -19,7 +19,7 @@ async function refreshTokenAction(data: FormData) {
   const token = await gw2me.refreshToken({ refresh_token });
 
   redirect(`/token?access_token=${token.access_token}&refresh_token=${token.refresh_token}`);
-};
+}
 
 async function getSubtoken(accountId: string, data: FormData) {
   'use server';
