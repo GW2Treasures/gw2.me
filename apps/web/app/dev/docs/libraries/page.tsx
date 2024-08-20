@@ -1,4 +1,3 @@
-import { Code } from '@/components/Layout/Code';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { Table } from '@gw2treasures/ui/components/Table/Table';

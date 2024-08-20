@@ -24,7 +24,11 @@ async function refreshTokenAction(data: FormData) {
 async function getSubtoken(accountId: string, data: FormData) {
   'use server';
 
-  const access_token = data.get('access_token')?.toString()!;
+  const access_token = data.get('access_token')?.toString();
+
+  if(!access_token) {
+    throw new Error('Missing access_token');
+  }
 
   const { subtoken } = await gw2me.api(access_token).subtoken(accountId);
 
@@ -65,3 +69,7 @@ export default async function TokenPage({ searchParams }: { searchParams: { acce
     </form>
   );
 }
+
+export const metadata = {
+  title: 'Token'
+};

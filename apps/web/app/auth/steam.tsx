@@ -36,7 +36,7 @@ export function steam(): ProviderConfig | undefined {
       return `https://steamcommunity.com/openid/login?${searchParams.toString()}`;
     },
 
-    async getUser({ searchParams, authRequest }) {
+    async getUser({ searchParams }) {
       // verify response
       const verifySearchParams = new URLSearchParams(searchParams as Record<string, string>);
       verifySearchParams.delete('state');

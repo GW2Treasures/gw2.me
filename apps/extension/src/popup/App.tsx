@@ -65,9 +65,6 @@ export const App: FC = () => {
 
   useEffect(() => {
     if(state.step === Step.LOADING_ACCOUNTS) {
-      (window as any).client = client;
-      (window as any).access_token = state.access_token;
-
       console.log('loading accounts', state);
 
       client.api(state.access_token).accounts().then((({ accounts }) => {
@@ -178,7 +175,7 @@ export const App: FC = () => {
   );
 };
 
-async function authorize(prompt?: 'consent' | 'none'): Promise<TokenResponse | undefined> {
+function authorize(prompt?: 'consent' | 'none'): Promise<TokenResponse | undefined> {
   return new Promise((resolve) => {
     // instead of running the authorization flow directly, send a message to the background script and run it there.
     // this is done so the authorization flow can be completed even if the popup is closed.

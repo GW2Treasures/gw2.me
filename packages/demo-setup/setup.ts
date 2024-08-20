@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { writeFileSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
 import { randomUUID, randomBytes, scrypt } from 'crypto';
 import { PrismaClient } from '@gw2me/database';

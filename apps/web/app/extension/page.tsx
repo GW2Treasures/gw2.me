@@ -1,6 +1,6 @@
 import { PageTitle } from '@/components/Layout/PageTitle';
 import styles from './page.module.css';
-import { Icon, cx } from '@gw2treasures/ui';
+import { Icon } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 export default function ExtensionPage() {

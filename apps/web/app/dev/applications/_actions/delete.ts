@@ -5,7 +5,7 @@ import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 
-export async function deleteApplication(id: string, _: FormState, data: FormData): Promise<FormState> {
+export async function deleteApplication(id: string): Promise<FormState> {
   const session = await getSession();
 
   if(!session) {
