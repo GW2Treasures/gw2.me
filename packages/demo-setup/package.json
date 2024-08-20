@@ -4,13 +4,16 @@
   "type": "module",
   "bin": "./dist/setup.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@gw2me/database": "*"
   },
   "devDependencies": {
+    "@gw2treasures/eslint-config": "0.0.4",
     "@gw2treasures/tsconfig": "0.0.1",
+    "eslint": "8.57.0",
     "typescript": "5.5.4"
   }
 }
