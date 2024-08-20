@@ -41,6 +41,7 @@ export const metadata = {
   title: 'gw2.me Demo'
 };
 
+// eslint-disable-next-line require-await
 async function login(formData: FormData) {
   'use server';
 

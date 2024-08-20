@@ -10,11 +10,9 @@ import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { useShowNotice } from '../NoticeContext/NoticeContext';
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 
-export interface PasskeyAuthenticationDialogProps {}
-
 const invalidUsernameRegex = /[^a-z0-9._-]/i;
 
-export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> = ({ }) => {
+export const PasskeyAuthenticationDialog: FC = () => {
   const [pending, startTransition] = useTransition();
   const [isRegistration, setIsRegistration] = useState(false);
   const [username, setUsername] = useState('');

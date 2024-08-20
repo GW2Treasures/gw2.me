@@ -6,7 +6,7 @@ const schema = '2022-03-23T19:00:00.000Z';
 type Schema = typeof schema;
 
 // TODO: use custom userAgent
-const userAgent = 'Mozilla/5.0 (compatible; gw2.me/1.0; +https://gw2.me)';
+// const userAgent = 'Mozilla/5.0 (compatible; gw2.me/1.0; +https://gw2.me)';
 const fetchOptions: FetchOptions = {};
 
 export async function fetchGw2Api<Url extends KnownEndpoint | (string & {})>(endpoint: Url, options: OptionsByEndpoint<Url>): Promise<EndpointType<Url, Schema>> {
@@ -62,7 +62,7 @@ export async function fetchGw2Api<Url extends KnownEndpoint | (string & {})>(end
   return response;
 }
 
-function getAccessTokenFromOptions(options: AuthenticatedOptions | {}): string | undefined {
+function getAccessTokenFromOptions(options: AuthenticatedOptions | Record<never, never>): string | undefined {
   if('accessToken' in options) {
     return options.accessToken;
   }

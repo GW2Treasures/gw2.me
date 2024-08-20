@@ -79,6 +79,7 @@ export async function verifyChallenge(challengeJwt: string): Promise<VerifyChall
 
     return { success: 'verified' };
   } catch(e) {
+    console.error(e);
     return { error: 'unknown' };
   }
 }

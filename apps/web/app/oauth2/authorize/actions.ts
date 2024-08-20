@@ -35,7 +35,7 @@ export async function authorize(params: AuthorizeActionParams, _: FormState, for
   }
 
   return authorizeInternal(params, accountIds);
-};
+}
 
 export async function authorizeInternal(
   { applicationId, redirect_uri, scopes, state, codeChallenge }: AuthorizeActionParams,

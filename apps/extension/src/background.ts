@@ -16,7 +16,7 @@ chrome.runtime.onMessage.addListener(((message, sender, sendResponse) => {
 }));
 
 
-type AuthorizationMessage = { type: 'gw2.me:authorize', prompt?: 'consent' | 'none' }
+type AuthorizationMessage = { type: 'gw2.me:authorize', prompt?: 'consent' | 'none' };
 
 /** Check if the message is a authorize request */
 function isAuthorizationMessage(message: unknown): message is AuthorizationMessage {
@@ -113,7 +113,7 @@ async function generatePKCEChallenge() {
     code_verifier,
     code_challenge,
     code_challenge_method: 'S256' as const
-  }
+  };
 }
 
 /** Convert an `Uint8Array` to a base64 encoded string. */

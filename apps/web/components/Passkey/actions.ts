@@ -28,7 +28,7 @@ function getRelayingParty() {
 
 export type RegistrationParams =
   | { type: 'add' }
-  | { type: 'new', username: string }
+  | { type: 'new', username: string };
 
 export async function getRegistrationOptions(params: RegistrationParams) {
   let user;
@@ -38,7 +38,7 @@ export async function getRegistrationOptions(params: RegistrationParams) {
     if(!user) {
       throw new Error('Not logged in');
     }
-  };
+  }
 
   const { rpID, rpName } = getRelayingParty();
 
@@ -114,7 +114,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
   const sessionDisplayName = ua.browser && ua.os ? `${ua.browser.name} on ${ua.os.name}` : undefined;
 
   // get the name of the passkey using either `credProps.authenticatorDisplayName` or the AAGUID
-  const passkeyDisplayName = (registration.clientExtensionResults.credProps as any)?.authenticatorDisplayName
+  const passkeyDisplayName = (registration.clientExtensionResults.credProps as { authenticatorDisplayName: string })?.authenticatorDisplayName
     ?? aaguids[verification.registrationInfo.aaguid];
 
   let session: { id: string; userId: string; };

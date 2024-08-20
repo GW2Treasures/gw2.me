@@ -2,7 +2,7 @@ import { UserProviderType } from '@gw2me/database';
 import { ProviderConfig, getJsonIfOk } from './providers';
 import icon from './_icons/discord-mark-blue.svg';
 import Image from 'next/image';
-import React, { FC } from 'react';
+import type { FC } from 'react';
 
 export function discord(): ProviderConfig | undefined {
   const client_id = process.env.DISCORD_CLIENT_ID;

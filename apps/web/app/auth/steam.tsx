@@ -36,7 +36,7 @@ export function steam(): ProviderConfig | undefined {
       return `https://steamcommunity.com/openid/login?${searchParams.toString()}`;
     },
 
-    async getUser({ searchParams, authRequest }) {
+    async getUser({ searchParams }) {
       // verify response
       const verifySearchParams = new URLSearchParams(searchParams as Record<string, string>);
       verifySearchParams.delete('state');
@@ -53,7 +53,7 @@ export function steam(): ProviderConfig | undefined {
       const claimed_id = searchParams['openid.claimed_id'];
       const steamId = claimed_id?.match(/^https?:\/\/steamcommunity\.com\/openid\/id\/(\d+)$/)?.[1];
 
-      const data = await fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${apiKey}&steamids=${steamId}`).then(getJsonIfOk) as { response: { players: [{ steamid: string, personaname: string }] } };
+      const data = await fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${apiKey}&steamids=${steamId}`).then(getJsonIfOk) as { response: { players: [{ steamid: string, personaname: string }] }};
       const profile = data.response.players[0];
 
       return {

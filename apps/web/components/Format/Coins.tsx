@@ -4,7 +4,7 @@ import styles from './Coins.module.css';
 interface CoinsProps {
   value: number;
   showZero?: boolean;
-};
+}
 
 export const Coins: FC<CoinsProps> = ({ value, showZero = false }) => {
   const gold = Math.floor(value / 10000);

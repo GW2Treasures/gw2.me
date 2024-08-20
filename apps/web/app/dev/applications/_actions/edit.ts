@@ -156,7 +156,7 @@ export async function editApplication(id: string, _: FormState, form: FormData):
   revalidatePath(`/dev/applications/${id}`);
 
   return { success: 'Application saved' };
-};
+}
 
 function isValidUrl(urlString: string): boolean {
   try {

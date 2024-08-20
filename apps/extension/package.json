@@ -9,6 +9,7 @@
     "watch": "npm run watch:chromium",
     "watch:chromium": "npm run clean && webpack watch --mode=development --config-name=chromium",
     "watch:firefox": "npm run clean && webpack watch --mode=development --config-name=firefox",
+    "lint": "eslint src",
     "pack": "npm run build && node pack.mjs"
   },
   "repository": {
@@ -22,6 +23,7 @@
   },
   "homepage": "https://github.com/GW2treasures/gw2.me#readme",
   "devDependencies": {
+    "@gw2treasures/eslint-config": "0.0.4",
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/archiver": "6.0.2",
     "@types/chrome": "0.0.270",
@@ -30,6 +32,7 @@
     "archiver": "7.0.1",
     "copy-webpack-plugin": "12.0.2",
     "css-loader": "7.1.2",
+    "eslint": "8.57.0",
     "style-loader": "4.0.0",
     "ts-loader": "9.5.1",
     "typescript": "5.5.4",

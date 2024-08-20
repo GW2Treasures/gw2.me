@@ -6,7 +6,7 @@ import { Button } from '@gw2treasures/ui/components/Form/Button';
 interface ExpandableProps {
   label: ReactNode;
   children: ReactNode
-};
+}
 
 export const Expandable: FC<ExpandableProps> = ({ label, children }) => {
   const [expanded, setExpanded] = useState(true);

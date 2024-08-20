@@ -1,0 +1,5 @@
+{
+  "root": true,
+
+  "extends": ["@gw2treasures/eslint-config"]
+}

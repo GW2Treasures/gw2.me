@@ -34,4 +34,4 @@ export async function resetClientSecret(applicationId: string) {
   });
 
   return clientSecretBuffer.toString('base64url');
-};
+}

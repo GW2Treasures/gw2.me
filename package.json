@@ -11,7 +11,7 @@
     "prisma:studio": "npm run prisma:studio -w @gw2me/database",
     "prisma:migrate-dev": "npm run prisma:migrate-dev -w @gw2me/database",
     "build": "turbo run build",
-    "lint": "turbo run lint -- -f gha",
+    "lint": "turbo run lint --continue -- -f gha",
     "test": "turbo run test",
     "publish-package": "turbo run publish-package"
   },

@@ -3,7 +3,7 @@ import { expiresAt, isExpired } from '@/lib/date';
 import { db } from '@/lib/db';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
 import { TokenResponse } from '@gw2me/client';
-import { ApplicationType, AuthorizationType, Prisma, PrismaClient } from '@gw2me/database';
+import { ApplicationType, AuthorizationType } from '@gw2me/database';
 import { createHash, scryptSync, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
 
       const { applicationId, userId, scope, accounts } = authorization;
 
-      const [refreshAuthorization, accessAuthorization, _] = await db.$transaction([
+      const [refreshAuthorization, accessAuthorization] = await db.$transaction([
         // create refresh token
         authorization.application.type === ApplicationType.Confidential
           ? db.authorization.upsert({
@@ -165,7 +165,7 @@ function verifyCodeChallenge(codeChallenge: string | null, codeVerifier: string 
   // calculate hash and compare
   switch(method) {
     case 'S256':
-      return challenge === createHash('sha256').update(codeVerifier).digest('base64url');;
+      return challenge === createHash('sha256').update(codeVerifier).digest('base64url');
   }
 
   // method not supported -> fail

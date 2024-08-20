@@ -3,5 +3,5 @@
 
   "extends": ["@gw2treasures/eslint-config"],
 
-  "ignorePatterns": ["dist/**", "coverage/**"]
+  "ignorePatterns": ["dist/**"]
 }

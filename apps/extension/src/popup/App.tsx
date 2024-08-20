@@ -52,22 +52,19 @@ export const App: FC = () => {
           const { access_token } = token;
 
           await self.chrome.storage.sync.set({ access_token });
-          setState({ step: Step.LOADING_ACCOUNTS, access_token })
+          setState({ step: Step.LOADING_ACCOUNTS, access_token });
         }
       }
-    }
+    };
 
     if(state.step === Step.INITIAL) {
-      setState({ step: Step.LOADING_ACCESS_TOKEN })
-      loadAccessToken()
+      setState({ step: Step.LOADING_ACCESS_TOKEN });
+      loadAccessToken();
     }
   }, [state]);
 
   useEffect(() => {
     if(state.step === Step.LOADING_ACCOUNTS) {
-      (window as any).client = client;
-      (window as any).access_token = state.access_token;
-
       console.log('loading accounts', state);
 
       client.api(state.access_token).accounts().then((({ accounts }) => {
@@ -76,7 +73,7 @@ export const App: FC = () => {
         setState({ step: Step.AUTH_REQUIRED });
       });
     }
-  }, [state])
+  }, [state]);
 
   const login = useCallback(async () => {
     setState({ step: Step.AUTH_IN_PROGRESS });
@@ -91,12 +88,12 @@ export const App: FC = () => {
     const { access_token } = token;
 
     await self.chrome.storage.sync.set({ access_token });
-    setState({ step: Step.LOADING_ACCOUNTS, access_token })
+    setState({ step: Step.LOADING_ACCOUNTS, access_token });
   }, []);
 
   const logout = useCallback(async () => {
     await self.chrome.storage.sync.remove('access_token');
-    setState({ step: Step.AUTH_REQUIRED })
+    setState({ step: Step.AUTH_REQUIRED });
   }, []);
 
   const createSubtoken = useCallback(async (accountId: string) => {
@@ -126,7 +123,7 @@ export const App: FC = () => {
     const { access_token } = token;
 
     await self.chrome.storage.sync.set({ access_token });
-    setState({ step: Step.LOADING_ACCOUNTS, access_token })
+    setState({ step: Step.LOADING_ACCOUNTS, access_token });
   }, []);
 
   return (
@@ -178,7 +175,7 @@ export const App: FC = () => {
   );
 };
 
-async function authorize(prompt?: 'consent' | 'none'): Promise<TokenResponse | undefined> {
+function authorize(prompt?: 'consent' | 'none'): Promise<TokenResponse | undefined> {
   return new Promise((resolve) => {
     // instead of running the authorization flow directly, send a message to the background script and run it there.
     // this is done so the authorization flow can be completed even if the popup is closed.

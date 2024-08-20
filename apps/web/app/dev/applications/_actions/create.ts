@@ -55,7 +55,7 @@ export async function createApplication(_: FormState, data: FormData): Promise<F
   }
 
   redirect(`/dev/applications/${applicationId}`);
-};
+}
 
 function isValidApplicationType(type: string): type is ApplicationType {
   return type in ApplicationType;

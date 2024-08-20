@@ -3,7 +3,7 @@
 import { IconProp } from '@gw2treasures/icons';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
-import { useSelectedLayoutSegment, useSelectedLayoutSegments } from 'next/navigation';
+import { useSelectedLayoutSegments } from 'next/navigation';
 import { FC, ReactNode } from 'react';
 import { ActiveButtonClass } from './NavLayout';
 

@@ -11,7 +11,7 @@ const context = createContext<NoticeContext>({ show: () => {} });
 
 interface NoticeContextProps {
   children: ReactNode;
-};
+}
 
 export const NoticeContext: FC<NoticeContextProps> = ({ children }) => {
   const [notice, setNotice] = useState<NoticeProps | null>(null);

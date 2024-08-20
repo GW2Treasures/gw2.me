@@ -5,7 +5,7 @@ import { FC, useEffect, useState } from 'react';
 
 interface FormatDateProps {
   date: Date
-};
+}
 
 export const FormatDate: FC<FormatDateProps> = ({ date }) => {
   const [value, setValue] = useState(date.toUTCString());

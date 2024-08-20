@@ -35,8 +35,10 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
             get () { supportsFedCmMode = true; }
           }
         )
-      } as any).catch(() => {});
-    } catch(e) {}
+      } as CredentialRequestOptions).catch(() => {});
+    } catch {
+      // empty on purpose
+    }
 
     setSupportsFedCmMode(supportsFedCmMode);
     setLoading(false);
@@ -54,7 +56,10 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
 
     gw2me.fedCM.request({ mode, mediation, signal: abortController.signal }).then((credential) => {
       setAbort(undefined);
-      credential && router.push(`/callback?code=${credential.token}`);
+
+      if(credential) {
+        router.push(`/callback?code=${credential.token}`);
+      }
     }).catch((e) => {
       if(!(e instanceof DOMException && e.name === 'AbortError')) {
         setAbort(undefined);
@@ -72,7 +77,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, border: '1px solid var(--color-border)', padding: 16, borderRadius: 2, background: 'var(--color-background-light)' }}>
       <Label label="Mediation">
-        <Select options={['required', 'optional', 'silent'].map((m) => ({ label: m, value: m }))} value={mediation} onChange={setMediation as any}/>
+        <Select options={['required', 'optional', 'silent'].map((m) => ({ label: m, value: m }))} value={mediation} onChange={setMediation as (value: string) => void}/>
       </Label>
 
       <Label label="Mode">
