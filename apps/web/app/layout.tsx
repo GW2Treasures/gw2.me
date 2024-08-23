@@ -11,7 +11,6 @@ import { getUser } from '@/lib/session';
 import { Icon, cx } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { DataTableContext } from '@gw2treasures/ui/components/Table/DataTableContext';
-import { FormatDate } from '@/components/Format/FormatDate';
 
 interface RootLayoutProps {
   children: ReactNode;
