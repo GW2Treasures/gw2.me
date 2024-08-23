@@ -239,3 +239,12 @@
   .contentWidth { padding: 0; }
   .browser { margin: 16px 0 128px; }
 }
+
+.borderHide {
+  position: absolute;
+  top: 48px;
+  background-color: var(--color-background);
+  height: 1px;
+  width: 100%;
+  z-index: 2;
+}

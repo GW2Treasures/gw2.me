@@ -51,6 +51,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               <LinkButton appearance="menu" href={user ? '/profile' : '/login'} icon="user">{user ? user.name : 'Login'}</LinkButton>
             </div>
           </div>
+          <hr className={styles.border}/>
           <DataTableContext>
             {children}
           </DataTableContext>

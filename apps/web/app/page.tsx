@@ -19,6 +19,8 @@ export default async function HomePage() {
 
   return (
     <div className={styles.page}>
+      <div className={styles.borderHide}/>
+
       <div className={styles.hero}>
         <div className={styles.intro}>
           <div className={styles.title} style={wotfard.style}>Securely Manage your<br/>Guild Wars 2 API Keys</div>
