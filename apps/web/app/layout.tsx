@@ -52,11 +52,6 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               <LinkButton appearance="menu" href={user ? '/profile' : '/login'} icon="user">{user ? user.name : 'Login'}</LinkButton>
             </div>
           </div>
-          <aside data-nosnippet="true" style={{ padding: 16, background: 'var(--color-brand)', color: '#fff', textAlign: 'center', lineHeight: 1.5 }}>
-            <b>The official Guild Wars 2 API will be disabled</b> starting <FormatDate date={new Date('2024-08-16T17:00:00.000Z')}/> until
-            after the launch of <b style={{ whiteSpace: 'nowrap' }}>Guild Wars 2: Janthir Wilds.</b><br/>
-            It is not possible to add new API keys or verify accounts during this time. Applications using gw2.me might not work properly.
-          </aside>
           <DataTableContext>
             {children}
           </DataTableContext>
