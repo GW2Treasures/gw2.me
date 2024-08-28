@@ -19,5 +19,5 @@
     "eslint-formatter-gha": "1.5.0",
     "turbo": "2.1.0"
   },
-  "packageManager": "npm@10.8.2"
+  "packageManager": "npm@10.8.3"
 }
