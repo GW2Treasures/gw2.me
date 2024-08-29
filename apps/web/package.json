@@ -33,7 +33,7 @@
     "@gw2treasures/tsconfig": "0.0.1",
     "@simplewebauthn/types": "10.0.0",
     "@testing-library/jest-dom": "6.5.0",
-    "@testing-library/react": "16.0.0",
+    "@testing-library/react": "16.0.1",
     "@types/jest": "29.5.12",
     "@types/node": "20.16.2",
     "@types/react": "18.3.4",
