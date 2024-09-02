@@ -126,7 +126,7 @@ jobs:
         EOF
     - run: kubectl kustomize .temp
     - run: kubectl apply -k .temp
-    - run: kubectl rollout status deployment web demo database -n gw2me --timeout=120s
+    - run: kubectl rollout status deployment web demo database-pg16 -n gw2me --timeout=120s
     - run: kubectl get deployment -n gw2me
       if: success() || failure()
     - run: kubectl get job -n gw2me
