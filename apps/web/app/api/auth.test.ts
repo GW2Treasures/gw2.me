@@ -1,5 +1,4 @@
 /** @jest-environment node */
-import { expect, describe, it } from '@jest/globals';
 import { Scope } from '@gw2me/client';
 import { verifyScopes } from './auth';
 

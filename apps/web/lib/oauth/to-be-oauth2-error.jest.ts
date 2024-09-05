@@ -1,4 +1,3 @@
-import { expect } from '@jest/globals';
 import type { MatcherFunction } from 'expect';
 import { OAuth2Error, OAuth2ErrorCode } from './error';
 
@@ -33,13 +32,16 @@ const toThrowOAuth2Error: MatcherFunction<[code?: OAuth2ErrorCode, description?:
 
 expect.extend({ toBeOAuth2Error, toThrowOAuth2Error });
 
-declare module 'expect' {
-  interface AsymmetricMatchers {
-    toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): void;
-    toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): void;
-  }
-  interface Matchers<R> {
-    toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): R;
-    toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): R;
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace jest {
+    interface AsymmetricMatchers {
+      toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): void;
+      toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): void;
+    }
+    interface Matchers<R> {
+      toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): R;
+      toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): R;
+    }
   }
 }

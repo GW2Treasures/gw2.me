@@ -1,5 +1,4 @@
 /** @jest-environment node */
-import { expect, describe, it } from '@jest/globals';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { assertPKCECodeChallenge, handleTokenRequest } from './token';
 import { dbMock } from '@/lib/db.mock';
@@ -66,7 +65,7 @@ describe('/api/token', () => {
 
       it('returns token', async () => {
         dbMock.authorization.findUnique.mockResolvedValue(mockAuthorization);
-        dbMock.authorization.upsert.mockResolvedValue({ token: 'token' } as any);
+        dbMock.authorization.upsert.mockResolvedValue({ token: 'token' } as MockAuthorization);
 
         const response = await handleTokenRequest({ client_id: 'test', grant_type: 'authorization_code', code: 'foo', redirect_uri: '/redirect', client_secret: '' });
         expect(response).toHaveProperty('access_token');
