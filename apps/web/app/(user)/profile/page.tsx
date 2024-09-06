@@ -1,7 +1,7 @@
-import { getSession, getSessionOrRedirect, getUser } from '@/lib/session';
+import { getSession, getSessionOrRedirect } from '@/lib/session';
 import { db } from '@/lib/db';
 import { Metadata } from 'next';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
