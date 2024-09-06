@@ -8,7 +8,7 @@ import { Icon, IconProp } from '@gw2treasures/ui';
 import { FC, ReactNode } from 'react';
 import { AuthorizeRequestParams, getApplicationByClientId, validateRequest } from './validate';
 import { hasGW2Scopes } from '@/lib/scope';
-import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { db } from '@/lib/db';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { PermissionList } from '@/components/Permissions/PermissionList';
@@ -18,7 +18,7 @@ import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { createRedirectUrl } from '@/lib/redirectUrl';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
-import { AuthorizationType, User } from '@gw2me/database';
+import { AuthorizationType, User, UserEmail } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
 import { LoginForm } from 'app/login/form';
 import { Metadata } from 'next';
@@ -26,6 +26,7 @@ import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import Link from 'next/link';
+import { Select } from '@gw2treasures/ui/components/Form/Select';
 
 interface AuthorizePageProps {
   searchParams: Partial<AuthorizeRequestParams> & Record<string, string>
@@ -84,7 +85,7 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
   const allPreviouslyAuthorized = newScopes.length === 0;
   let autoAuthorizeState: FormState | undefined;
   if(allPreviouslyAuthorized && request.prompt !== 'consent') {
-    autoAuthorizeState = await authorizeInternal(authorizeActionParams, previousAccountIds);
+    autoAuthorizeState = await authorizeInternal(authorizeActionParams, previousAccountIds, previousAuthorization?.emailId ?? undefined);
   }
 
   // handle prompt=none
@@ -97,6 +98,11 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
 
     redirect(errorUrl.toString());
   }
+
+  // get emails
+  const emails = user && scopes.has(Scope.Email)
+    ? await db.userEmail.findMany({ where: { userId: user.id }})
+    : [];
 
   // get accounts
   const gw2Permissions = Array.from(scopes).filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4));
@@ -145,11 +151,11 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
               <p className={styles.intro}>{application.name} wants to access additional data.</p>
             )}
 
-            {newScopes.length > 0 && renderScopes(newScopes, user)}
+            {newScopes.length > 0 && renderScopes(newScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id)}
 
             {oldScopes.length > 0 && (
               <Expandable label="Show previously authorized permissions.">
-                {renderScopes(oldScopes, user)}
+                {renderScopes(oldScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id)}
               </Expandable>
             )}
 
@@ -237,11 +243,19 @@ function normalizeScopes(scopes: Set<Scope>): void {
   }
 }
 
-function renderScopes(scopes: Scope[], user: User) {
+function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id: string }}, emails: UserEmail[], emailId: undefined | string) {
   return (
     <ul className={styles.scopeList}>
       {scopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
-      {scopes.includes(Scope.Email) && <ScopeItem icon="mail">Your email address</ScopeItem>}
+      {scopes.includes(Scope.Email) && (
+        <ScopeItem icon="mail">
+          <p className={styles.p}>Your email address</p>
+          <div style={{ marginBlock: 8, display: 'flex', gap: 16 }}>
+            <Select name="email" options={emails.map(({ id, email }) => ({ label: email, value: id }))} defaultValue={emailId}/>
+            <LinkButton href="#" icon="add">Add Email</LinkButton>
+          </div>
+        </ScopeItem>
+      )}
       {(scopes.includes(Scope.Accounts_DisplayName) && scopes.includes(Scope.Accounts)) ? (
         <ScopeItem icon="nametag">Your Guild Wars 2 account names and custom display names</ScopeItem>
       ) : scopes.includes(Scope.Accounts) ? (

@@ -13,6 +13,7 @@ import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { createRedirectUrl } from '@/lib/redirectUrl';
 import { cookies } from 'next/headers';
 import { userCookie } from '@/lib/cookie';
+import { getFormDataString } from '@/lib/form-data';
 
 export interface AuthorizeActionParams {
   applicationId: string,
@@ -27,6 +28,10 @@ export async function authorize(params: AuthorizeActionParams, _: FormState, for
   // get account ids from form
   const accountIds = formData.getAll('accounts').filter(isString);
 
+  // get email id from form
+  const emailId = getFormDataString(formData, 'email');
+
+  // get session
   const session = await getSession();
 
   if(session) {
@@ -34,16 +39,22 @@ export async function authorize(params: AuthorizeActionParams, _: FormState, for
     cookies().set(userCookie(session.userId));
   }
 
-  return authorizeInternal(params, accountIds);
+  return authorizeInternal(params, accountIds, emailId);
 }
 
 export async function authorizeInternal(
   { applicationId, redirect_uri, scopes, state, codeChallenge }: AuthorizeActionParams,
-  accountIds: string[]
+  accountIds: string[],
+  emailId: string | undefined
 ) {
   // verify at least one account was selected
   if((hasGW2Scopes(scopes) || scopes.includes(Scope.Accounts)) && accountIds.length === 0) {
     return { error: 'At least one account has to be selected.' };
+  }
+
+  // verify email was selected
+  if(scopes.includes(Scope.Email) && !emailId) {
+    return { error: 'Email has to be selected' };
   }
 
   // get session and verify
@@ -76,6 +87,7 @@ export async function authorizeInternal(
           token: generateCode(),
           expiresAt: expiresAt(60),
           accounts: { connect: accountIds.map((id) => ({ id })) },
+          emailId
         },
       }),
     ]);
