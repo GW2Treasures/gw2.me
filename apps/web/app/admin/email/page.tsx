@@ -1,18 +1,26 @@
-import { Code } from '@/components/Layout/Code';
 import { PageLayout } from '@/components/Layout/PageLayout';
-import TestEmail from '@gw2me/emails/test';
+import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
-import { render } from '@react-email/render';
+import { sendMail } from '@/lib/mail';
+import TestEmail from '@gw2me/emails/test';
 
 export default function EmailPage() {
   return (
     <PageLayout>
       <Headline id="email">Email</Headline>
-      <Code>
-        {render(<TestEmail/>, { pretty: false })}
-      </Code>
+      <form action={send}>
+        <SubmitButton icon="mail">Send Test mail</SubmitButton>
+      </form>
     </PageLayout>
   );
+}
+
+async function send() {
+  'use server';
+
+  const message = await sendMail('Test Mail', 'gw2me@darthmaim.de', <TestEmail/>);
+
+  console.log(message);
 }
 
 export const metadata = {

@@ -1,9 +1,10 @@
-import { Html, Text } from '@react-email/components';
+import { Text } from '@react-email/components';
+import Template, { styles } from './template';
 
 export default function TestEmail() {
   return (
-    <Html>
-      <Text>Test</Text>
-    </Html>
+    <Template preview="This is a test.">
+      <Text style={styles.text}>This email is a test sent by gw2.me.</Text>
+    </Template>
   );
 }
