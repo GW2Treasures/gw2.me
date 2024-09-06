@@ -11,9 +11,16 @@ const config: Config = {
   // Add more setup options before each test is run
   setupFilesAfterEnv: [
     'next',
+    './lib/oauth/to-be-oauth2-error.jest.ts',
+    './lib/db.mock.ts',
   ],
 
   testEnvironment: 'jest-environment-jsdom',
+
+  // required for `jest-mock-extended`
+  // See https://github.com/marchaos/jest-mock-extended/issues/116
+  // TODO: replace with @jest/globals once that issue is fixed
+  injectGlobals: true,
 
   moduleNameMapper: {
     '^@/components/(.*)$': '<rootDir>/components/$1',

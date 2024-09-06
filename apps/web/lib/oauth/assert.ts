@@ -18,7 +18,7 @@ export function fail(condition: unknown, code: OAuth2ErrorCode, description?: st
 }
 
 /**
- * Tries to run the callback. If any error occurs, a OAuth2Erro will be thrown. Otherwise returns the result of the callback.
+ * Tries to run the callback. If any error occurs, a OAuth2Error will be thrown. Otherwise returns the result of the callback.
  */
 export function tryOrFail<T>(callback: () => T, code: OAuth2ErrorCode, description?: string): T {
   try {
