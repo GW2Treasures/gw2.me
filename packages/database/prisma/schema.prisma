@@ -12,7 +12,9 @@ model User {
   id String @id @default(uuid())
 
   name  String  @unique
-  email String?
+
+  emails       UserEmail[] @relation("emails")
+  defaultEmail UserEmail?  @relation("default")
 
   roles UserRole[]
 
@@ -31,6 +33,29 @@ model User {
 
 enum UserRole {
   Admin
+}
+
+model UserEmail {
+  id String @id @default(uuid())
+
+  email    String
+  verified Boolean @default(false)
+
+  verificationToken String? @unique
+
+  userId String
+  user   User @relation("emails", fields: [userId], references: [id], onDelete: Cascade)
+
+  isDefaultForUserId String? @unique
+  isDefaultForUser   User?   @relation("default", fields: [isDefaultForUserId], references: [id], onDelete: Cascade)
+  
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  verifiedAt DateTime?
+
+  authorizations Authorization[]
+
+  @@unique([userId, email])
 }
 
 model UserSession {
@@ -169,6 +194,9 @@ model Authorization {
   user   User   @relation("userAuthorization", fields: [userId], references: [id], onDelete: Cascade)
 
   accounts Account[] @relation("accountAuthorization")
+
+  emailId String?
+  email   UserEmail? @relation(fields: [emailId], references: [id], onDelete: Cascade)
 
   @@unique([type, token])
   @@unique([type, applicationId, userId])
