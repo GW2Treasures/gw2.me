@@ -5,6 +5,7 @@ import { dbMock } from '@/lib/db.mock';
 import { Account, Application, Authorization } from '@gw2me/database';
 import { expiresAt } from '@/lib/date';
 import { Scope } from '@gw2me/client';
+import { describe, expect, it } from '@jest/globals';
 
 type MockAuthorization = Authorization & { application: Pick<Application, 'type' | 'clientSecret'>, accounts: Pick<Account, 'id'>[] };
 
@@ -25,7 +26,7 @@ const mockAuthorization: MockAuthorization = {
     clientSecret: 'client-secret',
     type: 'Public'
   },
-  accounts: []
+  accounts: [],
 };
 
 describe('/api/token', () => {

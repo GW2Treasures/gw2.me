@@ -1,6 +1,7 @@
 /** @jest-environment node */
 import { Scope } from '@gw2me/client';
 import { verifyScopes } from './auth';
+import { describe, expect, it } from '@jest/globals';
 
 describe('API authorization', () => {
   describe('verifyScopes', () => {
