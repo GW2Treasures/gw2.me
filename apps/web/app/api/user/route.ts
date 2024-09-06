@@ -27,6 +27,7 @@ export const GET = withAuthorization([Scope.Identify])(
         id: user.id,
         name: user.name,
         email: email?.email,
+        emailVerified: email?.verified,
       }
     };
 
