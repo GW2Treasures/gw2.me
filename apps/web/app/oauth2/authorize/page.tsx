@@ -8,7 +8,7 @@ import { Icon, IconProp } from '@gw2treasures/ui';
 import { FC, ReactNode } from 'react';
 import { AuthorizeRequestParams, getApplicationByClientId, validateRequest } from './validate';
 import { hasGW2Scopes } from '@/lib/scope';
-import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { db } from '@/lib/db';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { PermissionList } from '@/components/Permissions/PermissionList';
@@ -151,11 +151,11 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
               <p className={styles.intro}>{application.name} wants to access additional data.</p>
             )}
 
-            {newScopes.length > 0 && renderScopes(newScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id)}
+            {newScopes.length > 0 && renderScopes(newScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, returnUrl)}
 
             {oldScopes.length > 0 && (
               <Expandable label="Show previously authorized permissions.">
-                {renderScopes(oldScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id)}
+                {renderScopes(oldScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, returnUrl)}
               </Expandable>
             )}
 
@@ -243,7 +243,7 @@ function normalizeScopes(scopes: Set<Scope>): void {
   }
 }
 
-function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id: string }}, emails: UserEmail[], emailId: undefined | string) {
+function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id: string }}, emails: UserEmail[], emailId: undefined | string, returnUrl: string) {
   return (
     <ul className={styles.scopeList}>
       {scopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
@@ -252,7 +252,7 @@ function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id:
           <p className={styles.p}>Your email address</p>
           <div style={{ marginBlock: 8, display: 'flex', gap: 16 }}>
             <Select name="email" options={emails.map(({ id, email }) => ({ label: email, value: id }))} defaultValue={emailId}/>
-            <LinkButton href="#" icon="add">Add Email</LinkButton>
+            <LinkButton href={`/emails/add?return=${encodeURIComponent(returnUrl)}`} icon="add">Add Email</LinkButton>
           </div>
         </ScopeItem>
       )}

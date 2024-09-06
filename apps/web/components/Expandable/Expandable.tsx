@@ -22,7 +22,7 @@ export const Expandable: FC<ExpandableProps> = ({ label, children }) => {
   return (
     <>
       <Button icon={expanded ? 'chevron-up' : 'chevron-down'} appearance="menu" onClick={toggle}>{label}</Button>
-      {expanded && children}
+      <div hidden={!expanded}>{children}</div>
     </>
   );
 };
