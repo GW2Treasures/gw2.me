@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
+import { getUser } from '@/lib/session';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { getFormDataString } from '@/lib/form-data';
 import { corsHeaders } from '@/lib/cors-header';
@@ -19,9 +19,9 @@ export async function POST(request: NextRequest) {
   }
 
   // get user session
-  const session = await getSession();
+  const user = await getUser();
 
-  if(!session) {
+  if(!user) {
     return Response.json(
       { error: { code: OAuth2ErrorCode.access_denied, details: 'no session' }},
       { status: 401, headers: corsHeaders(request) }
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
   const disclosureTextShown = getFormDataString(formData, 'disclosure_text_shown') === 'true';
   const origin = request.headers.get('Origin');
 
-  if(!clientId || !accountId || accountId !== session.userId || !origin) {
+  if(!clientId || !accountId || accountId !== user.id || !origin) {
     return Response.json(
       { error: { code: OAuth2ErrorCode.invalid_request, details: 'missing required fields' }},
       { status: 400, headers: corsHeaders(request) }
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
   // load previous authorization to include scopes and
   const previousAuthorization = await db.authorization.findFirst({
-    where: { applicationId: application.id, userId: session.userId, type: { not: AuthorizationType.Code }},
+    where: { applicationId: application.id, userId: user.id, type: { not: AuthorizationType.Code }},
     select: { scope: true, accounts: { select: { id: true }}}
   });
 
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
     const identifier = {
       type: AuthorizationType.Code,
       applicationId: application.id,
-      userId: session.userId
+      userId: user.id
     };
 
     [, authorization] = await db.$transaction([
@@ -107,6 +107,7 @@ export async function POST(request: NextRequest) {
           scope: Array.from(scopes),
           token: generateCode(),
           expiresAt: expiresAt(60),
+          emailId: user.defaultEmail?.id,
           accounts: previousAuthorization?.accounts ? { connect: previousAuthorization.accounts } : undefined,
         },
       }),

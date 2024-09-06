@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
     accounts: [{
       id: user.id,
       name: user.name,
-      email: user.email ?? user.name,
+      email: user.defaultEmail?.email ?? user.name,
       picture: new URL(accountIcon.src, baseUrl),
       approved_clients: approvedApplications.map(({ clientId }) => clientId),
     }]

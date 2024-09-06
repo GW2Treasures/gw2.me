@@ -50,9 +50,6 @@ export default async function ProfilePage() {
           <Label label="Username">
             <TextInput name="username" defaultValue={user.name}/>
           </Label>
-          <Label label="Email">
-            <TextInput name="email" defaultValue={user.email ?? ''}/>
-          </Label>
           <FlexRow>
             <SubmitButton>Save</SubmitButton>
           </FlexRow>
@@ -73,9 +70,8 @@ export async function generateMetadata(): Promise<Metadata> {
 async function updateSettings(_: FormState, formData: FormData): Promise<FormState> {
   'use server';
 
-  // setup regex to test username and email
+  // setup regex to test username
   const usernameRegex = /^[a-z0-9._-]{2,32}$/i;
-  const emailRegex = /^(.+@.+)?$/;
 
   // get current user
   const session = await getSession();
@@ -86,16 +82,10 @@ async function updateSettings(_: FormState, formData: FormData): Promise<FormSta
 
   // get form data
   const username = getFormDataString(formData, 'username');
-  const email = getFormDataString(formData, 'email');
 
   // validate username
   if(username === undefined || !usernameRegex.test(username)) {
     return { error: 'Invalid username. The username can only contain latin characters (a-z), numbers and the special characters period (.), underscore (_) and dash (-) and must be between 2 and 32 characters long.' };
-  }
-
-  // validate email
-  if(email === undefined || !emailRegex.test(email)) {
-    return { error: 'Invalid email' };
   }
 
   // check if username is not already taken
@@ -111,7 +101,7 @@ async function updateSettings(_: FormState, formData: FormData): Promise<FormSta
   // save
   await db.user.update({
     where: { id: session.userId },
-    data: { name: username, email: email === '' ? null : email }
+    data: { name: username }
   });
 
   revalidatePath('/profile');
