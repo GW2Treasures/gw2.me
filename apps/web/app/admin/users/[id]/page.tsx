@@ -25,7 +25,7 @@ const getUser = cache(function getUser(id: string) {
       },
       accounts: true,
       providers: true,
-      emails: true,
+      emails: { orderBy: { email: 'asc' }},
     }
   });
 });

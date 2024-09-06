@@ -101,7 +101,7 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
 
   // get emails
   const emails = user && scopes.has(Scope.Email)
-    ? await db.userEmail.findMany({ where: { userId: user.id }})
+    ? await db.userEmail.findMany({ where: { userId: user.id }, orderBy: { email: 'asc' }})
     : [];
 
   // get accounts
