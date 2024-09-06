@@ -17,11 +17,6 @@ const config: Config = {
 
   testEnvironment: 'jest-environment-jsdom',
 
-  // required for `jest-mock-extended`
-  // See https://github.com/marchaos/jest-mock-extended/issues/116
-  // TODO: replace with @jest/globals once that issue is fixed
-  injectGlobals: true,
-
   moduleNameMapper: {
     '^@/components/(.*)$': '<rootDir>/components/$1',
     '^@/lib/(.*)$': '<rootDir>/lib/$1',
