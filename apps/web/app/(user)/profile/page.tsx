@@ -1,10 +1,10 @@
-import { getSession, getUser } from '@/lib/session';
+import { getSession, getSessionOrRedirect, getUser } from '@/lib/session';
 import { db } from '@/lib/db';
 import { Metadata } from 'next';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { cache } from 'react';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
-import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Steps } from '@/components/Steps/Steps';
 import Link from 'next/link';
 import { PageLayout } from '@/components/Layout/PageLayout';
@@ -15,12 +15,19 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { revalidatePath } from 'next/cache';
 import { getFormDataString } from '@/lib/form-data';
+import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
+import { Icon } from '@gw2treasures/ui';
 
 const getUserData = cache(async () => {
-  const user = await getUser();
+  const { userId } = await getSessionOrRedirect();
+
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    include: { emails: { orderBy: { email: 'asc' }}}
+  });
 
   if(!user) {
-    redirect('/login');
+    notFound();
   }
 
   return user;
@@ -28,6 +35,7 @@ const getUserData = cache(async () => {
 
 export default async function ProfilePage() {
   const user = await getUserData();
+  const Emails = createDataTable(user.emails, ({ id }) => id);
 
   return (
     <PageLayout>
@@ -54,6 +62,22 @@ export default async function ProfilePage() {
             <SubmitButton>Save</SubmitButton>
           </FlexRow>
         </div>
+      </Form>
+
+      <Headline id="emails" actions={(<LinkButton href="/emails/add" icon="add">Add Email</LinkButton>)}>Emails</Headline>
+      <Form action={updateEmails}>
+        <Emails.Table>
+          <Emails.Column id="email" title="Email">{({ email }) => email}</Emails.Column>
+          <Emails.Column id="default" title="Default">{({ isDefaultForUserId }) => isDefaultForUserId && <Icon icon="checkmark"/>}</Emails.Column>
+          <Emails.Column id="verified" title="Verified">{({ verified }) => verified && <Icon icon="checkmark"/>}</Emails.Column>
+          <Emails.Column small title="Actions" id="actions">
+            {({ id, isDefaultForUserId }) => (
+              <FlexRow>
+                <Button icon="checkmark" disabled={!!isDefaultForUserId} type="submit" name="default" value={id}>Set as default</Button>
+              </FlexRow>
+            )}
+          </Emails.Column>
+        </Emails.Table>
       </Form>
     </PageLayout>
   );
@@ -106,4 +130,25 @@ async function updateSettings(_: FormState, formData: FormData): Promise<FormSta
 
   revalidatePath('/profile');
   return { success: 'Saved' };
+}
+
+async function updateEmails(_: FormState, formData: FormData): Promise<FormState> {
+  'use server';
+
+  const session = await getSession();
+  if(!session) {
+    return { error: 'Not logged in' };
+  }
+
+  const defaultEmailId = getFormDataString(formData, 'default');
+
+  if(defaultEmailId) {
+    await db.user.update({
+      where: { id: session.userId },
+      data: { defaultEmail: { connect: { id: defaultEmailId }}}
+    });
+  }
+
+  revalidatePath('/profile');
+  return { success: 'Email settings updated' };
 }
