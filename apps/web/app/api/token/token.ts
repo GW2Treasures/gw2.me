@@ -58,23 +58,23 @@ export async function handleTokenRequest(params: Record<string, string | undefin
         assert(isValidClientSecret(client_secret, authorization.application.clientSecret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
       }
 
-      const { applicationId, userId, scope, accounts } = authorization;
+      const { applicationId, userId, scope, accounts, emailId } = authorization;
 
       const [refreshAuthorization, accessAuthorization] = await db.$transaction([
         // create refresh token
         authorization.application.type === ApplicationType.Confidential
           ? db.authorization.upsert({
               where: { type_applicationId_userId: { type: AuthorizationType.RefreshToken, applicationId, userId }},
-              create: { type: AuthorizationType.RefreshToken, applicationId, userId, scope, token: generateRefreshToken(), accounts: { connect: accounts }},
-              update: { scope, accounts: { set: accounts }}
+              create: { type: AuthorizationType.RefreshToken, applicationId, userId, scope, token: generateRefreshToken(), accounts: { connect: accounts }, emailId },
+              update: { scope, accounts: { set: accounts }, emailId }
             })
           : db.authorization.findFirst({ take: 0 }),
 
         // create access token
         db.authorization.upsert({
           where: { type_applicationId_userId: { type: AuthorizationType.AccessToken, applicationId, userId }},
-          create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), accounts: { connect: accounts }},
-          update: { scope, accounts: { set: accounts }, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
+          create: { type: AuthorizationType.AccessToken, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), accounts: { connect: accounts }, emailId },
+          update: { scope, accounts: { set: accounts }, emailId, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
         }),
 
         // delete used code token

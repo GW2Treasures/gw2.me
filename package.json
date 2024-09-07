@@ -8,6 +8,7 @@
   "scripts": {
     "dev:web": "turbo run dev --filter=web",
     "dev:demo": "turbo run dev --filter=demo",
+    "dev:emails": "turbo run dev --filter=@gw2me/emails",
     "prisma:studio": "npm run prisma:studio -w @gw2me/database",
     "prisma:migrate-dev": "npm run prisma:migrate-dev -w @gw2me/database",
     "build": "turbo run build",

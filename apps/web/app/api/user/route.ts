@@ -8,8 +8,15 @@ export const GET = withAuthorization([Scope.Identify])(
   async (authorization: Authorization) => {
     const user = await db.user.findUnique({
       where: { id: authorization.userId },
-      select: { id: true, name: true, email: authorization.scope.includes(Scope.Email) }
+      select: { id: true, name: true }
     });
+
+    const email = authorization.emailId
+      ? await db.userEmail.findUnique({
+        where: { id: authorization.emailId },
+        select: { email: true, verified: true }
+      })
+      : undefined;
 
     if(!user) {
       return NextResponse.json({ error: true }, { status: 404 });
@@ -19,7 +26,8 @@ export const GET = withAuthorization([Scope.Identify])(
       user: {
         id: user.id,
         name: user.name,
-        email: user.email ?? undefined
+        email: email?.email,
+        emailVerified: email?.verified,
       }
     };
 

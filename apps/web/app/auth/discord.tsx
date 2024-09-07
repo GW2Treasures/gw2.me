@@ -64,7 +64,7 @@ export function discord(): ProviderConfig | undefined {
       // get profile info with token
       const profile = await fetch('https://discord.com/api/users/@me', {
         headers: { 'Authorization': `Bearer ${token.access_token}` }
-      }).then(getJsonIfOk) as { id: string, username: string, email: string, discriminator: string };
+      }).then(getJsonIfOk) as { id: string, username: string, email: string, verified: boolean, discriminator: string };
 
       // get discord user name (darthmaim or legacy darthmaim#1234)
       const displayName = profile.discriminator !== '0'
@@ -76,6 +76,7 @@ export function discord(): ProviderConfig | undefined {
         accountName: displayName,
         username: profile.username,
         email: profile.email,
+        emailVerified: profile.verified,
         token,
       };
     }

@@ -5,10 +5,11 @@ import { LoginErrorCookieName, authCookie, loginErrorCookie, userCookie } from '
 import { Prisma, UserProviderRequestType } from '@gw2me/database';
 import { cookies } from 'next/headers';
 import { isRedirectError } from 'next/dist/client/components/redirect';
-import { providers } from 'app/auth/providers';
+import { ProviderProfile, providers } from 'app/auth/providers';
 import { getSession } from '@/lib/session';
 import { randomBytes } from 'crypto';
 import { LoginError } from 'app/login/form';
+import { sendEmailVerificationMail } from '@/lib/mail/email-verification';
 
 export const dynamic = 'force-dynamic';
 
@@ -97,6 +98,9 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
         }
       });
 
+      // update emails in db
+      handleEmail(existingProvider.userId, profile);
+
       userId = existingProvider.userId;
     } else {
       // this is a new provider
@@ -116,7 +120,7 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
           : profile.username;
 
         // create a new user when creating the provider in the db
-        user = { create: { name: username, email: profile.email }};
+        user = { create: { name: username }};
       } else {
         // this is a user adding a new login provider
         user = { connect: { id: authRequest.userId! }};
@@ -131,6 +135,9 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
           user,
         },
       });
+
+      // update emails in db
+      await handleEmail(newUserId, profile);
 
       userId = newUserId;
     }
@@ -193,5 +200,37 @@ export async function GET(request: NextRequest, { params: { provider: providerNa
 class LoginCallbackError extends Error {
   constructor(public errorCode: LoginError, message: string) {
     super(message);
+  }
+}
+
+async function handleEmail(userId: string, profile: ProviderProfile) {
+  // if this provider does not provide an email, we don't have to do anything...
+  if(!profile.email) {
+    return;
+  }
+
+  // get count of emails for this user
+  // if the user does not have any emails yet, we set this email as default
+  const emailCount = await db.userEmail.count({ where: { userId }});
+
+  // get or create email
+  const email = await db.userEmail.upsert({
+    where: { userId_email: { userId, email: profile.email }},
+    create: {
+      email: profile.email,
+      userId,
+      verified: profile.emailVerified,
+      verifiedAt: profile.emailVerified ? new Date() : undefined,
+      isDefaultForUserId: emailCount === 0 ? userId : undefined,
+    },
+    update: profile.emailVerified
+      ? { verified: true, verifiedAt: new Date() }
+      : {}
+  });
+
+  // send verification email if email is not verified and no verification mail was sent yet
+  if(!email.verified && email.verificationToken === null) {
+    // TODO: use next/after once gw2.me uses Next.js 15
+    await sendEmailVerificationMail(email.id);
   }
 }

@@ -59,15 +59,16 @@ export function google(): ProviderConfig | undefined {
       }).then(getJsonIfOk) as { access_token: string };
 
       // get profile info with token
-      const profile = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      const profile = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
         headers: { 'Authorization': `Bearer ${token.access_token}` }
-      }).then(getJsonIfOk) as { id: string, name: string, email: string };
+      }).then(getJsonIfOk) as { sub: string, name: string, email: string, email_verified: boolean };
 
       return {
-        accountId: profile.id.toString(),
+        accountId: profile.sub,
         accountName: profile.email,
         username: profile.name,
         email: profile.email,
+        emailVerified: profile.email_verified,
         token,
       };
     }

@@ -17,6 +17,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
         { segment: 'apps', icon: 'developer', label: 'Apps' },
         { segment: 'api-keys', icon: 'key', label: 'API Keys' },
         { segment: 'requests', icon: 'api-status', label: 'Requests' },
+        { segment: 'email', icon: 'mail', label: 'Email' },
       ]}/>
     </NavLayout>
   );
