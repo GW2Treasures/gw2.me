@@ -29,7 +29,7 @@ async function verifyEmailAddress(token: string | undefined): Promise<boolean> {
   try {
     await db.userEmail.update({
       where: { verificationToken: token, verified: false },
-      data: { verified: true, verifiedAt: new Date() }
+      data: { verified: true, verifiedAt: new Date(), verificationToken: null }
     });
 
     return true;

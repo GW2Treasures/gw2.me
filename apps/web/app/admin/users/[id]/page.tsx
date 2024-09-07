@@ -5,7 +5,11 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { ColumnSelection } from '@/components/Table/ColumnSelection';
 import { db } from '@/lib/db';
+import { getFormDataString } from '@/lib/form-data';
+import { sendEmailVerificationMail } from '@/lib/mail/email-verification';
 import { Icon } from '@gw2treasures/ui';
+import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
@@ -25,7 +29,10 @@ const getUser = cache(function getUser(id: string) {
       },
       accounts: true,
       providers: true,
-      emails: { orderBy: { email: 'asc' }},
+      emails: {
+        include: { _count: { select: { authorizations: true }}},
+        orderBy: { email: 'asc' }
+      },
     }
   });
 });
@@ -78,13 +85,23 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
       </Providers.Table>
 
       <Headline id="emails" actions={<ColumnSelection table={Emails}/>}>Emails ({user.emails.length})</Headline>
-      <Emails.Table>
-        <Emails.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Emails.Column>
-        <Emails.Column id="email" title="Email">{({ email }) => email}</Emails.Column>
-        <Emails.Column id="default" title="Default">{({ isDefaultForUserId }) => isDefaultForUserId && <Icon icon="checkmark"/>}</Emails.Column>
-        <Emails.Column id="verified" title="Verified">{({ verified }) => verified && <Icon icon="checkmark"/>}</Emails.Column>
-        <Emails.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Emails.Column>
-      </Emails.Table>
+      <Form action={emailAction}>
+        <Emails.Table>
+          <Emails.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Emails.Column>
+          <Emails.Column id="email" title="Email">{({ email }) => email}</Emails.Column>
+          <Emails.Column id="default" title="Default">{({ isDefaultForUserId }) => isDefaultForUserId && <Icon icon="checkmark"/>}</Emails.Column>
+          <Emails.Column id="verified" title="Verified">{({ verified, verificationToken }) => verified ? <Icon icon="checkmark"/> : !!verificationToken && <Icon icon="time"/>}</Emails.Column>
+          <Emails.Column id="authorizations" title="Authorizations">{({ _count }) => _count.authorizations}</Emails.Column>
+          <Emails.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Emails.Column>
+          <Emails.Column small title="Actions" id="actions">
+            {({ id, verified }) => (
+              <FlexRow>
+                <Button icon="mail" disabled={verified} type="submit" name={EMAIL_ACTION_SEND_VERIFICATION} value={id}>Send Verification</Button>
+              </FlexRow>
+            )}
+          </Emails.Column>
+        </Emails.Table>
+      </Form>
     </PageLayout>
   );
 }
@@ -96,4 +113,24 @@ export async function generateMetadata({ params }: { params: { id: string }}) {
   return {
     title: `User ${user?.name}`
   };
+}
+
+const EMAIL_ACTION_SEND_VERIFICATION = 'send-verification';
+
+async function emailAction(_: FormState, formData: FormData): Promise<FormState> {
+  'use server';
+
+  const sendVerification = getFormDataString(formData, EMAIL_ACTION_SEND_VERIFICATION);
+
+  try {
+    if(sendVerification) {
+      await sendEmailVerificationMail(sendVerification);
+      return { success: 'Verification email sent.' };
+    }
+  } catch(e) {
+    console.error(e);
+    return { error: 'Internal server error' };
+  }
+
+  return { error: 'Unknown action' };
 }
