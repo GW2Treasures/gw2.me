@@ -12,7 +12,7 @@ export async function sendEmailVerificationMail(emailId: string) {
     select: { email: true, user: { select: { name: true }}}
   });
 
-  const link = new URL(`/emails/verify?token=${verificationToken}`, process.env.GW2ME_URL);
+  const link = new URL(`/emails/verify?token=${verificationToken}`, process.env.GW2ME_URL ?? 'https://gw2.me/');
 
   await sendMail(
     'Verify your email',
