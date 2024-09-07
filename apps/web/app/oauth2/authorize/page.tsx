@@ -251,7 +251,7 @@ function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id:
         <ScopeItem icon="mail">
           <p className={styles.p}>Your email address</p>
           <div style={{ marginBlock: 8, display: 'flex', gap: 16 }}>
-            <Select name="email" options={emails.map(({ id, email }) => ({ label: email, value: id }))} defaultValue={emailId}/>
+            {emails.length > 0 && (<Select name="email" options={emails.map(({ id, email }) => ({ label: email, value: id }))} defaultValue={emailId}/>)}
             <LinkButton href={`/emails/add?return=${encodeURIComponent(returnUrl)}`} icon="add">Add Email</LinkButton>
           </div>
         </ScopeItem>
