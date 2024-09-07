@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
 import { getFormDataString } from '@/lib/form-data';
+import { sendEmailVerificationMail } from '@/lib/mail/email-verification';
 import { getSession } from '@/lib/session';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
@@ -44,9 +45,12 @@ async function addEmail(returnTo: undefined | string, _: FormState, formData: Fo
   }
 
   try {
-    await db.userEmail.create({
-      data: { email, userId: session.userId }
+    const { id } = await db.userEmail.create({
+      data: { email, userId: session.userId },
+      select: { id: true }
     });
+
+    await sendEmailVerificationMail(id);
   } catch(e) {
     console.error(e);
     return { error: 'Could not save email' };

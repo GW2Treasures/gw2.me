@@ -9,6 +9,7 @@ import { ProviderProfile, providers } from 'app/auth/providers';
 import { getSession } from '@/lib/session';
 import { randomBytes } from 'crypto';
 import { LoginError } from 'app/login/form';
+import { sendEmailVerificationMail } from '@/lib/mail/email-verification';
 
 export const dynamic = 'force-dynamic';
 
@@ -213,7 +214,7 @@ async function handleEmail(userId: string, profile: ProviderProfile) {
   const emailCount = await db.userEmail.count({ where: { userId }});
 
   // get or create email
-  await db.userEmail.upsert({
+  const email = await db.userEmail.upsert({
     where: { userId_email: { userId, email: profile.email }},
     create: {
       email: profile.email,
@@ -226,4 +227,10 @@ async function handleEmail(userId: string, profile: ProviderProfile) {
       ? { verified: true, verifiedAt: new Date() }
       : {}
   });
+
+  // send verification email if email is not verified and no verification mail was sent yet
+  if(!email.verified && email.verificationToken === null) {
+    // TODO: use next/after once gw2.me uses Next.js 15
+    await sendEmailVerificationMail(email.id);
+  }
 }
