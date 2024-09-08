@@ -39,7 +39,7 @@
     "webpack-cli": "5.1.4"
   },
   "dependencies": {
-    "@fontsource/bitter": "5.0.20",
+    "@fontsource/bitter": "5.0.21",
     "@gw2me/client": "*",
     "@gw2treasures/icons": "0.1.0",
     "@gw2treasures/ui": "0.2.1",
