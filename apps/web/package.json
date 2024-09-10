@@ -31,8 +31,8 @@
   },
   "devDependencies": {
     "@gw2api/types": "0.0.20",
-    "@gw2treasures/eslint-config": "0.0.4",
-    "@gw2treasures/eslint-plugin-nextjs": "0.0.2",
+    "@gw2treasures/eslint-config": "0.0.5",
+    "@gw2treasures/eslint-plugin-nextjs": "0.0.3",
     "@gw2treasures/tsconfig": "0.0.1",
     "@simplewebauthn/types": "10.0.0",
     "@testing-library/jest-dom": "6.5.0",
