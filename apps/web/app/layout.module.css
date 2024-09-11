@@ -39,7 +39,7 @@
   border: none;
   background-color: var(--color-border-transparent);
   margin: 0;
-  z-index: 1;
+  z-index: 2;
   margin-bottom: -1px;
 }
 
