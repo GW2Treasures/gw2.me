@@ -19,6 +19,7 @@ export default function DevDocsRegisterAppPage() {
         <div>Go to the page to <Link href="/dev/applications/create">Create a new application</Link>.</div>
         <div>Enter the <b>name</b> of your application. The name must be unique and should tell the user what your application is about. The name is shown to the user when authorizing your Application and on their profile under <Link href="/applications">Authorized Applications</Link>.</div>
         <div>Select the type of your application. See <Link href="#public-confidential">Public vs. Confidential Applications</Link> for the differences. You cannot change this later.</div>
+        <div>Select a verified email as contact email. This email will not be shown to users and is only used for important notifications about your application.</div>
         <div>Click <b>Create Application</b>.</div>
         <div>You will get redirected to the <b>Edit Application</b> page. You can also get there by locating your app on the <Link href="/dev/applications">Your Applications</Link> page and clicking <b>Manage</b>.</div>
         <div>Note your <b>Client ID</b>. Client IDs are considered public and can be embedded in a web page&apos;s source.</div>

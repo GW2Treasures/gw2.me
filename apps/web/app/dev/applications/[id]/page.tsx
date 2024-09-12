@@ -20,6 +20,7 @@ import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitBut
 import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
 import { Icon } from '@gw2treasures/ui';
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { Select, SelectProps } from '@gw2treasures/ui/components/Form/Select';
 
 const getApplication = cache(async (id: string) => {
   const session = await getSessionOrRedirect();
@@ -43,6 +44,11 @@ interface EditApplicationPageProps {
 
 export default async function EditApplicationPage({ params }: EditApplicationPageProps) {
   const application = await getApplication(params.id);
+  const emails = await db.userEmail.findMany({
+    where: { userId: application.ownerId, verified: true },
+  });
+
+  const emailOptions: SelectProps['options'] = emails.map((email) => ({ value: email.id, label: email.email }));
 
   return (
     <PageLayout>
@@ -65,6 +71,10 @@ export default async function EditApplicationPage({ params }: EditApplicationPag
 
           <Label label="Description">
             <Textarea name="description" defaultValue={application.description}/>
+          </Label>
+
+          <Label label="Contact Email">
+            <Select name="email" options={[{ label: '', value: '' }, ...emailOptions]} defaultValue={application.emailId ?? undefined}/>
           </Label>
 
           <Label label="Public">

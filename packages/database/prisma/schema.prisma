@@ -54,6 +54,7 @@ model UserEmail {
   verifiedAt DateTime?
 
   authorizations Authorization[]
+  applications   Application[] @relation("email")
 
   @@unique([userId, email])
 }
@@ -159,6 +160,9 @@ model Application {
 
   ownerId      String
   owner        User     @relation("applications", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  emailId      String?
+  email        UserEmail? @relation("email", fields: [emailId], references: [id], onDelete: SetNull)
   
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
