@@ -1,6 +1,9 @@
 .wrapper {
   display: flex;
   flex: 1;
+  margin: 0 auto;
+  width: 100%;
+  max-width: var(--max-page-width);
 }
 
 .side {
@@ -52,6 +55,7 @@
     padding: 8px 16px;
     overflow-x: auto;
     scrollbar-width: thin;
+    scrollbar-color: var(--color-border-dark) transparent;
   }
 
   .nav > hr {

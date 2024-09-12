@@ -25,6 +25,9 @@
   --shadow: 0 0 2px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.14);
 
   --color-error: #f44336;
+
+  --max-page-width: 1400px;
+  --max-page-width--padding: max(16px, (100vw - var(--max-page-width) + 16px) / 2);
 }
 
 @media (prefers-color-scheme: dark) {

@@ -17,7 +17,7 @@
 }
 
 .content {
-  padding: 128px 16px 64px;
+  padding: 128px 0 64px;
   background: radial-gradient(ellipse 1200px 500px at center 500px, #b7000d33, transparent);
   /* background-size: auto 200px; */
   background-repeat: no-repeat;
@@ -25,16 +25,16 @@
 }
 
 .contentWidth {
-  max-width: 1200px;
+  max-width: var(--max-page-width);
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 16px;
 }
 
 .browserBg { background: #ffffffaa; }
 
 .browser {
   composes: browserBg;
-  margin: 16px 0 128px -32px;
+  margin: 16px 32px 128px -32px;
   min-height: 560px;
   max-height: 920px;
   height: 100%;
@@ -44,6 +44,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow), inset 0 2px 1px -1px #ffffff22;
+  max-width: var(--max-page-width);
 }
 
 .addressBar {
@@ -227,7 +228,7 @@
   .accountsSection { flex-direction: column; align-items: center; }
   .table { order: 1; }
   .authMock { position: static; margin: 0 auto -64px; }
-  .browser { margin: 16px -32px 128px; max-height: initial; }
+  .browser { margin: 16px 0 128px; max-height: initial; }
   .browserContent { padding-right: 16px; }
   .sectionHeader { font-size: 28px; }
 }
@@ -235,9 +236,6 @@
 @media(max-width: 640px) {
   .title { font-size: 32px; }
   .addressBar { margin: 16px; }
-  .browserContent { padding: 16px 0; }
-  .contentWidth { padding: 0; }
-  .browser { margin: 16px 0 128px; }
 }
 
 .borderHide {
