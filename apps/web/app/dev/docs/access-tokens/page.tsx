@@ -8,6 +8,7 @@ import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import Link from 'next/link';
 import styles from '../layout.module.css';
+import { Highlight } from '@/components/Layout/Highlight';
 
 export default function DevDocsAccessTokensPage() {
   return (
@@ -160,13 +161,15 @@ export default function DevDocsAccessTokensPage() {
       <p>If the request is successful, the response will contain the access token used to access any other API endpoints.</p>
 
       <Code>
-        {JSON.stringify({
-          'access_token': 'xl1eSPfCpUNdQiIPe4TAag',
-          'token_type': 'Bearer',
-          'expires_in': 604800,
-          'refresh_token': 'mcn6FMwoiufzqcBDVwzOnz_NvGn-1ezzRKIm7vN_bsk',
-          'scope': 'identify accounts gw2:account'
-        }, null, 2)}
+        <Highlight language="json" code={
+          JSON.stringify({
+            'access_token': 'xl1eSPfCpUNdQiIPe4TAag',
+            'token_type': 'Bearer',
+            'expires_in': 604800,
+            'refresh_token': 'mcn6FMwoiufzqcBDVwzOnz_NvGn-1ezzRKIm7vN_bsk',
+            'scope': 'identify accounts gw2:account'
+          }, null, 2)
+        }/>
       </Code>
 
 

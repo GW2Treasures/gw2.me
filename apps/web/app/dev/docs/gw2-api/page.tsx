@@ -4,6 +4,7 @@ import { PageTitle } from '@/components/Layout/PageTitle';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import Link from 'next/link';
 import styles from '../layout.module.css';
+import { Highlight } from '@/components/Layout/Highlight';
 
 export default function DevDocsGW2APIPage() {
   return (
@@ -37,9 +38,11 @@ export default function DevDocsGW2APIPage() {
       </p>
 
       <Code>
-        {JSON.stringify({
-          accounts: [{ id: 'C2BFF77D-B669-E111-809D-78E7D1936EF0', name: 'darthmaim.6017' }]
-        }, null, 2)}
+        <Highlight language="json" code={
+          JSON.stringify({
+            accounts: [{ id: 'C2BFF77D-B669-E111-809D-78E7D1936EF0', name: 'darthmaim.6017' }]
+          }, null, 2)
+        }/>
       </Code>
 
       <p>
@@ -62,10 +65,12 @@ export default function DevDocsGW2APIPage() {
       </p>
 
       <Code>
-        {JSON.stringify({
-          subtoken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJpU0V6M3NBOC1PejdteUUtVTEwbW53dWM2ZlFxMzh3dm5TRU45SVlnMGdZIiwiaWF0IjoxNjk4OTI3MTA4LCJleHAiOjE2OTg5Mjc3MDgsInBlcm1pc3Npb25zIjpbImFjY291bnQiXX0.YZRAmJ8o-T6c0r4IHspy3S2Nqz7zEBtc22b36xzbL6g',
-          expiresAt: '2023-11-02T12:21:48.000Z'
-        }, null, 2)}
+        <Highlight language="json" code={
+          JSON.stringify({
+            subtoken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJpU0V6M3NBOC1PejdteUUtVTEwbW53dWM2ZlFxMzh3dm5TRU45SVlnMGdZIiwiaWF0IjoxNjk4OTI3MTA4LCJleHAiOjE2OTg5Mjc3MDgsInBlcm1pc3Npb25zIjpbImFjY291bnQiXX0.YZRAmJ8o-T6c0r4IHspy3S2Nqz7zEBtc22b36xzbL6g',
+            expiresAt: '2023-11-02T12:21:48.000Z'
+          }, null, 2)
+        }/>
       </Code>
 
       <p>
