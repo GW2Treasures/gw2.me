@@ -56,6 +56,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
+# workaround for https://github.com/wooorm/starry-night/issues/9
+COPY --link --from=builder --chown=1001:1001 /app/node_modules/vscode-oniguruma/release/onig.wasm /app/node_modules/vscode-oniguruma/release/onig.wasm
+
 USER nextjs
 
 EXPOSE 3000
