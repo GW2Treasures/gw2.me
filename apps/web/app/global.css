@@ -51,3 +51,9 @@ a:where(:any-link:hover) {
 * {
   box-sizing: border-box;
 }
+
+select {
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

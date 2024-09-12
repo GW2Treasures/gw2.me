@@ -6,7 +6,7 @@
 }
 
 .header {
-  padding: 0 16px;
+  padding: 0 var(--max-page-width--padding);
   display: flex;
   gap: 16px;
   line-height: 16px;
@@ -51,7 +51,7 @@
 }
 
 .footer {
-  padding: 16px;
+  padding: 16px var(--max-page-width--padding);
   border-top: 1px solid var(--color-border);
   display: flex;
   flex-wrap: wrap;
@@ -70,7 +70,7 @@
 }
 
 .disclaimer {
-  padding: 16px;
+  padding: 16px var(--max-page-width--padding) 32px;
   border-top: 1px solid var(--color-border);
 
   font-size: 14px;

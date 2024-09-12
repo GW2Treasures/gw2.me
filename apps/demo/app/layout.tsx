@@ -26,13 +26,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body>
         <div className={styles.header}>
-          <Link href="/" className={styles.title}>
-            <Icon icon="gw2me-outline"/>
-            gw2.me Demo
-          </Link>
-          <LinkButton appearance="menu" href="/fed-cm">FedCM</LinkButton>
+          <div className={styles.headerContent}>
+            <Link href="/" className={styles.title}>
+              <Icon icon="gw2me-outline"/>
+              gw2.me Demo
+            </Link>
+            <LinkButton appearance="menu" href="/fed-cm">FedCM</LinkButton>
 
-          <LinkButton appearance="menu" href={getGw2MeUrl()} external icon="gw2me" className={styles.right}>Return to gw2.me</LinkButton>
+            <LinkButton appearance="menu" href={getGw2MeUrl()} external icon="gw2me" className={styles.right}>Return to gw2.me</LinkButton>
+          </div>
         </div>
         <div className={styles.content}>
           {children}
