@@ -15,6 +15,7 @@ function getApps() {
   return db.application.findMany({
     include: {
       owner: { select: { name: true }},
+      email: { select: { email: true } },
       _count: { select: { authorizations: true }},
       authorizations: {
         take: 1,
@@ -41,6 +42,7 @@ export default async function AdminAppsPage() {
         <Apps.Column id="name" title="Name" sortBy="name">{({ name, imageId }) => <FlexRow><ApplicationImage fileId={imageId}/> {name}</FlexRow>}</Apps.Column>
         <Apps.Column id="public" title="Public URL" sortBy="publicUrl" hidden>{({ publicUrl }) => publicUrl}</Apps.Column>
         <Apps.Column id="owner" title="Owner" sortBy={({ owner }) => owner.name}>{({ owner, ownerId }) => <Link href={`/admin/users/${ownerId}`}><FlexRow><Icon icon="user"/>{owner.name}</FlexRow></Link>}</Apps.Column>
+        <Apps.Column id="email" title="Email" sortBy={({ email }) => email?.email} hidden>{({ email }) => email?.email}</Apps.Column>
         <Apps.Column id="auths" title="Authorizations" sortBy={({ _count }) => _count.authorizations} align="right">{({ _count }) => _count.authorizations}</Apps.Column>
         <Apps.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Apps.Column>
         <Apps.Column id="session" title="Last used" sortBy={({ authorizations }) => authorizations[0]?.usedAt}>{({ authorizations }) => authorizations[0]?.usedAt ? <FormatDate date={authorizations[0].usedAt}/> : '-'}</Apps.Column>

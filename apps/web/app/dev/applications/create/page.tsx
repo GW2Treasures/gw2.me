@@ -4,13 +4,23 @@ import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
-import { Select } from '@gw2treasures/ui/components/Form/Select';
+import { Select, SelectProps } from '@gw2treasures/ui/components/Form/Select';
 import { ApplicationTypeOptions } from '../_actions/helper';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import Link from 'next/link';
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { getSessionOrRedirect } from '@/lib/session';
+import { db } from '@/lib/db';
 
-export default function CreateApplicationPage() {
+export default async function CreateApplicationPage() {
+  const { userId } = await getSessionOrRedirect();
+  const emails = await db.userEmail.findMany({
+    where: { userId, verified: true },
+  });
+
+  const emailOptions: SelectProps['options'] = emails.map((email) => ({ value: email.id, label: email.email }));
+  const defaultEmailId = emails.find((email) => email.isDefaultForUserId)?.id;
+
   return (
     <PageLayout>
       <Headline id="create">Create new application</Headline>
@@ -23,6 +33,10 @@ export default function CreateApplicationPage() {
 
           <Label label={<>Type (See <Link href="/dev/docs/register-app#public-confidential">documentation</Link> for distinction)</>}>
             <Select name="type" options={[{ value: '', label: '' }, ...ApplicationTypeOptions]}/>
+          </Label>
+
+          <Label label={<>Verified Contact Email (<Link href="/profile#emails">Manage Emails</Link>)</>}>
+            <Select name="email" options={emailOptions} defaultValue={defaultEmailId}/>
           </Label>
 
           <FlexRow>

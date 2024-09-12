@@ -7,6 +7,7 @@ import { Prisma } from '@gw2me/database';
 import { createHash } from 'crypto';
 import { revalidatePath } from 'next/cache';
 import sharp from 'sharp';
+import { getFormDataString } from '@/lib/form-data';
 
 export async function editApplication(id: string, _: FormState, form: FormData): Promise<FormState> {
   const session = await getSession();
@@ -24,38 +25,40 @@ export async function editApplication(id: string, _: FormState, form: FormData):
   }
 
   // get form data
-  const name = form.get('name');
-  const description = form.get('description');
-  const publicRaw = form.get('public');
-  const publicUrl = form.get('publicUrl');
-  const privacyPolicyUrl = form.get('privacyPolicyUrl');
-  const termsOfServiceUrl = form.get('termsOfServiceUrl');
-  const callbackUrlsRaw = form.get('callbackUrls');
+  const name = getFormDataString(form, 'name');
+  const description = getFormDataString(form, 'description');
+  const email = getFormDataString(form, 'email');
+  const publicRaw = getFormDataString(form, 'public');
+  const publicUrl = getFormDataString(form, 'publicUrl');
+  const privacyPolicyUrl = getFormDataString(form, 'privacyPolicyUrl');
+  const termsOfServiceUrl = getFormDataString(form, 'termsOfServiceUrl');
+  const callbackUrlsRaw = getFormDataString(form, 'callbackUrls');
   const imageRaw = form.get('image');
 
-  if(name == null || typeof name !== 'string' || name.trim() === '') {
+  if(!name) {
     return { error: 'Invalid name' };
   }
-  if(description == null || typeof description !== 'string') {
+  if(description === undefined) {
     return { error: 'Invalid description' };
   }
-  if(publicRaw != null && typeof publicRaw !== 'string') {
-    return { error: 'Invalid public' };
+  if(!email) {
+    return { error: 'Invalid email' };
   }
+
   const isPublic = !!publicRaw;
 
-  if(publicUrl == null || typeof publicUrl !== 'string' || (isPublic && (publicUrl.trim() === '' || !isValidUrl(publicUrl)))) {
+  if(publicUrl === undefined || (isPublic && (publicUrl === '' || !isValidUrl(publicUrl)))) {
     return { error: 'Invalid public URL' };
   }
 
-  if(privacyPolicyUrl == null || typeof privacyPolicyUrl !== 'string' || (privacyPolicyUrl && !isValidUrl(privacyPolicyUrl))) {
+  if(privacyPolicyUrl === undefined || (privacyPolicyUrl && !isValidUrl(privacyPolicyUrl))) {
     return { error: 'Invalid Privacy Policy URL' };
   }
-  if(termsOfServiceUrl == null || typeof termsOfServiceUrl !== 'string' || (termsOfServiceUrl && !isValidUrl(termsOfServiceUrl))) {
+  if(termsOfServiceUrl === undefined || (termsOfServiceUrl && !isValidUrl(termsOfServiceUrl))) {
     return { error: 'Invalid Terms of Service URL' };
   }
 
-  if(callbackUrlsRaw == null || typeof callbackUrlsRaw !== 'string') {
+  if(callbackUrlsRaw === undefined) {
     return { error: 'Invalid redirect URLs' };
   }
 
@@ -131,12 +134,13 @@ export async function editApplication(id: string, _: FormState, form: FormData):
     await db.application.update({
       where: { id },
       data: {
-        name: name.trim(),
-        description: description.trim(),
+        name,
+        description,
+        emailId: email,
         public: !!publicRaw,
-        publicUrl: publicUrl.trim(),
-        privacyPolicyUrl: privacyPolicyUrl.trim(),
-        termsOfServiceUrl: termsOfServiceUrl.trim(),
+        publicUrl,
+        privacyPolicyUrl,
+        termsOfServiceUrl,
         callbackUrls,
         imageId,
       }

@@ -6,6 +6,7 @@ import { getSession } from '@/lib/session';
 import { ApplicationType, Prisma } from '@gw2me/database';
 import { randomUUID } from 'crypto';
 import { redirect } from 'next/navigation';
+import { getFormDataString } from '@/lib/form-data';
 
 export async function createApplication(_: FormState, data: FormData): Promise<FormState> {
   const session = await getSession();
@@ -14,16 +15,19 @@ export async function createApplication(_: FormState, data: FormData): Promise<F
     return { error: 'Not logged in' };
   }
 
-  const name = data.get('name');
-
-  if(!name || typeof name !== 'string' || name.trim() === '') {
+  const name = getFormDataString(data, 'name');
+  if(!name || name.trim() === '') {
     return { error: 'Invalid name' };
   }
 
-  const type = data.get('type');
-
-  if(!type || typeof type !== 'string' || !isValidApplicationType(type)) {
+  const type = getFormDataString(data, 'type');
+  if(!type || !isValidApplicationType(type)) {
     return { error: 'Invalid type' };
+  }
+
+  const email = getFormDataString(data, 'email');
+  if(!email) {
+    return { error: 'Invalid email' };
   }
 
   let applicationId: string;
@@ -34,7 +38,8 @@ export async function createApplication(_: FormState, data: FormData): Promise<F
         name: name.trim(),
         type,
         clientId: randomUUID(),
-        ownerId: session.userId
+        ownerId: session.userId,
+        emailId: email,
       },
       select: {
         id: true
