@@ -57,3 +57,7 @@ select {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+li {
+  position: relative;
+}
