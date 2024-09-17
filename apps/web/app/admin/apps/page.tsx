@@ -15,7 +15,7 @@ function getApps() {
   return db.application.findMany({
     include: {
       owner: { select: { name: true }},
-      email: { select: { email: true } },
+      email: { select: { email: true }},
       _count: { select: { authorizations: true }},
       authorizations: {
         take: 1,
