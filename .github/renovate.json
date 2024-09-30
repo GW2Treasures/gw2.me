@@ -5,6 +5,9 @@
   "kubernetes": {
     "fileMatch": ["kubernetes/.+\\.yaml$"]
   },
+  "ignorePaths": [
+    "docker-compose.database-migration.yml"
+  ],
   "packageRules": [
     {
       "matchSourceUrls": "https://github.com/GW2Treasures/gw2treasures.com",
