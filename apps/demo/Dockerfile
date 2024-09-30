@@ -21,7 +21,7 @@ FROM --platform=$BUILDPLATFORM node:${node_version} AS builder
 ARG rollup_version
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Install dependencies based on the preferred package manager
 COPY --from=source /source/out/json/ .
@@ -35,12 +35,12 @@ COPY --from=source /source/out/full/ .
 RUN npm run build -- --filter=demo...
 
 # Production image, copy all the files and run next
-FROM --platform=$TARGETPLATFORM node:${node_version} AS runner
+FROM node:${node_version} AS runner
 ARG sharp_version
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -60,6 +60,6 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
+ENV PORT=3000
 
 CMD [ "node", "apps/demo/server.js" ]
