@@ -6,6 +6,7 @@
     "fileMatch": ["kubernetes/.+\\.yaml$"]
   },
   "ignorePaths": [
+    "**/node_modules/**",
     "docker-compose.database-migration.yml"
   ],
   "packageRules": [
