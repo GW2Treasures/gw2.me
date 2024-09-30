@@ -3,6 +3,7 @@ import { FormatDate } from '@/components/Format/FormatDate';
 import { Code } from '@/components/Layout/Code';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageTitle } from '@/components/Layout/PageTitle';
+import { Provider } from '@/components/Provider/Provider';
 import { ColumnSelection } from '@/components/Table/ColumnSelection';
 import { db } from '@/lib/db';
 import { getFormDataString } from '@/lib/form-data';
@@ -27,11 +28,16 @@ const getUser = cache(function getUser(id: string) {
           email: { select: { email: true }}
         }
       },
-      accounts: true,
+      accounts: {
+        select: { id: true, accountId: true, accountName: true, displayName: true, verified: true, createdAt: true, apiTokens: { select: { id: true }}}
+      },
       providers: true,
       emails: {
         include: { _count: { select: { authorizations: true }}},
         orderBy: { email: 'asc' }
+      },
+      sessions: {
+        orderBy: { lastUsed: 'desc' }
       },
     }
   });
@@ -49,6 +55,7 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
   const Accounts = createDataTable(user.accounts, ({ id }) => id);
   const Providers = createDataTable(user.providers, ({ provider, providerAccountId }) => `${provider}:${providerAccountId}`);
   const Emails = createDataTable(user.emails, ({ id }) => id);
+  const Sessions = createDataTable(user.sessions, ({ id }) => id);
 
   return (
     <PageLayout>
@@ -73,15 +80,17 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
         <Accounts.Column id="name" title="Name">{({ accountName }) => accountName}</Accounts.Column>
         <Accounts.Column id="display" title="Display Name">{({ displayName }) => displayName}</Accounts.Column>
         <Accounts.Column id="verified" title="Verified">{({ verified }) => verified && <Icon icon="checkmark"/>}</Accounts.Column>
+        <Accounts.Column id="tokens" title="API keys">{({ apiTokens }) => apiTokens.length}</Accounts.Column>
         <Accounts.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Accounts.Column>
       </Accounts.Table>
 
       <Headline id="providers" actions={<ColumnSelection table={Providers}/>}>Providers ({user.providers.length})</Headline>
       <Providers.Table>
-        <Providers.Column id="provider" title="Provider">{({ provider }) => provider}</Providers.Column>
-        <Providers.Column id="providerId" title="Provider Id">{({ providerAccountId }) => <Code inline borderless>{providerAccountId}</Code>}</Providers.Column>
+        <Providers.Column id="provider" title="Provider">{({ provider }) => <Provider provider={provider}/>}</Providers.Column>
+        <Providers.Column id="providerId" title="Provider Id" hidden>{({ providerAccountId }) => <Code inline borderless>{providerAccountId}</Code>}</Providers.Column>
         <Providers.Column id="name" title="Name">{({ displayName }) => displayName}</Providers.Column>
         <Providers.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Providers.Column>
+        <Providers.Column id="usedAt" title="Used At" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'never'}</Providers.Column>
       </Providers.Table>
 
       <Headline id="emails" actions={<ColumnSelection table={Emails}/>}>Emails ({user.emails.length})</Headline>
@@ -102,6 +111,13 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
           </Emails.Column>
         </Emails.Table>
       </Form>
+
+      <Headline id="sessions" actions={<ColumnSelection table={Sessions}/>}>Sessions ({user.sessions.length})</Headline>
+      <Sessions.Table>
+        <Sessions.Column id="session" title="Session">{({ info }) => info}</Sessions.Column>
+        <Sessions.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Sessions.Column>
+        <Sessions.Column id="lastUsedAt" title="Last Used At" sortBy="lastUsed">{({ lastUsed }) => <FormatDate date={lastUsed}/>}</Sessions.Column>
+      </Sessions.Table>
     </PageLayout>
   );
 }
