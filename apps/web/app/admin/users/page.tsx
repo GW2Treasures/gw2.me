@@ -8,6 +8,9 @@ import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { ensureUserIsAdmin } from '../admin';
+import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
+import { ProviderIcon } from '@/components/Provider/Provider';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 
 function getUsers() {
   return db.user.findMany({
@@ -15,6 +18,7 @@ function getUsers() {
       _count: { select: { applications: true, authorizations: true, accounts: true }},
       sessions: { take: 1, orderBy: { lastUsed: 'desc' }, select: { lastUsed: true }},
       defaultEmail: { select: { email: true }},
+      providers: { select: { provider: true, providerAccountId: true, displayName: true }, orderBy: { provider: 'asc' }}
     },
     orderBy: { createdAt: 'asc' }
   });
@@ -32,6 +36,13 @@ export default async function AdminUserPage() {
       <Users.Table>
         <Users.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Users.Column>
         <Users.Column id="name" title="Username" sortBy="name">{({ name }) => name}</Users.Column>
+        <Users.Column id="providers" title="Providers" sortBy="name">
+          {({ providers }) => (
+            <FlexRow>
+              {providers.map((provider) => <Tip key={`${provider.provider}-${provider.providerAccountId}`} tip={provider.displayName}><ProviderIcon provider={provider.provider}/></Tip>)}
+            </FlexRow>
+          )}
+        </Users.Column>
         <Users.Column id="email" title="Email" sortBy={({ defaultEmail }) => defaultEmail?.email} hidden>{({ defaultEmail }) => defaultEmail?.email}</Users.Column>
         <Users.Column id="roles" title="Roles" sortBy={({ roles }) => roles.length} hidden>{({ roles }) => roles.join(', ')}</Users.Column>
         <Users.Column id="apps" title="Apps" sortBy={({ _count }) => _count.applications} align="right">{({ _count }) => _count.applications}</Users.Column>
