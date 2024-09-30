@@ -20,8 +20,8 @@ import { login } from 'app/login/action';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { LoginError, getLoginErrorCookieValue } from 'app/login/form';
 import { PasskeyRegistrationButton } from '@/components/Passkey/PasskeyRegistrationButton';
-import { Icon } from '@gw2treasures/ui';
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
+import { Provider } from '@/components/Provider/Provider';
 
 const getUserData = cache(async () => {
   const currentSession = await getSessionOrRedirect();
@@ -63,14 +63,7 @@ export default async function ProfilePage() {
 
       <Providers.Table>
         <Providers.Column id="provider" title="Provider" sortBy="provider">
-          {({ provider }) =>
-            provider === 'discord' ? <FlexRow><DiscordIcon/>Discord</FlexRow> :
-            provider === 'github' ? <FlexRow><GitHubIcon/>GitHub</FlexRow> :
-            provider === 'steam' ? <FlexRow><SteamIcon/>Steam</FlexRow> :
-            provider === 'google' ? <FlexRow><GoogleIcon/>Google</FlexRow> :
-            provider === 'passkey' ? <FlexRow><Icon icon="passkey"/>Passkey</FlexRow> :
-            provider
-          }
+          {({ provider }) => <Provider provider={provider}/>}
         </Providers.Column>
         <Providers.Column id="user" title="User" sortBy="displayName">{({ displayName }) => displayName}</Providers.Column>
         <Providers.Column id="createdAt" title="Created" sortBy="createdAt" align="right">
