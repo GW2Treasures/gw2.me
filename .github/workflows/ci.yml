@@ -14,7 +14,7 @@ concurrency:
 env:
   IMAGE_VERSION: ci-run-${{ github.run_id }}
   # renovate: datasource=npm packageName=npm
-  NPM_VERSION: 10.8.3
+  NPM_VERSION: 10.9.0
 
 jobs:
   build-node:
