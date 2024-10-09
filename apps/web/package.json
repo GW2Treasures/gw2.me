@@ -49,6 +49,6 @@
     "jest-environment-jsdom": "29.7.0",
     "jest-mock-extended": "3.0.7",
     "ts-node": "10.9.2",
-    "typescript": "5.6.2"
+    "typescript": "5.6.3"
   }
 }
