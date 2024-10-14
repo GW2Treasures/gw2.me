@@ -13,6 +13,10 @@
     {
       "matchSourceUrls": "https://github.com/GW2Treasures/gw2treasures.com",
       "groupName": "gw2treasures packages"
+    }, {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["@simplewebauthn/**"],
+      "groupName": "@simplewebauthn"
     }
   ],
   "customManagers": [
