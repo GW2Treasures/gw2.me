@@ -38,7 +38,7 @@ export const PasskeyAuthenticationDialog: FC = () => {
 
       // start authentication using "Conditional UI"
       // this promise only resolves when the users clicks on the autocomplete options of the text input
-      const authentication = await startAuthentication(options, true);
+      const authentication = await startAuthentication({ optionsJSON: options, useBrowserAutofill: true });
       await startTransition(() => submitAuthentication(challenge, authentication));
     } catch(e) {
       console.error(e);
@@ -60,7 +60,7 @@ export const PasskeyAuthenticationDialog: FC = () => {
 
     try {
       const authenticationOnRegistration = await getAuthenticationOptions();
-      const authentication = await startAuthentication(authenticationOnRegistration.options);
+      const authentication = await startAuthentication({ optionsJSON: authenticationOnRegistration.options });
       await submitAuthentication(authenticationOnRegistration.challenge, authentication);
     } catch(e) {
       console.error(e);
@@ -86,7 +86,7 @@ export const PasskeyAuthenticationDialog: FC = () => {
 
     try {
       const authenticationOnRegistration = await getRegistrationOptions({ type: 'new', username });
-      const registration = await startRegistration(authenticationOnRegistration.options);
+      const registration = await startRegistration({ optionsJSON: authenticationOnRegistration.options });
       await submitRegistration({ type: 'new', username }, authenticationOnRegistration.challenge, registration);
     } catch(e) {
       console.error(e);

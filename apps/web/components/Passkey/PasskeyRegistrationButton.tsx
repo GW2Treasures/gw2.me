@@ -24,7 +24,7 @@ export const PasskeyRegistrationButton: FC = () => {
       const { options, challenge } = await getRegistrationOptions({ type: 'add' });
 
       // start passkey registration
-      const registration = await startRegistration(options);
+      const registration = await startRegistration({ optionsJSON: options });
 
       // submit registration to server to verify challenge and store passkey
       await submitRegistration({ type: 'add' }, challenge, registration);

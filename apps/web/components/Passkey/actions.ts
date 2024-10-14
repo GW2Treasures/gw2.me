@@ -114,7 +114,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
   const sessionDisplayName = ua.browser && ua.os ? `${ua.browser.name} on ${ua.os.name}` : undefined;
 
   // get the name of the passkey using either `credProps.authenticatorDisplayName` or the AAGUID
-  const passkeyDisplayName = (registration.clientExtensionResults.credProps as { authenticatorDisplayName: string })?.authenticatorDisplayName
+  const passkeyDisplayName = (registration.clientExtensionResults.credProps as { authenticatorDisplayName?: string })?.authenticatorDisplayName
     ?? aaguids[verification.registrationInfo.aaguid];
 
   let session: { id: string; userId: string; };
@@ -146,23 +146,23 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
     cookies().delete(LoginErrorCookieName);
   }
 
-  const { credentialID, credentialPublicKey, counter, credentialDeviceType, credentialBackedUp } = verification.registrationInfo;
+  const { credential, credentialDeviceType, credentialBackedUp } = verification.registrationInfo;
 
   await db.userProvider.create({
     data: {
       displayName: passkeyDisplayName ?? sessionDisplayName ?? 'New Passkey',
       provider: 'passkey',
-      providerAccountId: credentialID,
+      providerAccountId: credential.id,
       userId: session.userId,
-      passkeyId: credentialID,
+      passkeyId: credential.id,
       passkey: {
         create: {
           webAuthnUserId,
-          publicKey: Buffer.from(credentialPublicKey),
-          counter,
+          publicKey: Buffer.from(credential.publicKey),
+          counter: credential.counter,
           deviceType: credentialDeviceType,
           backedUp: credentialBackedUp,
-          transports: registration.response.transports,
+          transports: credential.transports,
           userId: session.userId,
         }
       }
@@ -191,9 +191,9 @@ export async function submitAuthentication(challengeJwt: string, authentication:
 
   const { verified, authenticationInfo } = await verifyAuthenticationResponse({
     response: authentication,
-    authenticator: {
-      credentialID: passkey.id,
-      credentialPublicKey: passkey.publicKey,
+    credential: {
+      id: passkey.id,
+      publicKey: passkey.publicKey,
       counter: Number(passkey.counter),
       transports: passkey.transports as AuthenticatorTransportFuture[]
     },
