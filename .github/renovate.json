@@ -16,7 +16,7 @@
     }, {
       "matchDatasources": ["npm"],
       "matchPackageNames": ["@simplewebauthn/**"],
-      "groupName": "@simplewebauthn"
+      "groupName": "SimpleWebAuthn"
     }
   ],
   "customManagers": [
