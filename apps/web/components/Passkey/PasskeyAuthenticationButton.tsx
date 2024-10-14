@@ -35,7 +35,7 @@ export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> =
           const { options, challenge } = await getAuthenticationOptions();
 
           // start passkey authentication
-          const authentication = await startAuthentication(options);
+          const authentication = await startAuthentication({ optionsJSON: options });
 
           // submit authentication to server to verify challenge and start session
           await submitAuthentication(challenge, authentication);
