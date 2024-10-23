@@ -16,7 +16,7 @@
     "lint": "eslint emails"
   },
   "devDependencies": {
-    "@gw2treasures/eslint-config": "0.0.5",
+    "@gw2treasures/eslint-config": "0.0.6",
     "@gw2treasures/tsconfig": "0.0.1",
     "eslint": "8.57.1",
     "react-email": "3.0.1",
