@@ -10,7 +10,7 @@
     "demo-setup": "demo-setup"
   },
   "dependencies": {
-    "@gw2me/client": "*",
+    "@gw2me/client": "workspace:*",
     "@gw2treasures/icons": "0.1.2",
     "@gw2treasures/ui": "0.2.1",
     "next": "14.2.16",
@@ -19,7 +19,7 @@
     "server-only": "0.0.1"
   },
   "devDependencies": {
-    "@gw2me/demo-setup": "*",
+    "@gw2me/demo-setup": "workspace:*",
     "@gw2treasures/eslint-config": "0.0.6",
     "@gw2treasures/eslint-plugin-nextjs": "0.0.4",
     "@gw2treasures/tsconfig": "0.0.1",

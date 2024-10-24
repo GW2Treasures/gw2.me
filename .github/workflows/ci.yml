@@ -12,8 +12,6 @@ concurrency:
 
 env:
   IMAGE_VERSION: ci-run-${{ github.run_id }}
-  # renovate: datasource=npm packageName=npm
-  NPM_VERSION: 10.9.0
 
 jobs:
   build-node:
@@ -28,10 +26,9 @@ jobs:
       name: Setup Node.js environment
       with:
         node-version: ${{ matrix.node }}
-        npm-version: ${{ env.NPM_VERSION }}
         turbo-cache-key: build
     - name: Run Build
-      run: npm run build
+      run: pnpm run build
 
   lint:
     name: Lint
@@ -42,10 +39,9 @@ jobs:
       name: Setup Node.js environment
       with:
         node-version: 20
-        npm-version: ${{ env.NPM_VERSION }}
         turbo-cache-key: lint
     - name: Run Lint
-      run: npm run lint
+      run: pnpm run lint
 
   build-docker:
     name: Build / Docker / ${{ matrix.target }}
@@ -142,10 +138,9 @@ jobs:
       name: Setup Node.js environment
       with:
         node-version: 20
-        npm-version: ${{ env.NPM_VERSION }}
         turbo-cache-key: test
     - name: Run Tests
-      run: npm run test
+      run: pnpm run test
 
 
   success:
@@ -208,10 +203,9 @@ jobs:
       name: Setup Node.js environment
       with:
         node-version: 20
-        npm-version: ${{ env.NPM_VERSION }}
         turbo-cache-key: publish
     - name: Run Publish
-      run: npm run publish-package -- --filter=@gw2me/${{ matrix.target }} --env-mode=loose
+      run: pnpm run publish-package -- --filter=@gw2me/${{ matrix.target }} --env-mode=loose
       id: publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

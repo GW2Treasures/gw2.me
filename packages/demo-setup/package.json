@@ -8,11 +8,12 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@gw2me/database": "*"
+    "@gw2me/database": "workspace:*"
   },
   "devDependencies": {
     "@gw2treasures/eslint-config": "0.0.6",
     "@gw2treasures/tsconfig": "0.0.1",
+    "@types/node": "20.17.0",
     "eslint": "8.57.1",
     "typescript": "5.6.3"
   }

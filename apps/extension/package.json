@@ -4,13 +4,13 @@
   "version": "0.0.6",
   "description": "Generate Guild Wars 2 Subtokens",
   "scripts": {
-    "build": "npm run clean && webpack build --mode=production --no-devtool",
+    "build": "pnpm run clean && webpack build --mode=production --no-devtool",
     "clean": "rm -rf dist/ artifacts/",
-    "watch": "npm run watch:chromium",
-    "watch:chromium": "npm run clean && webpack watch --mode=development --config-name=chromium",
-    "watch:firefox": "npm run clean && webpack watch --mode=development --config-name=firefox",
+    "watch": "pnpm run watch:chromium",
+    "watch:chromium": "pnpm run clean && webpack watch --mode=development --config-name=chromium",
+    "watch:firefox": "pnpm run clean && webpack watch --mode=development --config-name=firefox",
     "lint": "eslint src",
-    "pack": "npm run build && node pack.mjs"
+    "pack": "pnpm run build && node pack.mjs"
   },
   "repository": {
     "type": "git",
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@fontsource/bitter": "5.1.0",
-    "@gw2me/client": "*",
+    "@gw2me/client": "workspace:*",
     "@gw2treasures/icons": "0.1.2",
     "@gw2treasures/ui": "0.2.1",
     "next": "14.2.16",
