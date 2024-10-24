@@ -1,24 +1,21 @@
 {
   "name": "gw2.me",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "dev:web": "turbo run dev --filter=web",
     "dev:demo": "turbo run dev --filter=demo",
     "dev:emails": "turbo run dev --filter=@gw2me/emails",
-    "prisma:studio": "npm run prisma:studio -w @gw2me/database",
-    "prisma:migrate-dev": "npm run prisma:migrate-dev -w @gw2me/database",
+    "prisma:studio": "pnpm run prisma:studio -w @gw2me/database",
+    "prisma:migrate-dev": "pnpm run prisma:migrate-dev -w @gw2me/database",
     "build": "turbo run build",
     "lint": "turbo run lint --continue -- -f gha",
     "test": "turbo run test",
-    "publish-package": "turbo run publish-package"
+    "publish-package": "turbo run publish-package",
+    "foo": "echo $npm_execpath"
   },
   "devDependencies": {
     "eslint-formatter-gha": "1.5.1",
     "turbo": "2.2.3"
   },
-  "packageManager": "npm@10.9.0"
+  "packageManager": "pnpm@9.11.0"
 }
