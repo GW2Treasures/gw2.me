@@ -1,18 +1,19 @@
 import { PrismaClient } from '@gw2me/database';
-import { mockDeep, mockReset, DeepMockProxy } from 'jest-mock-extended';
+import { mockDeep, mockReset } from 'jest-mock-extended';
+import { beforeEach, jest } from '@jest/globals';
 
-import { db } from './db';
+export const dbMock = mockDeep<PrismaClient>();
 
 jest.mock('./db', () => ({
   __esModule: true,
-  db: mockDeep<PrismaClient>(),
+  db: dbMock,
 }));
 
 beforeEach(() => {
   mockReset(dbMock);
   dbMock.$transaction.mockImplementation(
+    // @ts-expect-error any
     (arrayOrCallback) => typeof arrayOrCallback === 'function' ? arrayOrCallback(dbMock) : Promise.all(arrayOrCallback)
   );
 });
 
-export const dbMock = db as unknown as DeepMockProxy<PrismaClient>;
