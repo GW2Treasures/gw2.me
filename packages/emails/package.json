@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "email dev",
-    "build": "npm run clean && if test $CI; then npm run build:ci; else npm run build:local; fi",
+    "build": "pnpm run clean && if test $CI; then pnpm run build:ci; else pnpm run build:local; fi",
     "build:local": "tsc --declaration --declarationMap",
     "build:ci": "tsc --declaration",
     "clean": "rm -rf dist/",
