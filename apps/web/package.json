@@ -40,7 +40,7 @@
     "@prisma/nextjs-monorepo-workaround-plugin": "5.21.1",
     "@jest/globals": "29.7.0",
     "@simplewebauthn/types": "11.0.0",
-    "@testing-library/jest-dom": "6.6.2",
+    "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.0.1",
     "@types/jest": "29.5.14",
     "@types/node": "20.17.4",
