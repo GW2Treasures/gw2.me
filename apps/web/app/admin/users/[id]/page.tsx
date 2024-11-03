@@ -24,7 +24,11 @@ const getUser = cache(function getUser(id: string) {
     include: {
       authorizations: {
         include: {
-          application: { select: { name: true, imageId: true }},
+          client: {
+            include: {
+              application: { select: { name: true, imageId: true }},
+            }
+          },
           email: { select: { email: true }}
         }
       },
@@ -64,7 +68,8 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
       <Headline id="authorizations" actions={<ColumnSelection table={Authorizations}/>}>Authorizations ({user.authorizations.length})</Headline>
       <Authorizations.Table>
         <Authorizations.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Authorizations.Column>
-        <Authorizations.Column id="app" title="App">{({ application }) => <FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow>}</Authorizations.Column>
+        <Authorizations.Column id="app" title="App">{({ client }) => <FlexRow><ApplicationImage fileId={client.application.imageId}/> {client.application.name}</FlexRow>}</Authorizations.Column>
+        <Authorizations.Column id="clientId" title="Client Id" hidden>{({ client }) => <Code inline borderless>{client.id}</Code>}</Authorizations.Column>
         <Authorizations.Column id="type" title="Type" sortBy="type">{({ type }) => type}</Authorizations.Column>
         <Authorizations.Column id="scope" title="Scope" hidden>{({ scope }) => scope.join(' ')}</Authorizations.Column>
         <Authorizations.Column id="email" title="Email" hidden>{({ email }) => email?.email}</Authorizations.Column>

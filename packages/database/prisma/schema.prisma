@@ -160,8 +160,7 @@ model Application {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  authorizations Authorization[] @relation("appAuthorization")
-  clients        Client[]        @relation("applicationClients")
+  clients      Client[] @relation("applicationClients")
 }
 
 model Client {
@@ -174,6 +173,11 @@ model Client {
   
   applicationId String
   application   Application @relation("applicationClients", fields: [applicationId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  authorizations Authorization[] @relation("clientAuthorization")
 }
 
 enum ClientType {
@@ -197,8 +201,8 @@ model Authorization {
   updatedAt DateTime  @updatedAt
   usedAt    DateTime?
 
-  applicationId String
-  application   Application @relation("appAuthorization", fields: [applicationId], references: [id], onDelete: Cascade)
+  clientId String
+  client   Client @relation("clientAuthorization", fields: [clientId], references: [id], onDelete: Cascade)
 
   userId String
   user   User   @relation("userAuthorization", fields: [userId], references: [id], onDelete: Cascade)
@@ -209,7 +213,7 @@ model Authorization {
   email   UserEmail? @relation(fields: [emailId], references: [id], onDelete: Cascade)
 
   @@unique([type, token])
-  @@unique([type, applicationId, userId])
+  @@unique([type, clientId, userId])
 }
 
 enum AuthorizationType {

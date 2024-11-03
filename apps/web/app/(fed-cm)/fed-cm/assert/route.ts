@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
   // load application
   const client = await db.client.findUnique({
     where: { id: clientId },
-    select: { id: true, callbackUrls: true, applicationId: true }
+    select: { id: true, callbackUrls: true }
   });
 
   // check that application exists
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
   // load previous authorization to include scopes and
   const previousAuthorization = await db.authorization.findFirst({
-    where: { applicationId: client.applicationId, userId: user.id, type: { not: AuthorizationType.Code }},
+    where: { clientId, userId: user.id, type: { not: AuthorizationType.Code }},
     select: { scope: true, accounts: { select: { id: true }}}
   });
 
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
   try {
     const identifier = {
       type: AuthorizationType.Code,
-      applicationId: client.applicationId,
+      clientId,
       userId: user.id
     };
 

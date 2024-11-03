@@ -49,7 +49,7 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
 
   // declare some variables for easier access
   const client = await getApplicationByClientId(request.client_id);
-  const previousAuthorization = session ? await getPreviousAuthorization(client.application.id, session.userId) : undefined;
+  const previousAuthorization = session ? await getPreviousAuthorization(request.client_id, session.userId) : undefined;
   const previousScope = new Set(previousAuthorization?.scope as Scope[]);
   const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
   const scopes = new Set(decodeURIComponent(request.scope).split(' ') as Scope[]);
@@ -74,7 +74,7 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
 
   // build params for the authorize action
   const authorizeActionParams: AuthorizeActionParams = {
-    applicationId: client.application.id,
+    clientId: request.client_id,
     redirect_uri: redirect_uri.toString(),
     scopes: Array.from(scopes),
     state: request.state,
@@ -227,9 +227,9 @@ const ScopeItem: FC<ScopeItemProps> = ({ icon, children }) => {
   return <li><Icon icon={icon}/><div>{children}</div></li>;
 };
 
-function getPreviousAuthorization(applicationId: string, userId: string) {
+function getPreviousAuthorization(clientId: string, userId: string) {
   return db.authorization.findFirst({
-    where: { applicationId, userId, type: { not: AuthorizationType.Code }},
+    where: { clientId, userId, type: { not: AuthorizationType.Code }},
     include: { accounts: { select: { id: true }}}
   });
 }

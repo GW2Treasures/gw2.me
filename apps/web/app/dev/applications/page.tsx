@@ -19,11 +19,15 @@ const getApplications = cache(async () => {
       id: true,
       name: true,
       imageId: true,
-      authorizations: {
-        select: { id: true },
-        where: { OR: [{ expiresAt: { gte: new Date() }}, { expiresAt: null }], type: { in: ['AccessToken', 'RefreshToken'] }},
-        distinct: 'userId'
-      },
+      clients: {
+        select: {
+          authorizations: {
+            select: { id: true },
+            where: { OR: [{ expiresAt: { gte: new Date() }}, { expiresAt: null }], type: { in: ['AccessToken', 'RefreshToken'] }},
+            distinct: 'userId'
+          },
+        }
+      }
     },
     orderBy: { createdAt: 'asc' },
   });
@@ -39,7 +43,7 @@ export default async function DevPage() {
 
       <Applications.Table>
         <Applications.Column id="app" title="Application" sortBy="name">{({ name, imageId }) => (<FlexRow><ApplicationImage fileId={imageId}/>{name}</FlexRow>)}</Applications.Column>
-        <Applications.Column id="users" title="Users" sortBy={({ authorizations }) => authorizations.length}>{({ authorizations }) => authorizations.length}</Applications.Column>
+        <Applications.Column id="users" title="Users" sortBy={({ clients }) => clients.map(({ authorizations }) => authorizations.length).reduce(sumReducer, 0)}>{({ clients }) => clients.map(({ authorizations }) => authorizations.length).reduce(sumReducer, 0)}</Applications.Column>
         <Applications.Column id="actions" title="Actions" small>{({ id }) => (<LinkButton href={`/dev/applications/${id}`} icon="settings">Manage</LinkButton>)}</Applications.Column>
       </Applications.Table>
     </PageLayout>
@@ -49,3 +53,7 @@ export default async function DevPage() {
 export const metadata = {
   title: 'Your Applications'
 };
+
+function sumReducer(total: number, current: number) {
+  return total + current;
+}

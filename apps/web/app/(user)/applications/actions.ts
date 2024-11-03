@@ -6,10 +6,10 @@ import { getSession } from '@/lib/session';
 import { revalidatePath } from 'next/cache';
 
 export async function revokeAccess(_: FormState, formData: FormData): Promise<FormState> {
-  const applicationId = formData.get('applicationId');
+  const clientId = formData.get('clientId');
 
-  if(!applicationId || typeof applicationId !== 'string') {
-    return { error: 'Invalid application id' };
+  if(!clientId || typeof clientId !== 'string') {
+    return { error: 'Invalid client id' };
   }
 
   const session = await getSession();
@@ -19,7 +19,7 @@ export async function revokeAccess(_: FormState, formData: FormData): Promise<Fo
   }
 
   await db.authorization.deleteMany({
-    where: { applicationId, userId: session.userId }
+    where: { clientId, userId: session.userId }
   });
 
   revalidatePath('/applications');
