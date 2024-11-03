@@ -12,10 +12,17 @@ import Link from 'next/link';
 import { ensureUserIsAdmin } from '../admin';
 
 function getApps() {
-  return db.application.findMany({
+  return db.client.findMany({
     include: {
-      owner: { select: { name: true }},
-      email: { select: { email: true }},
+      application: {
+        select: {
+          name: true,
+          imageId: true,
+          publicUrl: true,
+          owner: { select: { id: true, name: true }},
+          email: { select: { email: true }},
+        }
+      },
       _count: { select: { authorizations: true }},
       authorizations: {
         take: 1,
@@ -39,13 +46,13 @@ export default async function AdminAppsPage() {
 
       <Apps.Table>
         <Apps.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Apps.Column>
-        <Apps.Column id="name" title="Name" sortBy="name">{({ name, imageId }) => <FlexRow><ApplicationImage fileId={imageId}/> {name}</FlexRow>}</Apps.Column>
-        <Apps.Column id="public" title="Public URL" sortBy="publicUrl" hidden>{({ publicUrl }) => publicUrl}</Apps.Column>
-        <Apps.Column id="owner" title="Owner" sortBy={({ owner }) => owner.name}>{({ owner, ownerId }) => <Link href={`/admin/users/${ownerId}`}><FlexRow><Icon icon="user"/>{owner.name}</FlexRow></Link>}</Apps.Column>
-        <Apps.Column id="email" title="Email" sortBy={({ email }) => email?.email} hidden>{({ email }) => email?.email}</Apps.Column>
+        <Apps.Column id="name" title="Name" sortBy={({ application }) => application.name}>{({ application }) => <FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow>}</Apps.Column>
+        <Apps.Column id="public" title="Public URL" sortBy={({ application }) => application.name} hidden>{({ application }) => application.publicUrl}</Apps.Column>
+        <Apps.Column id="owner" title="Owner" sortBy={({ application }) => application.owner.name}>{({ application }) => <Link href={`/admin/users/${application.owner.id}`}><FlexRow><Icon icon="user"/>{application.owner.name}</FlexRow></Link>}</Apps.Column>
+        <Apps.Column id="email" title="Email" sortBy={({ application }) => application.email?.email} hidden>{({ application }) => application.email?.email}</Apps.Column>
         <Apps.Column id="auths" title="Authorizations" sortBy={({ _count }) => _count.authorizations} align="right">{({ _count }) => _count.authorizations}</Apps.Column>
         <Apps.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Apps.Column>
-        <Apps.Column id="session" title="Last used" sortBy={({ authorizations }) => authorizations[0]?.usedAt}>{({ authorizations }) => authorizations[0]?.usedAt ? <FormatDate date={authorizations[0].usedAt}/> : '-'}</Apps.Column>
+        <Apps.Column id="lastUsedAt" title="Last used" sortBy={({ authorizations }) => authorizations[0]?.usedAt}>{({ authorizations }) => authorizations[0]?.usedAt ? <FormatDate date={authorizations[0].usedAt}/> : '-'}</Apps.Column>
       </Apps.Table>
     </PageLayout>
   );

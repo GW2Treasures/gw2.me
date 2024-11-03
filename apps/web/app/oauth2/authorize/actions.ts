@@ -16,7 +16,7 @@ import { userCookie } from '@/lib/cookie';
 import { getFormDataString } from '@/lib/form-data';
 
 export interface AuthorizeActionParams {
-  applicationId: string,
+  clientId: string,
   redirect_uri: string,
   scopes: Scope[],
   state?: string,
@@ -43,7 +43,7 @@ export async function authorize(params: AuthorizeActionParams, _: FormState, for
 }
 
 export async function authorizeInternal(
-  { applicationId, redirect_uri, scopes, state, codeChallenge }: AuthorizeActionParams,
+  { clientId, redirect_uri, scopes, state, codeChallenge }: AuthorizeActionParams,
   accountIds: string[],
   emailId: string | undefined
 ) {
@@ -69,7 +69,7 @@ export async function authorizeInternal(
   try {
     const identifier = {
       type: AuthorizationType.Code,
-      applicationId,
+      clientId,
       userId: session.userId
     };
 

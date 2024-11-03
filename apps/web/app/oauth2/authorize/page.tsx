@@ -48,8 +48,8 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
   const user = await getUser();
 
   // declare some variables for easier access
-  const application = await getApplicationByClientId(request.client_id);
-  const previousAuthorization = session ? await getPreviousAuthorization(application.id, session.userId) : undefined;
+  const client = await getApplicationByClientId(request.client_id);
+  const previousAuthorization = session ? await getPreviousAuthorization(request.client_id, session.userId) : undefined;
   const previousScope = new Set(previousAuthorization?.scope as Scope[]);
   const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
   const scopes = new Set(decodeURIComponent(request.scope).split(' ') as Scope[]);
@@ -74,7 +74,7 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
 
   // build params for the authorize action
   const authorizeActionParams: AuthorizeActionParams = {
-    applicationId: application.id,
+    clientId: request.client_id,
     redirect_uri: redirect_uri.toString(),
     scopes: Array.from(scopes),
     state: request.state,
@@ -130,9 +130,9 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
   return (
     <>
       <div className={layoutStyles.header}>
-        <ApplicationImage fileId={application.imageId} size={64}/>
-        <span className={layoutStyles.title}>{application.name}</span>
-        <span className={layoutStyles.subTitle}>by {application.owner.name}</span>
+        <ApplicationImage fileId={client.application.imageId} size={64}/>
+        <span className={layoutStyles.title}>{client.application.name}</span>
+        <span className={layoutStyles.subTitle}>by {client.application.owner.name}</span>
       </div>
       {!session || !user ? (
         <>
@@ -144,11 +144,11 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
         <Form action={authorizeAction} initialState={autoAuthorizeState}>
           <div className={styles.form}>
             {newScopes.length === 0 ? (
-              <p className={styles.intro}>{application.name} wants to reauthorize access to your gw2.me account.</p>
+              <p className={styles.intro}>{client.application.name} wants to reauthorize access to your gw2.me account.</p>
             ) : oldScopes.length === 0 ? (
-              <p className={styles.intro}>{application.name} wants to access the following data of your gw2.me account.</p>
+              <p className={styles.intro}>{client.application.name} wants to access the following data of your gw2.me account.</p>
             ) : (
-              <p className={styles.intro}>{application.name} wants to access additional data.</p>
+              <p className={styles.intro}>{client.application.name} wants to access additional data.</p>
             )}
 
             {newScopes.length > 0 && renderScopes(newScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, returnUrl)}
@@ -183,15 +183,15 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
             )}
 
             <p className={styles.outro}>
-              The above data will be shared with {application.name} in accordance with their
-              {' '}{application.privacyPolicyUrl ? <ExternalLink href={application.privacyPolicyUrl}>privacy policy</ExternalLink> : 'privacy policy'} and
-              {' '}{application.termsOfServiceUrl ? <ExternalLink href={application.termsOfServiceUrl}>terms of service</ExternalLink> : 'terms of service'}.
+              The above data will be shared with {client.application.name} in accordance with their
+              {' '}{client.application.privacyPolicyUrl ? <ExternalLink href={client.application.privacyPolicyUrl}>privacy policy</ExternalLink> : 'privacy policy'} and
+              {' '}{client.application.termsOfServiceUrl ? <ExternalLink href={client.application.termsOfServiceUrl}>terms of service</ExternalLink> : 'terms of service'}.
               You can revoke access at anytime from your <Link href="/profile">gw2.me profile</Link>.
             </p>
 
             <div className={styles.buttons}>
               <LinkButton external href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
-              <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {application.name}</SubmitButton>
+              <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {client.application.name}</SubmitButton>
             </div>
 
             <div className={styles.redirectNote}>Authorizing will redirect you to <b>{redirect_uri.origin}</b></div>
@@ -214,7 +214,7 @@ export async function generateMetadata({ searchParams }: AuthorizePageProps): Pr
   const application = await getApplicationByClientId(request.client_id);
 
   return {
-    title: `Authorize ${application.name}`
+    title: `Authorize ${application.application.name}`
   };
 }
 
@@ -227,9 +227,9 @@ const ScopeItem: FC<ScopeItemProps> = ({ icon, children }) => {
   return <li><Icon icon={icon}/><div>{children}</div></li>;
 };
 
-function getPreviousAuthorization(applicationId: string, userId: string) {
+function getPreviousAuthorization(clientId: string, userId: string) {
   return db.authorization.findFirst({
-    where: { applicationId, userId, type: { not: AuthorizationType.Code }},
+    where: { clientId, userId, type: { not: AuthorizationType.Code }},
     include: { accounts: { select: { id: true }}}
   });
 }

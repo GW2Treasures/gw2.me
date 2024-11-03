@@ -25,12 +25,18 @@ const getUserData = cache(async () => {
     ],
   };
 
-  const applications = await db.application.findMany({
+  const clients = await db.client.findMany({
     where: { authorizations: { some: authorizationFilter }},
     select: {
       id: true,
-      name: true,
-      imageId: true,
+
+      application: {
+        select: {
+          id: true,
+          name: true,
+          imageId: true,
+        }
+      },
 
       // include the last used authorization
       authorizations: {
@@ -43,12 +49,12 @@ const getUserData = cache(async () => {
   });
 
   return {
-    applications
+    clients
   };
 });
 
 export default async function ProfilePage() {
-  const { applications } = await getUserData();
+  const { clients } = await getUserData();
 
   return (
     <PageLayout>
@@ -57,7 +63,7 @@ export default async function ProfilePage() {
       <p>Visit the <Link href="/discover">Discover</Link> page to find new applications using gw2.me.</p>
 
       <Form action={revokeAccess}>
-        {applications.length > 0 && (
+        {clients.length > 0 && (
           <Table>
             <thead>
               <tr>
@@ -67,11 +73,11 @@ export default async function ProfilePage() {
               </tr>
             </thead>
             <tbody>
-              {applications.map((application) => (
-                <tr key={application.id}>
-                  <td><FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow></td>
-                  <td>{application.authorizations[0]?.usedAt ? <FormatDate date={application.authorizations[0].usedAt}/> : 'never'}</td>
-                  <td><Button type="submit" name="applicationId" value={application.id} intent="delete" icon="delete">Revoke Access</Button></td>
+              {clients.map((client) => (
+                <tr key={client.id}>
+                  <td><FlexRow><ApplicationImage fileId={client.application.imageId}/> {client.application.name}</FlexRow></td>
+                  <td>{client.authorizations[0]?.usedAt ? <FormatDate date={client.authorizations[0].usedAt}/> : 'never'}</td>
+                  <td><Button type="submit" name="clientId" value={client.id} intent="delete" icon="delete">Revoke Access</Button></td>
                 </tr>
               ))}
             </tbody>

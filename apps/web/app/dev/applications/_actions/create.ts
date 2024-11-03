@@ -3,8 +3,7 @@
 import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
-import { ApplicationType, Prisma } from '@gw2me/database';
-import { randomUUID } from 'crypto';
+import { ClientType, Prisma } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 import { getFormDataString } from '@/lib/form-data';
 
@@ -21,7 +20,7 @@ export async function createApplication(_: FormState, data: FormData): Promise<F
   }
 
   const type = getFormDataString(data, 'type');
-  if(!type || !isValidApplicationType(type)) {
+  if(!type || !isValidClientType(type)) {
     return { error: 'Invalid type' };
   }
 
@@ -36,10 +35,11 @@ export async function createApplication(_: FormState, data: FormData): Promise<F
     const application = await db.application.create({
       data: {
         name: name.trim(),
-        type,
-        clientId: randomUUID(),
         ownerId: session.userId,
         emailId: email,
+        clients: {
+          create: { type }
+        }
       },
       select: {
         id: true
@@ -62,6 +62,6 @@ export async function createApplication(_: FormState, data: FormData): Promise<F
   redirect(`/dev/applications/${applicationId}`);
 }
 
-function isValidApplicationType(type: string): type is ApplicationType {
-  return type in ApplicationType;
+function isValidClientType(type: string): type is ClientType {
+  return type in ClientType;
 }

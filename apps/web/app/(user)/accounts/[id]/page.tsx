@@ -39,7 +39,7 @@ const getAccount = cache(async function getAccount(id: string) {
 const getApplications = cache(function getApplications(accountId: string, userId: string) {
   return db.application.findMany({
     select: { id: true, name: true, imageId: true },
-    where: { authorizations: { some: { userId, accounts: { some: { id: accountId }}}}}
+    where: { clients: { some: { authorizations: { some: { userId, accounts: { some: { id: accountId }}}}}}}
   });
 });
 

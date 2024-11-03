@@ -2,7 +2,7 @@ import { db } from '@/lib/db';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { assert, fail, tryOrFail } from '@/lib/oauth/assert';
 import { Scope } from '@gw2me/client';
-import { ApplicationType } from '@gw2me/database';
+import { ClientType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { createRedirectUrl } from '@/lib/redirectUrl';
@@ -23,23 +23,27 @@ export interface AuthorizeRequestParams {
 export const getApplicationByClientId = cache(async function getApplicationByClientId(clientId: string | undefined) {
   assert(clientId, OAuth2ErrorCode.invalid_request, 'client_id is missing');
 
-  const application = await db.application.findUnique({
-    where: { clientId },
+  const client = await db.client.findUnique({
+    where: { id: clientId },
     select: {
-      id: true,
-      name: true,
-      privacyPolicyUrl: true,
-      termsOfServiceUrl: true,
       callbackUrls: true,
       type: true,
-      imageId: true,
-      owner: { select: { name: true }}
+      application: {
+        select: {
+          id: true,
+          name: true,
+          privacyPolicyUrl: true,
+          termsOfServiceUrl: true,
+          imageId: true,
+          owner: { select: { name: true }}
+        }
+      }
     }
   });
 
-  assert(application, OAuth2ErrorCode.invalid_request, 'invalid client_id');
+  assert(client, OAuth2ErrorCode.invalid_request, 'invalid client_id');
 
-  return application;
+  return client;
 });
 
 async function verifyClientId({ client_id }: Partial<AuthorizeRequestParams>) {
@@ -52,14 +56,14 @@ async function verifyRedirectUri({ client_id, redirect_uri }: Partial<AuthorizeR
 
   const url = tryOrFail(() => new URL(redirect_uri), OAuth2ErrorCode.invalid_request, 'invalid redirect_uri');
 
-  const application = await getApplicationByClientId(client_id);
+  const client = await getApplicationByClientId(client_id);
 
   // ignore port for loopback ips (see https://datatracker.ietf.org/doc/html/rfc8252#section-7.3)
   if(url.hostname === '127.0.0.1' || url.hostname === '[::1]') {
     url.port = '';
   }
 
-  assert(application.callbackUrls.includes(url.toString()), OAuth2ErrorCode.invalid_request, 'unregistered redirect_uri');
+  assert(client.callbackUrls.includes(url.toString()), OAuth2ErrorCode.invalid_request, 'unregistered redirect_uri');
 }
 
 /** @see https://datatracker.ietf.org/doc/html/rfc6749#section-3.1.1 */
@@ -92,9 +96,9 @@ async function verifyPKCE({ client_id, code_challenge, code_challenge_method }: 
   fail(hasPKCE && !code_challenge, OAuth2ErrorCode.invalid_request, 'missing code_challenge');
   fail(code_challenge_method && !supportedAlgorithms.includes(code_challenge_method), OAuth2ErrorCode.invalid_request, 'unsupported code_challenge_metod');
 
-  const application = await getApplicationByClientId(client_id);
+  const client = await getApplicationByClientId(client_id);
 
-  fail(application.type === ApplicationType.Public && !hasPKCE, OAuth2ErrorCode.invalid_request, 'PKCE is required for public clients');
+  fail(client.type === ClientType.Public && !hasPKCE, OAuth2ErrorCode.invalid_request, 'PKCE is required for public clients');
 }
 
 function verifyIncludeGrantedScopes({ include_granted_scopes }: Partial<AuthorizeRequestParams>) {

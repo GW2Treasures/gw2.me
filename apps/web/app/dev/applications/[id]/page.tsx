@@ -26,7 +26,8 @@ const getApplication = cache(async (id: string) => {
   const session = await getSessionOrRedirect();
 
   const application = await db.application.findFirst({
-    where: { id, ownerId: session.userId }
+    where: { id, ownerId: session.userId },
+    include: { clients: true }
   });
 
   if(!application) {
@@ -44,6 +45,8 @@ interface EditApplicationPageProps {
 
 export default async function EditApplicationPage({ params }: EditApplicationPageProps) {
   const application = await getApplication(params.id);
+  const client = application.clients[0];
+
   const emails = await db.userEmail.findMany({
     where: { userId: application.ownerId, verified: true },
   });
@@ -96,32 +99,32 @@ export default async function EditApplicationPage({ params }: EditApplicationPag
           <b style={{ marginTop: 16 }}>OAuth2 Client Information</b>
 
           <Label label="Type">
-            <TextInput readOnly value={application.type}/>
+            <TextInput readOnly value={client.type}/>
           </Label>
 
           <div>
             <FlexRow wrap>
               <Label label="Client ID">
-                <TextInput value={application.clientId} readOnly/>
-                <CopyButton copy={application.clientId} icon="copy">Copy</CopyButton>
+                <TextInput value={client.id} readOnly/>
+                <CopyButton copy={client.id} icon="copy">Copy</CopyButton>
               </Label>
 
-              {application.type === 'Confidential' && (
+              {client.type === 'Confidential' && (
                 <Label label="Client Secret">
-                  <ResetClientSecret applicationId={application.id} reset={resetClientSecret} hasClientSecret={application.clientSecret !== null}/>
+                  <ResetClientSecret clientId={client.id} reset={resetClientSecret} hasClientSecret={client.secret !== null}/>
                 </Label>
               )}
             </FlexRow>
           </div>
 
           <Label label="Redirect URLs">
-            <Textarea name="callbackUrls" defaultValue={application.callbackUrls.join('\n')}/>
+            <Textarea name="callbackUrls" defaultValue={client.callbackUrls.join('\n')}/>
           </Label>
         </div>
 
         <FlexRow wrap>
           <SubmitButton>Save</SubmitButton>
-          <LinkButton target="_blank" href={new Gw2MeClient({ client_id: application.clientId }, { url: 'http://placeholder/' }).getAuthorizationUrl({ redirect_uri: application.callbackUrls[0], scopes: [Scope.Identify], prompt: 'consent', include_granted_scopes: true }).replace('http://placeholder/', '/')}>Test Link <Icon icon="external"/></LinkButton>
+          <LinkButton target="_blank" href={new Gw2MeClient({ client_id: client.id }, { url: 'http://placeholder/' }).getAuthorizationUrl({ redirect_uri: client.callbackUrls[0], scopes: [Scope.Identify], prompt: 'consent', include_granted_scopes: true }).replace('http://placeholder/', '/')}>Test Link <Icon icon="external"/></LinkButton>
           <LinkButton href={`/dev/applications/${application.id}/delete`} icon="delete">Delete Application</LinkButton>
         </FlexRow>
       </Form>
