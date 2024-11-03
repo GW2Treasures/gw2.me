@@ -104,10 +104,10 @@ export default function DevDocsAccessTokensPage() {
       <p>After the user authorized your application, the user is redirected to the specified <Code inline>redirect_uri</Code>.</p>
 
       <p>If the authorization was successful, the url will contain the query parameter <Code inline>code</Code> with an authorization code that needs to be exchanged for an access token in the next step.</p>
-      <Code>https://example.com/callback<br/>  ?state=ocbBQyUo1G6551bD5sNMdA<br/>  &<strong>code=ciA-F7NVbINw1dcEVeYdww</strong></Code>
+      <Code>https://example.com/callback<br/>  ?state=SaOfpb7Ny9mbV6EPCUDcnQ<br/>  &<strong>code=ciA-F7NVbINw1dcEVeYdww</strong></Code>
 
       <p>If the authorization was not successful, the url will contain the <Code inline>error</Code> and <Code inline>error_description</Code> query parameters detailing the reason.</p>
-      <Code>https://example.com/callback<br/>  ?state=yuUK87DIP1NSCfL8XdHM2A<br/>  &<strong>error=access_denied</strong><br/>  &<strong>error_description=user+canceled+authorization</strong></Code>
+      <Code>https://example.com/callback<br/>  ?state=SaOfpb7Ny9mbV6EPCUDcnQ<br/>  &<strong>error=access_denied</strong><br/>  &<strong>error_description=user+canceled+authorization</strong></Code>
 
 
       <Headline id="access-token">Access Token</Headline>
@@ -164,6 +164,7 @@ export default function DevDocsAccessTokensPage() {
         <Highlight language="json" code={
           JSON.stringify({
             'access_token': 'xl1eSPfCpUNdQiIPe4TAag',
+            'issued_token_type': 'urn:ietf:params:oauth:token-type:access_token',
             'token_type': 'Bearer',
             'expires_in': 604800,
             'refresh_token': 'mcn6FMwoiufzqcBDVwzOnz_NvGn-1ezzRKIm7vN_bsk',

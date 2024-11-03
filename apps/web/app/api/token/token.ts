@@ -83,6 +83,7 @@ export async function handleTokenRequest(params: Record<string, string | undefin
 
       return {
         access_token: accessAuthorization.token,
+        issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
         token_type: 'Bearer',
         expires_in: ACCESS_TOKEN_EXPIRATION,
         refresh_token: refreshAuthorization?.token,
@@ -125,6 +126,7 @@ export async function handleTokenRequest(params: Record<string, string | undefin
 
       return {
         access_token: accessAuthorization.token,
+        issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
         token_type: 'Bearer',
         expires_in: ACCESS_TOKEN_EXPIRATION,
         refresh_token: refreshAuthorization.token,
