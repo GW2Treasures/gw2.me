@@ -26,6 +26,7 @@ export interface RefreshTokenParams {
 
 export interface TokenResponse {
   access_token: string,
+  issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
   token_type: 'Bearer',
   expires_in: number,
   refresh_token?: string,
