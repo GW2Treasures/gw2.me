@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
   };
   const approvedApplications = await db.application.findMany({
     where: { authorizations: { some: { type: 'AccessToken', userId: user.id, ...notExpired, scope: { hasEvery: [Scope.Identify, Scope.Email] }}}},
-    select: { clientId: true }
+    select: { clients: true }
   });
 
   // get base url to build absolute url to picture
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       name: user.name,
       email: user.defaultEmail?.email ?? user.name,
       picture: new URL(accountIcon.src, baseUrl),
-      approved_clients: approvedApplications.map(({ clientId }) => clientId),
+      approved_clients: approvedApplications.flatMap((application) => application.clients.map(({ id }) => id)),
     }]
   });
 }

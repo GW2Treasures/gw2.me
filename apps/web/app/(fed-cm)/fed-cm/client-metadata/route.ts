@@ -14,14 +14,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // get application from db
-  const app = await db.application.findUnique({
-    where: { clientId },
-    select: { privacyPolicyUrl: true, termsOfServiceUrl: true }
+  // get client from db
+  const client = await db.client.findUnique({
+    where: { id: clientId },
+    select: {
+      application: { select: { privacyPolicyUrl: true, termsOfServiceUrl: true }}
+    }
   });
 
   // make sure app exists
-  if(!app) {
+  if(!client) {
     return NextResponse.json(
       { error: { code: OAuth2ErrorCode.invalid_client, details: 'client_id not found' }},
       { status: 404 }
@@ -30,7 +32,7 @@ export async function GET(request: NextRequest) {
 
   // return privacy policy and TOS urls
   return NextResponse.json({
-    'privacy_policy_url': app.privacyPolicyUrl || undefined,
-    'terms_of_service_url': app.termsOfServiceUrl || undefined,
+    'privacy_policy_url': client.application.privacyPolicyUrl || undefined,
+    'terms_of_service_url': client.application.termsOfServiceUrl || undefined,
   });
 }

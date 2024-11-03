@@ -140,8 +140,6 @@ model Passkey {
 model Application {
   id           String @default(uuid()) @id
 
-  type         ApplicationType
-
   name         String   @unique
   description  String   @default("")
   public       Boolean  @default(false)
@@ -153,11 +151,6 @@ model Application {
   imageId      String?
   image        File?    @relation("applicationImage", fields: [imageId], references: [id], onDelete: SetNull)
 
-  clientId     String   @unique
-  clientSecret String?  @unique
-
-  callbackUrls String[] @default([])
-
   ownerId      String
   owner        User     @relation("applications", fields: [ownerId], references: [id], onDelete: Cascade)
 
@@ -168,9 +161,22 @@ model Application {
   updatedAt    DateTime @updatedAt
 
   authorizations Authorization[] @relation("appAuthorization")
+  clients        Client[]        @relation("applicationClients")
 }
 
-enum ApplicationType {
+model Client {
+  id            String @default(uuid()) @id
+
+  type          ClientType
+  secret        String? @unique
+  
+  callbackUrls  String[] @default([])
+  
+  applicationId String
+  application   Application @relation("applicationClients", fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+enum ClientType {
   Confidential
   Public
 }

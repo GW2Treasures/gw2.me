@@ -5,7 +5,7 @@ import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { Select, SelectProps } from '@gw2treasures/ui/components/Form/Select';
-import { ApplicationTypeOptions } from '../_actions/helper';
+import { ClientTypeOptions } from '../_actions/helper';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import Link from 'next/link';
 import { PageLayout } from '@/components/Layout/PageLayout';
@@ -32,7 +32,7 @@ export default async function CreateApplicationPage() {
           </Label>
 
           <Label label={<>Type (See <Link href="/dev/docs/register-app#public-confidential">documentation</Link> for distinction)</>}>
-            <Select name="type" options={[{ value: '', label: '' }, ...ApplicationTypeOptions]}/>
+            <Select name="type" options={[{ value: '', label: '' }, ...ClientTypeOptions]}/>
           </Label>
 
           <Label label={<>Verified Contact Email (<Link href="/profile#emails">Manage Emails</Link>)</>}>

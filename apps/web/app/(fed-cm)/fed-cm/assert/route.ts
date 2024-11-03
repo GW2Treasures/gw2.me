@@ -43,13 +43,13 @@ export async function POST(request: NextRequest) {
   }
 
   // load application
-  const application = await db.application.findUnique({
-    where: { clientId },
-    select: { id: true, callbackUrls: true }
+  const client = await db.client.findUnique({
+    where: { id: clientId },
+    select: { id: true, callbackUrls: true, applicationId: true }
   });
 
   // check that application exists
-  if(!application) {
+  if(!client) {
     return Response.json(
       { error: { code: OAuth2ErrorCode.invalid_client, details: 'invalid client_id' }},
       { status: 404, headers: corsHeaders(request) }
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
   }
 
   // verify origin matches a registered callback url
-  const validOrigin = application.callbackUrls.some((url) => new URL(url).origin === origin);
+  const validOrigin = client.callbackUrls.some((url) => new URL(url).origin === origin);
   if(!validOrigin) {
     return Response.json(
       { error: { code: OAuth2ErrorCode.invalid_request, details: 'wrong origin' }},
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
   // load previous authorization to include scopes and
   const previousAuthorization = await db.authorization.findFirst({
-    where: { applicationId: application.id, userId: user.id, type: { not: AuthorizationType.Code }},
+    where: { applicationId: client.applicationId, userId: user.id, type: { not: AuthorizationType.Code }},
     select: { scope: true, accounts: { select: { id: true }}}
   });
 
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
   try {
     const identifier = {
       type: AuthorizationType.Code,
-      applicationId: application.id,
+      applicationId: client.applicationId,
       userId: user.id
     };
 

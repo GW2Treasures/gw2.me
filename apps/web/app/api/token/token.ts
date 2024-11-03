@@ -4,7 +4,7 @@ import { assert } from '@/lib/oauth/assert';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
 import { TokenResponse } from '@gw2me/client';
-import { ApplicationType, AuthorizationType } from '@gw2me/database';
+import { ClientType, AuthorizationType } from '@gw2me/database';
 import { createHash, scryptSync, timingSafeEqual } from 'crypto';
 
 // 7 days
@@ -18,6 +18,12 @@ export async function handleTokenRequest(params: Record<string, string | undefin
   // validate client_id and grant_type
   assert(client_id, OAuth2ErrorCode.invalid_request, 'Missing client_id');
   assert(isValidGrantType(grant_type), OAuth2ErrorCode.unsupported_grant_type, 'Invalid grant_type');
+
+  const client = await db.client.findUnique({
+    where: { id: client_id },
+  });
+
+  assert(client, OAuth2ErrorCode.invalid_client, 'Invalid client_id');
 
   switch(grant_type) {
     case 'authorization_code': {
@@ -33,10 +39,9 @@ export async function handleTokenRequest(params: Record<string, string | undefin
       const authorization = await db.authorization.findUnique({
         where: {
           type_token: { token: code, type: AuthorizationType.Code },
-          application: { clientId: client_id }
+          applicationId: client.applicationId
         },
         include: {
-          application: { select: { type: true, clientSecret: true }},
           accounts: { select: { id: true }}
         }
       });
@@ -53,16 +58,16 @@ export async function handleTokenRequest(params: Record<string, string | undefin
       assertPKCECodeChallenge(authorization.codeChallenge, code_verifier);
 
       // confidential applications need a valid client_secret
-      if(authorization.application.type === ApplicationType.Confidential) {
+      if(client.type === ClientType.Confidential) {
         assert(client_secret, OAuth2ErrorCode.invalid_request, 'Missing client_secret');
-        assert(isValidClientSecret(client_secret, authorization.application.clientSecret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
+        assert(isValidClientSecret(client_secret, client.secret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
       }
 
       const { applicationId, userId, scope, accounts, emailId } = authorization;
 
       const [refreshAuthorization, accessAuthorization] = await db.$transaction([
         // create refresh token
-        authorization.application.type === ApplicationType.Confidential
+        client.type === ClientType.Confidential
           ? db.authorization.upsert({
               where: { type_applicationId_userId: { type: AuthorizationType.RefreshToken, applicationId, userId }},
               create: { type: AuthorizationType.RefreshToken, applicationId, userId, scope, token: generateRefreshToken(), accounts: { connect: accounts }, emailId },
@@ -97,20 +102,19 @@ export async function handleTokenRequest(params: Record<string, string | undefin
       assert(refresh_token, OAuth2ErrorCode.invalid_request, 'Missing refresh_token');
       assert(client_secret, OAuth2ErrorCode.invalid_request, 'Missing client_secret');
 
+      assert(client.type === ClientType.Confidential, OAuth2ErrorCode.invalid_client, 'Invalid client type');
+
       const refreshAuthorization = await db.authorization.findUnique({
         where: {
           type_token: { token: refresh_token, type: AuthorizationType.RefreshToken },
-          application: { clientId: client_id, type: ApplicationType.Confidential }
-        },
-        include: {
-          application: { select: { clientSecret: true }}
+          applicationId: client.applicationId
         }
       });
 
       assert(refreshAuthorization, OAuth2ErrorCode.invalid_grant, 'Invalid refresh_token');
       assert(!isExpired(refreshAuthorization.expiresAt), OAuth2ErrorCode.invalid_grant, 'refresh_token expired');
 
-      assert(isValidClientSecret(client_secret, refreshAuthorization.application.clientSecret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
+      assert(isValidClientSecret(client_secret, client.secret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
 
       const { applicationId, userId, scope } = refreshAuthorization;
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { writeFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { randomUUID, randomBytes, scrypt } from 'node:crypto';
-import { PrismaClient } from '@gw2me/database';
+import { randomBytes, scrypt } from 'node:crypto';
+import { ClientType, PrismaClient } from '@gw2me/database';
 
 async function run() {
   const demoDir = resolve('.');
@@ -32,20 +32,24 @@ async function run() {
     data: {
       name: 'gw2.me Demo',
       description: 'Demo application for gw2.me',
-      type: 'Confidential',
-      clientId: randomUUID(),
-      clientSecret: clientSecretHashed,
       ownerId: user.id,
       public: true,
       publicUrl: 'http://localhost:4001',
-      callbackUrls: ['http://localhost:4001/callback']
-    }
+      clients: {
+        create: {
+          type: ClientType.Confidential,
+          secret: clientSecretHashed,
+          callbackUrls: ['http://localhost:4001/callback'],
+        }
+      }
+    },
+    include: { clients: true }
   });
 
   console.log(`Application: ${application.name} (${application.id})`);
 
   // write clientId and secret to .env.local
-  writeFileSync(join(demoDir, '.env.local'), `DEMO_CLIENT_ID="${application.clientId}"\nDEMO_CLIENT_SECRET="${clientSecret}"\n`);
+  writeFileSync(join(demoDir, '.env.local'), `DEMO_CLIENT_ID="${application.clients[0].id}"\nDEMO_CLIENT_SECRET="${clientSecret}"\n`);
   console.log('.env.local created');
 }
 

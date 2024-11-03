@@ -141,7 +141,7 @@ export async function editApplication(id: string, _: FormState, form: FormData):
         publicUrl,
         privacyPolicyUrl,
         termsOfServiceUrl,
-        callbackUrls,
+        clients: { updateMany: { where: {}, data: { callbackUrls }}},
         imageId,
       }
     });
