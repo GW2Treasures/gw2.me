@@ -19,7 +19,7 @@
   },
   "pnpm": {
     "overrides": {
-      "react-email>next": "14.2.16"
+      "react-email>next": "14.2.17"
     }
   },
   "packageManager": "pnpm@9.12.3"
