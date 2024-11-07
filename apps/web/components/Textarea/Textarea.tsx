@@ -8,12 +8,13 @@ export interface TextareaProps {
   placeholder?: string;
   name?: string;
   readOnly?: boolean;
+  form?: string;
 }
 
-export const Textarea: FC<TextareaProps> = ({ value, onChange, defaultValue, placeholder, name, readOnly }) => {
+export const Textarea: FC<TextareaProps> = ({ onChange, ...props }) => {
   const handleChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
     onChange?.(e.target.value);
   }, [onChange]);
 
-  return <textarea className={styles.textarea} value={value} defaultValue={defaultValue} onChange={onChange && handleChange} placeholder={placeholder} name={name} readOnly={readOnly}/>;
+  return <textarea className={styles.textarea} onChange={onChange && handleChange} {...props}/>;
 };

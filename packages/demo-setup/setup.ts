@@ -38,8 +38,12 @@ async function run() {
       clients: {
         create: {
           type: ClientType.Confidential,
-          secret: clientSecretHashed,
           callbackUrls: ['http://localhost:4001/callback'],
+          secrets: {
+            create: {
+              secret: clientSecretHashed
+            }
+          }
         }
       }
     },
