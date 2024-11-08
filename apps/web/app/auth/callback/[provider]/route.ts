@@ -10,10 +10,13 @@ import { getSession } from '@/lib/session';
 import { randomBytes } from 'crypto';
 import { LoginError } from 'app/login/form';
 import { sendEmailVerificationMail } from '@/lib/mail/email-verification';
+import { RouteProps } from '@/lib/next';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest, { params: { provider: providerName }}: { params: { provider: string }}) {
+export async function GET(request: NextRequest, { params }: RouteProps<{ provider: string }>) {
+  const { provider: providerName } = await params;
+
   // get provider
   const provider = providers[providerName];
 
