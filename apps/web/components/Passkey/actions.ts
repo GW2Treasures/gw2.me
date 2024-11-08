@@ -16,8 +16,8 @@ import { LoginErrorCookieName, authCookie, userCookie } from '@/lib/cookie';
 import { redirect } from 'next/navigation';
 import aaguids from 'aaguids';
 
-function getRelayingParty() {
-  const url = getBaseUrlFromHeaders();
+async function getRelayingParty() {
+  const url = await getBaseUrlFromHeaders();
 
   return {
     rpName: 'gw2.me',
@@ -40,7 +40,7 @@ export async function getRegistrationOptions(params: RegistrationParams) {
     }
   }
 
-  const { rpID, rpName } = getRelayingParty();
+  const { rpID, rpName } = await getRelayingParty();
 
   const existingPasskeys = params.type === 'add' ? await db.passkey.findMany({
     where: { userId: user!.id },
@@ -69,7 +69,7 @@ export async function getRegistrationOptions(params: RegistrationParams) {
 }
 
 export async function getAuthenticationOptions() {
-  const { rpID } = getRelayingParty();
+  const { rpID } = await getRelayingParty();
 
   const rememberedUser = await getPreviousUser();
   const passkeys = rememberedUser ? await db.passkey.findMany({
@@ -91,7 +91,7 @@ export async function getAuthenticationOptions() {
 export async function submitRegistration(params: RegistrationParams & { returnTo?: string }, challengeJwt: string, registration: RegistrationResponseJSON) {
   console.log(registration); // TODO: remove
 
-  const { origin, rpID } = getRelayingParty();
+  const { origin, rpID } = await getRelayingParty();
   const { challenge, webAuthnUserId } = verifyChallengeJwt(challengeJwt);
 
   const verification = await verifyRegistrationResponse({
@@ -108,7 +108,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
     throw new Error('Verification failed');
   }
 
-  const ua = userAgent({ headers: headers() });
+  const ua = userAgent({ headers: await headers() });
 
   // get the name of the session from the useragent
   const sessionDisplayName = ua.browser && ua.os ? `${ua.browser.name} on ${ua.os.name}` : undefined;
@@ -141,9 +141,10 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
       select: { id: true, userId: true }
     });
 
-    cookies().set(authCookie(session.id));
-    cookies().set(userCookie(session.userId));
-    cookies().delete(LoginErrorCookieName);
+    const cookieStore = await cookies();
+    cookieStore.set(authCookie(session.id));
+    cookieStore.set(userCookie(session.userId));
+    cookieStore.delete(LoginErrorCookieName);
   }
 
   const { credential, credentialDeviceType, credentialBackedUp } = verification.registrationInfo;
@@ -186,7 +187,7 @@ export async function submitAuthentication(challengeJwt: string, authentication:
     throw new Error('Unknown passkey id');
   }
 
-  const { rpID, origin } = getRelayingParty();
+  const { rpID, origin } = await getRelayingParty();
   const { challenge } = verifyChallengeJwt(challengeJwt);
 
   const { verified, authenticationInfo } = await verifyAuthenticationResponse({
@@ -218,16 +219,17 @@ export async function submitAuthentication(challengeJwt: string, authentication:
   });
 
   // parse user-agent to set session name
-  const { browser, os } = userAgent({ headers: headers() });
+  const { browser, os } = userAgent({ headers: await headers() });
   const sessionName = browser && os ? `${browser.name} on ${os.name}` : 'Session';
 
   // create a new session
   const session = await db.userSession.create({ data: { info: sessionName, userId: passkey.userId }});
 
   // set session cookie
-  cookies().set(authCookie(session.id));
-  cookies().set(userCookie(passkey.userId));
-  cookies().delete(LoginErrorCookieName);
+  const cookieStore = await cookies();
+  cookieStore.set(authCookie(session.id));
+  cookieStore.set(userCookie(passkey.userId));
+  cookieStore.delete(LoginErrorCookieName);
 
   // redirect
   // TODO: verify returnTo to only redirect to to trusted URLs

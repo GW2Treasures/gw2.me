@@ -38,7 +38,7 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
     ([provider, config]) => [provider, config !== undefined && (!prevUser || prevUser.providers.some((p) => p.provider === provider))] as const
   )) as Record<UserProviderType, boolean>;
 
-  const error = getLoginErrorCookieValue();
+  const error = await getLoginErrorCookieValue();
 
   return (
     <div className={styles.form}>
@@ -79,7 +79,8 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
 };
 
 export async function getPreviousUser() {
-  const jwt = cookies().get(UserCookieName)?.value;
+  const cookieStore = await cookies();
+  const jwt = cookieStore.get(UserCookieName)?.value;
 
   if(!jwt) {
     return undefined;
@@ -113,7 +114,8 @@ export async function getPreviousUser() {
 async function switchUser() {
   'use server';
 
-  cookies().delete(UserCookieName);
+  const cookieStore = await cookies();
+  cookieStore.delete(UserCookieName);
 
   revalidatePath('/login');
   redirect('/login');
@@ -126,8 +128,9 @@ export const enum LoginError {
   WrongUser,
 }
 
-export function getLoginErrorCookieValue(): LoginError | undefined {
-  const errorCookie = cookies().get(LoginErrorCookieName)?.value;
+export async function getLoginErrorCookieValue(): Promise<LoginError | undefined> {
+  const cookieStore = await cookies();
+  const errorCookie = cookieStore.get(LoginErrorCookieName)?.value;
 
   if(errorCookie === undefined) {
     return undefined;

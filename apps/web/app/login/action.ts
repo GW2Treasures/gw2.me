@@ -33,7 +33,7 @@ export async function login(type: UserProviderRequestType, options: LoginOptions
   // build callback url
   const redirect_uri = new URL(
     `/auth/callback/${providerConfig.id}`,
-    getBaseUrlFromHeaders()
+    await getBaseUrlFromHeaders()
   ).toString();
 
   // the userId that tries to authorize. This is either set when logging in as a previous logged in user,
@@ -54,7 +54,7 @@ export async function login(type: UserProviderRequestType, options: LoginOptions
   // TODO: we could also save this in the db instead of as a cookie
   // TODO: update returnTo to only handle trusted urls (encode it? JWT?)
   if(options.returnTo) {
-    cookies().set(`${state}.return`, options.returnTo, { maxAge: 300 });
+    (await cookies()).set(`${state}.return`, options.returnTo, { maxAge: 300 });
   }
 
   // generate PKCE verifier and challenge

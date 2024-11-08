@@ -13,7 +13,7 @@ export async function sendEmailVerificationMail(emailId: string) {
     select: { email: true, user: { select: { name: true }}}
   });
 
-  const link = new URL(`/emails/verify?token=${verificationToken}`, getBaseUrlFromHeaders());
+  const link = new URL(`/emails/verify?token=${verificationToken}`, await getBaseUrlFromHeaders());
 
   await sendMail(
     'Verify your email',

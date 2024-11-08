@@ -7,13 +7,15 @@ import { getUrlFromRequest } from '@/lib/url';
 import { expiresAt } from '@/lib/date';
 
 export async function GET(request: NextRequest) {
+  const cookieStore = await cookies();
+
   // check if we even have a session to logout
-  if(!cookies().has(SessionCookieName)) {
+  if(!cookieStore.has(SessionCookieName)) {
     redirect('/login');
   }
 
   // get the session id
-  const sessionId = cookies().get(SessionCookieName)!.value;
+  const sessionId = cookieStore.get(SessionCookieName)!.value;
 
   // try to delete session in db if set
   // use deleteMany instead of delete so it doesn't fail if there is no matching session in db
@@ -22,11 +24,11 @@ export async function GET(request: NextRequest) {
   }
 
   // delete session cookie
-  cookies().delete(SessionCookieName);
-  cookies().delete(LoginErrorCookieName);
+  cookieStore.delete(SessionCookieName);
+  cookieStore.delete(LoginErrorCookieName);
 
   // set cookie to show logout notification
-  cookies().set('logout', '1', { expires: expiresAt(5), httpOnly: true, path: '/login', secure: true });
+  cookieStore.set('logout', '1', { expires: expiresAt(5), httpOnly: true, path: '/login', secure: true });
 
   // redirect to login and show logout
   const url = getUrlFromRequest(request);

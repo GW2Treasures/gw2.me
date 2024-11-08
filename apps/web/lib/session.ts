@@ -9,7 +9,8 @@ import { redirect } from 'next/navigation';
 
 /** Get the current session */
 export const getSession = cache(async function getSession(): Promise<{ id: string, userId: string } | undefined> {
-  const sessionId = cookies().get(SessionCookieName)?.value;
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get(SessionCookieName)?.value;
 
   return sessionId
     ? await getSessionFromDb(sessionId)

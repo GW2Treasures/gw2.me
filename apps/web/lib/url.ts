@@ -9,11 +9,13 @@ export function getUrlFromRequest(request: Request) {
   return url;
 }
 
-export function getBaseUrlFromHeaders() {
+export async function getBaseUrlFromHeaders() {
   const url = new URL('http://x/');
 
-  url.host = headers().get('X-Forwarded-Host') ?? headers().get('Host') ?? url.host;
-  url.protocol = headers().get('X-Forwarded-Proto')?.split(',')[0].concat(':') ?? url.protocol;
+  const headerStore = await headers();
+
+  url.host = headerStore.get('X-Forwarded-Host') ?? headerStore.get('Host') ?? url.host;
+  url.protocol = headerStore.get('X-Forwarded-Proto')?.split(',')[0].concat(':') ?? url.protocol;
 
   return url;
 }

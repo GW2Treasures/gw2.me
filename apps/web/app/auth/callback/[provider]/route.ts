@@ -16,6 +16,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest, { params }: RouteProps<{ provider: string }>) {
   const { provider: providerName } = await params;
+  const cookieStore = await cookies();
 
   // get provider
   const provider = providers[providerName];
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
   // make sure provider exists and is configured
   if(!provider) {
     console.error(`Invalid provider ${provider}`);
-    cookies().set(loginErrorCookie(LoginError.Unknown));
+    cookieStore.set(loginErrorCookie(LoginError.Unknown));
     redirect('/login');
   }
 
@@ -31,16 +32,16 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
   const { state, ...searchParams } = Object.fromEntries(new URL(request.url).searchParams.entries());
 
   if(!state) {
-    cookies().set(loginErrorCookie(LoginError.Unknown));
+    cookieStore.set(loginErrorCookie(LoginError.Unknown));
     redirect('/login');
   }
 
   // handle return url
   let returnUrl: string | undefined;
-  if(cookies().has(`${state}.return`)) {
-    returnUrl = cookies().get(`${state}.return`)?.value;
+  if(cookieStore.has(`${state}.return`)) {
+    returnUrl = cookieStore.get(`${state}.return`)?.value;
 
-    cookies().delete(`${state}.return`);
+    cookieStore.delete(`${state}.return`);
   }
 
   let requestType: UserProviderRequestType | undefined;
@@ -170,9 +171,9 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
     const session = await db.userSession.create({ data: { info: sessionName, userId }});
 
     // set session cookie
-    cookies().set(authCookie(session.id));
-    cookies().set(userCookie(userId));
-    cookies().delete(LoginErrorCookieName);
+    cookieStore.set(authCookie(session.id));
+    cookieStore.set(userCookie(userId));
+    cookieStore.delete(LoginErrorCookieName);
 
     // redirect
     return NextResponse.redirect(
@@ -190,7 +191,7 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
     const errorCode = error instanceof LoginCallbackError ? error.errorCode : LoginError.Unknown;
 
     // set error cookie
-    cookies().set(loginErrorCookie(errorCode));
+    cookieStore.set(loginErrorCookie(errorCode));
 
     // redirect to return URL
     const redirectTo = returnUrl ?? (requestType === 'add' ? '/providers' : '/login');
