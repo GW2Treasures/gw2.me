@@ -1,5 +1,6 @@
 'use server';
 
+import { createAction } from '@/lib/actions';
 import { db } from '@/lib/db';
 import { getFormDataString } from '@/lib/form-data';
 import { getSession } from '@/lib/session';
@@ -11,7 +12,7 @@ export interface GenerateClientSecretFormState extends FormState {
   clientSecret?: { id: string, secret: string }
 }
 
-export async function generateClientSecret(_: GenerateClientSecretFormState, formData: FormData): Promise<GenerateClientSecretFormState> {
+export const generateClientSecret = createAction(async function generateClientSecret(_: GenerateClientSecretFormState, formData: FormData): Promise<GenerateClientSecretFormState> {
   const session = await getSession();
 
   if(!session) {
@@ -72,9 +73,9 @@ export async function generateClientSecret(_: GenerateClientSecretFormState, for
       secret: clientSecretBuffer.toString('base64url')
     }
   };
-}
+});
 
-export async function deleteClientSecret(_: FormState, formData: FormData) {
+export const deleteClientSecret = createAction(async function deleteClientSecret(_: FormState, formData: FormData) {
   const session = await getSession();
 
   if(!session) {
@@ -114,4 +115,4 @@ export async function deleteClientSecret(_: FormState, formData: FormData) {
   revalidatePath(`/dev/applications/${client.applicationId}`);
 
   return { success: 'Deleted client secret.' };
-}
+});

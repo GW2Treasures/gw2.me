@@ -40,6 +40,7 @@ export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, appli
 
   const client = clients[0];
 
+  // TODO(next@15): replace with useActionState and use the pending flag instead of custom transition
   const [editState, editAction] = useFormState(editApplicationAction, {}, `/dev/applications/${applicationId}`);
   const [generateSecretState, generateSecretAction] = useFormState(generateClientSecretAction, {}, `/dev/applications/${applicationId}`);
   const [deleteSecretState, deleteSecretAction] = useFormState(deleteClientSecretAction, {}, `/dev/applications/${applicationId}`);
