@@ -1,6 +1,6 @@
 'use server';
 
-import { createAction } from '@/lib/actions';
+import { createAction, error } from '@/lib/actions';
 import { db } from '@/lib/db';
 import { getFormDataString } from '@/lib/form-data';
 import { getSession } from '@/lib/session';
@@ -16,13 +16,13 @@ export const generateClientSecret = createAction(async function generateClientSe
   const session = await getSession();
 
   if(!session) {
-    return { error: 'Not logged in.' };
+    error('Not logged in.');
   }
 
   const clientId = getFormDataString(formData, 'clientId');
 
   if(!clientId) {
-    return { error: 'Invalid client id.' };
+    error('Invalid client id.');
   }
 
   const client = await db.client.findUnique({
@@ -34,11 +34,11 @@ export const generateClientSecret = createAction(async function generateClientSe
   });
 
   if(!client) {
-    return { error: 'Invalid client.' };
+    error('Invalid client.');
   }
 
   if(client._count.secrets >= 10) {
-    return { error: 'Can\'t create more than 10 secrets.' };
+    error('Can\'t create more than 10 secrets.');
   }
 
   const clientSecretBuffer = randomBytes(32);
@@ -75,17 +75,17 @@ export const generateClientSecret = createAction(async function generateClientSe
   };
 });
 
-export const deleteClientSecret = createAction(async function deleteClientSecret(_: FormState, formData: FormData) {
+export const deleteClientSecret = createAction(async function deleteClientSecret(_, formData) {
   const session = await getSession();
 
   if(!session) {
-    return { error: 'Not logged in.' };
+    error('Not logged in.');
   }
 
   const clientSecretId = getFormDataString(formData, 'clientSecretId');
 
   if(!clientSecretId) {
-    return { error: 'Invalid secret id.' };
+    error('Invalid secret id.');
   }
 
   const client = await db.client.findFirst({
@@ -100,11 +100,11 @@ export const deleteClientSecret = createAction(async function deleteClientSecret
   });
 
   if(!client) {
-    return { error: 'Client not found.' };
+    error('Client not found.');
   }
 
   if(client._count.secrets === 1) {
-    return { error: 'At least one client secret is required. Create a new client secret first and update your application to use it before deleting this client secret.' };
+    error('At least one client secret is required. Create a new client secret first and update your application to use it before deleting this client secret.');
   }
 
    await db.clientSecret.delete({
