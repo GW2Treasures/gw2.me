@@ -7,6 +7,7 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { ApplicationForm } from './form';
 import { editApplication } from '../_actions/edit';
 import { deleteClientSecret, generateClientSecret } from '../_actions/secret';
+import { PageProps } from '@/lib/next';
 
 const getApplication = cache(async (id: string) => {
   const session = await getSessionOrRedirect();
@@ -23,14 +24,11 @@ const getApplication = cache(async (id: string) => {
   return application;
 });
 
-interface EditApplicationPageProps {
-  params: {
-    id: string;
-  };
-}
+type EditApplicationPageProps = PageProps<{ id: string }>;
 
 export default async function EditApplicationPage({ params }: EditApplicationPageProps) {
-  const application = await getApplication(params.id);
+  const { id } = await params;
+  const application = await getApplication(id);
 
   const emails = await db.userEmail.findMany({
     where: { userId: application.ownerId, verified: true },
@@ -49,7 +47,8 @@ export default async function EditApplicationPage({ params }: EditApplicationPag
 }
 
 export async function generateMetadata({ params }: EditApplicationPageProps) {
-  const application = await getApplication(params.id);
+  const { id } = await params;
+  const application = await getApplication(id);
 
   return {
     title: `Edit ${application.name}`
