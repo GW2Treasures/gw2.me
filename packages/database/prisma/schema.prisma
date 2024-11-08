@@ -167,7 +167,6 @@ model Client {
   id            String @default(uuid()) @id
 
   type          ClientType
-  secret        String? @unique
   
   callbackUrls  String[] @default([])
   
@@ -178,11 +177,25 @@ model Client {
   updatedAt    DateTime @updatedAt
 
   authorizations Authorization[] @relation("clientAuthorization")
+  secrets        ClientSecret[] @relation("clientSecret")
 }
 
 enum ClientType {
   Confidential
   Public
+}
+
+model ClientSecret {
+  id        String @default(uuid()) @id
+  
+  secret    String @unique
+
+  clientId  String
+  client    Client @relation("clientSecret", fields: [clientId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  usedAt    DateTime?
 }
 
 model Authorization {

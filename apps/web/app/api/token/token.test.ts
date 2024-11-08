@@ -2,12 +2,12 @@
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { assertPKCECodeChallenge, handleTokenRequest } from './token';
 import { dbMock } from '@/lib/db.mock';
-import { Account, Authorization, Client } from '@gw2me/database';
+import { Account, Authorization, Client, ClientSecret } from '@gw2me/database';
 import { expiresAt } from '@/lib/date';
 import { Scope } from '@gw2me/client';
 import { describe, expect, it } from '@jest/globals';
 
-type MockAuthorization = Authorization & { client: Pick<Client, 'type' | 'secret'>, accounts: Pick<Account, 'id'>[] };
+type MockAuthorization = Authorization & { client: Pick<Client, 'type'> & { secrets: Pick<ClientSecret, 'secret'>[] }, accounts: Pick<Account, 'id'>[] };
 
 const mockAuthorization: MockAuthorization = {
   id: 'id',
@@ -24,7 +24,7 @@ const mockAuthorization: MockAuthorization = {
   userId: 'user-id',
   emailId: null,
   client: {
-    secret: 'client-secret',
+    secrets: [],
     type: 'Public'
   },
   accounts: [],
@@ -61,9 +61,11 @@ describe('/api/token', () => {
       });
 
       it('Missing client secret', async () => {
-        dbMock.authorization.findUnique.mockResolvedValue({ ...mockAuthorization, client: { type: 'Confidential', secret: '' }} as MockAuthorization);
+        dbMock.authorization.findUnique.mockResolvedValue({ ...mockAuthorization, client: { type: 'Confidential', secrets: [{ secret: 'secret' }] }} as MockAuthorization);
         await expect(handleTokenRequest({ client_id: 'test', grant_type: 'authorization_code', code: 'foo', redirect_uri: '/redirect' })).rejects.toBeOAuth2Error(OAuth2ErrorCode.invalid_request, 'Missing client_secret');
       });
+
+      // TODO: add test for wrong secret
 
       it('returns token', async () => {
         dbMock.authorization.findUnique.mockResolvedValue(mockAuthorization);

@@ -24,7 +24,7 @@ export default function DevDocsRegisterAppPage() {
         <div>You will get redirected to the <b>Edit Application</b> page. You can also get there by locating your app on the <Link href="/dev/applications">Your Applications</Link> page and clicking <b>Manage</b>.</div>
         <div>Note your <b>Client ID</b>. Client IDs are considered public and can be embedded in a web page&apos;s source.</div>
         <div>
-          <p>If you have created a <b>Confidential</b> application, you will also need a <b>Client Secret</b>. Click <b>Generate Client Secret</b>. You must copy the secret and store it somewhere safe. Getting a new secret invalidates the previous secret, which might make your API requests fail until you update your app.</p>
+          <p>If you have created a <b>Confidential</b> application, you will also need a <b>Client Secret</b>. Click <b>Generate Client Secret</b>. You must copy the secret and store it somewhere safe.</p>
           <Notice type="warning">Treat client secrets as you would your password. You must keep it confidential and never expose it to users, even in an obscured form.</Notice>
         </div>
       </Steps>

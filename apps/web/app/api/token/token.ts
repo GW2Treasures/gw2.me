@@ -4,7 +4,7 @@ import { assert } from '@/lib/oauth/assert';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
 import { TokenResponse } from '@gw2me/client';
-import { ClientType, AuthorizationType } from '@gw2me/database';
+import { ClientType, AuthorizationType, ClientSecret } from '@gw2me/database';
 import { createHash, scryptSync, timingSafeEqual } from 'crypto';
 
 // 7 days
@@ -36,7 +36,15 @@ export async function handleTokenRequest(params: Record<string, string | undefin
           clientId: client_id
         },
         include: {
-          client: { select: { type: true, secret: true }},
+          client: {
+            select: {
+              type: true,
+              secrets: {
+                select: { id: true, secret: true },
+                orderBy: { usedAt: { sort: 'desc', nulls: 'last' }}
+              }
+            }
+          },
           accounts: { select: { id: true }}
         }
       });
@@ -52,10 +60,14 @@ export async function handleTokenRequest(params: Record<string, string | undefin
 
       assertPKCECodeChallenge(authorization.codeChallenge, code_verifier);
 
+      let clientSecret: Pick<ClientSecret, 'id' | 'secret'> | undefined;
+
       // confidential applications need a valid client_secret
       if(authorization.client.type === ClientType.Confidential) {
         assert(client_secret, OAuth2ErrorCode.invalid_request, 'Missing client_secret');
-        assert(isValidClientSecret(client_secret, authorization.client.secret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
+
+        clientSecret = authorization.client.secrets.find(({ secret }) => isValidClientSecret(client_secret, secret));
+        assert(clientSecret, OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
       }
 
       const { clientId, userId, scope, accounts, emailId } = authorization;
@@ -78,7 +90,12 @@ export async function handleTokenRequest(params: Record<string, string | undefin
         }),
 
         // delete used code token
-        db.authorization.delete({ where: { id: authorization.id }})
+        db.authorization.delete({ where: { id: authorization.id }}),
+
+        // set last used for refresh token
+        clientSecret
+          ? db.clientSecret.update({ where: { id: clientSecret.id }, data: { usedAt: new Date() }})
+          : db.clientSecret.findFirst({ take: 0 }),
       ]);
 
       return {
@@ -103,26 +120,39 @@ export async function handleTokenRequest(params: Record<string, string | undefin
           client: { id: client_id, type: ClientType.Confidential }
         },
         include: {
-          client: { select: { secret: true }}
+          client: {
+            select: {
+              secrets: {
+                select: { id: true, secret: true },
+                orderBy: { usedAt: { sort: 'desc', nulls: 'last' }}
+              }
+            }
+          }
         }
       });
 
       assert(refreshAuthorization, OAuth2ErrorCode.invalid_grant, 'Invalid refresh_token');
       assert(!isExpired(refreshAuthorization.expiresAt), OAuth2ErrorCode.invalid_grant, 'refresh_token expired');
 
-      assert(isValidClientSecret(client_secret, refreshAuthorization.client.secret), OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
+      const clientSecret = refreshAuthorization.client.secrets.find(({ secret }) => isValidClientSecret(client_secret, secret));
+      assert(clientSecret, OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
 
       const { clientId, userId, scope } = refreshAuthorization;
 
-      // create new access token
-      const accessAuthorization = await db.authorization.upsert({
-        where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
-        create: { type: AuthorizationType.AccessToken, clientId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
-        update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
-      });
+      const [accessAuthorization] = await db.$transaction([
+        // create new access token
+        db.authorization.upsert({
+          where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
+          create: { type: AuthorizationType.AccessToken, clientId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
+          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
+        }),
 
-      // set last used to refresh token
-      await db.authorization.update({ where: { id: refreshAuthorization.id }, data: { usedAt: new Date() }});
+        // set last used on refresh token
+        db.authorization.update({ where: { id: refreshAuthorization.id }, data: { usedAt: new Date() }}),
+
+        // set last used on client secret
+        db.clientSecret.update({ where: { id: clientSecret.id }, data: { usedAt: new Date() }}),
+      ]);
 
       return {
         access_token: accessAuthorization.token,
