@@ -4,6 +4,7 @@ import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { redirect } from 'next/navigation';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { PageProps } from '@/lib/next';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,20 +36,23 @@ async function getSubtoken(accountId: string, data: FormData) {
   redirect(`https://api.guildwars2.com/v2/tokeninfo?access_token=${encodeURIComponent(subtoken)}`);
 }
 
-export default async function TokenPage({ searchParams }: { searchParams: { access_token: string; refresh_token: string; }}) {
-  const access_token = searchParams.access_token;
+export default async function TokenPage({ searchParams: asyncSearchParams }: PageProps) {
+  const searchParams = await asyncSearchParams;
 
-  const api = gw2me.api(access_token);
-  const user = await api.user().catch((e) => String(e));
-  const accounts = await api.accounts().catch((e) => String(e));
+  const access_token = Array.isArray(searchParams.access_token) ? searchParams.access_token[0] : searchParams.access_token;
+  const refresh_token = Array.isArray(searchParams.refresh_token) ? searchParams.refresh_token[0] : searchParams.refresh_token;
+
+  const api = access_token ? gw2me.api(access_token) : undefined;
+  const user = await api?.user().catch((e) => String(e));
+  const accounts = await api?.accounts().catch((e) => String(e));
 
   return (
     <form>
       <Label label="access_token">
-        <TextInput value={searchParams.access_token} readOnly name="access_token"/>
+        <TextInput value={access_token} readOnly name="access_token"/>
       </Label>
       <Label label="refresh_token">
-        <TextInput value={searchParams.refresh_token} readOnly name="refresh_token"/>
+        <TextInput value={refresh_token} readOnly name="refresh_token"/>
       </Label>
 
       <FlexRow>

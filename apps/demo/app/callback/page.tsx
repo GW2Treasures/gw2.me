@@ -1,4 +1,5 @@
 import { code_verifier, getCallback, gw2me } from '@/lib/client';
+import { PageProps, SearchParams } from '@/lib/next';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 export const dynamic = 'force-dynamic';
@@ -11,10 +12,8 @@ function getToken(code: string) {
   });
 }
 
-export default async function CallbackPage({ searchParams }: { searchParams: { code: string } | { access_token: string, refresh_token?: string }}) {
-  const data = 'code' in searchParams
-    ? await getToken(searchParams.code)
-    : searchParams;
+export default async function CallbackPage({ searchParams }: PageProps) {
+  const data = await parseSearchParams(await searchParams);
 
   return (
     <div>
@@ -32,3 +31,22 @@ export default async function CallbackPage({ searchParams }: { searchParams: { c
 export const metadata = {
   title: 'OAuth2 Callback'
 };
+
+async function parseSearchParams(params: SearchParams): Promise<{ access_token: string, refresh_token?: string } | { error: string }> {
+  if(params.code !== undefined) {
+    try {
+      return await getToken(Array.isArray(params.code) ? params.code[0] : params.code);
+    } catch(e) {
+      return { error: String(e) };
+    }
+  }
+
+  if(params.access_token !== undefined) {
+    return {
+      access_token: Array.isArray(params.access_token) ? params.access_token[0] : params.access_token,
+      refresh_token: Array.isArray(params.refresh_token) ? params.refresh_token[0] : params.refresh_token,
+    };
+  }
+
+  throw new Error('Bad request');
+}
