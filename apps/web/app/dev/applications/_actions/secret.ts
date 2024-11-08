@@ -12,7 +12,7 @@ export interface GenerateClientSecretFormState extends FormState {
   clientSecret?: { id: string, secret: string }
 }
 
-export const generateClientSecret = createAction(async function generateClientSecret(_: GenerateClientSecretFormState, formData: FormData): Promise<GenerateClientSecretFormState> {
+export const generateClientSecret = createAction<GenerateClientSecretFormState>(async function generateClientSecret(_, formData) {
   const session = await getSession();
 
   if(!session) {
