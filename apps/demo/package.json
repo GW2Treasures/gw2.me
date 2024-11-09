@@ -14,8 +14,8 @@
     "@gw2treasures/icons": "0.1.2",
     "@gw2treasures/ui": "0.3.0-rc.1",
     "next": "15.0.3",
-    "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "react": "19.0.0-rc-fb9a90fa48-20240614",
+    "react-dom": "19.0.0-rc-fb9a90fa48-20240614",
     "server-only": "0.0.1"
   },
   "devDependencies": {
