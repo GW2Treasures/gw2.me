@@ -94,7 +94,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
                   </FlexRow>
                 </td>
                 <td><PermissionList permissions={token.permissions}/></td>
-                <td><Button type="submit" icon="delete" intent="delete" name="id" value={token.id}>Delete</Button></td>
+                <td><Button type="submit" icon="delete" intent="delete" name="apiKeyId" value={token.id}>Delete</Button></td>
               </tr>
             ))}
           </tbody>
