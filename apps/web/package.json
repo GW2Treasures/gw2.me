@@ -46,7 +46,7 @@
     "@types/node": "20.17.6",
     "@types/nodemailer": "6.4.16",
     "@types/react": "npm:types-react@19.0.0-rc.1",
-    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0",
     "eslint": "8.57.1",
     "eslint-config-next": "15.0.3",
     "expect": "29.7.0",
