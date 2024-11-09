@@ -1,9 +1,9 @@
 import { NavLayout } from '@/components/Layout/NavLayout';
 import { Navigation } from '@/components/Layout/Navigation';
+import { LayoutProps } from '@/lib/next';
 import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
-import { ReactNode } from 'react';
 
-export default function DevLayout({ children }: { children: ReactNode }) {
+export default function DevLayout({ children }: LayoutProps) {
   return (
     <NavLayout content={children}>
       <Navigation prefix="/dev/" items={[

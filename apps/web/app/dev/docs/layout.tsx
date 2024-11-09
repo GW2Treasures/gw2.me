@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { LayoutProps } from '@/lib/next';
 
-export default function DocsLayout({ children }: { children: ReactNode }) {
+export default function DocsLayout({ children }: LayoutProps) {
   return children;
 }
 

@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { Bitter } from 'next/font/google';
 import './global.css';
 import './variables.css';
@@ -7,10 +6,7 @@ import Link from 'next/link';
 import { Icon } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { getGw2MeUrl } from '@/lib/client';
-
-interface RootLayoutProps {
-  children: ReactNode;
-}
+import { LayoutProps } from '@/lib/next';
 
 const bitter = Bitter({
   subsets: ['latin' as const],
@@ -18,7 +14,7 @@ const bitter = Bitter({
   variable: '--font-bitter',
 });
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="en" className={bitter.variable}>
       <head>

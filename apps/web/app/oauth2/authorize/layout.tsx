@@ -1,11 +1,7 @@
-import { ReactNode } from 'react';
 import styles from './layout.module.css';
+import { LayoutProps } from '@/lib/next';
 
-interface AuthorizeLayoutProps {
-  children: ReactNode;
-}
-
-export default function AuthorizeLayout({ children }: AuthorizeLayoutProps) {
+export default function AuthorizeLayout({ children }: LayoutProps) {
   return (
     <div className={styles.wrapper}>
       <main className={styles.box}>

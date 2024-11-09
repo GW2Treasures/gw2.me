@@ -18,6 +18,7 @@ import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { cache } from 'react';
+import { PageProps } from '@/lib/next';
 
 const getAccount = cache(async function getAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -43,13 +44,10 @@ const getApplications = cache(function getApplications(accountId: string, userId
   });
 });
 
-interface AccountPageProps {
-  params: {
-    id: string;
-  };
-}
+type AccountPageProps = PageProps<{ id: string }>;
 
-export default async function AccountPage({ params: { id }}: AccountPageProps) {
+export default async function AccountPage({ params }: AccountPageProps) {
+  const { id } = await params;
   const account = await getAccount(id);
   const applications = await getApplications(account.id, account.userId);
 
@@ -123,7 +121,8 @@ export default async function AccountPage({ params: { id }}: AccountPageProps) {
 }
 
 export async function generateMetadata({ params }: AccountPageProps) {
-  const account = await getAccount(params.id);
+  const { id } = await params;
+  const account = await getAccount(id);
 
   return {
     title: account.displayName

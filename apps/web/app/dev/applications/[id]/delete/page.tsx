@@ -8,6 +8,7 @@ import { getSessionOrRedirect } from '@/lib/session';
 import { notFound } from 'next/navigation';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { PageProps } from '@/lib/next';
 
 async function getApplication(id: string) {
   const session = await getSessionOrRedirect();
@@ -24,14 +25,11 @@ async function getApplication(id: string) {
   return application;
 }
 
-interface DeleteApplicationPageProps {
-  params: {
-    id: string;
-  };
-}
+type DeleteApplicationPageProps = PageProps<{ id: string; }>;
 
 export default async function DeleteApplicationPage({ params }: DeleteApplicationPageProps) {
-  const app = await getApplication(params.id);
+  const { id } = await params;
+  const app = await getApplication(id);
 
   return (
     <PageLayout>
@@ -51,7 +49,8 @@ export default async function DeleteApplicationPage({ params }: DeleteApplicatio
 
 
 export async function generateMetadata({ params }: DeleteApplicationPageProps) {
-  const application = await getApplication(params.id);
+  const { id } = await params;
+  const application = await getApplication(id);
 
   return {
     title: `Delete ${application.name}`

@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { Bitter } from 'next/font/google';
 import localFont from 'next/font/local';
 
@@ -11,10 +10,7 @@ import { getUser } from '@/lib/session';
 import { Icon, cx } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { DataTableContext } from '@gw2treasures/ui/components/Table/DataTableContext';
-
-interface RootLayoutProps {
-  children: ReactNode;
-}
+import { LayoutProps } from '@/lib/next';
 
 const bitter = Bitter({
   subsets: ['latin' as const],
@@ -32,7 +28,7 @@ const wotfard = localFont({
 
 export const dynamic = 'force-dynamic';
 
-export default async function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: LayoutProps) {
   const user = await getUser();
 
   return (

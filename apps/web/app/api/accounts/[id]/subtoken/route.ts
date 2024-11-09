@@ -5,13 +5,12 @@ import { Gw2Scopes, withAuthorization } from '../../../auth';
 import { Authorization } from '@gw2me/database';
 import { corsHeaders } from '@/lib/cors-header';
 import { fetchGw2Api } from '@/lib/gw2-api-request';
+import { RouteProps } from '@/lib/next';
 
-interface Context {
-  params: { id: string }
-}
+export const GET = withAuthorization<RouteProps<{ id: string }>>({ oneOf: Gw2Scopes })(
+  async (authorization: Authorization, _, { params }) => {
+    const { id: accountId } = await params;
 
-export const GET = withAuthorization<Context>({ oneOf: Gw2Scopes })(
-  async (authorization: Authorization, _, { params: { id: accountId }}) => {
     // get required gw2 permissions from authorization scope
     const requiredPermissions = (authorization.scope as Scope[])
       .filter((scope) => Gw2Scopes.includes(scope))

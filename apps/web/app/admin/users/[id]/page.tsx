@@ -8,6 +8,7 @@ import { ColumnSelection } from '@/components/Table/ColumnSelection';
 import { db } from '@/lib/db';
 import { getFormDataString } from '@/lib/form-data';
 import { sendEmailVerificationMail } from '@/lib/mail/email-verification';
+import { PageProps } from '@/lib/next';
 import { Icon } from '@gw2treasures/ui';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
@@ -47,9 +48,12 @@ const getUser = cache(function getUser(id: string) {
   });
 });
 
-export default async function AdminUserDetailPage({ params }: { params: { id: string }}) {
+type AdminUserDetailPageProps = PageProps<{ id: string }>;
+
+export default async function AdminUserDetailPage({ params }: AdminUserDetailPageProps) {
   await ensureUserIsAdmin();
-  const user = await getUser(params.id);
+  const { id } = await params;
+  const user = await getUser(id);
 
   if(!user) {
     notFound();
@@ -127,9 +131,10 @@ export default async function AdminUserDetailPage({ params }: { params: { id: st
   );
 }
 
-export async function generateMetadata({ params }: { params: { id: string }}) {
+export async function generateMetadata({ params }: AdminUserDetailPageProps) {
   await ensureUserIsAdmin();
-  const user = await getUser(params.id);
+  const { id } = await params;
+  const user = await getUser(id);
 
   return {
     title: `User ${user?.name}`

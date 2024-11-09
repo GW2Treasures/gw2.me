@@ -1,11 +1,13 @@
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { db } from '@/lib/db';
+import { PageProps } from '@/lib/next';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 
-export default async function VerifyEmailPage({ searchParams: { token }}: { searchParams: { token?: string }}) {
-  const success = await verifyEmailAddress(token);
+export default async function VerifyEmailPage({ searchParams }: PageProps) {
+  const { token } = await searchParams;
+  const success = await verifyEmailAddress(Array.isArray(token) ? token[0] : token);
 
   return (
     <PageLayout>

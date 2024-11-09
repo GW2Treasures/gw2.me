@@ -6,7 +6,7 @@ import styles from './page.module.css';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Icon, IconProp } from '@gw2treasures/ui';
 import { FC, ReactNode } from 'react';
-import { AuthorizeRequestParams, getApplicationByClientId, validateRequest } from './validate';
+import { getApplicationByClientId, validateRequest } from './validate';
 import { hasGW2Scopes } from '@/lib/scope';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { db } from '@/lib/db';
@@ -27,14 +27,13 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import Link from 'next/link';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
+import { PageProps, searchParamsToURLSearchParams } from '@/lib/next';
 
-interface AuthorizePageProps {
-  searchParams: Partial<AuthorizeRequestParams> & Record<string, string>
-}
+export default async function AuthorizePage({ searchParams: asyncSearchParams }: PageProps) {
+  const searchParams = await asyncSearchParams;
 
-export default async function AuthorizePage({ searchParams }: AuthorizePageProps) {
   // build return url for /account/add?return=X
-  const returnUrl = `/oauth2/authorize?${new URLSearchParams(searchParams).toString()}`;
+  const returnUrl = `/oauth2/authorize?${searchParamsToURLSearchParams(searchParams).toString()}`;
 
   // validate request
   const { error, request } = await validateRequest(searchParams);
@@ -202,7 +201,8 @@ export default async function AuthorizePage({ searchParams }: AuthorizePageProps
   );
 }
 
-export async function generateMetadata({ searchParams }: AuthorizePageProps): Promise<Metadata> {
+export async function generateMetadata({ searchParams: asyncSearchParams }: PageProps): Promise<Metadata> {
+  const searchParams = await asyncSearchParams;
   const { error, request } = await validateRequest(searchParams);
 
   if(error !== undefined) {

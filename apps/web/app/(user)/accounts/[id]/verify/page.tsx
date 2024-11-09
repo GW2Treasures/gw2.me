@@ -9,12 +9,9 @@ import { cache } from 'react';
 import { startChallenge } from './tp-order/start-challenge.action';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
+import { PageProps } from '@/lib/next';
 
-interface VerifyAccountPageProps {
-  params: {
-    id: string;
-  };
-}
+type VerifyAccountPageProps = PageProps<{ id: string }>;
 
 const getAccount = cache(async function getAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -31,7 +28,8 @@ const getAccount = cache(async function getAccount(id: string) {
 });
 
 export default async function VerifyAccountPage({ params }: VerifyAccountPageProps) {
-  const account = await getAccount(params.id);
+  const { id } = await params;
+  const account = await getAccount(id);
 
   return (
     <PageLayout>
@@ -44,9 +42,9 @@ export default async function VerifyAccountPage({ params }: VerifyAccountPagePro
           Your account is already verified.
         </Notice>
       ) : (
-        <Form action={startChallenge.bind(null, params.id)}>
+        <Form action={startChallenge.bind(null, id)}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 32 }}>
-            <LinkButton href={`/accounts/${params.id}/verify/api-key`} icon="key">
+            <LinkButton href={`/accounts/${id}/verify/api-key`} icon="key">
               <b>API key challenge</b>
               <div style={{ whiteSpace: 'normal' }}>Login to the Guild Wars 2 account website and create a new API key using a specific name.</div>
             </LinkButton>
@@ -60,7 +58,7 @@ export default async function VerifyAccountPage({ params }: VerifyAccountPagePro
         </Form>
       )}
 
-      <LinkButton href={`/accounts/${params.id}`} icon="chevron-left">Cancel</LinkButton>
+      <LinkButton href={`/accounts/${id}`} icon="chevron-left">Cancel</LinkButton>
     </PageLayout>
   );
 }

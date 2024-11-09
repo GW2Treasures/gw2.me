@@ -1,18 +1,15 @@
+import { PageProps } from '@/lib/next';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { AddEmailForm } from 'app/(user)/emails/add/form';
 
-export interface AccountCreatePageProps {
-  searchParams?: {
-    return?: string;
-  }
-}
+export default async function AccountCreatePage({ searchParams }: PageProps) {
+  const { return: returnTo } = await searchParams;
 
-export default function AccountCreatePage({ searchParams }: AccountCreatePageProps) {
   return (
     <div>
       <Headline id="add">Add Email</Headline>
 
-      <AddEmailForm returnTo={searchParams?.return}/>
+      <AddEmailForm returnTo={Array.isArray(returnTo) ? returnTo[0] : returnTo}/>
     </div>
   );
 }

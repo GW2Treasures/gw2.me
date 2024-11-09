@@ -12,8 +12,15 @@ import { renderError } from './render-error';
 import { verifyChallenge } from './verify-challenge.action';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { PageProps } from '@/lib/next';
 
-export default async function TpOrderVerifiyAccountPage({ params: { id }, searchParams: { challenge: jwt }}: { params: { id: string }, searchParams: { challenge: string }}) {
+type TpOrderVerifyAccountPageProps = PageProps<{ id: string }>;
+
+export default async function TpOrderVerifyAccountPage({ params, searchParams }: TpOrderVerifyAccountPageProps) {
+  const { id } = await params;
+  const { challenge: rawJwt } = await searchParams;
+  const jwt = Array.isArray(rawJwt) ? rawJwt[0] : rawJwt;
+
   if(!jwt) {
     redirect(`/accounts/${id}/verify`);
   }

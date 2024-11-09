@@ -1,13 +1,9 @@
 import { NavLayout } from '@/components/Layout/NavLayout';
 import { Navigation } from '@/components/Layout/Navigation';
-import { ReactNode } from 'react';
+import { LayoutProps } from '@/lib/next';
 import { ensureUserIsAdmin } from './admin';
 
-export interface AdminLayoutProps {
-  children: ReactNode;
-}
-
-export default async function AdminLayout({ children }: AdminLayoutProps) {
+export default async function AdminLayout({ children }: LayoutProps) {
   await ensureUserIsAdmin();
 
   return (

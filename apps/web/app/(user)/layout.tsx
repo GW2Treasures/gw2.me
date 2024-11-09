@@ -1,12 +1,12 @@
 'use client';
 
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
-import { ReactNode } from 'react';
 import { useSelectedLayoutSegment } from 'next/navigation';
 import { ActiveButtonClass, NavLayout } from '@/components/Layout/NavLayout';
 import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
+import { LayoutProps } from '@/lib/next';
 
-export default function ProfileLayout({ children }: { children: ReactNode }) {
+export default function ProfileLayout({ children }: LayoutProps) {
   const segment = useSelectedLayoutSegment();
 
   return (
