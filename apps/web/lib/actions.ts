@@ -1,6 +1,5 @@
 import { FormState } from '@gw2treasures/ui/components/Form/Form';
-import { isNotFoundError } from 'next/dist/client/components/not-found';
-import { isRedirectError } from 'next/dist/client/components/redirect';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 
 type Action<State extends FormState> = (state: State | { error?: string }, data: FormData) => Promise<State | { error?: string }>;
 
@@ -9,10 +8,7 @@ export function createAction<State extends FormState>(action: Action<State>): Ac
     try {
       return await action(state, data);
     } catch(e) {
-      // TODO(next@15): replace with unstable_rethrow(e)
-      if(isNotFoundError(e) || isRedirectError(e)) {
-        throw error;
-      }
+      rethrow(e);
 
       if(e instanceof ActionError) {
         return { error: e.message };

@@ -1,7 +1,6 @@
 'use client';
 
-import { useCallback, useTransition, type FC } from 'react';
-import { useFormState } from 'react-dom';
+import { useActionState, useCallback, type FC } from 'react';
 import Link from 'next/link';
 import { Textarea } from '@/components/Textarea/Textarea';
 import type { GenerateClientSecretFormState } from '../_actions/secret';
@@ -34,16 +33,14 @@ export interface ApplicationFormProps {
 }
 
 export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, application, clients, emails, editApplicationAction, generateClientSecretAction, deleteClientSecretAction }) => {
-  const [isEditPending, startEditTransition] = useTransition();
-  const [isOtherActionPending, startOtherActionTransition] = useTransition();
-  const isPending = isEditPending || isOtherActionPending;
-
   const client = clients[0];
 
-  // TODO(next@15): replace with useActionState and use the pending flag instead of custom transition
-  const [editState, editAction] = useFormState(editApplicationAction, {}, `/dev/applications/${applicationId}`);
-  const [generateSecretState, generateSecretAction] = useFormState(generateClientSecretAction, {}, `/dev/applications/${applicationId}`);
-  const [deleteSecretState, deleteSecretAction] = useFormState(deleteClientSecretAction, {}, `/dev/applications/${applicationId}`);
+  const [editState, editAction, isEditPending] = useActionState(editApplicationAction, {}, `/dev/applications/${applicationId}`);
+  const [generateSecretState, generateSecretAction, isGenerateSecretPending] = useActionState(generateClientSecretAction, {}, `/dev/applications/${applicationId}`);
+  const [deleteSecretState, deleteSecretAction, isDeleteSecretPending] = useActionState(deleteClientSecretAction, {}, `/dev/applications/${applicationId}`);
+
+  const isPending = isEditPending || isGenerateSecretPending || isDeleteSecretPending;
+
 
   const emailOptions: SelectProps['options'] = emails.map((email) => ({ value: email.id, label: email.email }));
 
@@ -58,7 +55,7 @@ export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, appli
 
   return (
     <>
-      <form id="edit" action={editAction} onSubmit={() => startEditTransition(() => {})}>
+      <form id="edit" action={editAction}>
         {editState.success && <Notice ref={showNotice} key={crypto.randomUUID()}>{editState.success}</Notice>}
         {editState.error && <Notice type="error" ref={showNotice} key={crypto.randomUUID()}>{editState.error}</Notice>}
 
@@ -121,7 +118,7 @@ export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, appli
           <>
             <FlexRow align="space-between">
               <div>Client Secret</div>
-              <form action={generateSecretAction} onSubmit={() => startOtherActionTransition(() => {})}>
+              <form action={generateSecretAction}>
                 <SubmitButton disabled={isPending || client.secrets.length >= 10} icon="key-add" name="clientId" value={client.id}>Generate Client Secret</SubmitButton>
               </form>
             </FlexRow>
@@ -150,7 +147,7 @@ export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, appli
                       )}
                       <td style={{ whiteSpace: 'nowrap' }}>{secret.usedAt ? <FormatDate date={secret.usedAt}/> : 'never'}</td>
                       <td>
-                        <form action={deleteSecretAction} onSubmit={() => startOtherActionTransition(() => {})}>
+                        <form action={deleteSecretAction}>
                           <SubmitButton disabled={isPending || client.secrets.length === 1} icon="delete" intent="delete" name="clientSecretId" value={secret.id}>Delete</SubmitButton>
                         </form>
                       </td>
