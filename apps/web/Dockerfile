@@ -51,7 +51,6 @@ RUN adduser --system --uid 1001 nextjs
 
 RUN npm install sharp@${sharp_version} --include=optional
 
-COPY --from=builder /app/apps/web/next.config.js .
 COPY --from=builder /app/apps/web/package.json .
 
 # Automatically leverage output traces to reduce image size
