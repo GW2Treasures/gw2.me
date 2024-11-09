@@ -47,7 +47,7 @@ const getUserData = cache(async () => {
 
 export default async function ProfilePage() {
   const { currentSession, sessions, providers } = await getUserData();
-  const providerError = getLoginErrorCookieValue();
+  const providerError = await getLoginErrorCookieValue();
 
   const Providers = createDataTable(providers, ({ provider, providerAccountId }) => `${provider}.${providerAccountId}`);
 

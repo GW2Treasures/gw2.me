@@ -11,8 +11,10 @@ export async function devLogin(name: string) {
     notFound();
   }
 
+  const cookieStore = await cookies();
+
   if(!name) {
-    cookies().set(loginErrorCookie(LoginError.Unknown));
+    cookieStore.set(loginErrorCookie(LoginError.Unknown));
     redirect('/login');
   }
 
@@ -27,6 +29,6 @@ export async function devLogin(name: string) {
     select: { id: true }
   });
 
-  cookies().set(authCookie(session.id));
-  cookies().set(userCookie(userId));
+  cookieStore.set(authCookie(session.id));
+  cookieStore.set(userCookie(userId));
 }

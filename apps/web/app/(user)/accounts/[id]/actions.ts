@@ -4,6 +4,7 @@ import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { revalidatePath } from 'next/cache';
+import { createAction } from '@/lib/actions';
 
 export async function updateDisplayName(id: string, state: FormState, formData: FormData): Promise<FormState> {
   const displayName = formData.get('displayName');
@@ -28,8 +29,8 @@ export async function updateDisplayName(id: string, state: FormState, formData: 
   return { success: 'Custom Name updated' };
 }
 
-export async function deleteApiKey(state: FormState, formData: FormData): Promise<FormState> {
-  const id = formData.get('id');
+export const deleteApiKey = createAction(async function deleteApiKey(_, formData) {
+  const id = formData.get('apiKeyId');
 
   if(typeof id !== 'string') {
     return { error: 'Invalid id' };
@@ -50,4 +51,4 @@ export async function deleteApiKey(state: FormState, formData: FormData): Promis
   revalidatePath(`/accounts/${id}`);
 
   return { success: 'API Key deleted' };
-}
+});

@@ -163,7 +163,7 @@ export const PasskeyAuthenticationDialog: FC = () => {
 
 function useTimeout() {
   const [isTimedOut, setIsTimedOut] = useState(false);
-  const ref = useRef<NodeJS.Timeout>();
+  const ref = useRef<NodeJS.Timeout>(null);
 
   const stopTimeout = useCallback(() => {
     setIsTimedOut(false);

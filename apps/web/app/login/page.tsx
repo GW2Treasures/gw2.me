@@ -17,11 +17,13 @@ export default async function LoginPage() {
     redirect('/profile');
   }
 
+  const cookieStore = await cookies();
+
   return (
     <PageLayout thin>
       <Headline id="login">Login</Headline>
 
-      {cookies().has('logout') && (
+      {cookieStore.has('logout') && (
         <Notice>Logout successful</Notice>
       )}
 
