@@ -6,7 +6,7 @@
     "dev": "PORT=4001 next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
+    "lint": "next lint",
     "demo-setup": "demo-setup"
   },
   "dependencies": {
