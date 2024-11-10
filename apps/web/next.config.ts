@@ -3,7 +3,6 @@ import path from 'path';
 // @ts-expect-error no types available
 import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin';
 
-/** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname, '../../'),
   transpilePackages: ['@gw2treasures/ui'],
