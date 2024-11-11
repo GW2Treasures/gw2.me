@@ -9,10 +9,15 @@ import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { useShowNotice } from '../NoticeContext/NoticeContext';
 import { ButtonLink } from '../ButtonLink/ButtonLink';
+import { LoginOptions } from 'app/login/action';
 
 const invalidUsernameRegex = /[^a-z0-9._-]/i;
 
-export const PasskeyAuthenticationDialog: FC = () => {
+export interface PasskeyAuthenticationDialogProps {
+  options: LoginOptions,
+}
+
+export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> = ({ options: { returnTo }}) => {
   const [pending, startTransition] = useTransition();
   const [isRegistration, setIsRegistration] = useState(false);
   const [username, setUsername] = useState('');
@@ -39,7 +44,7 @@ export const PasskeyAuthenticationDialog: FC = () => {
       // start authentication using "Conditional UI"
       // this promise only resolves when the users clicks on the autocomplete options of the text input
       const authentication = await startAuthentication({ optionsJSON: options, useBrowserAutofill: true });
-      await startTransition(() => submitAuthentication(challenge, authentication));
+      await startTransition(() => submitAuthentication(challenge, authentication, returnTo));
     } catch(e) {
       console.error(e);
 
@@ -51,7 +56,7 @@ export const PasskeyAuthenticationDialog: FC = () => {
 
       notice.show({ type: 'error', children: 'Unknown error during passkey authentication' });
     }
-  }, [notice, startAuthenticationTimeout]);
+  }, [notice, returnTo, startAuthenticationTimeout]);
 
   // authentication submit handler
   const handleAuthenticate = useCallback(() => startTransition(async () => {
@@ -61,7 +66,7 @@ export const PasskeyAuthenticationDialog: FC = () => {
     try {
       const authenticationOnRegistration = await getAuthenticationOptions();
       const authentication = await startAuthentication({ optionsJSON: authenticationOnRegistration.options });
-      await submitAuthentication(authenticationOnRegistration.challenge, authentication);
+      await submitAuthentication(authenticationOnRegistration.challenge, authentication, returnTo);
     } catch(e) {
       console.error(e);
 
@@ -74,7 +79,7 @@ export const PasskeyAuthenticationDialog: FC = () => {
       // show error
       notice.show({ type: 'error', children: 'Unknown error during passkey authentication.' });
     }
-  }), [notice]);
+  }), [notice, returnTo]);
 
   // registration submit handler
   const handleRegister = useCallback(() => startTransition(async () => {
@@ -87,7 +92,7 @@ export const PasskeyAuthenticationDialog: FC = () => {
     try {
       const authenticationOnRegistration = await getRegistrationOptions({ type: 'new', username });
       const registration = await startRegistration({ optionsJSON: authenticationOnRegistration.options });
-      await submitRegistration({ type: 'new', username }, authenticationOnRegistration.challenge, registration);
+      await submitRegistration({ type: 'new', username, returnTo }, authenticationOnRegistration.challenge, registration);
     } catch(e) {
       console.error(e);
 
@@ -103,7 +108,7 @@ export const PasskeyAuthenticationDialog: FC = () => {
       // show error
       notice.show({ type: 'error', children: 'Unknown error during passkey authentication.' });
     }
-  }), [notice, stopAuthenticationTimeout, username, initializeConditionalUi]);
+  }), [notice, stopAuthenticationTimeout, username, returnTo, initializeConditionalUi]);
 
   // init conditional on registration page
   useEffect(() => {
