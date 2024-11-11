@@ -10,8 +10,7 @@
     "build": "turbo run build",
     "lint": "turbo run lint --continue -- -f gha",
     "test": "turbo run test",
-    "publish-package": "turbo run publish-package",
-    "foo": "echo $npm_execpath"
+    "publish-package": "turbo run publish-package"
   },
   "devDependencies": {
     "eslint-formatter-gha": "1.5.1",
