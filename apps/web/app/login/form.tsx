@@ -20,7 +20,6 @@ import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, UserCookieName } from '@/lib/cookie';
 import { PasskeyAuthenticationButton } from '@/components/Passkey/PasskeyAuthenticationButton';
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
-import { redirect } from 'next/navigation';
 
 interface LoginFormProps {
   returnTo?: string;
@@ -110,15 +109,13 @@ export async function getPreviousUser() {
   return user ?? undefined;
 }
 
-// eslint-disable-next-line require-await
 async function switchUser() {
   'use server';
 
   const cookieStore = await cookies();
   cookieStore.delete(UserCookieName);
 
-  revalidatePath('/login');
-  redirect('/login');
+  revalidatePath('');
 }
 
 export const enum LoginError {
