@@ -13,6 +13,7 @@ import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { revokeAccess } from './actions';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { FormatDate } from '@/components/Format/FormatDate';
+import { Icon } from '@gw2treasures/ui';
 
 const getUserData = cache(async () => {
   const session = await getSessionOrRedirect();
@@ -35,6 +36,8 @@ const getUserData = cache(async () => {
           id: true,
           name: true,
           imageId: true,
+          public: true,
+          publicUrl: true,
         }
       },
 
@@ -75,7 +78,17 @@ export default async function ProfilePage() {
             <tbody>
               {clients.map((client) => (
                 <tr key={client.id}>
-                  <td><FlexRow><ApplicationImage fileId={client.application.imageId}/> {client.application.name}</FlexRow></td>
+                  <td>
+                    {client.application.public ? (
+                      <a href={client.application.publicUrl} target="_blank" rel="noreferrer noopener">
+                        <FlexRow>
+                          <ApplicationImage fileId={client.application.imageId}/> {client.application.name} <Icon icon="external-link"/>
+                        </FlexRow>
+                      </a>
+                    ) : (
+                      <FlexRow><ApplicationImage fileId={client.application.imageId}/> {client.application.name}</FlexRow>
+                    )}
+                  </td>
                   <td>{client.authorizations[0]?.usedAt ? <FormatDate date={client.authorizations[0].usedAt}/> : 'never'}</td>
                   <td><Button type="submit" name="clientId" value={client.id} intent="delete" icon="delete">Revoke Access</Button></td>
                 </tr>
