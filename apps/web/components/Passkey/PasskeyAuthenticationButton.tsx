@@ -38,7 +38,7 @@ export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> =
           const authentication = await startAuthentication({ optionsJSON: options });
 
           // submit authentication to server to verify challenge and start session
-          await submitAuthentication(challenge, authentication);
+          await submitAuthentication(challenge, authentication, loginOptions.returnTo);
         } catch(e) {
           console.error(e);
           if(e instanceof Error) {
@@ -55,7 +55,7 @@ export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> =
     } else {
       setDialogOpen(true);
     }
-  }, [loginOptions.userId, notice]);
+  }, [loginOptions.returnTo, loginOptions.userId, notice]);
 
   return (
     <>
@@ -64,7 +64,7 @@ export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> =
       </Button>
       <Dialog open={dialogOpen} title="Passkey" onClose={() => setDialogOpen(false)}>
         <NoticeContext>
-          <PasskeyAuthenticationDialog/>
+          <PasskeyAuthenticationDialog options={loginOptions}/>
         </NoticeContext>
       </Dialog>
     </>
