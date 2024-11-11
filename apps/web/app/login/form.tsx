@@ -34,7 +34,7 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
     userId: prevUser?.id,
   };
 
-  const availableProviders = Object.fromEntries(Object.entries(providers).map(
+  const availableProviders = Object.fromEntries(Object.entries({ ...providers, [UserProviderType.passkey]: true }).map(
     ([provider, config]) => [provider, config !== undefined && (!prevUser || prevUser.providers.some((p) => p.provider === provider))] as const
   )) as Record<UserProviderType, boolean>;
 
@@ -58,7 +58,7 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
           )}
 
           <div className={styles.buttons}>
-            <PasskeyAuthenticationButton className={styles.button} options={options}/>
+            {availableProviders[UserProviderType.passkey] && (<PasskeyAuthenticationButton className={styles.button} options={options}/>)}
             {availableProviders[UserProviderType.discord] && (<Button className={styles.button} type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Login with Discord</Button>)}
             {availableProviders[UserProviderType.google] && (<Button className={styles.button} type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Login with Google</Button>)}
             {availableProviders[UserProviderType.github] && (<Button className={styles.button} type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Login with GitHub</Button>)}
