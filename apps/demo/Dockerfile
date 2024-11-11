@@ -36,7 +36,7 @@ RUN pnpm install --frozen-lockfile
 
 COPY --from=source /source/out/full/ .
 
-RUN pnpm run build --filter=demo...
+RUN pnpm run build --filter=demo
 
 # Production image, copy all the files and run next
 FROM node:${node_version} AS runner
