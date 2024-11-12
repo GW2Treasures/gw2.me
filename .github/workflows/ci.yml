@@ -205,7 +205,7 @@ jobs:
         node-version: 20
         turbo-cache-key: publish
     - name: Run Publish
-      run: pnpm run publish-package -- --filter=@gw2me/${{ matrix.target }} --env-mode=loose
+      run: pnpm run publish-package --filter=@gw2me/${{ matrix.target }} --env-mode=loose
       id: publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
