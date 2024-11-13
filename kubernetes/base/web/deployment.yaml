@@ -94,6 +94,18 @@ spec:
               name: web
               key: google_client_secret
               optional: true
+        - name: EPIC_GAMES_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: web
+              key: epicgames_client_id
+              optional: true
+        - name: EPIC_GAMES_CLIENT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: web
+              key: epicgames_client_secret
+              optional: true
         - name: SMTP_HOST
           valueFrom:
             configMapKeyRef:

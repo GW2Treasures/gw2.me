@@ -5,6 +5,7 @@ import { discord } from './discord';
 import { github } from './github';
 import { steam } from './steam';
 import { google } from './google';
+import { epicgames } from './epicgames';
 
 export interface ProviderConfig {
   id: UserProviderType,
@@ -43,6 +44,7 @@ export const providers: Record<string, ProviderConfig | undefined> = {
   [UserProviderType.github]: github(),
   [UserProviderType.steam]: steam(),
   [UserProviderType.google]: google(),
+  [UserProviderType.epicgames]: epicgames(),
 } satisfies Record<OAuth2ProviderType, ProviderConfig | undefined>;
 
 export function getJsonIfOk(response: Response) {

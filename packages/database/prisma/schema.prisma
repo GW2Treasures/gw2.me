@@ -113,6 +113,7 @@ enum UserProviderType {
   steam
   google
   passkey
+  epicgames
 }
 
 enum UserProviderRequestType {

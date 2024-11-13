@@ -20,6 +20,7 @@ import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, UserCookieName } from '@/lib/cookie';
 import { PasskeyAuthenticationButton } from '@/components/Passkey/PasskeyAuthenticationButton';
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
+import { EpicGamesIcon } from 'app/auth/epicgames';
 
 interface LoginFormProps {
   returnTo?: string;
@@ -62,6 +63,7 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
             {availableProviders[UserProviderType.google] && (<Button className={styles.button} type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Login with Google</Button>)}
             {availableProviders[UserProviderType.github] && (<Button className={styles.button} type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Login with GitHub</Button>)}
             {availableProviders[UserProviderType.steam] && (<Button className={styles.button} type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Login with Steam</Button>)}
+            {availableProviders[UserProviderType.epicgames] && (<Button className={styles.button} type="submit" name="provider" value="epicgames" icon={<EpicGamesIcon/>}>Login with Epic Games</Button>)}
             {process.env.NODE_ENV !== 'production' && (<DevLogin username={prevUser?.name}/>)}
           </div>
         </NoticeContext>
