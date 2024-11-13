@@ -22,6 +22,7 @@ import { LoginError, getLoginErrorCookieValue } from 'app/login/form';
 import { PasskeyRegistrationButton } from '@/components/Passkey/PasskeyRegistrationButton';
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
 import { Provider } from '@/components/Provider/Provider';
+import { EpicGamesIcon } from 'app/auth/epicgames';
 
 const getUserData = cache(async () => {
   const currentSession = await getSessionOrRedirect();
@@ -87,6 +88,7 @@ export default async function ProfilePage() {
             {availableProviders[UserProviderType.google] && (<Button type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Add Google</Button>)}
             {availableProviders[UserProviderType.github] && (<Button type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Add GitHub</Button>)}
             {availableProviders[UserProviderType.steam] && (<Button type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Add Steam</Button>)}
+            {availableProviders[UserProviderType.epicgames] && (<Button type="submit" name="provider" value="epicgames" icon={<EpicGamesIcon/>}>Add Epic Games</Button>)}
           </FlexRow>
         </NoticeContext>
       </Form>
