@@ -2,10 +2,6 @@ ARG node_version=22.11.0-alpine
 
 # renovate: datasource=npm packageName=turbo
 ARG turbo_version=2.3.0
-# renovate: datasource=npm packageName=rollup
-ARG rollup_version=4.26.0
-# renovate: datasource=npm packageName=sharp
-ARG sharp_version=0.33.5
 # renovate: datasource=npm packageName=pnpm
 ARG pnpm_version=9.13.2
 
@@ -21,8 +17,6 @@ RUN pnpx turbo@${turbo_version} prune demo --docker
 
 # Install dependencies only when needed
 FROM --platform=$BUILDPLATFORM node:${node_version} AS builder
-ARG rollup_version
-ARG turbo_version
 ARG pnpm_version
 RUN apk add --no-cache libc6-compat \
   && corepack enable pnpm && corepack install -g pnpm@${pnpm_version}
@@ -40,7 +34,6 @@ RUN pnpm run build --filter=demo
 
 # Production image, copy all the files and run next
 FROM node:${node_version} AS runner
-ARG sharp_version
 WORKDIR /app
 
 ENV NODE_ENV=production
