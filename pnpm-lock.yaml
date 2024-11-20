@@ -185,8 +185,8 @@ importers:
         specifier: 0.0.14
         version: 0.0.14
       fast-jwt:
-        specifier: 4.0.6
-        version: 4.0.6
+        specifier: 5.0.0
+        version: 5.0.0
       hast-util-to-jsx-runtime:
         specifier: 2.3.2
         version: 2.3.2
@@ -2813,8 +2813,8 @@ packages:
   fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
 
-  fast-jwt@4.0.6:
-    resolution: {integrity: sha512-kyNxaoy/m8pDQdyn+gl4FOTNEOrLK/1iAU4MP8cTz3mErOyh+BtvoCNFxKsyY4zlEKWO5HMY526zRXdoiPc6Rg==}
+  fast-jwt@5.0.0:
+    resolution: {integrity: sha512-BJ6qXIgOjqDa2UeFJlpmuT9DnGR3hbMypL/w53lT2aLQAQh4IzX22QtQQEgoadN4AQ8K0849s2iY0KmEoBQTbg==}
     engines: {node: '>=20'}
 
   fast-levenshtein@2.0.6:
@@ -7614,7 +7614,7 @@ snapshots:
 
   fast-json-stable-stringify@2.1.0: {}
 
-  fast-jwt@4.0.6:
+  fast-jwt@5.0.0:
     dependencies:
       '@lukeed/ms': 2.0.2
       asn1.js: 5.4.1
