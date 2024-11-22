@@ -1,3 +1,4 @@
+import { AuthenticationMethod } from "@/lib/oauth/types";
 import { getUrlFromRequest } from "@/lib/url";
 import { Scope } from "@gw2me/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -13,7 +14,7 @@ export function GET(request: NextRequest) {
     response_types_supported: ['code'],
     response_modes_supported: ['query'],
     grant_types_supported: ['authorization_code', 'refresh_token'],
-    token_endpoint_auth_methods_supported: ['client_secret_post'],
+    token_endpoint_auth_methods_supported: Object.values(AuthenticationMethod),
     service_documentation: new URL('/dev/docs', currentUrl),
     code_challenge_methods_supported: ['S256']
   };
