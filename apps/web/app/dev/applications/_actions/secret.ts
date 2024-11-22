@@ -4,8 +4,8 @@ import { createAction, error } from '@/lib/actions';
 import { db } from '@/lib/db';
 import { getFormDataString } from '@/lib/form-data';
 import { getSession } from '@/lib/session';
+import { generateClientSecretAndHash } from '@/lib/token';
 import { FormState } from '@gw2treasures/ui/components/Form/Form';
-import { randomBytes, scrypt } from 'crypto';
 import { revalidatePath } from 'next/cache';
 
 export interface GenerateClientSecretFormState extends FormState {
@@ -41,25 +41,12 @@ export const generateClientSecret = createAction<GenerateClientSecretFormState>(
     error('Can\'t create more than 10 secrets.');
   }
 
-  const clientSecretBuffer = randomBytes(32);
-  const salt = randomBytes(16);
-  const hash = await new Promise<Buffer>((resolve, reject) => {
-    scrypt(clientSecretBuffer, salt, 32, (error, key) => {
-      if(error) {
-        reject(error);
-      }
-
-      resolve(key);
-    });
-  });
-
-  const saltHex = salt.toString('base64');
-  const hashHex = hash.toString('base64');
+  const { hashed, raw } = await generateClientSecretAndHash();
 
   const created = await db.clientSecret.create({
     data: {
       clientId,
-      secret: `${saltHex}:${hashHex}`,
+      secret: hashed,
     },
     select: { id: true }
   });
@@ -70,7 +57,7 @@ export const generateClientSecret = createAction<GenerateClientSecretFormState>(
     success: 'Client secret generated. Copy the client secret and store it somewhere safe. You will not be able to see the generated client secret again.',
     clientSecret: {
       id: created.id,
-      secret: clientSecretBuffer.toString('base64url')
+      secret: raw
     }
   };
 });

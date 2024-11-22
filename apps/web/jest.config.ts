@@ -13,6 +13,7 @@ const config: Config = {
     'next',
     './lib/oauth/to-be-oauth2-error.jest.ts',
     './lib/db.mock.ts',
+    './lib/next.mock.ts',
   ],
 
   testEnvironment: 'jest-environment-jsdom',

@@ -12,7 +12,8 @@ export async function POST(request: NextRequest) {
     // get all string params as object
     const parsedParams = Object.fromEntries(Array.from(params.entries()).filter(([, value]) => typeof value === 'string')) as Record<string, string>;
 
-    const response = await handleTokenRequest(parsedParams);
+    // handle request
+    const response = await handleTokenRequest(request.headers, parsedParams);
 
     return NextResponse.json(response, { headers: corsHeaders(request) });
 

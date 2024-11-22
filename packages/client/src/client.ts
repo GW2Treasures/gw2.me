@@ -96,8 +96,10 @@ export class Gw2MeClient {
       code, client_id: this.#client_id, redirect_uri,
     });
 
+    const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
+
     if(this.#client_secret) {
-      data.set('client_secret', this.#client_secret);
+      headers.Authorization = `Basic ${btoa(`${this.#client_id}:${this.#client_secret}`)}`;
     }
 
     if(code_verifier) {
@@ -106,7 +108,7 @@ export class Gw2MeClient {
 
     const token = await fetch(this.#getUrl('/api/token'), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers,
       body: data,
       cache: 'no-store'
     }).then(jsonOrError);
@@ -121,12 +123,17 @@ export class Gw2MeClient {
 
     const data = new URLSearchParams({
       grant_type: 'refresh_token',
-      refresh_token, client_id: this.#client_id, client_secret: this.#client_secret,
+      refresh_token, client_id: this.#client_id,
     });
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Basic ${btoa(`${this.#client_id}:${this.#client_secret}`)}`
+    };
 
     const token = await fetch(this.#getUrl('/api/token'), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers,
       body: data,
       cache: 'no-store',
     }).then(jsonOrError);

@@ -15,7 +15,7 @@ export class OAuth2Error extends Error {
   public description?: string;
 
   constructor(public code: OAuth2ErrorCode, { description }: { description?: string }) {
-    super(code);
+    super(code + (description ? ` (${description})` : ''));
 
     this.description = description;
 
