@@ -46,6 +46,10 @@ export default function Docs() {
         </thead>
         <tbody>
           <tr>
+            <td>Authorization Server Metadata</td>
+            <td><FlexRow><Code inline>https://gw2.me/.well-known/oauth-authorization-server</Code><CopyButton copy="https://gw2.me/.well-known/oauth-authorization-server" icon="copy" iconOnly/></FlexRow></td>
+          </tr>
+          <tr>
             <td>Base authorization URL</td>
             <td><FlexRow><Code inline>https://gw2.me/oauth2/authorize</Code><CopyButton copy="https://gw2.me/oauth2/authorize" icon="copy" iconOnly/></FlexRow></td>
           </tr>
