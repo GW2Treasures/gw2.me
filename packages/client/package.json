@@ -10,7 +10,7 @@
     "build:ci": "tsup src/index.ts --minify --dts",
     "clean": "rm -rf dist/",
     "lint": "eslint src",
-    "publish-package": "npm exec --offline gw2treasures-publish-package"
+    "publish-package": "gw2treasures-publish-package"
   },
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
   "homepage": "https://github.com/gw2treasures/gw2.me#readme",
   "devDependencies": {
     "@gw2treasures/eslint-config": "0.0.6",
-    "@gw2treasures/publish-package": "0.0.2",
+    "@gw2treasures/publish-package": "0.1.0-rc.0",
     "@gw2treasures/tsconfig": "0.0.1",
     "eslint": "8.57.1",
     "tsup": "8.3.5",
