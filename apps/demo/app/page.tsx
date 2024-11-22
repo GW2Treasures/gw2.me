@@ -1,4 +1,4 @@
-import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { redirect } from 'next/navigation';
@@ -29,10 +29,7 @@ export default function HomePage() {
         </Label>
       </div>
 
-      <div style={{ '--icon-color': 'var(--color-brand)' }}>
-        <Button type="submit" icon="gw2me">Login with gw2.me</Button>
-      </div>
-
+      <SubmitButton icon="gw2me" iconColor="var(--color-brand)">Login with gw2.me</SubmitButton>
     </form>
   );
 }
