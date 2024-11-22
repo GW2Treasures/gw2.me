@@ -168,7 +168,7 @@ export function assertRequestAuthentication(
 
   const authorizationMethods: Record<AuthenticationMethod, boolean> = {
     client_secret_basic: !!authHeader,
-    client_secret_post: 'client_secret' in params,
+    client_secret_post: params.client_secret !== undefined,
   };
 
   const usedAuthentication = Object.entries(authorizationMethods)
@@ -195,8 +195,12 @@ export function assertRequestAuthentication(
       let client_secret: string | undefined;
 
       if(method === 'client_secret_basic') {
-        const [id, password] = Buffer.from(authHeader!, 'base64').toString().split(':');
-        assert(id !== client.id, OAuth2ErrorCode.invalid_request, 'Unexpected client_id in Authorization header');
+        const [basic, encoded] = authHeader!.split(' ', 2);
+        assert(basic === 'Basic', OAuth2ErrorCode.invalid_request, 'Only "Basic" authorization is supported using the Authorization header');
+
+        const [id, password] = Buffer.from(encoded, 'base64').toString().split(':', 2);
+        assert(id === client.id, OAuth2ErrorCode.invalid_request, 'Unexpected client_id in Authorization header');
+
         client_secret = password;
       } else {
         client_secret = params.client_secret;
