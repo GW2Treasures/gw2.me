@@ -141,6 +141,50 @@ export class Gw2MeClient {
     return token;
   }
 
+  /**
+   * Parses the search params received from gw2.me on the redirect url (code and state).
+   * If gw2.me returned an error response, this will throw an error.
+   *
+   * @returns The code and optional state.
+   */
+  parseAuthorizationResponseSearchParams(searchParams: URLSearchParams): { code: string, state: string | undefined } {
+    // make sure searchParams have iss set (see RFC 9207)
+    const expectedIssuer = this.#getUrl('/').origin;
+    const receivedIssuer = searchParams.get('iss');
+
+    if(!receivedIssuer) {
+      throw new Error('Issuer Identifier verification failed: parameter `iss` is missing');
+    }
+
+    if(receivedIssuer !== expectedIssuer) {
+      throw new Error(`Issuer Identifier verification failed: expected "${expectedIssuer}", got "${receivedIssuer}"`);
+    }
+
+    // check if `error` (and `error_description`/`error_uri` are set)
+    const error = searchParams.get('error');
+    if(error) {
+      const error_description = searchParams.get('error_description');
+      const error_uri = searchParams.get('error_uri');
+
+      throw new Error(
+        `Received ${error}` +
+        (error_description ? `: ${error_description}` : '') +
+        (error_uri ? ` (${error_uri})` : '')
+      );
+    }
+
+    // get the code
+    const code = searchParams.get('code');
+    if(!code) {
+      throw new Error('Paramter `code` is missing');
+    }
+
+    // get state if set
+    const state = searchParams.get('state') || undefined;
+
+    return { code, state };
+  }
+
   api(access_token: string) {
     return new Gw2MeApi(access_token, this.options);
   }
