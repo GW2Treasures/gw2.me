@@ -1,5 +1,6 @@
 import { isDefined } from '@gw2treasures/helper/is';
 import { OAuth2ErrorCode } from './oauth/error';
+import { getBaseUrlFromHeaders } from './url';
 
 type RedirectUrlSearchParamsCommon = {
   /** An opaque value used by the client to maintain state between the request and callback. */
@@ -34,8 +35,12 @@ type RedirectUrlSearchParams =
  * @param searchParams The additional searchParams to append to the url
  * @returns The modified url
  */
-export function createRedirectUrl(base: string | URL, searchParams: RedirectUrlSearchParams): URL {
+export async function createRedirectUrl(base: string | URL, searchParams: RedirectUrlSearchParams): Promise<URL> {
   const url = new URL(base);
+
+  // always include issuer
+  const { origin: issuer } = await getBaseUrlFromHeaders();
+  url.searchParams.set('iss', issuer);
 
   Object.entries(searchParams)
     .filter(([, value]) => isDefined(value))

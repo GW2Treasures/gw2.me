@@ -144,7 +144,7 @@ export const validateRequest = cache(async function validateRequest(request: Par
     let redirect_uri: URL;
 
     if(error instanceof OAuth2Error) {
-      redirect_uri = createRedirectUrl(request.redirect_uri!, {
+      redirect_uri = await createRedirectUrl(request.redirect_uri!, {
         state: request.state,
         error: error.code,
         error_description: error.description
@@ -152,7 +152,7 @@ export const validateRequest = cache(async function validateRequest(request: Par
     } else {
       console.log(error);
 
-      redirect_uri = createRedirectUrl(request.redirect_uri!, {
+      redirect_uri = await createRedirectUrl(request.redirect_uri!, {
         state: request.state,
         error: OAuth2ErrorCode.server_error,
         error_description: 'internal server error'

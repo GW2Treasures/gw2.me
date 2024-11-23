@@ -104,11 +104,16 @@ export default function DevDocsAccessTokensPage() {
       <p>After the user authorized your application, the user is redirected to the specified <Code inline>redirect_uri</Code>.</p>
 
       <p>If the authorization was successful, the url will contain the query parameter <Code inline>code</Code> with an authorization code that needs to be exchanged for an access token in the next step.</p>
-      <Code>https://example.com/callback<br/>  ?state=SaOfpb7Ny9mbV6EPCUDcnQ<br/>  &<strong>code=ciA-F7NVbINw1dcEVeYdww</strong></Code>
+      <Code>https://example.com/callback<br/>  ?state=SaOfpb7Ny9mbV6EPCUDcnQ<br/>  &iss=https%3A%2F%2Fgw2.me<br/>  &<strong>code=ciA-F7NVbINw1dcEVeYdww</strong></Code>
 
       <p>If the authorization was not successful, the url will contain the <Code inline>error</Code> and <Code inline>error_description</Code> query parameters detailing the reason.</p>
-      <Code>https://example.com/callback<br/>  ?state=SaOfpb7Ny9mbV6EPCUDcnQ<br/>  &<strong>error=access_denied</strong><br/>  &<strong>error_description=user+canceled+authorization</strong></Code>
+      <Code>https://example.com/callback<br/>  ?state=SaOfpb7Ny9mbV6EPCUDcnQ<br/>  &iss=https%3A%2F%2Fgw2.me<br/>  &<strong>error=access_denied</strong><br/>  &<strong>error_description=user+canceled+authorization</strong></Code>
 
+      <p>
+        The url for both the success and error response will always contain <Code inline>iss</Code> and
+        (if passed to the authorization request) <Code inline>state</Code>, both of which should be verified.
+        See <Link href="#issuer-identification">Issuer Identification</Link> for more details on the <Code inline>iss</Code> parameter.
+      </p>
 
       <Headline id="access-token">Access Token</Headline>
 
@@ -157,6 +162,14 @@ export default function DevDocsAccessTokensPage() {
           </tr>
         </tbody>
       </Table>
+
+      <p>
+        Confidential applications have to authenticate themselves using their client secret.
+        The client secret can either be passed using &quot;Basic&quot; HTTP Authentication (also called <Code inline>client_secret_basic</Code> in the context of OAuth2),
+        using the <Code inline>client_id</Code> as username and the <Code inline>client_secret</Code> as password,
+        or by using <Code inline>client_secret_post</Code> auth, passing the <Code inline>client_secret</Code> as
+        body parameter as part of the token response.
+      </p>
 
       <p>If the request is successful, the response will contain the access token used to access any other API endpoints.</p>
 
@@ -220,6 +233,17 @@ export default function DevDocsAccessTokensPage() {
           Only if it matches the server responds with an access token.
         </div>
       </Steps>
+
+      <Headline id="issuer-identification">Issuer Identification</Headline>
+
+      <p>
+        The authorization response contains the <Code inline>iss</Code> parameter.
+        This parameter is part of <ExternalLink href="https://datatracker.ietf.org/doc/html/rfc9207">RFC 9207 - OAuth 2.0 Authorization Server Issuer Identification</ExternalLink> and
+        contains the issuer identifier, which is always <Code inline>https://gw2.me</Code> for gw2.me.
+      </p>
+      <p>
+        All clients should verify that this parameter exactly matches to prevent mix-up attacks.
+      </p>
     </PageLayout>
   );
 }

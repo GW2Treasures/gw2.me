@@ -99,7 +99,7 @@ export async function authorizeInternal(
   }
 
   // build redirect url with token and state
-  const url = createRedirectUrl(redirect_uri, {
+  const url = await createRedirectUrl(redirect_uri, {
     state,
     code: authorization.token,
   });

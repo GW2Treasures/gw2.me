@@ -89,7 +89,7 @@ export default async function AuthorizePage({ searchParams: asyncSearchParams }:
 
   // handle prompt=none
   if(!allPreviouslyAuthorized && request.prompt === 'none') {
-    const errorUrl = createRedirectUrl(redirect_uri, {
+    const errorUrl = await createRedirectUrl(redirect_uri, {
       state: request.state,
       error: OAuth2ErrorCode.access_denied,
       error_description: 'user not previously authorized',
@@ -117,7 +117,7 @@ export default async function AuthorizePage({ searchParams: asyncSearchParams }:
     : [];
 
   // build cancel url
-  const cancelUrl = createRedirectUrl(redirect_uri, {
+  const cancelUrl = await createRedirectUrl(redirect_uri, {
     state: request.state,
     error: OAuth2ErrorCode.access_denied,
     error_description: 'user canceled authorization',
