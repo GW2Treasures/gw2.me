@@ -16,7 +16,8 @@ export function GET(request: NextRequest) {
     grant_types_supported: ['authorization_code', 'refresh_token'],
     token_endpoint_auth_methods_supported: Object.values(AuthenticationMethod),
     service_documentation: new URL('/dev/docs', currentUrl),
-    code_challenge_methods_supported: ['S256']
+    code_challenge_methods_supported: ['S256'],
+    authorization_response_iss_parameter_supported: true,
   };
 
   return NextResponse.json(metadata);
