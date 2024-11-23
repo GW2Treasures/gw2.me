@@ -58,7 +58,8 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
       setAbort(undefined);
 
       if(credential) {
-        router.push(`/callback?code=${credential.token}`);
+        // need to append `iss` as well because /callback does issuer verification
+        router.push(`/callback?code=${credential.token}&iss=${encodeURIComponent(new URL(gw2meUrl).origin)}`);
       }
     }).catch((e) => {
       if(!(e instanceof DOMException && e.name === 'AbortError')) {
@@ -66,7 +67,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
         setError(e.toString());
       }
     });
-  }, [abort, gw2me.fedCM, mediation, mode, router]);
+  }, [abort, gw2me.fedCM, gw2meUrl, mediation, mode, router]);
 
   if(loading || !gw2me.fedCM.isSupported()) {
     return (
