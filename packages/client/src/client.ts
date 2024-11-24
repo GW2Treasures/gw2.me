@@ -1,4 +1,5 @@
 import { Gw2MeApi } from './api';
+import { Gw2MeError, Gw2MeOAuthError } from './error';
 import { Gw2MeFedCM } from './fed-cm';
 import { type ClientInfo, type Options, Scope } from './types';
 import { jsonOrError } from './util';
@@ -118,7 +119,7 @@ export class Gw2MeClient {
 
   async refreshToken({ refresh_token }: RefreshTokenParams): Promise<TokenResponse> {
     if(!this.#client_secret) {
-      throw new Error('client_secret required');
+      throw new Gw2MeError('client_secret required');
     }
 
     const data = new URLSearchParams({
@@ -139,6 +140,46 @@ export class Gw2MeClient {
     }).then(jsonOrError);
 
     return token;
+  }
+
+  /**
+   * Parses the search params received from gw2.me on the redirect url (code and state).
+   * If gw2.me returned an error response, this will throw an error.
+   *
+   * @returns The code and optional state.
+   */
+  parseAuthorizationResponseSearchParams(searchParams: URLSearchParams): { code: string, state: string | undefined } {
+    // make sure searchParams have iss set (see RFC 9207)
+    const expectedIssuer = this.#getUrl('/').origin;
+    const receivedIssuer = searchParams.get('iss');
+
+    if(!receivedIssuer) {
+      throw new Gw2MeError('Issuer Identifier verification failed: parameter `iss` is missing');
+    }
+
+    if(receivedIssuer !== expectedIssuer) {
+      throw new Gw2MeError(`Issuer Identifier verification failed: expected "${expectedIssuer}", got "${receivedIssuer}"`);
+    }
+
+    // check if `error` (and `error_description`/`error_uri` are set)
+    const error = searchParams.get('error');
+    if(error) {
+      const error_description = searchParams.get('error_description') ?? undefined;
+      const error_uri = searchParams.get('error_uri') ?? undefined;
+
+      throw new Gw2MeOAuthError(error, error_description, error_uri);
+    }
+
+    // get the code
+    const code = searchParams.get('code');
+    if(!code) {
+      throw new Gw2MeError('Parameter `code` is missing');
+    }
+
+    // get state if set
+    const state = searchParams.get('state') || undefined;
+
+    return { code, state };
   }
 
   api(access_token: string) {
