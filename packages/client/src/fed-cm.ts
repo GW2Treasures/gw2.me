@@ -1,3 +1,5 @@
+import { Gw2MeError } from "./error";
+
 export interface FedCMRequestOptions {
   mediation?: CredentialMediationRequirement;
   mode?: 'button';
@@ -19,7 +21,7 @@ export class Gw2MeFedCM {
 
   request({ mediation, signal, mode }: FedCMRequestOptions) {
     if(!this.isSupported()) {
-      throw new Error('FedCM is not supported');
+      throw new Gw2MeError('FedCM is not supported');
     }
 
     return navigator.credentials.get({
