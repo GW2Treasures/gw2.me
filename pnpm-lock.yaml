@@ -176,11 +176,11 @@ importers:
         specifier: 1.0.2
         version: 1.0.2(react-dom@19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106))(react@19.0.0-rc-66855b96-20241106)
       '@simplewebauthn/browser':
-        specifier: 11.0.0
-        version: 11.0.0
+        specifier: 12.0.0
+        version: 12.0.0
       '@simplewebauthn/server':
-        specifier: 11.0.0
-        version: 11.0.0
+        specifier: 12.0.0
+        version: 12.0.0
       '@wooorm/starry-night':
         specifier: 3.5.0
         version: 3.5.0
@@ -231,8 +231,8 @@ importers:
         specifier: 5.22.0
         version: 5.22.0
       '@simplewebauthn/types':
-        specifier: 11.0.0
-        version: 11.0.0
+        specifier: 12.0.0
+        version: 12.0.0
       '@testing-library/jest-dom':
         specifier: 6.6.3
         version: 6.6.3
@@ -1556,15 +1556,15 @@ packages:
   '@selderee/plugin-htmlparser2@0.11.0':
     resolution: {integrity: sha512-P33hHGdldxGabLFjPPpaTxVolMrzrcegejx+0GxjrIb9Zv48D8yAIA/QTDR2dFl7Uz7urX8aX6+5bCZslr+gWQ==}
 
-  '@simplewebauthn/browser@11.0.0':
-    resolution: {integrity: sha512-KEGCStrl08QC2I561BzxqGiwoknblP6O1YW7jApdXLPtIqZ+vgJYAv8ssLCdm1wD8HGAHd49CJLkUF8X70x/pg==}
+  '@simplewebauthn/browser@12.0.0':
+    resolution: {integrity: sha512-0w6W8qkACycyaRMb2XnHfpA9kkgs5e2Aw2Ul9ObBYmvFBbtzipyWu9u2+WP1wy98chM+GIlQFnPheUbiMBQr8w==}
 
-  '@simplewebauthn/server@11.0.0':
-    resolution: {integrity: sha512-zu8dxKcPiRUNSN2kmrnNOzNbRI8VaR/rL4ENCHUfC6PEE7SAAdIql9g5GBOd/wOVZolIsaZz3ccFxuGoVP0iaw==}
+  '@simplewebauthn/server@12.0.0':
+    resolution: {integrity: sha512-aJdTe9GikOk40U7Q5Mm/Sqkxcq4a2oPZAcLcnyqMyFqrUaOS6vdsZW8/H3Mnsw9umcr88pcgB7kozPPt+5wOBw==}
     engines: {node: '>=20.0.0'}
 
-  '@simplewebauthn/types@11.0.0':
-    resolution: {integrity: sha512-b2o0wC5u2rWts31dTgBkAtSNKGX0cvL6h8QedNsKmj8O4QoLFQFR3DBVBUlpyVEhYKA+mXGUaXbcOc4JdQ3HzA==}
+  '@simplewebauthn/types@12.0.0':
+    resolution: {integrity: sha512-q6y8MkoV8V8jB4zzp18Uyj2I7oFp2/ONL8c3j8uT06AOWu3cIChc1au71QYHrP2b+xDapkGTiv+9lX7xkTlAsA==}
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
@@ -6041,11 +6041,11 @@ snapshots:
       domhandler: 5.0.3
       selderee: 0.11.0
 
-  '@simplewebauthn/browser@11.0.0':
+  '@simplewebauthn/browser@12.0.0':
     dependencies:
-      '@simplewebauthn/types': 11.0.0
+      '@simplewebauthn/types': 12.0.0
 
-  '@simplewebauthn/server@11.0.0':
+  '@simplewebauthn/server@12.0.0':
     dependencies:
       '@hexagon/base64': 1.1.28
       '@levischuck/tiny-cbor': 0.2.2
@@ -6054,12 +6054,12 @@ snapshots:
       '@peculiar/asn1-rsa': 2.3.8
       '@peculiar/asn1-schema': 2.3.8
       '@peculiar/asn1-x509': 2.3.8
-      '@simplewebauthn/types': 11.0.0
+      '@simplewebauthn/types': 12.0.0
       cross-fetch: 4.0.0
     transitivePeerDependencies:
       - encoding
 
-  '@simplewebauthn/types@11.0.0': {}
+  '@simplewebauthn/types@12.0.0': {}
 
   '@sinclair/typebox@0.27.8': {}
 
