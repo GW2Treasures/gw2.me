@@ -1,13 +1,24 @@
 {
   "name": "@gw2me/client",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "gw2.me client library",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./pkce": {
+      "types": "./dist/pkce.d.ts",
+      "default": "./dist/pkce.js"
+    }
+  },
   "scripts": {
     "build": "pnpm run clean && if test $CI; then pnpm run build:ci; else pnpm run build:local; fi",
-    "build:local": "tsup src/index.ts && tsc --emitDeclarationOnly --declaration --declarationMap",
-    "build:ci": "tsup src/index.ts --minify --dts",
+    "build:local": "tsup src/index.ts src/pkce.ts && tsc --emitDeclarationOnly --declaration --declarationMap",
+    "build:ci": "tsup src/index.ts src/pkce.ts --minify --dts",
     "clean": "rm -rf dist/",
     "lint": "eslint src",
     "publish-package": "gw2treasures-publish-package"
