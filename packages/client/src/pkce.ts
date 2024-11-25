@@ -14,7 +14,7 @@ export async function generatePKCEPair(): Promise<PKCEPair> {
   crypto.getRandomValues(verifierBuffer);
 
   // encode verifier using base64url
-  const verifier = base64urlEncode(verifierBuffer);
+  const verifier = base64urlEncode(verifierBuffer.buffer);
 
   // hash random bytes using SHA256
   const encoder = new TextEncoder();
