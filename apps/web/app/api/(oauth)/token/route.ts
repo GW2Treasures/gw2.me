@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     // handle request
     const response = await handleTokenRequest(request.headers, parsedParams);
 
-    return NextResponse.json(response, { headers: corsHeaders(request) });
+    return NextResponse.json(response, { headers: responseHeaders(request) });
 
   } catch (error) {
     console.error(error);
@@ -24,13 +24,13 @@ export async function POST(request: NextRequest) {
       // TODO: use better http status based on error.code
       return NextResponse.json(
         { error: error.code, error_description: error.description },
-        { status: 500, headers: corsHeaders(request) }
+        { status: 500, headers: responseHeaders(request) }
       );
     }
 
     return NextResponse.json(
       { error: OAuth2ErrorCode.server_error, error_description: 'Internal server error' },
-      { status: 500, headers: corsHeaders(request) }
+      { status: 500, headers: responseHeaders(request) }
     );
   }
 }
@@ -40,3 +40,11 @@ export const OPTIONS = (request: Request) => {
     headers: corsHeaders(request)
   });
 };
+
+/** Include CORS headers and `Cache-Control: no-store` */
+function responseHeaders(request: NextRequest) {
+  return {
+    ...corsHeaders(request),
+    'Cache-Control': 'no-store'
+  };
+}

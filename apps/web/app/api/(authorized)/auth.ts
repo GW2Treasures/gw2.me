@@ -18,14 +18,20 @@ export function withAuthorization<Context>(scopes?: Scope[] | { oneOf: Scope[] }
       const auth = request.headers.get('Authorization');
 
       if(!auth) {
-        return NextResponse.json({ error: true }, { status: 401 });
+        return NextResponse.json(
+          { error: true },
+          { status: 401, headers: { ...responseHeaders(request), 'WWW-Authenticate': 'Bearer' }}
+        );
       }
 
       // verify that header is "Bearer <token>"
       const [tokenType, token] = auth.split(' ');
 
       if(tokenType !== 'Bearer' || !token) {
-        return NextResponse.json({ error: true }, { status: 400 });
+        return NextResponse.json(
+          { error: true },
+          { status: 400, headers: responseHeaders(request) }
+        );
       }
 
       // find authorization in db
@@ -41,7 +47,10 @@ export function withAuthorization<Context>(scopes?: Scope[] | { oneOf: Scope[] }
 
       // verify that the token has the required scopes for the current endpoint
       if(!authorization || !verifyScopes(authorization.scope as Scope[], scopes)) {
-        return NextResponse.json({ error: true }, { status: 401 });
+        return NextResponse.json(
+          { error: true },
+          { status: 401, headers: { ...responseHeaders(request), 'WWW-Authenticate': 'Bearer' }}
+        );
       }
 
       // set last use timestamp
@@ -53,12 +62,9 @@ export function withAuthorization<Context>(scopes?: Scope[] | { oneOf: Scope[] }
       // run endpoint handler
       const response = await handler(authorization, request, context);
 
-      // add cors headers
-      const cors = corsHeaders(request);
-      response.headers.append('Vary', cors.Vary);
-
-      if('Access-Control-Allow-Origin' in cors) {
-        response.headers.append('Access-Control-Allow-Origin', cors['Access-Control-Allow-Origin']);
+      // add response headers
+      for(const [name, value] of Object.entries(responseHeaders(request))) {
+        response.headers.append(name, value);
       }
 
       // return response
@@ -91,4 +97,12 @@ export function verifyScopes(authorized: Scope[], condition: undefined | Scope[]
   }
 
   return true;
+}
+
+/** Include CORS headers and `Cache-Control: no-store` */
+function responseHeaders(request: NextRequest) {
+  return {
+    ...corsHeaders(request),
+    'Cache-Control': 'no-store'
+  };
 }
