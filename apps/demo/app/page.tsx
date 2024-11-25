@@ -3,7 +3,7 @@ import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { redirect } from 'next/navigation';
 import { Scope } from '@gw2me/client';
-import { code_challenge, getCallback, gw2me } from '@/lib/client';
+import { getCallback, getPKCEPair, gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 
 export default function HomePage() {
@@ -50,12 +50,13 @@ async function login(formData: FormData) {
   const include_granted_scopes = formData.get('include_granted_scopes') === 'true';
   const verified_accounts_only = formData.get('verified_accounts_only') === 'true';
 
+  const { challenge: pkceChallenge } = await getPKCEPair();
+
   const authUrl = gw2me.getAuthorizationUrl({
     redirect_uri: getCallback(),
     scopes,
     state: 'example',
-    code_challenge,
-    code_challenge_method: 'S256',
+    ...pkceChallenge,
     prompt,
     include_granted_scopes,
     verified_accounts_only,

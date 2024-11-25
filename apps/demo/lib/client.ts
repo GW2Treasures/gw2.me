@@ -1,10 +1,21 @@
 import 'server-only';
 import { Gw2MeClient } from '@gw2me/client';
-import { createHash, randomBytes } from 'crypto';
+import { generatePKCEPair, type PKCEPair } from '@gw2me/client/pkce';
 import { unstable_noStore } from 'next/cache';
 
-export const code_verifier = randomBytes(32).toString('base64url');
-export const code_challenge = createHash('sha256').update(code_verifier).digest('base64url');
+let pkce: PKCEPair | undefined = undefined;
+
+// generate PKCE pair on first invocation
+// otherwise return cached PKCE pair because we don't store it
+// reusing a PKCE pair is against the spec, but this is just a demo
+// DO NOT DO IT LIKE THIS IN A REAL-WORLD APPLICATION
+export async function getPKCEPair() {
+  if(!pkce) {
+    pkce = await generatePKCEPair();
+  }
+
+  return pkce;
+}
 
 export const gw2me = new Gw2MeClient({
   client_id: process.env.DEMO_CLIENT_ID!,

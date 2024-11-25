@@ -1,13 +1,15 @@
-import { code_verifier, getCallback, gw2me } from '@/lib/client';
+import { getCallback, getPKCEPair, gw2me } from '@/lib/client';
 import { nextSearchParamsToURLSearchParams, PageProps, SearchParams } from '@/lib/next';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 export const dynamic = 'force-dynamic';
 
-function getToken(code: string) {
+async function getToken(code: string) {
+  const { verifier } = await getPKCEPair();
+
   return gw2me.getAccessToken({
     code,
-    code_verifier,
+    code_verifier: verifier,
     redirect_uri: getCallback(),
   });
 }
