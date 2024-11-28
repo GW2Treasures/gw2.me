@@ -13,7 +13,7 @@
     "publish-package": "turbo run publish-package"
   },
   "devDependencies": {
-    "eslint-formatter-gha": "1.5.1",
+    "eslint-formatter-gha": "1.5.2",
     "turbo": "2.3.3",
     "typescript": "5.7.2"
   },
