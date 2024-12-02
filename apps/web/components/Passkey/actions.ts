@@ -159,7 +159,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
       passkey: {
         create: {
           webAuthnUserId,
-          publicKey: Buffer.from(credential.publicKey),
+          publicKey: credential.publicKey,
           counter: credential.counter,
           deviceType: credentialDeviceType,
           backedUp: credentialBackedUp,
