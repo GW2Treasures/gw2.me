@@ -1,10 +1,9 @@
-import { redirect } from 'next/navigation';
+import { redirect, unstable_rethrow as rethrow } from 'next/navigation';
 import { NextRequest, NextResponse, userAgent } from 'next/server';
 import { db } from '@/lib/db';
 import { LoginErrorCookieName, authCookie, loginErrorCookie, userCookie } from '@/lib/cookie';
 import { Prisma, UserProviderRequestType } from '@gw2me/database';
 import { cookies } from 'next/headers';
-import { isRedirectError } from 'next/dist/client/components/redirect';
 import { ProviderProfile, providers } from 'app/auth/providers';
 import { getSession } from '@/lib/session';
 import { randomBytes } from 'crypto';
@@ -181,9 +180,7 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
       { headers: { 'Set-Login': 'logged-in' }}
     );
   } catch(error) {
-    if(isRedirectError(error)) {
-      throw error;
-    }
+    rethrow(error);
 
     console.error(error);
 
