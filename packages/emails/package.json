@@ -25,7 +25,7 @@
     "typescript": "5.7.2"
   },
   "dependencies": {
-    "@react-email/components": "0.0.28"
+    "@react-email/components": "0.0.29"
   },
   "peerDependencies": {
     "react": "^18.2.0"
