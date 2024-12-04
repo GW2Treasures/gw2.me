@@ -17,6 +17,10 @@
       "matchDatasources": ["npm"],
       "matchPackageNames": ["@simplewebauthn/**"],
       "groupName": "SimpleWebAuthn"
+    }, {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["@react-email/**", "react-email"],
+      "groupName": "react-email"
     }
   ],
   "customManagers": [
