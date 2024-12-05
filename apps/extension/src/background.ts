@@ -1,5 +1,6 @@
 import { Scope } from '@gw2me/client';
 import { client } from './popup/client';
+import { generatePKCEPair } from '@gw2me/client/pkce';
 
 chrome.runtime.onMessage.addListener(((message, sender, sendResponse) => {
   // handle authorization messages
@@ -36,7 +37,7 @@ async function authorize(prompt?: 'consent' | 'none') {
     const redirect_uri = chrome.identity.getRedirectURL();
 
     // create PKCE challenge for more security. See https://gw2.me/dev/docs/access-tokens#pkce
-    const { code_challenge, code_challenge_method, code_verifier } = await generatePKCEChallenge();
+    const { challenge, code_verifier } = await generatePKCEPair();
 
     // the scopes we are requesting. See https://gw2.me/dev/docs/scopes for available scopes.
     // We need `accounts` to show a list of all accounts, `accounts.displayName` to show the custom name of each account if set
@@ -61,9 +62,8 @@ async function authorize(prompt?: 'consent' | 'none') {
     const authUrl = client.getAuthorizationUrl({
       prompt,
       redirect_uri,
-      code_challenge,
-      code_challenge_method,
-      scopes
+      scopes,
+      ...challenge,
     });
 
     // start the authorization flow in the browser. This will return an URL (as string) with the code parameter if successful
@@ -79,13 +79,7 @@ async function authorize(prompt?: 'consent' | 'none') {
 
     // parse the `code` search parameter from the URL
     const url = new URL(redirectedUrl);
-    const code = url.searchParams.get('code');
-
-    // if there is no code, there probably was an error
-    if(!code) {
-      console.log('Authorization failed', redirectedUrl);
-      return undefined;
-    }
+    const { code } = client.parseAuthorizationResponseSearchParams(url.searchParams);
 
     // exchange the code for an access token
     const token = await client.getAccessToken({ code, redirect_uri, code_verifier });
@@ -99,27 +93,4 @@ async function authorize(prompt?: 'consent' | 'none') {
     console.log(error);
     return undefined;
   }
-}
-
-/** Generate a PKCE challenge */
-async function generatePKCEChallenge() {
-  const data = new Uint8Array(32);
-  crypto.getRandomValues(data);
-
-  const code_verifier = toBase64String(data);
-  const code_challenge = toBase64String(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(code_verifier))));
-
-  return {
-    code_verifier,
-    code_challenge,
-    code_challenge_method: 'S256' as const
-  };
-}
-
-/** Convert an `Uint8Array` to a base64 encoded string. */
-function toBase64String(data: Uint8Array) {
-  return btoa(String.fromCharCode(...data))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
 }
