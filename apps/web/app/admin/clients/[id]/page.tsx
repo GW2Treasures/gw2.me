@@ -1,0 +1,74 @@
+import { FormatDate } from '@/components/Format/FormatDate';
+import { Code } from '@/components/Layout/Code';
+import { PageLayout } from '@/components/Layout/PageLayout';
+import { PageTitle } from '@/components/Layout/PageTitle';
+import { ColumnSelection } from '@/components/Table/ColumnSelection';
+import { db } from '@/lib/db';
+import { PageProps } from '@/lib/next';
+import { Icon } from '@gw2treasures/ui';
+import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
+import { ensureUserIsAdmin } from 'app/admin/admin';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { cache } from 'react';
+
+const getClient = cache(function getClient(id: string) {
+  return db.client.findUnique({
+    where: { id },
+    include: {
+      application: true,
+      authorizations: {
+        include: {
+          email: true,
+          user: true,
+        }
+      },
+    }
+  });
+});
+
+type AdminClientDetailPageProps = PageProps<{ id: string }>;
+
+export default async function AdminUserDetailPage({ params }: AdminClientDetailPageProps) {
+  await ensureUserIsAdmin();
+  const { id } = await params;
+  const client = await getClient(id);
+
+  if(!client) {
+    notFound();
+  }
+
+  const Authorizations = createDataTable(client.authorizations, ({ id }) => id);
+
+  const now = new Date();
+
+  return (
+    <PageLayout>
+      <PageTitle>{client.application.name} / {client.id}</PageTitle>
+
+      <Headline id="authorizations" actions={<ColumnSelection table={Authorizations}/>}>Authorizations ({client.authorizations.length})</Headline>
+      <Authorizations.Table>
+        <Authorizations.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Authorizations.Column>
+        <Authorizations.Column id="type" title="Type" sortBy="type">{({ type }) => type}</Authorizations.Column>
+        <Authorizations.Column id="user" title="User" sortBy="userId">{({ user }) => <Link href={`/admin/users/${user.id}`}><FlexRow><Icon icon="user"/>{user.name}</FlexRow></Link>}</Authorizations.Column>
+        <Authorizations.Column id="scope" title="Scope" hidden>{({ scope }) => scope.join(' ')}</Authorizations.Column>
+        <Authorizations.Column id="email" title="Email" hidden>{({ email }) => email?.email}</Authorizations.Column>
+        <Authorizations.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Authorizations.Column>
+        <Authorizations.Column id="expiresAt" title="Expires At" sortBy="expiresAt">{({ expiresAt }) => expiresAt ? (expiresAt < now ? <s><FormatDate date={expiresAt}/></s> : <FormatDate date={expiresAt}/>) : 'Never'}</Authorizations.Column>
+        <Authorizations.Column id="usedAt" title="Used At" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'Never'}</Authorizations.Column>
+      </Authorizations.Table>
+    </PageLayout>
+  );
+}
+
+export async function generateMetadata({ params }: AdminClientDetailPageProps) {
+  await ensureUserIsAdmin();
+  const { id } = await params;
+  const client = await getClient(id);
+
+  return {
+    title: `Application ${client?.application.name} / ${client?.id}`
+  };
+}
