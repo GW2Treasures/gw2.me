@@ -5,11 +5,11 @@ import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 export const dynamic = 'force-dynamic';
 
 async function getToken(code: string) {
-  const { verifier } = await getPKCEPair();
+  const { code_verifier } = await getPKCEPair();
 
   return gw2me.getAccessToken({
     code,
-    code_verifier: verifier,
+    code_verifier,
     redirect_uri: getCallback(),
   });
 }

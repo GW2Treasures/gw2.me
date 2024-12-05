@@ -50,13 +50,13 @@ async function login(formData: FormData) {
   const include_granted_scopes = formData.get('include_granted_scopes') === 'true';
   const verified_accounts_only = formData.get('verified_accounts_only') === 'true';
 
-  const { challenge: pkceChallenge } = await getPKCEPair();
+  const { challenge } = await getPKCEPair();
 
   const authUrl = gw2me.getAuthorizationUrl({
     redirect_uri: getCallback(),
     scopes,
     state: 'example',
-    ...pkceChallenge,
+    ...challenge,
     prompt,
     include_granted_scopes,
     verified_accounts_only,
