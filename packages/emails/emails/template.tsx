@@ -1,4 +1,14 @@
-import { Body, Column, Container, Head, Html, Img, Link, Preview, Row, Section } from '@react-email/components';
+import { Body } from '@react-email/body';
+import { Column } from '@react-email/column';
+import { Container } from '@react-email/container';
+import { Head } from '@react-email/head';
+import { Html } from '@react-email/html';
+import { Img } from '@react-email/img';
+import { Link } from '@react-email/link';
+import { Preview } from '@react-email/preview';
+import { Row } from '@react-email/row';
+import { Section } from '@react-email/section';
+
 import type { ReactNode } from 'react';
 
 export default function Template({ children, preview }: { children: ReactNode, preview: string }) {
