@@ -13,9 +13,9 @@
     "@gw2me/client": "workspace:*",
     "@gw2treasures/icons": "0.1.2",
     "@gw2treasures/ui": "0.3.0-rc.1",
-    "next": "15.0.3",
-    "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "next": "15.0.4",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "server-only": "0.0.1"
   },
   "devDependencies": {
@@ -24,10 +24,10 @@
     "@gw2treasures/eslint-plugin-nextjs": "0.0.4",
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/node": "22.10.1",
-    "@types/react": "npm:types-react@19.0.0-rc.1",
-    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
     "eslint": "8.57.1",
-    "eslint-config-next": "15.0.3",
+    "eslint-config-next": "15.0.4",
     "typescript": "5.7.2"
   }
 }
