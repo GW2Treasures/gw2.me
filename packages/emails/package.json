@@ -25,7 +25,17 @@
     "typescript": "5.7.2"
   },
   "dependencies": {
-    "@react-email/components": "0.0.29"
+    "@react-email/body": "0.0.11",
+    "@react-email/column": "0.0.13",
+    "@react-email/container": "0.0.15",
+    "@react-email/head": "0.0.12",
+    "@react-email/html": "0.0.11",
+    "@react-email/img": "0.0.11",
+    "@react-email/link": "0.0.12",
+    "@react-email/preview": "0.0.12",
+    "@react-email/row": "0.0.12",
+    "@react-email/section": "0.0.16",
+    "@react-email/text": "0.0.11"
   },
   "peerDependencies": {
     "react": "^19.0.0"
