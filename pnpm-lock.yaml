@@ -30,11 +30,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/client
       '@gw2treasures/icons':
-        specifier: 0.1.2
-        version: 0.1.2(react@19.0.0)
+        specifier: 0.1.3
+        version: 0.1.3(react@19.0.0)
       '@gw2treasures/ui':
-        specifier: 0.3.0-rc.1
-        version: 0.3.0-rc.1(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.2(react@19.0.0))(@gw2treasures/tsconfig@0.0.1)(next@15.0.4(@babel/core@7.24.5)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 0.3.0
+        version: 0.3.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.3(react@19.0.0))(@gw2treasures/tsconfig@0.0.1)(next@15.0.4(@babel/core@7.24.5)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next:
         specifier: 15.0.4
         version: 15.0.4(@babel/core@7.24.5)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -88,11 +88,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/client
       '@gw2treasures/icons':
-        specifier: 0.1.2
-        version: 0.1.2(react@19.0.0)
+        specifier: 0.1.3
+        version: 0.1.3(react@19.0.0)
       '@gw2treasures/ui':
-        specifier: 0.3.0-rc.1
-        version: 0.3.0-rc.1(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.2(react@19.0.0))(@gw2treasures/tsconfig@0.0.1)(next@15.0.4(@babel/core@7.24.5)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 0.3.0
+        version: 0.3.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.3(react@19.0.0))(@gw2treasures/tsconfig@0.0.1)(next@15.0.4(@babel/core@7.24.5)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -167,11 +167,11 @@ importers:
         specifier: 0.0.5
         version: 0.0.5
       '@gw2treasures/icons':
-        specifier: 0.1.2
-        version: 0.1.2(react@19.0.0)
+        specifier: 0.1.3
+        version: 0.1.3(react@19.0.0)
       '@gw2treasures/ui':
-        specifier: 0.3.0-rc.1
-        version: 0.3.0-rc.1(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.2(react@19.0.0))(@gw2treasures/tsconfig@0.0.1)(next@15.0.4(@babel/core@7.24.5)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 0.3.0
+        version: 0.3.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.3(react@19.0.0))(@gw2treasures/tsconfig@0.0.1)(next@15.0.4(@babel/core@7.24.5)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@react-email/render':
         specifier: 1.0.3
         version: 1.0.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -901,8 +901,8 @@ packages:
       react: 19.0.0
       react-dom: 19.0.0
 
-  '@floating-ui/react@0.26.25':
-    resolution: {integrity: sha512-hZOmgN0NTOzOuZxI1oIrDu3Gcl8WViIkvPMpB4xdd4QD6xAMtwgwr3VPoiyH/bLtRcS1cDnhxLSD1NsMJmwh/A==}
+  '@floating-ui/react@0.27.0':
+    resolution: {integrity: sha512-WLEksq7fJapXSJbmfiyq9pAW0a7ZFMEJToFE4oTDESxGjoa+nZu3YMjmZE2KvoUtQhqOK2yMMfWQFZyeWD0wGQ==}
     peerDependencies:
       react: 19.0.0
       react-dom: 19.0.0
@@ -934,8 +934,8 @@ packages:
   '@gw2treasures/helper@0.0.5':
     resolution: {integrity: sha512-CAbDPQn7raIO0eMMTFzYFUIfBOLmno8OSC8BMJQ9zTkZlkdW27t72nZFQVbZDgiTUUYq7yeya05eb6QfGZPBog==}
 
-  '@gw2treasures/icons@0.1.2':
-    resolution: {integrity: sha512-+dO3A2CqsQapLUgkIwHRGtAi8qYC7S+K0D0BzyHkvtfAkaZ45Y0IoQS8aKsWXRPWVgzFwsdJqO5xnUVkIgxpBw==}
+  '@gw2treasures/icons@0.1.3':
+    resolution: {integrity: sha512-cqA3QSs9w23q20m0QWI1P9GFFaLbyHQitBLGN1/hA0M/+exL1HiXtzWaOxGJ7Tjmyt8RoxBmxvRsmLOan8/V0A==}
     peerDependencies:
       react: 19.0.0
 
@@ -946,8 +946,8 @@ packages:
   '@gw2treasures/tsconfig@0.0.1':
     resolution: {integrity: sha512-zRzUn6Q49q19kXBcRSc853pfKlO0aPOzrYJxqffYBoZ1RamkQYQTMNtPaea8odCpQffoUKrGLVFGvNb6qY1C4w==}
 
-  '@gw2treasures/ui@0.3.0-rc.1':
-    resolution: {integrity: sha512-zP+ns6xEkScs8/sfubkIwuTfK2pxhsGp6p8aguAbJqNK3DHfjPJGhBIeQqSxXTvxDFh22dvC3FoZ5u8XsEQjbg==}
+  '@gw2treasures/ui@0.3.0':
+    resolution: {integrity: sha512-dUb2pN+SK/1A8NHTNPGTlOvKuPP7pwUiApSQ/634CUi5plM8GwTFP9J0Ml4ZOEgJVZueM42Mn9YKjdPGGvj9jQ==}
     peerDependencies:
       '@gw2treasures/helper': ~0.0.5
       '@gw2treasures/icons': ~0.1.2
@@ -5290,7 +5290,7 @@ snapshots:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
 
-  '@floating-ui/react@0.26.25(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@floating-ui/react@0.27.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@floating-ui/react-dom': 2.1.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@floating-ui/utils': 0.2.8
@@ -5334,7 +5334,7 @@ snapshots:
 
   '@gw2treasures/helper@0.0.5': {}
 
-  '@gw2treasures/icons@0.1.2(react@19.0.0)':
+  '@gw2treasures/icons@0.1.3(react@19.0.0)':
     dependencies:
       react: 19.0.0
 
@@ -5342,12 +5342,12 @@ snapshots:
 
   '@gw2treasures/tsconfig@0.0.1': {}
 
-  '@gw2treasures/ui@0.3.0-rc.1(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.2(react@19.0.0))(@gw2treasures/tsconfig@0.0.1)(next@15.0.4(@babel/core@7.24.5)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@gw2treasures/ui@0.3.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.3(react@19.0.0))(@gw2treasures/tsconfig@0.0.1)(next@15.0.4(@babel/core@7.24.5)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
-      '@floating-ui/react': 0.26.25(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@floating-ui/react': 0.27.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@floating-ui/react-dom': 2.1.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@gw2treasures/helper': 0.0.5
-      '@gw2treasures/icons': 0.1.2(react@19.0.0)
+      '@gw2treasures/icons': 0.1.3(react@19.0.0)
       '@gw2treasures/tsconfig': 0.0.1
       client-only: 0.0.1
       next: 15.0.4(@babel/core@7.24.5)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
