@@ -45,7 +45,7 @@
     "@types/node": "22.10.1",
     "@types/nodemailer": "6.4.17",
     "@types/react": "19.0.1",
-    "@types/react-dom": "19.0.1",
+    "@types/react-dom": "19.0.2",
     "eslint": "8.57.1",
     "eslint-config-next": "15.0.4",
     "expect": "29.7.0",
