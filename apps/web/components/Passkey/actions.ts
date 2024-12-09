@@ -3,9 +3,8 @@
 import 'server-only';
 import { getSession, getUser } from '@/lib/session';
 import { getBaseUrlFromHeaders } from '@/lib/url';
-import { generateAuthenticationOptions, generateRegistrationOptions, verifyAuthenticationResponse, verifyRegistrationResponse } from '@simplewebauthn/server';
+import { generateAuthenticationOptions, generateRegistrationOptions, verifyAuthenticationResponse, verifyRegistrationResponse, type AuthenticationResponseJSON, type AuthenticatorTransportFuture, type RegistrationResponseJSON } from '@simplewebauthn/server';
 import { createChallengeJwt, verifyChallengeJwt } from './challenge';
-import { AuthenticationResponseJSON, AuthenticatorTransportFuture, RegistrationResponseJSON } from '@simplewebauthn/types';
 import { db } from '@/lib/db';
 import { userAgent } from 'next/server';
 import { cookies, headers } from 'next/headers';
