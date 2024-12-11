@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 
-// mock unstable_after
+// mock after
 jest.mock('next/server', () => ({
   __esModule: true,
-  unstable_after: jest.fn()
+  after: jest.fn()
 }));

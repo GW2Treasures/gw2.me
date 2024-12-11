@@ -4,9 +4,6 @@ import path from 'path';
 import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin';
 
 const nextConfig: NextConfig = {
-  experimental: {
-    after: true,
-  },
   outputFileTracingRoot: path.join(__dirname, '../../'),
   transpilePackages: ['@gw2treasures/ui'],
   output: 'standalone',

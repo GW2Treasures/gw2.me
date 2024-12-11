@@ -5,7 +5,7 @@ import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { AuthenticationMethod } from '@/lib/oauth/types';
 import { ClientType, ClientSecret, Client } from '@gw2me/database';
 import { scryptSync, timingSafeEqual } from 'crypto';
-import { unstable_after as after } from 'next/server';
+import { after } from 'next/server';
 
 export function assertRequestAuthentication(
   client: Client & { secrets: ClientSecret[] },
