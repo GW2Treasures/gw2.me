@@ -11,7 +11,7 @@ export function assertRequestAuthentication(
   client: Client & { secrets: ClientSecret[] },
   headers: Headers,
   params: Record<string, string | undefined>
-): void {
+): { client_secret?: string } {
   const authHeader = headers.get('Authorization');
 
   const authorizationMethods: Record<AuthenticationMethod, boolean> = {
@@ -26,7 +26,7 @@ export function assertRequestAuthentication(
   // no authentication provided
   if(usedAuthentication.length === 0) {
     assert(client.type === ClientType.Public, OAuth2ErrorCode.invalid_request, 'Missing authorization for confidential client');
-    return;
+    return {};
   }
 
   // if authentication was provided, this needs to be a confidential client
@@ -64,8 +64,12 @@ export function assertRequestAuthentication(
         where: { id: clientSecret.id },
         data: { usedAt: new Date() }
       }));
+
+      return { client_secret };
     }
   }
+
+  return {};
 }
 
 function isValidClientSecret(clientSecret: string, saltedHash: string | null): boolean {

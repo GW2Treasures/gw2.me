@@ -2,6 +2,8 @@ export enum Scope {
   Identify = 'identify',
   Email = 'email',
 
+  OpenID = 'openid',
+
   Accounts = 'accounts',
   Accounts_Verified = 'accounts.verified',
   Accounts_DisplayName = 'accounts.displayName',

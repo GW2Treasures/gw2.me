@@ -3,12 +3,13 @@ import { db } from '@/lib/db';
 import { assert } from '@/lib/oauth/assert';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
-import { TokenResponse } from '@gw2me/client';
+import { Scope, TokenResponse } from '@gw2me/client';
 import { ClientType, AuthorizationType } from '@gw2me/database';
 import { createHash } from 'crypto';
 import { assertRequestAuthentication } from '../auth';
+import { getBaseUrlFromHeaders } from '@/lib/url';
 
-// 7 days
+/** 7 days in seconds */
 const ACCESS_TOKEN_EXPIRATION = 604800;
 
 export async function handleTokenRequest(headers: Headers, params: Record<string, string | undefined>): Promise<TokenResponse> {
@@ -28,7 +29,7 @@ export async function handleTokenRequest(headers: Headers, params: Record<string
   assert(client, OAuth2ErrorCode.invalid_client, 'Invalid client_id');
 
   // make sure request is authenticated
-  assertRequestAuthentication(client, headers, params);
+  const { client_secret } = assertRequestAuthentication(client, headers, params);
 
   switch(grant_type) {
     case 'authorization_code': {
@@ -85,13 +86,19 @@ export async function handleTokenRequest(headers: Headers, params: Record<string
         db.authorization.delete({ where: { id: authorization.id }}),
       ]);
 
+      // create id_token
+      const id_token = client.type === 'Confidential' && scope.includes(Scope.OpenID)
+        ? await createIdToken({ userId, clientId, client_secret: client_secret!, nonce: 'TODO', authTime: new Date() })
+        : undefined;
+
       return {
         access_token: accessAuthorization.token,
         issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
         token_type: 'Bearer',
         expires_in: ACCESS_TOKEN_EXPIRATION,
         refresh_token: refreshAuthorization?.token,
-        scope: scope.join(' ')
+        scope: scope.join(' '),
+        id_token
       };
     }
 
@@ -167,4 +174,36 @@ export function assertPKCECodeChallenge(codeChallenge: string | null, codeVerifi
     default:
       throw new OAuth2Error(OAuth2ErrorCode.invalid_request, { description: 'Unsupported code challenge' });
   }
+}
+
+import { createSigner } from 'fast-jwt';
+
+type IdTokenOptions = {
+  clientId: string,
+  client_secret: string
+  userId: string,
+  authTime: Date,
+  nonce: string,
+}
+export async function createIdToken({ userId, clientId, client_secret, authTime, nonce }: IdTokenOptions) {
+  const { origin: issuer } = await getBaseUrlFromHeaders();
+
+  const issuedAt = Math.floor(Date.now() / 1000);
+
+  const idToken = {
+    iss: issuer,
+    sub: userId,
+    aud: [clientId],
+    exp: issuedAt + ACCESS_TOKEN_EXPIRATION,
+    iat: issuedAt,
+    auth_time: authTime.valueOf(),
+    nonce: nonce
+  };
+
+  const jwt = createSigner({
+    algorithm: 'HS256',
+    key: client_secret
+  })(idToken);
+
+  return jwt;
 }

@@ -244,6 +244,14 @@ export default function DevDocsAccessTokensPage() {
       <p>
         All clients should verify that this parameter exactly matches to prevent mix-up attacks.
       </p>
+
+      <Headline id="oidc">OpenID Connect</Headline>
+      <p>
+        gw2.me supports <ExternalLink href="https://openid.net/">OpenID Connect Core 1.0</ExternalLink>.
+        To request an OpenID Connect <Code inline>id_token</Code>, the scope <Code inline>openid</Code> has to be included in the authorization request.
+        The <Code inline>id_token</Code> will be part of the token response and is signed using the <Code inline>HS256</Code> algorithm with the <Code inline>client_secret</Code> as key.
+      </p>
+      <p>OpenID Connect is only supported for confidential clients at this time. Dynamic registration is not supported.</p>
     </PageLayout>
   );
 }
