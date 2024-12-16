@@ -1,4 +1,4 @@
-import { Gw2MeError } from "./error";
+import { Gw2MeError } from './error';
 
 export interface FedCMRequestOptions {
   mediation?: CredentialMediationRequirement;
