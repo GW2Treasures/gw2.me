@@ -88,7 +88,7 @@ export async function handleTokenRequest(headers: Headers, params: Record<string
 
       // create id_token
       const id_token = client.type === 'Confidential' && scope.includes(Scope.OpenID)
-        ? await createIdToken({ userId, clientId, requestAuthentication, nonce: 'TODO', authTime: new Date() })
+        ? await createIdToken({ userId, clientId, requestAuthentication, nonce: 'TODO' })
         : undefined;
 
       return {
