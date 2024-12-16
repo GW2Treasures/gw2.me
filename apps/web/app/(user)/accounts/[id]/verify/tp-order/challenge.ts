@@ -1,4 +1,4 @@
-import { expiresAt } from '@/lib/date';
+import { expiresAt, toTimestamp } from '@/lib/date';
 import { db } from '@/lib/db';
 import { createSigner } from '@/lib/jwt';
 import { getSessionOrRedirect } from '@/lib/session';
@@ -30,7 +30,7 @@ export function createChallenge(accountId: string) {
     sub: accountId,
     itm: itemId,
     cns: coins,
-    exp: dateToNumericDate(expiration)
+    exp: toTimestamp(expiration)
   } satisfies TpOrderChallengeJwtPayload);
 
   return jwt;
@@ -48,10 +48,6 @@ export interface TpOrderChallengeJwtPayload {
 
   /** Expiration date of the challenge as NumericDate */
   exp: number,
-}
-
-function dateToNumericDate(date: Date): number {
-  return Math.ceil(date.valueOf() / 1000);
 }
 
 export async function getAccountForChallenge(id: string) {

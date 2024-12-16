@@ -11,3 +11,7 @@ export function isExpired(expiresAt: Date | null): boolean {
 
   return expiresAt < new Date();
 }
+
+export function toTimestamp(date: Date): number {
+  return Math.ceil(date.valueOf() / 1000);
+}

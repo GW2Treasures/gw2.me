@@ -16,8 +16,10 @@ export function GET(request: NextRequest) {
     grant_types_supported: ['authorization_code', 'refresh_token'],
     token_endpoint_auth_methods_supported: Object.values(AuthenticationMethod),
     service_documentation: new URL('/dev/docs', currentUrl),
-    revocation_endpoint: new URL('/api/revoke', currentUrl),
+    revocation_endpoint: new URL('/api/token/revoke', currentUrl),
     revocation_endpoint_auth_methods_supported: Object.values(AuthenticationMethod),
+    introspection_endpoint: new URL('/api/token/introspect', currentUrl),
+    introspection_endpoint_auth_methods_supported: Object.values(AuthenticationMethod),
     code_challenge_methods_supported: ['S256'],
     authorization_response_iss_parameter_supported: true,
   };
