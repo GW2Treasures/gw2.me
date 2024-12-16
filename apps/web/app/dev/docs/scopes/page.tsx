@@ -3,6 +3,7 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import styles from '../layout.module.css';
+import Link from 'next/link';
 
 export default function DevDocsScopePage() {
   return (
@@ -22,11 +23,15 @@ export default function DevDocsScopePage() {
         <tbody>
           <tr>
             <td><Code inline>identify</Code></td>
-            <td>Get the username from /api/user</td>
+            <td>Get the username in /api/user</td>
           </tr>
           <tr>
             <td><Code inline>email</Code></td>
             <td>Include the email in /api/user</td>
+          </tr>
+          <tr>
+            <td><Code inline>openid</Code></td>
+            <td>Include an <Code inline>id_token</Code> in token response (see <Link href="/dev/docs/access-tokens#oidc">OpenID Connect</Link>)</td>
           </tr>
           <tr>
             <td><Code inline>accounts</Code></td>

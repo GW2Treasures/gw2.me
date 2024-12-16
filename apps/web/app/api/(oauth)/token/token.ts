@@ -3,13 +3,14 @@ import { db } from '@/lib/db';
 import { assert } from '@/lib/oauth/assert';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
-import { TokenResponse } from '@gw2me/client';
+import { Scope, TokenResponse } from '@gw2me/client';
 import { ClientType, AuthorizationType } from '@gw2me/database';
 import { createHash } from 'crypto';
 import { assertRequestAuthentication } from '../auth';
+import { createIdToken } from './openid';
 
-// 7 days
-const ACCESS_TOKEN_EXPIRATION = 604800;
+/** 7 days in seconds */
+export const ACCESS_TOKEN_EXPIRATION = 604800;
 
 export async function handleTokenRequest(headers: Headers, params: Record<string, string | undefined>): Promise<TokenResponse> {
   // get grant_type
@@ -28,7 +29,7 @@ export async function handleTokenRequest(headers: Headers, params: Record<string
   assert(client, OAuth2ErrorCode.invalid_client, 'Invalid client_id');
 
   // make sure request is authenticated
-  assertRequestAuthentication(client, headers, params);
+  const requestAuthentication = assertRequestAuthentication(client, headers, params);
 
   switch(grant_type) {
     case 'authorization_code': {
@@ -85,13 +86,19 @@ export async function handleTokenRequest(headers: Headers, params: Record<string
         db.authorization.delete({ where: { id: authorization.id }}),
       ]);
 
+      // create id_token
+      const id_token = client.type === 'Confidential' && scope.includes(Scope.OpenID)
+        ? await createIdToken({ userId, clientId, requestAuthentication, nonce: 'TODO' })
+        : undefined;
+
       return {
         access_token: accessAuthorization.token,
         issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
         token_type: 'Bearer',
         expires_in: ACCESS_TOKEN_EXPIRATION,
         refresh_token: refreshAuthorization?.token,
-        scope: scope.join(' ')
+        scope: scope.join(' '),
+        id_token
       };
     }
 

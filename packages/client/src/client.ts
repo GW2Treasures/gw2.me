@@ -32,6 +32,7 @@ export interface TokenResponse {
   expires_in: number,
   refresh_token?: string,
   scope: string,
+  id_token?: string,
 }
 
 export class Gw2MeClient {

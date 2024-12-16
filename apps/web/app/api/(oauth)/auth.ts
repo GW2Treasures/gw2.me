@@ -7,11 +7,15 @@ import { ClientType, ClientSecret, Client } from '@gw2me/database';
 import { scryptSync, timingSafeEqual } from 'crypto';
 import { after } from 'next/server';
 
+export type RequestAuthentication =
+ | { method: 'none' }
+ | { method: 'client_secret_basic' | 'client_secret_post', client_secret: string }
+
 export function assertRequestAuthentication(
   client: Client & { secrets: ClientSecret[] },
   headers: Headers,
   params: Record<string, string | undefined>
-): void {
+): RequestAuthentication {
   const authHeader = headers.get('Authorization');
 
   const authorizationMethods: Record<AuthenticationMethod, boolean> = {
@@ -26,7 +30,7 @@ export function assertRequestAuthentication(
   // no authentication provided
   if(usedAuthentication.length === 0) {
     assert(client.type === ClientType.Public, OAuth2ErrorCode.invalid_request, 'Missing authorization for confidential client');
-    return;
+    return { method: 'none' };
   }
 
   // if authentication was provided, this needs to be a confidential client
@@ -64,8 +68,12 @@ export function assertRequestAuthentication(
         where: { id: clientSecret.id },
         data: { usedAt: new Date() }
       }));
+
+      return { method, client_secret };
     }
   }
+
+  return { method: 'none' };
 }
 
 function isValidClientSecret(clientSecret: string, saltedHash: string | null): boolean {
