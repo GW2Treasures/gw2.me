@@ -6,12 +6,12 @@ import { generateAccessToken, generateRefreshToken } from '@/lib/token';
 import { TokenResponse } from '@gw2me/client';
 import { ClientType, AuthorizationType } from '@gw2me/database';
 import { createHash } from 'crypto';
-import { assertRequestAuthentication } from '../auth';
+import { OAuth2RequestHandlerProps } from '../request';
 
 // 7 days
 const ACCESS_TOKEN_EXPIRATION = 604800;
 
-export async function handleTokenRequest(headers: Headers, params: Record<string, string | undefined>): Promise<TokenResponse> {
+export async function handleTokenRequest({ params, requestAuthorization }: OAuth2RequestHandlerProps): Promise<TokenResponse> {
   // get grant_type
   const grant_type = params['grant_type'];
   assert(isValidGrantType(grant_type), OAuth2ErrorCode.unsupported_grant_type, 'Invalid grant_type');
@@ -20,15 +20,9 @@ export async function handleTokenRequest(headers: Headers, params: Record<string
   const client_id = params.client_id;
   assert(client_id, OAuth2ErrorCode.invalid_request, 'Missing client_id');
 
-  // load client from db
-  const client = await db.client.findUnique({
-    where: { id: client_id },
-    include: { secrets: true }
-  });
-  assert(client, OAuth2ErrorCode.invalid_client, 'Invalid client_id');
-
-  // make sure request is authenticated
-  assertRequestAuthentication(client, headers, params);
+  // get authorized client
+  const { client } = requestAuthorization;
+  assert(client.id === client_id, OAuth2ErrorCode.invalid_request, 'client_id param does not match authorization.');
 
   switch(grant_type) {
     case 'authorization_code': {

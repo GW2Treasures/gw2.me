@@ -2,8 +2,15 @@ import { corsHeaders } from '@/lib/cors-header';
 import { assert } from '@/lib/oauth/assert';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { NextRequest, NextResponse } from 'next/server';
+import { getRequestAuthorization, RequestAuthorization } from './auth';
 
-export function handleRequest<T>(handler: (headers: Headers, params: Record<string, string | undefined>) => T) {
+export interface OAuth2RequestHandlerProps {
+  headers: Headers,
+  params: Record<string, string | undefined>,
+  requestAuthorization: RequestAuthorization,
+}
+
+export function handleRequest<T>(handler: (props: OAuth2RequestHandlerProps) => T) {
   return async (request: NextRequest) => {
     try {
       // ensure request is using application/x-www-form-urlencoded
@@ -13,11 +20,18 @@ export function handleRequest<T>(handler: (headers: Headers, params: Record<stri
       const params = await request.formData();
       const parsedParams = Object.fromEntries(Array.from(params.entries()).filter(([, value]) => typeof value === 'string')) as Record<string, string>;
 
+      // authorize client
+      const requestAuthorization = await getRequestAuthorization(request.headers, parsedParams);
+
       // handle request
-      const response = await handler(request.headers, parsedParams);
+      const response = await handler({
+        headers: request.headers,
+        params: parsedParams,
+        requestAuthorization,
+      });
 
+      // return response as JSON
       return NextResponse.json(response, { headers: responseHeaders(request) });
-
     } catch (error) {
       console.error(error);
 
