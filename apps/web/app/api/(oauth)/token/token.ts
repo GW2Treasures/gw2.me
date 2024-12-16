@@ -101,19 +101,22 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
         where: {
           type_token: { token: refresh_token, type: AuthorizationType.RefreshToken },
           clientId: client.id
-        }
+        },
+        include: {
+          accounts: { select: { id: true }}
+        },
       });
 
       assert(refreshAuthorization, OAuth2ErrorCode.invalid_grant, 'Invalid refresh_token');
       assert(!isExpired(refreshAuthorization.expiresAt), OAuth2ErrorCode.invalid_grant, 'refresh_token expired');
 
-      const { clientId, userId, scope } = refreshAuthorization;
+      const { clientId, userId, scope, accounts, emailId } = refreshAuthorization;
 
       const [accessAuthorization] = await db.$transaction([
         // create new access token
         db.authorization.upsert({
           where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
-          create: { type: AuthorizationType.AccessToken, clientId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
+          create: { type: AuthorizationType.AccessToken, clientId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), accounts: { connect: accounts }, emailId },
           update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
         }),
 
