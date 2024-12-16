@@ -4,7 +4,7 @@ import { expect } from '@jest/globals';
 
 const toBeOAuth2Error: MatcherFunction<[code?: OAuth2ErrorCode, description?: string]> = function (actual, code, description) {
   if(!(actual instanceof OAuth2Error)) {
-    return { pass: false, message: () => 'expected OAuth2Error' };
+    return { pass: false, message: () => `Expected: ${this.utils.EXPECTED_COLOR('[OAuth2Error]')}\nReceived: ${this.utils.printReceived(actual)}` };
   }
 
   if(code !== undefined && actual.code !== code) {

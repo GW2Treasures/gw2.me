@@ -1,17 +1,20 @@
 import 'server-only';
 import { db } from '@/lib/db';
 import { assert } from '@/lib/oauth/assert';
-import { OAuth2ErrorCode } from '@/lib/oauth/error';
+import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { AuthenticationMethod } from '@/lib/oauth/types';
-import { ClientType, ClientSecret, Client } from '@gw2me/database';
+import { ClientType, Client } from '@gw2me/database';
 import { scryptSync, timingSafeEqual } from 'crypto';
 import { after } from 'next/server';
 
-export function assertRequestAuthentication(
-  client: Client & { secrets: ClientSecret[] },
+export type RequestAuthorization =
+ | { method: 'none', client: Client }
+ | { method: 'client_secret_basic' | 'client_secret_post', client_secret: string, client: Client };
+
+export async function getRequestAuthorization(
   headers: Headers,
   params: Record<string, string | undefined>
-): void {
+): Promise<RequestAuthorization> {
   const authHeader = headers.get('Authorization');
 
   const authorizationMethods: Record<AuthenticationMethod, boolean> = {
@@ -19,42 +22,64 @@ export function assertRequestAuthentication(
     client_secret_post: params.client_secret !== undefined,
   };
 
-  const usedAuthentication = Object.entries(authorizationMethods)
+  const usedAuthorization = Object.entries(authorizationMethods)
     .filter(([, used]) => used)
     .map(([key]) => key as AuthenticationMethod);
 
   // no authentication provided
-  if(usedAuthentication.length === 0) {
+  if(usedAuthorization.length === 0) {
+    // client_id is required then
+    const client_id = params['client_id'];
+    assert(client_id, OAuth2ErrorCode.invalid_request, 'No client_id or authorization provided');
+
+    // load client
+    const client = await db.client.findUnique({ where: { id: client_id }});
+    assert(client, OAuth2ErrorCode.invalid_client, 'Invalid client_id');
+
+    // since no authentication was provided, this has to be a public client
     assert(client.type === ClientType.Public, OAuth2ErrorCode.invalid_request, 'Missing authorization for confidential client');
-    return;
+
+    // public client, all is good :)
+    return { method: 'none', client };
   }
 
-  // if authentication was provided, this needs to be a confidential client
-  assert(client.type === ClientType.Confidential, OAuth2ErrorCode.invalid_request, 'Do not pass authorization for public clients.');
-
   // only allow 1 authorization method
-  assert(usedAuthentication.length === 1, OAuth2ErrorCode.invalid_request, 'Only used one authorization method');
+  assert(usedAuthorization.length === 1, OAuth2ErrorCode.invalid_request, 'Only used one authorization method');
 
-  const [method] = usedAuthentication;
+  const [method] = usedAuthorization;
 
   switch(method) {
     case 'client_secret_basic':
     case 'client_secret_post': {
-      let client_secret: string | undefined;
+      let client_id: string;
+      let client_secret: string;
 
       if(method === 'client_secret_basic') {
         const [basic, encoded] = authHeader!.split(' ', 2);
         assert(basic === 'Basic', OAuth2ErrorCode.invalid_request, 'Only "Basic" authorization is supported using the Authorization header');
 
-        const [id, password] = Buffer.from(encoded, 'base64').toString().split(':', 2);
-        assert(id === client.id, OAuth2ErrorCode.invalid_request, 'Unexpected client_id in Authorization header');
+        const decoded = Buffer.from(encoded, 'base64').toString();
+        assert(decoded.includes(':'), OAuth2ErrorCode.invalid_request, 'Invalid basic authorization header');
 
+        const [id, password] = decoded.split(':', 2);
+
+        client_id = id;
         client_secret = password;
       } else {
+        assert(params.client_id, OAuth2ErrorCode.invalid_request, 'Missing client_id parameter');
+        assert(params.client_secret, OAuth2ErrorCode.invalid_request, 'Missing client_secret parameter');
+
+        client_id = params.client_id;
         client_secret = params.client_secret;
       }
 
-      assert(client_secret, OAuth2ErrorCode.invalid_request, 'Missing client_secret');
+      // load client
+      const client = await db.client.findUnique({
+        where: { id: client_id },
+        include: { secrets: true }
+      });
+      assert(client, OAuth2ErrorCode.invalid_client, 'Invalid client_id');
+      assert(client.type === 'Confidential', OAuth2ErrorCode.invalid_request, 'Invalid authorization provided for public client');
 
       const clientSecret = client.secrets.find(({ secret }) => isValidClientSecret(client_secret, secret));
       assert(clientSecret, OAuth2ErrorCode.invalid_client, 'Invalid client_secret');
@@ -64,8 +89,12 @@ export function assertRequestAuthentication(
         where: { id: clientSecret.id },
         data: { usedAt: new Date() }
       }));
+
+      return { method, client_secret, client };
     }
   }
+
+  throw new OAuth2Error(OAuth2ErrorCode.invalid_request, { description: 'Unknown authorization method' });
 }
 
 function isValidClientSecret(clientSecret: string, saltedHash: string | null): boolean {

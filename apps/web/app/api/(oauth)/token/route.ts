@@ -1,51 +1,8 @@
-import { corsHeaders } from '@/lib/cors-header';
-import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
-import { NextRequest, NextResponse } from 'next/server';
 import { handleTokenRequest } from './token';
+import { handleOptionsRequest, handleRequest } from '../request';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: NextRequest) {
-  try {
-    const params = await request.formData();
+export const POST = handleRequest(handleTokenRequest);
 
-    // get all string params as object
-    const parsedParams = Object.fromEntries(Array.from(params.entries()).filter(([, value]) => typeof value === 'string')) as Record<string, string>;
-
-    // handle request
-    const response = await handleTokenRequest(request.headers, parsedParams);
-
-    return NextResponse.json(response, { headers: responseHeaders(request) });
-
-  } catch (error) {
-    console.error(error);
-
-    if(error instanceof OAuth2Error) {
-      // TODO: use better http status based on error.code
-      // TODO: include WWW-Authenticate if missing authentication (see https://datatracker.ietf.org/doc/html/rfc6750#section-3)
-      return NextResponse.json(
-        { error: error.code, error_description: error.description },
-        { status: 500, headers: responseHeaders(request) }
-      );
-    }
-
-    return NextResponse.json(
-      { error: OAuth2ErrorCode.server_error, error_description: 'Internal server error' },
-      { status: 500, headers: responseHeaders(request) }
-    );
-  }
-}
-
-export const OPTIONS = (request: Request) => {
-  return new NextResponse(null, {
-    headers: corsHeaders(request)
-  });
-};
-
-/** Include CORS headers and `Cache-Control: no-store` */
-function responseHeaders(request: NextRequest) {
-  return {
-    ...corsHeaders(request),
-    'Cache-Control': 'no-store'
-  };
-}
+export const OPTIONS = handleOptionsRequest();
