@@ -1,5 +1,5 @@
 import { assert } from '@/lib/oauth/assert';
-import { handleRequest, handleOptionsRequest } from '../request';
+import { handleRequest, handleOptionsRequest } from '../../request';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { db } from '@/lib/db';
 

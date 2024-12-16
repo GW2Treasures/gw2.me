@@ -25,10 +25,6 @@ export interface RefreshTokenParams {
   refresh_token: string;
 }
 
-export interface RevokeTokenParams {
-  token: string;
-}
-
 export interface TokenResponse {
   access_token: string,
   issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
@@ -37,6 +33,24 @@ export interface TokenResponse {
   refresh_token?: string,
   scope: string,
 }
+
+export interface RevokeTokenParams {
+  token: string,
+}
+
+export interface IntrospectTokenParams {
+  token: string,
+}
+
+export type IntrospectTokenResponse = {
+  active: true,
+  scope: string,
+  client_id: string,
+  token_type: 'Bearer',
+  exp?: number,
+} | {
+  active: false,
+};
 
 export class Gw2MeClient {
   #client_id: string;
@@ -154,12 +168,30 @@ export class Gw2MeClient {
       headers.Authorization = `Basic ${btoa(`${this.#client_id}:${this.#client_secret}`)}`;
     }
 
-    await fetch(this.#getUrl('/api/revoke'), {
+    await fetch(this.#getUrl('/api/token/revoke'), {
       method: 'POST',
       cache: 'no-store',
       headers,
       body,
     }).then(jsonOrError);
+  }
+
+  async introspectToken({ token }: IntrospectTokenParams): Promise<IntrospectTokenResponse> {
+    const body = new URLSearchParams({ token });
+
+    const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
+    if(this.#client_secret) {
+      headers.Authorization = `Basic ${btoa(`${this.#client_id}:${this.#client_secret}`)}`;
+    }
+
+    const response = await fetch(this.#getUrl('/api/token/introspect'), {
+      method: 'POST',
+      cache: 'no-store',
+      headers,
+      body,
+    }).then(jsonOrError);
+
+    return response;
   }
 
   /**

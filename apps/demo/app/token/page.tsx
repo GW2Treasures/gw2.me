@@ -69,8 +69,13 @@ export default async function TokenPage({ searchParams: asyncSearchParams }: Pag
   const refresh_token = Array.isArray(searchParams.refresh_token) ? searchParams.refresh_token[0] : searchParams.refresh_token;
 
   const api = access_token ? gw2me.api(access_token) : undefined;
-  const user = await api?.user().catch((e) => String(e));
-  const accounts = await api?.accounts().catch((e) => String(e));
+
+  const [user, accounts, introspectAccessToken, introspectRefreshToken] = await Promise.all([
+    api?.user().catch((e) => String(e)),
+    api?.accounts().catch((e) => String(e)),
+    gw2me.introspectToken({ token: access_token! }).catch((e) => String(e)),
+    gw2me.introspectToken({ token: refresh_token! }).catch((e) => String(e)),
+  ]);
 
   return (
     <form>
@@ -92,6 +97,10 @@ export default async function TokenPage({ searchParams: asyncSearchParams }: Pag
       <pre>{JSON.stringify(user, undefined, '  ')}</pre>
       <b>/api/accounts</b>
       <pre>{JSON.stringify(accounts, undefined, '  ')}</pre>
+      <b>/api/token/introspect</b> (access_token)
+      <pre>{JSON.stringify(introspectAccessToken, undefined, '  ')}</pre>
+      <b>/api/token/introspect</b> (refresh_token)
+      <pre>{JSON.stringify(introspectRefreshToken, undefined, '  ')}</pre>
 
       <FlexRow>
         {typeof accounts === 'object' && accounts?.accounts?.map((account) => (
