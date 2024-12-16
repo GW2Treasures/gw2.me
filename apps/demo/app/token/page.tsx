@@ -22,6 +22,32 @@ async function refreshTokenAction(data: FormData) {
   redirect(`/token?access_token=${token.access_token}&refresh_token=${token.refresh_token}`);
 }
 
+async function revokeAccessToken(data: FormData) {
+  'use server';
+
+  const access_token = data.get('access_token')?.toString();
+  const refresh_token = data.get('refresh_token')?.toString();
+
+  if(access_token) {
+    await gw2me.revokeToken({ token: access_token });
+  }
+
+  redirect(`/token?refresh_token=${refresh_token}`);
+}
+
+async function revokeRefreshToken(data: FormData) {
+  'use server';
+
+  const access_token = data.get('access_token')?.toString();
+  const refresh_token = data.get('refresh_token')?.toString();
+
+  if(refresh_token) {
+    await gw2me.revokeToken({ token: refresh_token });
+  }
+
+  redirect(`/token?access_token=${access_token}`);
+}
+
 async function getSubtoken(accountId: string, data: FormData) {
   'use server';
 
@@ -56,7 +82,9 @@ export default async function TokenPage({ searchParams: asyncSearchParams }: Pag
       </Label>
 
       <FlexRow>
-        <Button icon="revision" type="submit" formAction={refreshTokenAction}>Refresh Token</Button>
+        <Button icon="revision" type="submit" formAction={refreshTokenAction} disabled={!refresh_token}>Refresh Token</Button>
+        <Button icon="delete" type="submit" formAction={revokeAccessToken} disabled={!access_token}>Revoke access_token</Button>
+        <Button icon="delete" type="submit" formAction={revokeRefreshToken} disabled={!refresh_token}>Revoke refresh_token</Button>
       </FlexRow>
       <br/>
 

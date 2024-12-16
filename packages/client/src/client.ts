@@ -25,6 +25,10 @@ export interface RefreshTokenParams {
   refresh_token: string;
 }
 
+export interface RevokeTokenParams {
+  token: string;
+}
+
 export interface TokenResponse {
   access_token: string,
   issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
@@ -140,6 +144,22 @@ export class Gw2MeClient {
     }).then(jsonOrError);
 
     return token;
+  }
+
+  async revokeToken({ token }: RevokeTokenParams): Promise<void> {
+    const body = new URLSearchParams({ token });
+
+    const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
+    if(this.#client_secret) {
+      headers.Authorization = `Basic ${btoa(`${this.#client_id}:${this.#client_secret}`)}`;
+    }
+
+    await fetch(this.#getUrl('/api/revoke'), {
+      method: 'POST',
+      cache: 'no-store',
+      headers,
+      body,
+    }).then(jsonOrError);
   }
 
   /**
