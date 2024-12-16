@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
 
     if(error instanceof OAuth2Error) {
       // TODO: use better http status based on error.code
+      // TODO: include WWW-Authenticate if missing authentication (see https://datatracker.ietf.org/doc/html/rfc6750#section-3)
       return NextResponse.json(
         { error: error.code, error_description: error.description },
         { status: 500, headers: responseHeaders(request) }
