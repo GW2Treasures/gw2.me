@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
 }
 
@@ -11,7 +11,7 @@ datasource db {
 model User {
   id String @id @default(uuid())
 
-  name  String  @unique
+  name String @unique
 
   emails       UserEmail[] @relation("emails")
   defaultEmail UserEmail?  @relation("default")
@@ -22,13 +22,13 @@ model User {
   providers UserProvider[] @relation("provider")
   passkeys  Passkey[]      @relation("userPasskeys")
 
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   applications   Application[]   @relation("applications")
   authorizations Authorization[] @relation("userAuthorization")
 
-  accounts       Account[]      @relation("userAccount")
+  accounts Account[] @relation("userAccount")
 }
 
 enum UserRole {
@@ -44,27 +44,27 @@ model UserEmail {
   verificationToken String? @unique
 
   userId String
-  user   User @relation("emails", fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation("emails", fields: [userId], references: [id], onDelete: Cascade)
 
   isDefaultForUserId String? @unique
   isDefaultForUser   User?   @relation("default", fields: [isDefaultForUserId], references: [id], onDelete: Cascade)
-  
+
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   verifiedAt DateTime?
 
   authorizations Authorization[]
-  applications   Application[] @relation("email")
+  applications   Application[]   @relation("email")
 
   @@unique([userId, email])
 }
 
 model UserSession {
   id String @id @default(uuid())
-  
+
   info String
 
-  user   User @relation("session", fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation("session", fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   createdAt DateTime @default(now())
@@ -74,21 +74,22 @@ model UserSession {
 model UserProvider {
   provider          UserProviderType
   providerAccountId String
-  @@id([provider, providerAccountId])
 
   displayName String
-  
+
   token Json?
-  
+
   passkey   Passkey?
-  passkeyId String? @unique
+  passkeyId String?  @unique
 
   userId String
   user   User   @relation("provider", fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  usedAt         DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  usedAt    DateTime?
+
+  @@id([provider, providerAccountId])
 }
 
 model UserProviderRequest {
@@ -102,9 +103,9 @@ model UserProviderRequest {
 
   redirect_uri  String
   code_verifier String?
-  
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum UserProviderType {
@@ -126,59 +127,60 @@ model Passkey {
   publicKey Bytes
 
   provider UserProvider @relation(fields: [id], references: [passkeyId], onDelete: Cascade)
-  
+
   user           User   @relation("userPasskeys", fields: [userId], references: [id], onDelete: Cascade)
   userId         String
   webAuthnUserId String
-  @@unique([webAuthnUserId, userId])
 
   counter    BigInt
   deviceType String
   backedUp   Boolean
   transports String[]
+
+  @@unique([webAuthnUserId, userId])
 }
 
 model Application {
-  id           String @default(uuid()) @id
+  id String @id @default(uuid())
 
-  name         String   @unique
-  description  String   @default("")
-  public       Boolean  @default(false)
-  publicUrl    String   @default("")
+  name        String  @unique
+  description String  @default("")
+  public      Boolean @default(false)
+  publicUrl   String  @default("")
 
   privacyPolicyUrl  String @default("")
   termsOfServiceUrl String @default("")
-  
-  imageId      String?
-  image        File?    @relation("applicationImage", fields: [imageId], references: [id], onDelete: SetNull)
 
-  ownerId      String
-  owner        User     @relation("applications", fields: [ownerId], references: [id], onDelete: Cascade)
+  imageId String?
+  image   File?   @relation("applicationImage", fields: [imageId], references: [id], onDelete: SetNull)
 
-  emailId      String?
-  email        UserEmail? @relation("email", fields: [emailId], references: [id], onDelete: SetNull)
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  ownerId String
+  owner   User   @relation("applications", fields: [ownerId], references: [id], onDelete: Cascade)
 
-  clients      Client[] @relation("applicationClients")
+  emailId String?
+  email   UserEmail? @relation("email", fields: [emailId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clients Client[] @relation("applicationClients")
 }
 
 model Client {
-  id            String @default(uuid()) @id
+  id String @id @default(uuid())
 
-  type          ClientType
-  
-  callbackUrls  String[] @default([])
-  
+  type ClientType
+
+  callbackUrls String[] @default([])
+
   applicationId String
   application   Application @relation("applicationClients", fields: [applicationId], references: [id], onDelete: Cascade)
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   authorizations Authorization[] @relation("clientAuthorization")
-  secrets        ClientSecret[] @relation("clientSecret")
+  secrets        ClientSecret[]  @relation("clientSecret")
 }
 
 enum ClientType {
@@ -187,12 +189,12 @@ enum ClientType {
 }
 
 model ClientSecret {
-  id        String @default(uuid()) @id
-  
-  secret    String @unique
+  id String @id @default(uuid())
 
-  clientId  String
-  client    Client @relation("clientSecret", fields: [clientId], references: [id], onDelete: Cascade)
+  secret String @unique
+
+  clientId String
+  client   Client @relation("clientSecret", fields: [clientId], references: [id], onDelete: Cascade)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -200,7 +202,7 @@ model ClientSecret {
 }
 
 model Authorization {
-  id String @default(uuid()) @id
+  id String @id @default(uuid())
 
   type  AuthorizationType
   token String
@@ -237,7 +239,7 @@ enum AuthorizationType {
 }
 
 model ApiToken {
-  id String @default(uuid()) @id
+  id String @id @default(uuid())
 
   name  String
   token String
@@ -250,15 +252,15 @@ model ApiToken {
   errorCount Int @default(0)
 
   usedAt DateTime?
-  
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
-  id String @default(uuid()) @id
+  id String @id @default(uuid())
 
-  accountId String
+  accountId   String
   accountName String
 
   displayName String?
@@ -266,23 +268,23 @@ model Account {
   verified Boolean @default(false)
 
   userId String
-  user   User @relation("userAccount", fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation("userAccount", fields: [userId], references: [id], onDelete: Cascade)
 
-  apiTokens ApiToken[] @relation("accountApiToken")
+  apiTokens      ApiToken[]      @relation("accountApiToken")
   authorizations Authorization[] @relation("accountAuthorization")
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([accountId, userId])
 }
 
 model File {
-  id       String    @default(uuid()) @id
+  id String @id @default(uuid())
 
-  data      Bytes
-  sha256    String   @unique
-  type      String
+  data   Bytes
+  sha256 String @unique
+  type   String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -294,13 +296,13 @@ model File {
 model ApiRequest {
   id String @id @default(uuid())
 
-  endpoint String
+  endpoint        String
   queryParameters String
-  apiKey String?
-  
-  status Int
-  response String?
+  apiKey          String?
+
+  status         Int
+  response       String?
   responseTimeMs Float
-  
-  createdAt DateTime @default(now()) 
+
+  createdAt DateTime @default(now())
 }
