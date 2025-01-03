@@ -21,7 +21,7 @@
     "@react-email/render": "1.0.3",
     "@simplewebauthn/browser": "13.0.0",
     "@simplewebauthn/server": "13.0.0",
-    "@wooorm/starry-night": "3.5.0",
+    "@wooorm/starry-night": "3.6.0",
     "aaguids": "0.0.17",
     "fast-jwt": "5.0.2",
     "hast-util-to-jsx-runtime": "2.3.2",
