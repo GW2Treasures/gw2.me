@@ -182,8 +182,8 @@ importers:
         specifier: 13.0.0
         version: 13.0.0
       '@wooorm/starry-night':
-        specifier: 3.5.0
-        version: 3.5.0
+        specifier: 3.6.0
+        version: 3.6.0
       aaguids:
         specifier: 0.0.17
         version: 0.0.17
@@ -1847,8 +1847,8 @@ packages:
       webpack-dev-server:
         optional: true
 
-  '@wooorm/starry-night@3.5.0':
-    resolution: {integrity: sha512-nYnfdeWS0ApqIFqr4ezLjr6pyYuqiG5Ywc2aJ4u1EY3qzf2oCTfLv7sMjEQSuSzPWUIH+a39eVbGUiRrFKZElA==}
+  '@wooorm/starry-night@3.6.0':
+    resolution: {integrity: sha512-AoDrqWZCZVymY48BClDaSuLgOe5vnl99S4hrqqg5OJ44x9NHo4s5LzOypKC3e6jGIUqHDfaDMvou8pelkq3dCw==}
 
   '@xtuc/ieee754@1.2.0':
     resolution: {integrity: sha512-DX8nKgqcGwsc0eJSqYt5lwP4DH5FlHnmuWWBRy7X0NcaGR0ZtuyeESgMwTYVEtxmsNGY+qit4QYT/MIYTOTPeA==}
@@ -6290,7 +6290,7 @@ snapshots:
       webpack: 5.97.1(webpack-cli@6.0.1)
       webpack-cli: 6.0.1(webpack@5.97.1)
 
-  '@wooorm/starry-night@3.5.0':
+  '@wooorm/starry-night@3.6.0':
     dependencies:
       '@types/hast': 3.0.4
       import-meta-resolve: 4.1.0
