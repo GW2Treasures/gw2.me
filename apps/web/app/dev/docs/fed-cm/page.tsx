@@ -38,13 +38,13 @@ export default function DevDocsFedCmPage() {
         as if <Code inline>include_granted_scopes</Code> is used with the normal OAuth2 flow. If other scopes or options are required, the normal OAuth2 flow has to be used.
       </p>
       <p>
-        It is only possible to initialize FedCM authentication from an origin which matches on of the registered OAuth2 redirect URLs.
+        It is only possible to initialize FedCM authentication from an origin which matches one of the registered OAuth2 redirect URLs.
       </p>
       <p>
         To request authentication via FedCM with the gw2.me JavaScript library, call <Code inline>gw2me.fedCM.request()</Code>.
         This will return a <Code inline>Promise&lt;Credential | null&gt;</Code> that resolves to a <Code inline>Credential</Code> when the authentication is successful,
         or <Code inline>null</Code> in case the authorization fails. The <Code inline>Credential</Code> contains a string property <Code inline>token</Code>,
-        which is an OAuth2 authorization code. This authorization code can be exchanged to an access token as described in <Link href="/dev/docs/access-tokens#access-token">Access Token</Link>.
+        which is an OAuth2 authorization code. This authorization code can be exchanged for an access token as described in <Link href="/dev/docs/access-tokens#access-token">Access Token</Link>.
       </p>
 
     </PageLayout>
