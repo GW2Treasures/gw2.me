@@ -1,11 +1,10 @@
 'use client';
 
-import { Gw2MeClient } from '@gw2me/client';
+import { Gw2MeClient, Scope } from '@gw2me/client';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
-import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
@@ -22,7 +21,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
   const [abort, setAbort] = useState<AbortController>();
   const [error, setError] = useState<string>();
   const [mediation, setMediation] = useState<CredentialMediationRequirement>('optional');
-  const [mode, setMode] = useState<undefined | 'button'>();
+  const [mode, setMode] = useState<'passive' | 'active'>();
   const gw2me = useMemo(() => new Gw2MeClient({ client_id: clientId }, { url: gw2meUrl }), [clientId, gw2meUrl]);
 
   // check if this browser supports mode=button
@@ -54,7 +53,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
     setAbort(abortController);
     setError(undefined);
 
-    gw2me.fedCM.request({ mode, mediation, signal: abortController.signal }).then((credential) => {
+    gw2me.fedCM.request({ mode, mediation, signal: abortController.signal, scopes: [Scope.Identify, Scope.Email] }).then((credential) => {
       setAbort(undefined);
 
       if(credential) {
@@ -81,9 +80,11 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
         <Select options={['required', 'optional', 'silent'].map((m) => ({ label: m, value: m }))} value={mediation} onChange={setMediation as (value: string) => void}/>
       </Label>
 
-      <Label label="Mode">
-        <Checkbox checked={mode === 'button'} onChange={(checked) => setMode(checked ? 'button' : undefined)} disabled={!supportsFedCmMode}>button</Checkbox>
-      </Label>
+      {supportsFedCmMode && (
+        <Label label="Mode">
+          <Select options={['passive', 'active'].map((m) => ({ label: m, value: m }))} value={mode} onChange={setMode as (value: string) => void}/>
+        </Label>
+      )}
 
       <FlexRow>
         <Button onClick={handleClick} icon="gw2me">Trigger FedCM</Button>

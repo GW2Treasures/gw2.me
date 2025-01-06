@@ -1,8 +1,10 @@
 import { Gw2MeError } from './error';
+import { Scope } from './types';
 
 export interface FedCMRequestOptions {
+  scopes: Scope[],
   mediation?: CredentialMediationRequirement;
-  mode?: 'button';
+  mode?: 'passive' | 'active';
   signal?: AbortSignal;
 }
 
@@ -19,7 +21,7 @@ export class Gw2MeFedCM {
     return typeof window !== 'undefined' && 'IdentityCredential' in window;
   }
 
-  request({ mediation, signal, mode }: FedCMRequestOptions) {
+  request({ scopes, mediation, signal, mode }: FedCMRequestOptions) {
     if(!this.isSupported()) {
       throw new Gw2MeError('FedCM is not supported');
     }
@@ -30,6 +32,13 @@ export class Gw2MeFedCM {
         providers: [{
           configURL: this.#configUrl,
           clientId: this.#clientId,
+          fields: [
+            scopes.includes(Scope.Identify) && 'name',
+            scopes.includes(Scope.Email) && 'email',
+          ].filter(Boolean),
+          params: {
+            scope: scopes.join(' ')
+          }
         }],
         mode
       }

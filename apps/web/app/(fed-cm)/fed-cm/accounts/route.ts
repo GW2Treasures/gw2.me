@@ -5,11 +5,11 @@ import { getUrlFromRequest } from '@/lib/url';
 import { db } from '@/lib/db';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { corsHeaders } from '@/lib/cors-header';
-import { Scope } from '@gw2me/client';
 
 export async function GET(request: NextRequest) {
   // verify `Sec-Fetch-Dest: webidentity` header is set
   if(request.headers.get('Sec-Fetch-Dest') !== 'webidentity') {
+    console.error('[fed-cm/accounts] Sec-Fetch-Dest invalid');
     return Response.json(
       { error: { code: OAuth2ErrorCode.invalid_request, details: 'Missing `Sec-Fetch-Dest: webidentity` header' }},
       { status: 400, headers: corsHeaders(request) }
@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
   const user = await getUser();
 
   if(!user) {
+    console.error('[fed-cm/accounts] no session');
     return Response.json(
       { error: { code: OAuth2ErrorCode.access_denied, details: 'no session' }},
       { status: 401, headers: corsHeaders(request) }
@@ -34,7 +35,7 @@ export async function GET(request: NextRequest) {
     ]
   };
   const approvedClients = await db.client.findMany({
-    where: { authorizations: { some: { type: 'AccessToken', userId: user.id, ...notExpired, scope: { hasEvery: [Scope.Identify, Scope.Email] }}}},
+    where: { authorizations: { some: { type: 'AccessToken', userId: user.id, ...notExpired }}},
     select: { id: true }
   });
 
