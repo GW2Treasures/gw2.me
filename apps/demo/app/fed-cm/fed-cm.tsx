@@ -87,7 +87,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
       )}
 
       <FlexRow>
-        <Button onClick={handleClick} icon="gw2me">Trigger FedCM</Button>
+        <Button onClick={handleClick} icon={abort ? 'loading' : 'gw2me'}>Trigger FedCM</Button>
         {abort && (<Button onClick={() => { abort.abort(); setAbort(undefined); }}>Cancel</Button>)}
       </FlexRow>
 
