@@ -6,7 +6,7 @@ import styles from './page.module.css';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Icon, IconProp } from '@gw2treasures/ui';
 import { FC, ReactNode } from 'react';
-import { getApplicationByClientId, validateRequest } from './validate';
+import { getApplicationByClientId, normalizeScopes, validateRequest } from './validate';
 import { hasGW2Scopes } from '@/lib/scope';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { db } from '@/lib/db';
@@ -232,15 +232,6 @@ function getPreviousAuthorization(clientId: string, userId: string) {
     where: { clientId, userId, type: { not: AuthorizationType.Code }},
     include: { accounts: { select: { id: true }}}
   });
-}
-
-const gw2Scopes = Object.values(Scope).filter((scope) => scope.startsWith('gw2:'));
-
-function normalizeScopes(scopes: Set<Scope>): void {
-  // include `accounts` if any gw2 or sub scope is included
-  if(gw2Scopes.some((scope) => scopes.has(scope)) || scopes.has(Scope.Accounts_DisplayName) || scopes.has(Scope.Accounts_Verified)) {
-    scopes.add(Scope.Accounts);
-  }
 }
 
 function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id: string }}, emails: UserEmail[], emailId: undefined | string, returnUrl: string) {

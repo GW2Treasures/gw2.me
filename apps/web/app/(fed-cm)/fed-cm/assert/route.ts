@@ -8,10 +8,12 @@ import { db } from '@/lib/db';
 import { generateCode } from '@/lib/token';
 import { expiresAt } from '@/lib/date';
 import { Scope } from '@gw2me/client';
+import { normalizeScopes } from 'app/oauth2/authorize/validate';
 
 export async function POST(request: NextRequest) {
   // verify `Sec-Fetch-Dest: webidentity` header is set
   if(request.headers.get('Sec-Fetch-Dest') !== 'webidentity') {
+    console.error('[fed-cm/assert] Sec-Fetch-Dest invalid');
     return Response.json(
       { error: { code: OAuth2ErrorCode.invalid_request, details: 'Missing `Sec-Fetch-Dest: webidentity` header' }},
       { status: 400, headers: corsHeaders(request) }
@@ -22,6 +24,7 @@ export async function POST(request: NextRequest) {
   const user = await getUser();
 
   if(!user) {
+    console.error('[fed-cm/assert] no session');
     return Response.json(
       { error: { code: OAuth2ErrorCode.access_denied, details: 'no session' }},
       { status: 401, headers: corsHeaders(request) }
@@ -32,10 +35,13 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const clientId = getFormDataString(formData, 'client_id');
   const accountId = getFormDataString(formData, 'account_id');
-  const disclosureTextShown = getFormDataString(formData, 'disclosure_text_shown') === 'true';
+  const disclosureShownFor: ('name' | 'email' | 'picture')[] = getFormDataString(formData, 'disclosure_shown_for')?.split(',')
+    ?? getFormDataString(formData, 'disclosure_text_shown') === 'true' ? ['name', 'email', 'picture'] : [];
+  const params = parseParams(getFormDataString(formData, 'params'));
   const origin = request.headers.get('Origin');
 
   if(!clientId || !accountId || accountId !== user.id || !origin) {
+    console.error('[fed-cm/assert] invalid request');
     return Response.json(
       { error: { code: OAuth2ErrorCode.invalid_request, details: 'missing required fields' }},
       { status: 400, headers: corsHeaders(request) }
@@ -50,6 +56,7 @@ export async function POST(request: NextRequest) {
 
   // check that application exists
   if(!client) {
+    console.error('[fed-cm/assert] invalid client');
     return Response.json(
       { error: { code: OAuth2ErrorCode.invalid_client, details: 'invalid client_id' }},
       { status: 404, headers: corsHeaders(request) }
@@ -59,6 +66,7 @@ export async function POST(request: NextRequest) {
   // verify origin matches a registered callback url
   const validOrigin = client.callbackUrls.some((url) => new URL(url).origin === origin);
   if(!validOrigin) {
+    console.error('[fed-cm/assert] invalid origin');
     return Response.json(
       { error: { code: OAuth2ErrorCode.invalid_request, details: 'wrong origin' }},
       { status: 400, headers: corsHeaders(request) }
@@ -71,20 +79,38 @@ export async function POST(request: NextRequest) {
     select: { scope: true, accounts: { select: { id: true }}}
   });
 
-  // always include previous scopes if available (as if `include_granted_scopes` is set during OAuth authorization)
-  const scopes = new Set<Scope>(previousAuthorization?.scope as Scope[]);
+  // get previously authorized scopes
+  const previousScopes = new Set(previousAuthorization?.scope as Scope[]);
 
-  // if the disclose text was not shown don't add additional scopes
-  if(!disclosureTextShown && (!scopes.has(Scope.Identify) || !scopes.has(Scope.Email))) {
+  // get requested scopes if params.scopes is set, otherwise default to Identify+Email
+  const requestedScopes = new Set(params.scope?.split(' ') as Scope[] ?? [Scope.Identify, Scope.Email]);
+  normalizeScopes(requestedScopes);
+
+  // always include previous scopes if available (as if `include_granted_scopes` is set during OAuth authorization)
+  const scopes = previousScopes.union(requestedScopes);
+
+  // get new scopes
+  const undisclosedNewScopes = scopes.difference(previousScopes);
+
+  // iterate over disclosed fields and remove corresponding scopes from undisclosed set
+  for(const disclosure of disclosureShownFor) {
+    if(disclosure === 'email') {
+      undisclosedNewScopes.delete(Scope.Email);
+    }
+    if(disclosure === 'name') {
+      undisclosedNewScopes.delete(Scope.Identify);
+    }
+  }
+
+  // make sure all scopes were either previously authorized or disclosed
+  if(undisclosedNewScopes.size > 0) {
+    // TODO: use continue_on to display auth screen
+    console.error('[fed-cm/assert] undisclosed scopes', undisclosedNewScopes);
     return Response.json(
-      { error: { code: OAuth2ErrorCode.invalid_scope, details: 'disclosure_text_shown = false and previous authorization does not include scopes "identify email"' }},
+      { error: { code: OAuth2ErrorCode.invalid_scope, details: 'undisclosed new scopes' }},
       { status: 400, headers: corsHeaders(request) }
     );
   }
-
-  // always include identify + email until FedCM gets a way to define scopes
-  scopes.add(Scope.Identify);
-  scopes.add(Scope.Email);
 
   // create code
   let authorization: Authorization;
@@ -113,7 +139,8 @@ export async function POST(request: NextRequest) {
       }),
     ]);
   } catch(error) {
-    console.log(error);
+    console.error('[fed-cm/assert] error');
+    console.error(error);
 
     return Response.json(
       { error: { code: OAuth2ErrorCode.server_error }},
@@ -127,4 +154,18 @@ export async function POST(request: NextRequest) {
     { token },
     { headers: corsHeaders(request) }
   );
+}
+
+function parseParams(params?: string): { scope?: string } {
+  if(!params) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(params);
+  } catch {
+    console.error('Could not parse Fed-CM params as json', params);
+  }
+
+  return {};
 }

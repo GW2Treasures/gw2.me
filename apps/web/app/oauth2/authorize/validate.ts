@@ -162,3 +162,12 @@ export const validateRequest = cache(async function validateRequest(request: Par
     redirect(redirect_uri.toString());
   }
 });
+
+
+const gw2Scopes = Object.values(Scope).filter((scope) => scope.startsWith('gw2:'));
+export function normalizeScopes(scopes: Set<Scope>): void {
+  // include `accounts` if any gw2 or sub scope is included
+  if(gw2Scopes.some((scope) => scopes.has(scope)) || scopes.has(Scope.Accounts_DisplayName) || scopes.has(Scope.Accounts_Verified)) {
+    scopes.add(Scope.Accounts);
+  }
+}
