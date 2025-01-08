@@ -1,4 +1,4 @@
-ARG node_version=22.12.0-alpine3.20
+ARG node_version=22.13.0-alpine3.20
 
 # renovate: datasource=npm packageName=turbo
 ARG turbo_version=2.3.3
