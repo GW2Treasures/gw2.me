@@ -38,14 +38,14 @@ export default async function AdminUserPage() {
         <Users.Column id="name" title="Username" sortBy="name">{({ name }) => name}</Users.Column>
         <Users.Column id="providers" title="Providers" sortBy="name">
           {({ providers }) => (
-            <FlexRow>
+            <FlexRow wrap>
               {providers.map((provider) => <Tip key={`${provider.provider}-${provider.providerAccountId}`} tip={provider.displayName}><ProviderIcon provider={provider.provider}/></Tip>)}
             </FlexRow>
           )}
         </Users.Column>
         <Users.Column id="email" title="Email" sortBy={({ defaultEmail }) => defaultEmail?.email} hidden>{({ defaultEmail }) => defaultEmail?.email}</Users.Column>
         <Users.Column id="roles" title="Roles" sortBy={({ roles }) => roles.length} hidden>{({ roles }) => roles.join(', ')}</Users.Column>
-        <Users.Column id="apps" title="Apps" sortBy={({ _count }) => _count.applications} align="right">{({ _count }) => _count.applications}</Users.Column>
+        <Users.Column id="apps" title="Apps" sortBy={({ _count }) => _count.applications} align="right" hidden>{({ _count }) => _count.applications}</Users.Column>
         <Users.Column id="auths" title="Authorizations" sortBy={({ _count }) => _count.authorizations} align="right">{({ _count }) => _count.authorizations}</Users.Column>
         <Users.Column id="accounts" title="Accounts" sortBy={({ _count }) => _count.accounts} align="right">{({ _count }) => _count.accounts}</Users.Column>
         <Users.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Users.Column>
