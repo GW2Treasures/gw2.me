@@ -8,7 +8,7 @@ export default function DevLayout({ children }: LayoutProps) {
     <NavLayout content={children}>
       <Navigation prefix="/dev/" items={[
         { segment: ['docs'], label: 'Documentation' },
-        { segment: ['docs', 'register-app'], label: 'Register your App' },
+        { segment: ['docs', 'manage-apps'], label: 'Manage Apps' },
         { segment: ['docs', 'access-tokens'], label: 'Getting Access Tokens' },
         { segment: ['docs', 'refresh-tokens'], label: 'Refreshing Tokens' },
         { segment: ['docs', 'gw2-api'], label: 'Guild Wars 2 API' },

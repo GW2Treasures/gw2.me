@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
 
     return config;
   },
+
+  redirects: async () => [
+    { source: '/dev/docs/register-app', destination: '/dev/docs/manage-apps', permanent: true },
+  ]
 };
 
 export default nextConfig;
