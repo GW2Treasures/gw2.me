@@ -8,3 +8,26 @@ declare module '*.svg?svgr' {
   const SVG: React.VFC<React.SVGProps<SVGSVGElement>>;
   export default SVG;
 }
+
+interface Navigator {
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/login) */
+  login: NavigatorLogin
+}
+
+/** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLoginn) */
+interface NavigatorLogin {
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLogin/setStatus) */
+  setStatus(status: 'logged-in' | 'logged-out'): Promise<undefined>
+}
+
+interface Window {
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IdentityProvider) */
+  IdentityProvider: IdentityProvider
+}
+
+/** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IdentityProvider) */
+interface IdentityProvider {
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IdentityProvider/close_static) */
+  close(): undefined
+}
+
