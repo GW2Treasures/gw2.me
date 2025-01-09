@@ -11,6 +11,7 @@ import { ensureUserIsAdmin } from '../admin';
 import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { ProviderIcon } from '@/components/Provider/Provider';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { Gravatar } from '@/components/User/Gravatar';
 
 function getUsers() {
   return db.user.findMany({
@@ -35,7 +36,7 @@ export default async function AdminUserPage() {
 
       <Users.Table>
         <Users.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Users.Column>
-        <Users.Column id="name" title="Username" sortBy="name">{({ name }) => name}</Users.Column>
+        <Users.Column id="name" title="Username" sortBy="name">{({ name, defaultEmail }) => <FlexRow><Gravatar email={defaultEmail?.email}/>{name}</FlexRow>}</Users.Column>
         <Users.Column id="providers" title="Providers" sortBy="name">
           {({ providers }) => (
             <FlexRow wrap>
