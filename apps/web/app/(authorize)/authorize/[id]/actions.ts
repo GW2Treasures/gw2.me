@@ -5,7 +5,7 @@ import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { isString } from '@gw2treasures/helper/is';
 import { generateCode } from '@/lib/token';
-import { Authorization, AuthorizationType } from '@gw2me/database';
+import { Authorization, AuthorizationRequestState, AuthorizationRequestType, AuthorizationType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 import { hasGW2Scopes } from '@/lib/scope';
 import { Scope } from '@gw2me/client';
@@ -14,6 +14,10 @@ import { createRedirectUrl } from '@/lib/redirectUrl';
 import { cookies } from 'next/headers';
 import { userCookie } from '@/lib/cookie';
 import { getFormDataString } from '@/lib/form-data';
+import { cancelAuthorizationRequest } from '../helper';
+import { AuthorizationRequestData } from '../types';
+import { OAuth2ErrorCode } from '@/lib/oauth/error';
+import { notExpired } from '@/lib/db/helper';
 
 export interface AuthorizeActionParams {
   clientId: string,
@@ -24,7 +28,7 @@ export interface AuthorizeActionParams {
 }
 
 // eslint-disable-next-line require-await
-export async function authorize(params: AuthorizeActionParams, _: FormState, formData: FormData): Promise<FormState> {
+export async function authorize(id: string, _: FormState, formData: FormData): Promise<FormState> {
   // get account ids from form
   const accountIds = formData.getAll('accounts').filter(isString);
 
@@ -40,14 +44,26 @@ export async function authorize(params: AuthorizeActionParams, _: FormState, for
     cookieStore.set(userCookie(session.userId));
   }
 
-  return authorizeInternal(params, accountIds, emailId);
+  return authorizeInternal(id, accountIds, emailId);
 }
 
 export async function authorizeInternal(
-  { clientId, redirect_uri, scopes, state, codeChallenge }: AuthorizeActionParams,
+  id: string,
   accountIds: string[],
   emailId: string | undefined
 ) {
+  const authorizationRequest = await db.authorizationRequest.findUnique({
+    where: { id, state: 'Pending', ...notExpired },
+  });
+
+  if(!authorizationRequest) {
+    return { error: 'Authorization request not found' };
+  }
+
+  // get data
+  const data = authorizationRequest.data as unknown as AuthorizationRequestData;
+  const scopes = data.scope.split(' ') as Scope[];
+
   // verify at least one account was selected
   if((hasGW2Scopes(scopes) || scopes.includes(Scope.Accounts)) && accountIds.length === 0) {
     return { error: 'At least one account has to be selected.' };
@@ -70,11 +86,16 @@ export async function authorizeInternal(
   try {
     const identifier = {
       type: AuthorizationType.Code,
-      clientId,
+      clientId: authorizationRequest.clientId,
       userId: session.userId
     };
 
-    [, authorization] = await db.$transaction([
+    [,, authorization] = await db.$transaction([
+      db.authorizationRequest.update({
+        where: { id },
+        data: { state: AuthorizationRequestState.Authorized },
+      }),
+
       // delete old pending authorization codes for this app
       db.authorization.deleteMany({ where: identifier }),
 
@@ -83,8 +104,8 @@ export async function authorizeInternal(
         data: {
           ...identifier,
           scope: scopes,
-          redirectUri: redirect_uri,
-          codeChallenge,
+          redirectUri: authorizationRequest.type === 'OAuth2' ? (data as AuthorizationRequestData.OAuth2).redirect_uri : undefined,
+          codeChallenge: `${data.code_challenge_method}:${data.code_challenge}`,
           token: generateCode(),
           expiresAt: expiresAt(60),
           accounts: { connect: accountIds.map((id) => ({ id })) },
@@ -98,12 +119,41 @@ export async function authorizeInternal(
     return { error: 'Authorization failed' };
   }
 
-  // build redirect url with token and state
-  const url = await createRedirectUrl(redirect_uri, {
-    state,
-    code: authorization.token,
-  });
+  switch(authorizationRequest.type) {
+    case AuthorizationRequestType.OAuth2: {
+      const url = await createRedirectUrl((data as AuthorizationRequestData.OAuth2).redirect_uri, {
+        state: data.state,
+        code: authorization.token,
+      });
 
-  // redirect back to app
-  redirect(url.toString());
+      // redirect back to app
+      return redirect(url.toString());
+    }
+
+    case AuthorizationRequestType.FedCM: {
+      return redirect('/fed-cm/authorize');
+    }
+  }
+}
+
+export async function cancelAuthorization(id: string) {
+  const authRequest = await cancelAuthorizationRequest(id);
+
+  switch(authRequest.type) {
+    case AuthorizationRequestType.OAuth2: {
+      const data = authRequest.data as unknown as AuthorizationRequestData<typeof authRequest.type>;
+
+      const cancelUrl = await createRedirectUrl(data.redirect_uri, {
+        state: data.state,
+        error: OAuth2ErrorCode.access_denied,
+        error_description: 'user canceled authorization',
+      });
+
+      return redirect(cancelUrl.toString());
+    }
+
+    case AuthorizationRequestType.FedCM: {
+      return redirect('/fed-cm/cancel');
+    }
+  }
 }

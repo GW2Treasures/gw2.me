@@ -6,19 +6,7 @@ import { ClientType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { createRedirectUrl } from '@/lib/redirectUrl';
-
-export interface AuthorizeRequestParams {
-  response_type: string;
-  redirect_uri: string;
-  client_id: string;
-  scope: string;
-  state?: string;
-  code_challenge?: string;
-  code_challenge_method?: string;
-  prompt?: string;
-  include_granted_scopes?: string;
-  verified_accounts_only?: string;
-}
+import { AuthorizeRequestParams } from 'app/authorize/types';
 
 export const getApplicationByClientId = cache(async function getApplicationByClientId(clientId: string | undefined) {
   assert(clientId, OAuth2ErrorCode.invalid_request, 'client_id is missing');
