@@ -15,7 +15,7 @@ import { cookies } from 'next/headers';
 import { userCookie } from '@/lib/cookie';
 import { getFormDataString } from '@/lib/form-data';
 import { cancelAuthorizationRequest } from '../helper';
-import { AuthorizationRequestData } from '../types';
+import { AuthorizationRequest } from '../types';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { notExpired } from '@/lib/db/helper';
 
@@ -50,19 +50,18 @@ export async function authorize(id: string, _: FormState, formData: FormData): P
 export async function authorizeInternal(
   id: string,
   accountIds: string[],
-  emailId: string | undefined
+  emailId: string | undefined | null
 ) {
   const authorizationRequest = await db.authorizationRequest.findUnique({
     where: { id, state: 'Pending', ...notExpired },
-  });
+  }) as AuthorizationRequest | null;
 
   if(!authorizationRequest) {
     return { error: 'Authorization request not found' };
   }
 
-  // get data
-  const data = authorizationRequest.data as unknown as AuthorizationRequestData;
-  const scopes = data.scope.split(' ') as Scope[];
+  // get scopes
+  const scopes = authorizationRequest.data.scope.split(' ') as Scope[];
 
   // verify at least one account was selected
   if((hasGW2Scopes(scopes) || scopes.includes(Scope.Accounts)) && accountIds.length === 0) {
@@ -104,8 +103,8 @@ export async function authorizeInternal(
         data: {
           ...identifier,
           scope: scopes,
-          redirectUri: authorizationRequest.type === 'OAuth2' ? (data as AuthorizationRequestData.OAuth2).redirect_uri : undefined,
-          codeChallenge: `${data.code_challenge_method}:${data.code_challenge}`,
+          redirectUri: authorizationRequest.type === 'OAuth2' ? authorizationRequest.data.redirect_uri : undefined,
+          codeChallenge: `${authorizationRequest.data.code_challenge_method}:${authorizationRequest.data.code_challenge}`,
           token: generateCode(),
           expiresAt: expiresAt(60),
           accounts: { connect: accountIds.map((id) => ({ id })) },
@@ -121,8 +120,8 @@ export async function authorizeInternal(
 
   switch(authorizationRequest.type) {
     case AuthorizationRequestType.OAuth2: {
-      const url = await createRedirectUrl((data as AuthorizationRequestData.OAuth2).redirect_uri, {
-        state: data.state,
+      const url = await createRedirectUrl(authorizationRequest.data.redirect_uri, {
+        state: authorizationRequest.data.state,
         code: authorization.token,
       });
 
@@ -141,7 +140,7 @@ export async function cancelAuthorization(id: string) {
 
   switch(authRequest.type) {
     case AuthorizationRequestType.OAuth2: {
-      const data = authRequest.data as unknown as AuthorizationRequestData<typeof authRequest.type>;
+      const data = authRequest.data;
 
       const cancelUrl = await createRedirectUrl(data.redirect_uri, {
         state: data.state,

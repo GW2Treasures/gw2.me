@@ -28,8 +28,9 @@ import Link from 'next/link';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { PageProps } from '@/lib/next';
 import { isExpired } from '@/lib/date';
-import { AuthorizationRequestData } from '../types';
+import { AuthorizationRequest } from '../types';
 import { normalizeScopes } from 'app/(authorize)/oauth2/authorize/validate';
+import { cancelAuthorizationRequest } from '../helper';
 
 const getPendingAuthorizationRequest = cache(
   (id: string) => db.authorizationRequest.findUnique({
@@ -44,7 +45,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
   const returnUrl = `/authorize/${id}`;
 
   // get the request
-  const authRequest = await getPendingAuthorizationRequest(id);
+  const authRequest = await getPendingAuthorizationRequest(id) as (AuthorizationRequest & { client: NonNullable<Awaited<ReturnType<typeof getPendingAuthorizationRequest>>>['client'] }) | null;
 
   if(!authRequest) {
     return <Notice type="error">Authorization request not found.</Notice>;
@@ -55,7 +56,6 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
   }
 
   const { client } = authRequest;
-  const request = authRequest.data as unknown as AuthorizationRequestData;
 
   // get current user
   const session = await getSession();
@@ -65,43 +65,45 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
   const previousAuthorization = session ? await getPreviousAuthorization(client.id, session.userId) : undefined;
   const previousScope = new Set(previousAuthorization?.scope as Scope[]);
   const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
-  const scopes = new Set(decodeURIComponent(request.scope).split(' ') as Scope[]);
+  const scopes = new Set(decodeURIComponent(authRequest.data.scope).split(' ') as Scope[]);
 
   // normalize the previous scopes
   normalizeScopes(previousScope);
 
   // if `include_granted_scopes` is set add all previous scopes to the current scopes
-  if(request.include_granted_scopes) {
+  if(authRequest.data.include_granted_scopes) {
     previousScope.forEach((scope) => scopes.add(scope));
   }
 
   // normalize the current scopes
   normalizeScopes(scopes);
 
-  const verifiedAccountsOnly = scopes.has(Scope.Accounts_Verified) && request.verified_accounts_only === 'true';
+  const verifiedAccountsOnly = scopes.has(Scope.Accounts_Verified) && authRequest.data.verified_accounts_only === 'true';
 
   // get new/existing scopes
   const newScopes = Array.from(scopes).filter((scope) => !previousScope.has(scope));
   const oldScopes = Array.from(previousScope).filter((scope) => scopes.has(scope));
 
   const redirect_uri = authRequest.type === 'OAuth2' ?
-    new URL((request as AuthorizationRequestData.OAuth2).redirect_uri)
+    new URL(authRequest.data.redirect_uri)
     : undefined;
 
 
   // handle prompt!=consent
   const allPreviouslyAuthorized = newScopes.length === 0;
   let autoAuthorizeState: FormState | undefined;
-  if(allPreviouslyAuthorized && request.prompt !== 'consent') {
+  if(allPreviouslyAuthorized && authRequest.data.prompt !== 'consent') {
     autoAuthorizeState = await authorizeInternal(id, previousAccountIds, previousAuthorization?.emailId ?? undefined);
   }
 
   // handle prompt=none
-  if(!allPreviouslyAuthorized && request.prompt === 'none') {
+  if(!allPreviouslyAuthorized && authRequest.data.prompt === 'none') {
+    await cancelAuthorizationRequest(authRequest.id);
+
     switch(authRequest.type) {
       case AuthorizationRequestType.OAuth2: {
-        const errorUrl = await createRedirectUrl((request as AuthorizationRequestData.OAuth2).redirect_uri, {
-          state: request.state,
+        const errorUrl = await createRedirectUrl(authRequest.data.redirect_uri, {
+          state: authRequest.data.state,
           error: OAuth2ErrorCode.access_denied,
           error_description: 'user not previously authorized',
         });
