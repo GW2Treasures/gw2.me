@@ -23,7 +23,7 @@
     "@simplewebauthn/server": "13.1.0",
     "@wooorm/starry-night": "3.6.0",
     "aaguids": "0.0.17",
-    "fast-jwt": "5.0.2",
+    "fast-jwt": "5.0.5",
     "hast-util-to-jsx-runtime": "2.3.2",
     "next": "15.1.4",
     "nodemailer": "6.9.16",
