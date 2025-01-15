@@ -31,7 +31,7 @@ export default async function CreateApplicationPage() {
             <TextInput name="name"/>
           </Label>
 
-          <Label label={<>Type (See <Link href="/dev/docs/register-app#public-confidential">documentation</Link> for distinction)</>}>
+          <Label label={<>Type (See <Link href="/dev/docs/manage-apps#public-confidential">documentation</Link> for distinction)</>}>
             <Select name="type" options={[{ value: '', label: '' }, ...ClientTypeOptions]}/>
           </Label>
 

@@ -37,6 +37,7 @@ export default async function EditApplicationPage({ params }: EditApplicationPag
   return (
     <PageLayout>
       <Headline id="app">{application.name}</Headline>
+      <p>Check the <a href="/dev/docs/manage-apps#settings">documentation</a> for more information on how to manage your application.</p>
 
       <ApplicationForm application={application} applicationId={application.id} emails={emails} clients={application.clients}
         editApplicationAction={editApplication.bind(null, application.id)}
