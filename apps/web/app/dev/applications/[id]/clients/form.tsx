@@ -1,18 +1,14 @@
 'use client';
 
 import { useActionState, useCallback, type FC } from 'react';
-import Link from 'next/link';
 import { Textarea } from '@/components/Textarea/Textarea';
-import type { GenerateClientSecretFormState } from '../_actions/secret';
+import type { GenerateClientSecretFormState } from './_actions/secret';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
-import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
-import { Select, SelectProps } from '@gw2treasures/ui/components/Form/Select';
-import { Application, Client, ClientSecret, ClientType, UserEmail } from '@gw2me/database';
+import { Client, ClientSecret, ClientType } from '@gw2me/database';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { Icon } from '@gw2treasures/ui';
@@ -24,15 +20,13 @@ import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitBut
 
 export interface ApplicationFormProps {
   applicationId: string;
-  application: Application;
   clients: (Client & { secrets: Pick<ClientSecret, 'id' | 'createdAt' | 'usedAt'>[] })[];
-  emails: UserEmail[];
   editApplicationAction: (state: FormState, data: FormData) => Promise<FormState>;
   generateClientSecretAction: (state: GenerateClientSecretFormState, data: FormData) => Promise<GenerateClientSecretFormState>;
   deleteClientSecretAction: (state: FormState, data: FormData) => Promise<FormState>;
 }
 
-export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, application, clients, emails, editApplicationAction, generateClientSecretAction, deleteClientSecretAction }) => {
+export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, clients, editApplicationAction, generateClientSecretAction, deleteClientSecretAction }) => {
   const client = clients[0];
 
   const [editState, editAction, isEditPending] = useActionState(editApplicationAction, {}, `/dev/applications/${applicationId}`);
@@ -41,11 +35,7 @@ export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, appli
 
   const isPending = isEditPending || isGenerateSecretPending || isDeleteSecretPending;
 
-
-  const emailOptions: SelectProps['options'] = emails.map((email) => ({ value: email.id, label: email.email }));
-
   const isHydrated = useHydrated();
-
 
   const showNotice = useCallback((notice: HTMLElement | null) => {
     if(!isPending) {
@@ -58,51 +48,7 @@ export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, appli
       <form id="edit" action={editAction}>
         {editState.success && <Notice ref={showNotice} key={crypto.randomUUID()}>{editState.success}</Notice>}
         {editState.error && <Notice type="error" ref={showNotice} key={crypto.randomUUID()}>{editState.error}</Notice>}
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <Label label="Image">
-            <FlexRow>
-              {application.imageId && (
-                <ApplicationImage fileId={application.imageId} size={64}/>
-              )}
-              <input type="file" name="image"/>
-            </FlexRow>
-          </Label>
-
-          <Label label="Name">
-            <TextInput name="name" defaultValue={application.name} value={undefined} readOnly={isPending}/>
-          </Label>
-
-          <Label label="Description">
-            <Textarea name="description" defaultValue={application.description} readOnly={isPending}/>
-          </Label>
-
-          <Label label="Contact Email">
-            {null}
-            <Select name="email" options={[{ label: '', value: '' }, ...emailOptions]} defaultValue={application.emailId ?? undefined}/>
-          </Label>
-
-          <Label label="Public">
-            <Checkbox name="public" defaultChecked={application.public} disabled={isPending}>
-              Show on <Link href="/discover">Discover</Link> page
-            </Checkbox>
-          </Label>
-
-          <Label label="Public URL">
-            <TextInput name="publicUrl" defaultValue={application.publicUrl} value={undefined} readOnly={isPending}/>
-          </Label>
-
-          <Label label="Privacy Policy URL">
-            <TextInput name="privacyPolicyUrl" defaultValue={application.privacyPolicyUrl} value={undefined} readOnly={isPending}/>
-          </Label>
-
-          <Label label="Terms of Service URL">
-            <TextInput name="termsOfServiceUrl" defaultValue={application.termsOfServiceUrl} value={undefined} readOnly={isPending}/>
-          </Label>
-        </div>
       </form>
-
-      <div style={{ marginTop: 32, marginBottom: 16, fontWeight: 500 }}>OAuth2 Client Information</div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <Label label="Type">
@@ -169,7 +115,6 @@ export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, appli
       <FlexRow wrap>
         <Button type="submit" form="edit" disabled={isPending} icon={isEditPending ? 'loading' : undefined}>Save</Button>
         <LinkButton target="_blank" href={new Gw2MeClient({ client_id: client.id }, { url: 'http://placeholder/' }).getAuthorizationUrl({ redirect_uri: client.callbackUrls[0], scopes: [Scope.Identify], prompt: 'consent', include_granted_scopes: true }).replace('http://placeholder/', '/')}>Test Link <Icon icon="external"/></LinkButton>
-        <LinkButton href={`/dev/applications/${application.id}/delete`} icon="delete">Delete Application</LinkButton>
       </FlexRow>
     </>
   );

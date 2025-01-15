@@ -54,7 +54,7 @@ export const generateClientSecret = createAction<GenerateClientSecretFormState>(
   revalidatePath(`/dev/applications/${client.applicationId}`);
 
   return {
-    success: 'Client secret generated. Copy the client secret and store it somewhere safe. You will not be able to see the generated client secret again.',
+    success: 'Client secret generated. Copy the client secret and store it somewhere safe. You will not be able to view the generated client secret again.',
     clientSecret: {
       id: created.id,
       secret: raw

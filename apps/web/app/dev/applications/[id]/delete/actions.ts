@@ -4,6 +4,7 @@ import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 export async function deleteApplication(id: string): Promise<FormState> {
   const session = await getSession();
@@ -20,5 +21,6 @@ export async function deleteApplication(id: string): Promise<FormState> {
     return { error: 'Unknown error' };
   }
 
+  revalidatePath('/dev/applications');
   redirect('/dev/applications');
 }
