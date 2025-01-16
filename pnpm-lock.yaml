@@ -297,8 +297,8 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       undici-types:
-        specifier: 7.2.2
-        version: 7.2.2
+        specifier: 7.2.3
+        version: 7.2.3
 
   packages/database:
     dependencies:
@@ -4636,8 +4636,8 @@ packages:
   undici-types@6.20.0:
     resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
 
-  undici-types@7.2.2:
-    resolution: {integrity: sha512-VerMUVcyhof24hWfYwVryNfaHl8FebNDGV9ktzVbI1t0K2+sUhKtlOPq0CGnPhl3D9SlUB9DlTHYCjP1jECMeA==}
+  undici-types@7.2.3:
+    resolution: {integrity: sha512-ExIyOiwqQGQkOzlNlYUZVwW5k0qKim9ygUDHEkpHX/KsXpsKKFIOTSojlr+f0R5dGhtD10rL3Yp8L3nVoYTnJw==}
 
   unicorn-magic@0.1.0:
     resolution: {integrity: sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==}
@@ -9709,7 +9709,7 @@ snapshots:
 
   undici-types@6.20.0: {}
 
-  undici-types@7.2.2: {}
+  undici-types@7.2.3: {}
 
   unicorn-magic@0.1.0: {}
 
