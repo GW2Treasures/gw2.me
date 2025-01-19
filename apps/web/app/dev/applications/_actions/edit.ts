@@ -32,7 +32,6 @@ export async function editApplication(id: string, _: FormState, form: FormData):
   const publicUrl = getFormDataString(form, 'publicUrl');
   const privacyPolicyUrl = getFormDataString(form, 'privacyPolicyUrl');
   const termsOfServiceUrl = getFormDataString(form, 'termsOfServiceUrl');
-  const callbackUrlsRaw = getFormDataString(form, 'callbackUrls');
   const imageRaw = form.get('image');
 
   if(!name) {
@@ -56,32 +55,6 @@ export async function editApplication(id: string, _: FormState, form: FormData):
   }
   if(termsOfServiceUrl === undefined || (termsOfServiceUrl && !isValidUrl(termsOfServiceUrl))) {
     return { error: 'Invalid Terms of Service URL' };
-  }
-
-  if(callbackUrlsRaw === undefined) {
-    return { error: 'Invalid redirect URLs' };
-  }
-
-
-  // verify callbackUrls
-  let callbackUrls: string[];
-  try {
-    callbackUrls = callbackUrlsRaw
-      .split(/\r|\n/g)
-      .map((url) => url.trim())
-      .filter((url) => url !== '')
-      .map((url) => {
-        const u = new URL(url);
-
-        // ignore port for loopback ips (see https://datatracker.ietf.org/doc/html/rfc8252#section-7.3)
-        if(u.hostname === '127.0.0.1' || u.hostname === '[::1]') {
-          u.port = '';
-        }
-
-        return u.toString();
-    });
-  } catch {
-    return { error: 'Invalid callback URLs' };
   }
 
   // make sure imageRaw is a file
@@ -141,7 +114,6 @@ export async function editApplication(id: string, _: FormState, form: FormData):
         publicUrl,
         privacyPolicyUrl,
         termsOfServiceUrl,
-        clients: { updateMany: { where: {}, data: { callbackUrls }}},
         imageId,
       }
     });

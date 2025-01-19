@@ -1,13 +1,11 @@
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { deleteApplication } from '../../_actions/delete';
+import { deleteApplication } from './actions';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { db } from '@/lib/db';
 import { getSessionOrRedirect } from '@/lib/session';
 import { notFound } from 'next/navigation';
-import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
-import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageProps } from '@/lib/next';
 
 async function getApplication(id: string) {
@@ -32,18 +30,14 @@ export default async function DeleteApplicationPage({ params }: DeleteApplicatio
   const app = await getApplication(id);
 
   return (
-    <PageLayout>
-      <Form action={deleteApplication.bind(null, app.id)}>
-        <Headline id="delete">{app.name}</Headline>
+    <Form action={deleteApplication.bind(null, app.id)}>
+      <p>Are your sure you want to delete {app.name}?</p>
 
-        <p>Are your sure you want to delete {app.name}?</p>
-
-        <FlexRow>
-          <LinkButton href={`/dev/applications/${app.id}`}>Cancel</LinkButton>
-          <SubmitButton icon="delete" intent="delete">Delete Application</SubmitButton>
-        </FlexRow>
-      </Form>
-    </PageLayout>
+      <FlexRow>
+        <LinkButton href={`/dev/applications/${app.id}`}>Cancel</LinkButton>
+        <SubmitButton icon="delete" intent="delete">Delete Application</SubmitButton>
+      </FlexRow>
+    </Form>
   );
 }
 
