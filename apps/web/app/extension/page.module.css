@@ -128,7 +128,7 @@
   composes: copy;
 }
 .copyAnimated > svg:nth-child(1) { animation: copy-icon step-end 10s 3s infinite backwards; }
-.copyAnimated > svg:nth-child(2) { animation: check-icon step-end 10s 3s infinite backwards; }
+.copyAnimated > svg:nth-child(2) { animation: check-icon step-end 10s 3s infinite backwards; margin-left: -16px; }
 
 .cursor {
   position: absolute;
@@ -166,21 +166,21 @@
 @keyframes icon {
   0% { background-color: transparent; }
   18% { background-color: transparent; }
-  19% { background-color: #eee; }
+  23% { background-color: #eee; }
   55% { background-color: #eee; }
-  56% { background-color: transparent; }
+  60% { background-color: transparent; }
   100% { background-color: transparent; }
 }
 
 @keyframes copy-icon {
-  0% { display: block; }
-  32% { display: none; }
-  100% { display: block; }
+  0% { visibility: visible; }
+  32% { visibility: hidden; }
+  100% { visibility: visible; }
 }
 @keyframes check-icon {
-  0% { display: none; }
-  32% { display: block; }
-  100% { display: none; }
+  0% { visibility: hidden; }
+  32% { visibility: visible; }
+  100% { visibility: hidden; }
 }
 
 @keyframes input {
