@@ -20,7 +20,7 @@
     "@gw2treasures/ui": "0.3.0",
     "@react-email/render": "1.0.4",
     "@simplewebauthn/browser": "13.1.0",
-    "@simplewebauthn/server": "13.1.0",
+    "@simplewebauthn/server": "13.1.1",
     "@wooorm/starry-night": "3.6.0",
     "aaguids": "0.0.17",
     "fast-jwt": "5.0.5",
