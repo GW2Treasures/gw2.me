@@ -9,19 +9,18 @@ ARG pnpm_version=9.15.4
 
 FROM --platform=$BUILDPLATFORM node:${node_version} AS source
 ARG turbo_version
-ARG pnpm_version
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat \
-  && corepack enable pnpm && corepack install -g pnpm@${pnpm_version}
+  && npm i -g turbo@${turbo_version}
 WORKDIR /source
 COPY . .
-RUN pnpx turbo@${turbo_version} prune web --docker
+RUN turbo prune web --docker
 
 # Install dependencies only when needed
 FROM --platform=$BUILDPLATFORM node:${node_version} AS builder
 ARG pnpm_version
 RUN apk add --no-cache libc6-compat \
-  && corepack enable pnpm && corepack install -g pnpm@${pnpm_version}
+  && npm i -g pnpm@${pnpm_version}
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 
