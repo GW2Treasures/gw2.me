@@ -185,8 +185,8 @@ importers:
         specifier: 3.6.0
         version: 3.6.0
       aaguids:
-        specifier: 0.0.18
-        version: 0.0.18
+        specifier: 0.0.19
+        version: 0.0.19
       fast-jwt:
         specifier: 5.0.5
         version: 5.0.5
@@ -1862,8 +1862,8 @@ packages:
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  aaguids@0.0.18:
-    resolution: {integrity: sha512-Hd2Jg7N8OJ84NCf9mD1QfFj9XXIpooAD6ycZhFWEqwGPO4G79fTLLX04HhY/jV1u+wm2hLbkKNLEo0Oj1uzU0w==}
+  aaguids@0.0.19:
+    resolution: {integrity: sha512-2z+xqcT5yLpjftQ6hKpI1OizENvrGuKIHM9yTfEwPy9CsjDsRM0KLikxQ5+rHj8buTKZqWXA/3rdWr/VDKfQ0A==}
 
   abab@2.0.6:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
@@ -6280,7 +6280,7 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  aaguids@0.0.18: {}
+  aaguids@0.0.19: {}
 
   abab@2.0.6: {}
 
