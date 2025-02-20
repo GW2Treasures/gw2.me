@@ -65,7 +65,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build the Docker image
-      uses: docker/bake-action@v6.3.0
+      uses: docker/bake-action@v6.4.0
       with:
         source: .
         files: ./docker-compose.yml
