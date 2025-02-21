@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { getUrlFromRequest } from '@/lib/url';
 import { expiresAt } from '@/lib/date';
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const cookieStore = await cookies();
 
   // check if we even have a session to logout
