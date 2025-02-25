@@ -58,6 +58,7 @@ export default function DevDocsGW2APIPage() {
         Now you can request a subtoken for an account.
         Make a request to <Code inline>https://gw2.me/api/accounts/&lt;accountId&gt;/subtoken</Code>,
         again including the <Code inline>Authorization: Bearer &lt;access_token&gt;</Code> header.
+        You can optionally include the <Code inline>permissions</Code> query parameter with comma-separated permissions to request a specific subset of permissions.
       </p>
 
       <p>

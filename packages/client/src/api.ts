@@ -19,6 +19,10 @@ export interface AccountsResponse {
   }[]
 }
 
+export interface SubtokenOptions {
+  permissions?: string[];
+}
+
 export interface SubtokenResponse {
   subtoken: string;
   expiresAt: string;
@@ -41,8 +45,14 @@ export class Gw2MeApi {
     }).then(jsonOrError);
   }
 
-  subtoken(accountId: string): Promise<SubtokenResponse> {
-    return fetch(this.#getUrl(`api/accounts/${accountId}/subtoken`), {
+  subtoken(accountId: string, options?: SubtokenOptions): Promise<SubtokenResponse> {
+    const url = this.#getUrl(`api/accounts/${accountId}/subtoken`);
+
+    if(options?.permissions) {
+      url.searchParams.set('permissions', options.permissions.join(','));
+    }
+
+    return fetch(url, {
       headers: { 'Authorization': `Bearer ${this.access_token}` },
       cache: 'no-store',
     }).then(jsonOrError);

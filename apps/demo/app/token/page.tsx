@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { PageProps } from '@/lib/next';
+import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
+import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 
 export const dynamic = 'force-dynamic';
 
@@ -57,9 +59,12 @@ async function getSubtoken(accountId: string, data: FormData) {
     throw new Error('Missing access_token');
   }
 
-  const { subtoken } = await gw2me.api(access_token).subtoken(accountId);
+  // get requested permissions
+  const requestedPermissions = data.getAll('permission').filter((permission) => typeof permission === 'string');
 
-  redirect(`https://api.guildwars2.com/v2/tokeninfo?access_token=${encodeURIComponent(subtoken)}`);
+  const { subtoken } = await gw2me.api(access_token).subtoken(accountId, { permissions: requestedPermissions });
+
+  redirect(`https://api.guildwars2.com/v2/tokeninfo?v=latest&access_token=${encodeURIComponent(subtoken)}`);
 }
 
 export default async function TokenPage({ searchParams: asyncSearchParams }: PageProps) {
@@ -78,36 +83,47 @@ export default async function TokenPage({ searchParams: asyncSearchParams }: Pag
   ]);
 
   return (
-    <form>
-      <Label label="access_token">
-        <TextInput value={access_token} readOnly name="access_token"/>
-      </Label>
-      <Label label="refresh_token">
-        <TextInput value={refresh_token} readOnly name="refresh_token"/>
-      </Label>
+    <>
+      <form>
+        <Label label="access_token">
+          <TextInput value={access_token} readOnly name="access_token"/>
+        </Label>
+        <Label label="refresh_token">
+          <TextInput value={refresh_token} readOnly name="refresh_token"/>
+        </Label>
 
-      <FlexRow>
-        <Button icon="revision" type="submit" formAction={refreshTokenAction} disabled={!refresh_token}>Refresh Token</Button>
-        <Button icon="delete" type="submit" formAction={revokeAccessToken} disabled={!access_token}>Revoke access_token</Button>
-        <Button icon="delete" type="submit" formAction={revokeRefreshToken} disabled={!refresh_token}>Revoke refresh_token</Button>
-      </FlexRow>
-      <br/>
+        <FlexRow>
+          <Button icon="revision" type="submit" formAction={refreshTokenAction} disabled={!refresh_token}>Refresh Token</Button>
+          <Button icon="delete" type="submit" formAction={revokeAccessToken} disabled={!access_token}>Revoke access_token</Button>
+          <Button icon="delete" type="submit" formAction={revokeRefreshToken} disabled={!refresh_token}>Revoke refresh_token</Button>
+        </FlexRow>
+        <br/>
 
-      <b>/api/user</b>
-      <pre>{JSON.stringify(user, undefined, '  ')}</pre>
-      <b>/api/accounts</b>
-      <pre>{JSON.stringify(accounts, undefined, '  ')}</pre>
-      <b>/api/token/introspect</b> (access_token)
-      <pre>{JSON.stringify(introspectAccessToken, undefined, '  ')}</pre>
-      <b>/api/token/introspect</b> (refresh_token)
-      <pre>{JSON.stringify(introspectRefreshToken, undefined, '  ')}</pre>
+        <b>/api/user</b>
+        <pre>{JSON.stringify(user, undefined, '  ')}</pre>
+        <b>/api/accounts</b>
+        <pre>{JSON.stringify(accounts, undefined, '  ')}</pre>
+        <b>/api/token/introspect</b> (access_token)
+        <pre>{JSON.stringify(introspectAccessToken, undefined, '  ')}</pre>
+        <b>/api/token/introspect</b> (refresh_token)
+        <pre>{JSON.stringify(introspectRefreshToken, undefined, '  ')}</pre>
+      </form>
 
-      <FlexRow>
-        {typeof accounts === 'object' && accounts?.accounts?.map((account) => (
-          <Button key={account.id} icon="key" type="submit" formAction={getSubtoken.bind(null, account.id)}>Get Subtoken ({account.name})</Button>
-        ))}
-      </FlexRow>
-    </form>
+      {typeof accounts === 'object' && typeof introspectAccessToken === 'object' && introspectAccessToken.active && accounts?.accounts?.map((account) => (
+        <form key={account.id} action={getSubtoken.bind(null, account.id)} style={{ marginBottom: 16 }}>
+          <input type="hidden" name="access_token" value={access_token}/>
+          <b>{account.displayName ? `${account.displayName} (${account.name})` : account.name}</b>
+          <FlexRow>
+            {introspectAccessToken.scope.split(' ').filter((scope) => scope.startsWith('gw2:')).map((scope) => scope.substring(4)).map((permission) => (
+              <Checkbox key={permission} defaultChecked name="permission" formValue={permission}>{permission}</Checkbox>
+            ))}
+          </FlexRow>
+          <FlexRow>
+            <SubmitButton icon="key">Get Subtoken</SubmitButton>
+          </FlexRow>
+        </form>
+      ))}
+    </>
   );
 }
 
