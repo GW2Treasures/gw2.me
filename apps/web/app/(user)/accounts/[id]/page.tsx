@@ -10,7 +10,6 @@ import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Code } from '@/components/Layout/Code';
-import { PermissionList } from '@/components/Permissions/PermissionList';
 import { Icon } from '@gw2treasures/ui';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton';
@@ -20,6 +19,7 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { cache } from 'react';
 import { PageProps } from '@/lib/next';
 import { Permission } from '@gw2api/types/data/tokeninfo';
+import { PermissionCount } from '@/components/Permissions/PermissionCount';
 
 const getAccount = cache(async function getAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -94,7 +94,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
                     </Tip>
                   </FlexRow>
                 </td>
-                <td><PermissionList permissions={token.permissions as Permission[]}/></td>
+                <td><PermissionCount permissions={token.permissions as Permission[]}/></td>
                 <td><Button type="submit" icon="delete" intent="delete" name="apiKeyId" value={token.id}>Delete</Button></td>
               </tr>
             ))}

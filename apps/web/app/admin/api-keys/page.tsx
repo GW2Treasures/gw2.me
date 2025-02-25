@@ -1,7 +1,6 @@
 import { FormatDate } from '@/components/Format/FormatDate';
 import { Code } from '@/components/Layout/Code';
 import { PageLayout } from '@/components/Layout/PageLayout';
-import { PermissionList } from '@/components/Permissions/PermissionList';
 import { ColumnSelection } from '@/components/Table/ColumnSelection';
 import { db } from '@/lib/db';
 import { Icon } from '@gw2treasures/ui';
@@ -12,6 +11,7 @@ import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import Link from 'next/link';
 import { ensureUserIsAdmin } from '../admin';
 import { Permission } from '@gw2api/types/data/tokeninfo';
+import { PermissionCount } from '@/components/Permissions/PermissionCount';
 
 function getApiKeys() {
   return db.apiToken.findMany({
@@ -45,7 +45,7 @@ export default async function AdminApiKeysPage() {
         <ApiKeys.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</ApiKeys.Column>
         <ApiKeys.Column id="name" title="Name" sortBy="name">{({ name }) => name}</ApiKeys.Column>
         <ApiKeys.Column id="token" title="Token" hidden>{({ token }) => <FlexRow><Code inline borderless>{token}</Code><CopyButton copy={token} icon="copy" iconOnly/></FlexRow>}</ApiKeys.Column>
-        <ApiKeys.Column id="permissions" title="Permissions" hidden>{({ permissions }) => <PermissionList permissions={permissions as Permission[]}/>}</ApiKeys.Column>
+        <ApiKeys.Column id="permissions" title="Permissions" hidden>{({ permissions }) => <PermissionCount permissions={permissions as Permission[]}/>}</ApiKeys.Column>
         <ApiKeys.Column id="error" title="Error Count" align="right" sortBy="errorCount">{({ errorCount }) => errorCount}</ApiKeys.Column>
         <ApiKeys.Column id="usedAt" title="Last used" sortBy="usedAt">{({ usedAt }) => usedAt === null ? '-' : <FormatDate date={usedAt}/>}</ApiKeys.Column>
         <ApiKeys.Column id="accountId" title="Account Id" hidden>{({ accountId }) => <Code inline borderless>{accountId}</Code>}</ApiKeys.Column>
