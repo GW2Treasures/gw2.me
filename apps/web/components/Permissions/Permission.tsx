@@ -6,7 +6,7 @@ export interface PermissionProps {
   permission: Gw2Permission;
 }
 
-const descriptions: Record<Gw2Permission, string> = {
+export const descriptions: Record<Gw2Permission, string> = {
   'account': 'Your account display name, ID, home world, and list of guilds.',
   'inventories': 'Your account bank, material storage, recipe unlocks, and character inventories.',
   'characters': 'Basic information about your characters.',
