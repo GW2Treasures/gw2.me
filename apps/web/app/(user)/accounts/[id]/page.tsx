@@ -19,6 +19,7 @@ import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { cache } from 'react';
 import { PageProps } from '@/lib/next';
+import { Permission } from '@gw2api/types/data/tokeninfo';
 
 const getAccount = cache(async function getAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -93,7 +94,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
                     </Tip>
                   </FlexRow>
                 </td>
-                <td><PermissionList permissions={token.permissions}/></td>
+                <td><PermissionList permissions={token.permissions as Permission[]}/></td>
                 <td><Button type="submit" icon="delete" intent="delete" name="apiKeyId" value={token.id}>Delete</Button></td>
               </tr>
             ))}

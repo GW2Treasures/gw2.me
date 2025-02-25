@@ -1,11 +1,12 @@
 import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { FC } from 'react';
+import type { Permission as Gw2Permission } from '@gw2api/types/data/tokeninfo';
 
 export interface PermissionProps {
-  permission: string;
+  permission: Gw2Permission;
 }
 
-const descriptions: Record<string, string> = {
+const descriptions: Record<Gw2Permission, string> = {
   'account': 'Your account display name, ID, home world, and list of guilds.',
   'inventories': 'Your account bank, material storage, recipe unlocks, and character inventories.',
   'characters': 'Basic information about your characters.',

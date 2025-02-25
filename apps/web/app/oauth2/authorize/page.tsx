@@ -28,6 +28,7 @@ import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import Link from 'next/link';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { PageProps, searchParamsToURLSearchParams } from '@/lib/next';
+import { Permission } from '@gw2api/types/data/tokeninfo';
 
 export default async function AuthorizePage({ searchParams: asyncSearchParams }: PageProps) {
   const searchParams = await asyncSearchParams;
@@ -258,7 +259,7 @@ function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id:
       {hasGW2Scopes(scopes) && (
         <ScopeItem icon="developer">
           <p className={styles.p}>Read-only access to the Guild Wars 2 API</p>
-          <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4))}/>
+          <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4) as Permission)}/>
         </ScopeItem>
       )}
     </ul>
