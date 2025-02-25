@@ -7,7 +7,7 @@ import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitBut
 import { Icon, IconProp } from '@gw2treasures/ui';
 import { FC, ReactNode } from 'react';
 import { getApplicationByClientId, normalizeScopes, validateRequest } from './validate';
-import { hasGW2Scopes } from '@/lib/scope';
+import { hasGW2Scopes, scopeToPermissions } from '@/lib/scope';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { db } from '@/lib/db';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
@@ -28,7 +28,6 @@ import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import Link from 'next/link';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { PageProps, searchParamsToURLSearchParams } from '@/lib/next';
-import { Permission } from '@gw2api/types/data/tokeninfo';
 
 export default async function AuthorizePage({ searchParams: asyncSearchParams }: PageProps) {
   const searchParams = await asyncSearchParams;
@@ -259,7 +258,7 @@ function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id:
       {hasGW2Scopes(scopes) && (
         <ScopeItem icon="developer">
           <p className={styles.p}>Read-only access to the Guild Wars 2 API</p>
-          <PermissionList permissions={scopes.filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4) as Permission)}/>
+          <PermissionList permissions={scopeToPermissions(scopes)}/>
         </ScopeItem>
       )}
     </ul>

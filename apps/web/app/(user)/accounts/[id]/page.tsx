@@ -20,6 +20,11 @@ import { cache } from 'react';
 import { PageProps } from '@/lib/next';
 import { Permission } from '@gw2api/types/data/tokeninfo';
 import { PermissionCount } from '@/components/Permissions/PermissionCount';
+import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
+import { PermissionList } from '@/components/Permissions/PermissionList';
+import { scopeToPermissions } from '@/lib/scope';
+import { Scope } from '@gw2me/client';
+import { allPermissions } from '@/components/Permissions/data';
 
 const getAccount = cache(async function getAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -38,10 +43,14 @@ const getAccount = cache(async function getAccount(id: string) {
   return account;
 });
 
-const getApplications = cache(function getApplications(accountId: string, userId: string) {
-  return db.application.findMany({
-    select: { id: true, name: true, imageId: true },
-    where: { clients: { some: { authorizations: { some: { userId, accounts: { some: { id: accountId }}}}}}}
+const getAuthorizations = cache(function getApplications(accountId: string, userId: string) {
+  return db.authorization.findMany({
+    where: { type: 'AccessToken', userId, accounts: { some: { id: accountId }}},
+    select: {
+      id: true,
+      scope: true,
+      client: { select: { application: { select: { id: true, name: true, imageId: true }}}},
+    }
   });
 });
 
@@ -50,7 +59,12 @@ type AccountPageProps = PageProps<{ id: string }>;
 export default async function AccountPage({ params }: AccountPageProps) {
   const { id } = await params;
   const account = await getAccount(id);
-  const applications = await getApplications(account.id, account.userId);
+  const authorizations = await getAuthorizations(account.id, account.userId);
+
+  const hasApplicationMissingPermissions = authorizations.some((authorization) => {
+    const requiredPermissions = scopeToPermissions(authorization.scope as Scope[]);
+    return !hasApiTokenWithRequiredPermissions(account.apiTokens, requiredPermissions);
+  });
 
   return (
     <PageLayout>
@@ -71,6 +85,12 @@ export default async function AccountPage({ params }: AccountPageProps) {
       </Form>
 
       <Headline id="api-keys" actions={<LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>}>API Keys</Headline>
+
+      {(!hasApiTokenWithRequiredPermissions(account.apiTokens, allPermissions)) && (
+        <Notice>
+          No API key contains all permissions. It is recommended to grant all permissions, as some applications may require them. Authorized applications will still only be able to access the data you allow them to.
+        </Notice>
+      )}
 
       <Form action={deleteApiKey}>
         <Table>
@@ -103,16 +123,33 @@ export default async function AccountPage({ params }: AccountPageProps) {
       </Form>
 
       <Headline id="applications">Authorized Applications</Headline>
+
+      {hasApplicationMissingPermissions && (
+        <Notice type="warning">
+          Some applications require permissions that are not granted by any of your API keys.
+          Add a new API key with the required permissions to use these applications.
+        </Notice>
+      )}
+
       <Table>
         <thead>
           <tr>
             <Table.HeaderCell>Name</Table.HeaderCell>
+            <Table.HeaderCell>Required Permissions</Table.HeaderCell>
           </tr>
         </thead>
         <tbody>
-          {applications.map((application) => (
-            <tr key={application.id}>
-              <td><FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow></td>
+          {authorizations.map((authorization) => (
+            <tr key={authorization.id}>
+              <td>
+                <FlexRow>
+                  <ApplicationImage fileId={authorization.client.application.imageId}/> {authorization.client.application.name}
+                  {!hasApiTokenWithRequiredPermissions(account.apiTokens, scopeToPermissions(authorization.scope as Scope[])) && (
+                    <Tip tip="Missing permissions"><Icon icon="warning" color="#ffa000"/></Tip>
+                  )}
+                </FlexRow>
+              </td>
+              <td><PermissionList permissions={scopeToPermissions(authorization.scope as Scope[])}/></td>
             </tr>
           ))}
         </tbody>
@@ -130,4 +167,8 @@ export async function generateMetadata({ params }: AccountPageProps) {
       ? `${account.displayName} (${account.accountName})`
       : account.accountName
   };
+}
+
+function hasApiTokenWithRequiredPermissions(apiTokens: { permissions: string[] }[], requiredPermissions: Permission[]): boolean {
+  return apiTokens.some((token) => requiredPermissions.every((permission) => token.permissions.includes(permission)));
 }
