@@ -88,7 +88,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
 
       {(!hasApiTokenWithRequiredPermissions(account.apiTokens, allPermissions)) && (
         <Notice>
-          No API key contains all permissions. It is recommended to grant all permissions, as some applications may require them. Authorized applications will still only be able to access the data you allow them to.
+          None of your API keys contains all permissions. It is recommended to grant all permissions, as some applications may require them. Authorized applications will still only be able to access the data you allow them to.
         </Notice>
       )}
 
