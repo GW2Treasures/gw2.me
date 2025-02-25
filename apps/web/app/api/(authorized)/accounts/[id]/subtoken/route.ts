@@ -6,22 +6,32 @@ import { Authorization } from '@gw2me/database';
 import { corsHeaders } from '@/lib/cors-header';
 import { fetchGw2Api } from '@/lib/gw2-api-request';
 import { RouteProps } from '@/lib/next';
+import { scopeToPermissions } from '@/lib/scope';
 
 export const GET = withAuthorization<RouteProps<{ id: string }>>({ oneOf: Gw2Scopes })(
-  async (authorization: Authorization, _, { params }) => {
+  async (authorization: Authorization, request, { params }) => {
     const { id: accountId } = await params;
 
-    // get required gw2 permissions from authorization scope
-    const requiredPermissions = (authorization.scope as Scope[])
-      .filter((scope) => Gw2Scopes.includes(scope))
-      .map((scope) => scope.substring(4));
+    // get permissions authorized by authorization
+    const authorizedPermissions = scopeToPermissions(authorization.scope as Scope[]);
+
+    // get requested permissions (or fallback to to all authorized permissions)
+    let requestedPermissions;
+    try {
+      requestedPermissions = request.nextUrl.searchParams.has('permissions')
+        ? parsePermissions(request.nextUrl.searchParams.get('permissions')!, authorizedPermissions)
+        : authorizedPermissions;
+    } catch(error) {
+      console.error(error);
+      return NextResponse.json({ error: true, error_description: 'Invalid permissions' }, { status: 400 });
+    }
 
     // load account and api token
     const account = await db.account.findFirst({
       where: { accountId, authorizations: { some: { id: authorization.id }}},
       select: {
         apiTokens: {
-          where: { permissions: { hasEvery: requiredPermissions }},
+          where: { permissions: { hasEvery: requestedPermissions }},
           select: { id: true, token: true },
         }
       }
@@ -29,7 +39,7 @@ export const GET = withAuthorization<RouteProps<{ id: string }>>({ oneOf: Gw2Sco
 
     // check if account and api token were found
     if(!account || account.apiTokens.length === 0) {
-      return NextResponse.json({ error: true, error_message: 'Account or token not found' }, { status: 404 });
+      return NextResponse.json({ error: true, error_description: 'Account or token not found' }, { status: 404 });
     }
 
     // shuffle api tokens
@@ -42,12 +52,12 @@ export const GET = withAuthorization<RouteProps<{ id: string }>>({ oneOf: Gw2Sco
     let response: SubtokenResponse;
     try {
       try {
-        response = await createSubtoken(apiTokens[0], requiredPermissions);
+        response = await createSubtoken(apiTokens[0], requestedPermissions);
       } catch(error) {
         if(account.apiTokens.length > 1) {
           console.error(error);
           console.log('creating subtoken failed, trying again');
-          response = await createSubtoken(apiTokens[1], requiredPermissions);
+          response = await createSubtoken(apiTokens[1], requestedPermissions);
         } else {
           throw error;
         }
@@ -55,7 +65,7 @@ export const GET = withAuthorization<RouteProps<{ id: string }>>({ oneOf: Gw2Sco
     } catch(error) {
       console.error(error);
 
-      return NextResponse.json({ error: true, error_message: 'The Guild Wars 2 API returned an error when creating the subtoken' }, { status: 500 });
+      return NextResponse.json({ error: true, error_description: 'The Guild Wars 2 API returned an error when creating the subtoken' }, { status: 500 });
     }
 
     // return response
@@ -108,4 +118,19 @@ async function createSubtoken(apiToken: { id: string, token: string }, requiredP
     subtoken: apiResponse.subtoken,
     expiresAt: expire.toString()
   };
+}
+
+function parsePermissions(permissions: string, authorizedPermissions: string[]): string[] {
+  if(permissions.length === 0) {
+    return [];
+  }
+
+  const requestedPermissions = permissions.split(',');
+  const invalidPermissions = requestedPermissions.filter((permission) => !authorizedPermissions.includes(permission));
+
+  if(invalidPermissions.length > 0) {
+    throw new Error(`Invalid permissions: ${invalidPermissions.join(', ')}`);
+  }
+
+  return requestedPermissions;
 }
