@@ -108,7 +108,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
                 <td><FlexRow><Icon icon="key"/>{token.name}</FlexRow></td>
                 <td>
                   <FlexRow>
-                    <Code inline borderless>{token.token}</Code>
+                    <Code inline borderless><span style={{ maxWidth: '36ch', display: 'inline-block', wordBreak: 'break-all' }}>{token.token.slice(0, 36)}<wbr/>{token.token.slice(36)}</span></Code>
                     <Tip tip="Copy API Key">
                       <CopyButton iconOnly icon="copy" copy={token.token} appearance="tertiary"/>
                     </Tip>
