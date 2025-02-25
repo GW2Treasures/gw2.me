@@ -32,7 +32,7 @@ export const PermissionCount: FC<PermissionCountProps> = ({ permissions }) => {
   return (
     <Tip tip={permissionTip}>
       <span className={hasAll ? styles.badgeAll : styles.badge}>
-        {hasAll ? 'All permissions' : `${permissions.length}/${PERMISSIONS_TOTAL} permissions`}
+        {hasAll ? <><Icon icon="checkmark"/> All permissions</> : `${permissions.length}/${PERMISSIONS_TOTAL} permissions`}
       </span>
     </Tip>
   );
