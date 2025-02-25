@@ -26,6 +26,9 @@ export const AccountAddForm: FC<AccountAddFormProps> = async ({ returnTo, requir
         {!requireVerification ? (
           <div>
             Generate a new API key
+            <div style={{ marginTop: 8 }}>
+              It is recommended to grant all permissions, authorized applications will still only be able to access the data you allow them to.
+            </div>
             <div style={{ marginTop: 8, color: 'var(--color-text-muted)' }}>
               <FlexRow wrap>Optional: Verify account ownership by using this API key name: <FlexRow><Code inline>{apiKeyName}</Code> <CopyButton copy={apiKeyName} iconOnly icon="copy"/></FlexRow></FlexRow>
             </div>
