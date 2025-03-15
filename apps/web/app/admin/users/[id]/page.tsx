@@ -5,17 +5,21 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { Provider } from '@/components/Provider/Provider';
 import { ColumnSelection } from '@/components/Table/ColumnSelection';
+import { isExpired } from '@/lib/date';
 import { db } from '@/lib/db';
 import { getFormDataString } from '@/lib/form-data';
 import { sendEmailVerificationMail } from '@/lib/mail/email-verification';
 import { PageProps } from '@/lib/next';
+import { AuthorizationRequestState } from '@gw2me/database';
 import { Icon } from '@gw2treasures/ui';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
+import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
 import { ensureUserIsAdmin } from 'app/admin/admin';
+import { Features, State } from 'app/admin/authorization-requests/components';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 
@@ -44,6 +48,13 @@ const getUser = cache(function getUser(id: string) {
       sessions: {
         orderBy: { lastUsed: 'desc' }
       },
+      authorizationRequests: {
+        include: {
+          client: { select: { application: { select: { imageId: true, name: true }}}},
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 250
+      }
     }
   });
 });
@@ -64,6 +75,7 @@ export default async function AdminUserDetailPage({ params }: AdminUserDetailPag
   const Providers = createDataTable(user.providers, ({ provider, providerAccountId }) => `${provider}:${providerAccountId}`);
   const Emails = createDataTable(user.emails, ({ id }) => id);
   const Sessions = createDataTable(user.sessions, ({ id }) => id);
+  const AuthorizationRequests = createDataTable(user.authorizationRequests, ({ id }) => id);
 
   return (
     <PageLayout>
@@ -127,6 +139,18 @@ export default async function AdminUserDetailPage({ params }: AdminUserDetailPag
         <Sessions.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Sessions.Column>
         <Sessions.Column id="lastUsedAt" title="Last Used At" sortBy="lastUsed">{({ lastUsed }) => <FormatDate date={lastUsed}/>}</Sessions.Column>
       </Sessions.Table>
+
+      <Headline id="authRequests" actions={<ColumnSelection table={AuthorizationRequests}/>}>Authorization Requests ({user.authorizationRequests.length})</Headline>
+      <AuthorizationRequests.Table>
+        <AuthorizationRequests.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="type" title="Type" sortBy="type">{({ type }) => type}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="state" title="Status" sortBy="state">{({ state, expiresAt }) => <State state={state === AuthorizationRequestState.Pending && isExpired(expiresAt) ? 'Expired' : state}/>}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="app" title="Application" sortBy="clientId">{({ client }) => <FlexRow><ApplicationImage fileId={client.application.imageId}/> {client.application.name}</FlexRow>}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="features" title="Features">{({ data }) => <Features data={(data as unknown as AuthorizationRequestData)}/>}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="updatedAt" title="Updated At" sortBy="updatedAt" hidden>{({ updatedAt }) => <FormatDate date={updatedAt}/>}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="expiresAt" title="Expires At" sortBy="expiresAt" hidden>{({ expiresAt }) => expiresAt ? <FormatDate date={expiresAt}/> : 'never'}</AuthorizationRequests.Column>
+      </AuthorizationRequests.Table>
     </PageLayout>
   );
 }
