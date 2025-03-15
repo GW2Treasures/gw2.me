@@ -13,10 +13,15 @@ import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { FC } from 'react';
 import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
 import { isTruthy } from '@gw2treasures/helper/is';
+import Link from 'next/link';
+import { Icon } from '@gw2treasures/ui';
 
 function getAuthorizationRequests() {
   return db.authorizationRequest.findMany({
-    include: { client: { include: { application: { select: { imageId: true, name: true }}}}},
+    include: {
+      client: { select: { application: { select: { imageId: true, name: true }}}},
+      user: { select: { id: true, name: true }},
+    },
     orderBy: { createdAt: 'desc' },
     take: 250
   });
@@ -37,6 +42,7 @@ export default async function AdminAuthorizationRequestsPage() {
         <AuthorizationRequests.Column id="state" title="Status" sortBy="state">{({ state, expiresAt }) => <State state={state === AuthorizationRequestState.Pending && isExpired(expiresAt) ? 'Expired' : state}/>}</AuthorizationRequests.Column>
         <AuthorizationRequests.Column id="app" title="Application" sortBy="clientId">{({ client }) => <FlexRow><ApplicationImage fileId={client.application.imageId}/> {client.application.name}</FlexRow>}</AuthorizationRequests.Column>
         <AuthorizationRequests.Column id="features" title="Features">{({ data }) => <Features data={(data as unknown as AuthorizationRequestData)}/>}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="user" title="User" sortBy={({ user }) => user?.name}>{({ user }) => user && (<Link href={`/admin/users/${user.id}`}><FlexRow><Icon icon="user"/>{user.name}</FlexRow></Link>)}</AuthorizationRequests.Column>
         <AuthorizationRequests.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</AuthorizationRequests.Column>
         <AuthorizationRequests.Column id="updatedAt" title="Updated At" sortBy="updatedAt" hidden>{({ updatedAt }) => <FormatDate date={updatedAt}/>}</AuthorizationRequests.Column>
         <AuthorizationRequests.Column id="expiresAt" title="Expires At" sortBy="expiresAt" hidden>{({ expiresAt }) => expiresAt ? <FormatDate date={expiresAt}/> : 'never'}</AuthorizationRequests.Column>

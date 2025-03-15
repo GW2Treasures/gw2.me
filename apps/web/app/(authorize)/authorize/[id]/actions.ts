@@ -92,7 +92,10 @@ export async function authorizeInternal(
     [,, authorization] = await db.$transaction([
       db.authorizationRequest.update({
         where: { id },
-        data: { state: AuthorizationRequestState.Authorized },
+        data: {
+          state: AuthorizationRequestState.Authorized,
+          userId: session.userId,
+        },
       }),
 
       // delete old pending authorization codes for this app

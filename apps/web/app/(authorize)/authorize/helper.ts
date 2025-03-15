@@ -16,6 +16,7 @@ export async function createAuthorizationRequest<T extends AuthorizationRequestT
       type,
       clientId: data.client_id,
       expiresAt: expiresAt(60 * 5),
+      userId: await getOptionalUserId(),
     }
   });
 
@@ -25,7 +26,10 @@ export async function createAuthorizationRequest<T extends AuthorizationRequestT
 export async function cancelAuthorizationRequest(id: string) {
   const canceled = await db.authorizationRequest.update({
     where: { id, state: 'Pending', ...notExpired },
-    data: { state: 'Canceled' },
+    data: {
+      state: 'Canceled',
+      userId: await getOptionalUserId(),
+    },
   });
 
   if(!canceled) {
@@ -61,4 +65,9 @@ export async function getPreviousAuthorizationMatchingScopes(authorizationReques
   });
 
   return previousAuthorization ?? false;
+}
+
+async function getOptionalUserId() {
+  const session = await getSession();
+  return session?.userId;
 }
