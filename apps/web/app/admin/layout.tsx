@@ -13,7 +13,7 @@ export default async function AdminLayout({ children }: LayoutProps) {
         { segment: 'apps', icon: 'apps', label: 'Apps' },
         { segment: 'authorization-requests', icon: 'gw2me-outline', label: 'Auth Requests' },
         { segment: 'api-keys', icon: 'key', label: 'API Keys' },
-        { segment: 'requests', icon: 'api-status', label: 'Requests' },
+        { segment: 'requests', icon: 'api-status', label: 'API Requests' },
         { segment: 'email', icon: 'mail', label: 'Email' },
       ]}/>
     </NavLayout>
