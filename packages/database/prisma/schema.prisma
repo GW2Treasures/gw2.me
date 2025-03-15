@@ -270,11 +270,6 @@ enum AuthorizationRequestState {
   Authorized
 }
 
-enum AuthorizationRequestPrompt {
-  None
-  Consent
-}
-
 model ApiToken {
   id String @id @default(uuid())
 

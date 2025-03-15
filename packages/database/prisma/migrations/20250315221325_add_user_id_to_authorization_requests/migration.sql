@@ -1,6 +1,3 @@
--- CreateEnum
-CREATE TYPE "AuthorizationRequestPrompt" AS ENUM ('None', 'Consent');
-
 -- AlterTable
 ALTER TABLE "AuthorizationRequest" ADD COLUMN     "userId" TEXT;
 
