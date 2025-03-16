@@ -106,3 +106,9 @@ function responseHeaders(request: NextRequest) {
     'Cache-Control': 'no-store'
   };
 }
+
+export function getApplicationGrantByAuthorization(authorization: Authorization) {
+  return db.applicationGrant.findFirst({
+    where: { application: { clients: { some: { id: authorization.clientId }}}, userId: authorization.userId }
+  });
+}

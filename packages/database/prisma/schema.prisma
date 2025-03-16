@@ -25,9 +25,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  applications   Application[]   @relation("applications")
-  authorizations Authorization[] @relation("userAuthorization")
+  applications          Application[]   @relation("applications")
+  authorizations        Authorization[] @relation("userAuthorization")
   authorizationRequests AuthorizationRequest[]
+  applicationGrants     ApplicationGrant[] @relation("applicationGrants")
 
   accounts Account[] @relation("userAccount")
 }
@@ -54,8 +55,9 @@ model UserEmail {
   updatedAt  DateTime  @updatedAt
   verifiedAt DateTime?
 
-  authorizations Authorization[]
-  applications   Application[]   @relation("email")
+  applicationGrants ApplicationGrant[]
+
+  applications Application[]   @relation("email")
 
   @@unique([userId, email])
 }
@@ -164,7 +166,8 @@ model Application {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  clients Client[] @relation("applicationClients")
+  clients Client[]           @relation("applicationClients")
+  users   ApplicationGrant[] @relation("applicationGrants")
 }
 
 model Client {
@@ -203,6 +206,27 @@ model ClientSecret {
   usedAt    DateTime?
 }
 
+model ApplicationGrant {
+  id String @id @default(uuid())
+
+  userId        String
+  applicationId String
+  @@unique([userId, applicationId])
+
+  user        User        @relation("applicationGrants", fields: [userId], references: [id], onDelete: Cascade)
+  application Application @relation("applicationGrants", fields: [applicationId], references: [id], onDelete: Cascade)
+
+  scope String[]
+
+  accounts Account[] @relation("applicationGrants")
+
+  emailId String?
+  email   UserEmail? @relation(fields: [emailId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
 model Authorization {
   id String @id @default(uuid())
 
@@ -224,11 +248,6 @@ model Authorization {
 
   userId String
   user   User   @relation("userAuthorization", fields: [userId], references: [id], onDelete: Cascade)
-
-  accounts Account[] @relation("accountAuthorization")
-
-  emailId String?
-  email   UserEmail? @relation(fields: [emailId], references: [id], onDelete: Cascade)
 
   @@unique([type, token])
   @@unique([type, clientId, userId])
@@ -302,8 +321,9 @@ model Account {
   userId String
   user   User   @relation("userAccount", fields: [userId], references: [id], onDelete: Cascade)
 
-  apiTokens      ApiToken[]      @relation("accountApiToken")
-  authorizations Authorization[] @relation("accountAuthorization")
+  apiTokens ApiToken[] @relation("accountApiToken")
+  
+  applicationGrants ApplicationGrant[] @relation("applicationGrants")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

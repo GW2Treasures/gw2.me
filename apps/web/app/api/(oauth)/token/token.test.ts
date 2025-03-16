@@ -23,7 +23,6 @@ const mockAuthorization: MockAuthorization = {
   updatedAt: new Date(),
   usedAt: new Date(),
   userId: 'user-id',
-  emailId: null,
   accounts: [],
 };
 

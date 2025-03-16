@@ -24,7 +24,7 @@ function getApiKeys() {
           verified: true,
           userId: true,
           user: { select: { name: true }},
-          _count: { select: { authorizations: true }},
+          _count: { select: { applicationGrants: true }},
         },
       },
     },
@@ -53,7 +53,7 @@ export default async function AdminApiKeysPage() {
         <ApiKeys.Column id="accountDisplay" title="Account Display Name" sortBy={({ account }) => account.displayName}>{({ account }) => account.displayName}</ApiKeys.Column>
         <ApiKeys.Column id="verified" title="Verified" sortBy={({ account }) => account.verified.toString()}>{({ account }) => <Icon icon={account.verified ? 'checkmark' : 'cancel'}/>}</ApiKeys.Column>
         <ApiKeys.Column id="owner" title="Owner" sortBy={({ account }) => account.user.name}>{({ account }) => <Link href={`/admin/users/${account.userId}`}><FlexRow><Icon icon="user"/>{account.user.name}</FlexRow></Link>}</ApiKeys.Column>
-        <ApiKeys.Column id="auths" title="Authorizations" sortBy={({ account }) => account._count.authorizations} align="right">{({ account }) => account._count.authorizations}</ApiKeys.Column>
+        <ApiKeys.Column id="auths" title="App Grants" sortBy={({ account }) => account._count.applicationGrants} align="right">{({ account }) => account._count.applicationGrants}</ApiKeys.Column>
         <ApiKeys.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</ApiKeys.Column>
       </ApiKeys.Table>
     </PageLayout>

@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { Scope, UserResponse } from '@gw2me/client';
 import { NextResponse } from 'next/server';
-import { withAuthorization } from '../auth';
+import { getApplicationGrantByAuthorization, withAuthorization } from '../auth';
 import { Authorization } from '@gw2me/database';
 
 export const GET = withAuthorization([Scope.Identify])(
@@ -11,16 +11,16 @@ export const GET = withAuthorization([Scope.Identify])(
       select: { id: true, name: true }
     });
 
-    const email = authorization.emailId
-      ? await db.userEmail.findUnique({
-        where: { id: authorization.emailId },
-        select: { email: true, verified: true }
-      })
-      : undefined;
-
     if(!user) {
       return NextResponse.json({ error: true }, { status: 404 });
     }
+
+    // load email
+    const email = authorization.scope.includes(Scope.Email)
+      ? await getApplicationGrantByAuthorization(authorization).email({
+        select: { email: true, verified: true }
+      })
+      : undefined;
 
     const response: UserResponse = {
       user: {

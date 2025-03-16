@@ -40,9 +40,6 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
           type_token: { token: code, type: AuthorizationType.Code },
           clientId: client.id
         },
-        include: {
-          accounts: { select: { id: true }}
-        }
       });
 
       assert(authorization, OAuth2ErrorCode.invalid_grant, 'Invalid code');
@@ -56,23 +53,23 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
 
       assertPKCECodeChallenge(authorization.codeChallenge, code_verifier);
 
-      const { clientId, userId, scope, accounts, emailId } = authorization;
+      const { clientId, userId, scope } = authorization;
 
       const [refreshAuthorization, accessAuthorization] = await db.$transaction([
         // create refresh token
         client.type === ClientType.Confidential
           ? db.authorization.upsert({
               where: { type_clientId_userId: { type: AuthorizationType.RefreshToken, clientId, userId }},
-              create: { type: AuthorizationType.RefreshToken, clientId, userId, scope, token: generateRefreshToken(), accounts: { connect: accounts }, emailId },
-              update: { scope, accounts: { set: accounts }, emailId }
+              create: { type: AuthorizationType.RefreshToken, clientId, userId, scope, token: generateRefreshToken() },
+              update: { scope }
             })
           : db.authorization.findFirst({ take: 0 }),
 
         // create access token
         db.authorization.upsert({
           where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
-          create: { type: AuthorizationType.AccessToken, clientId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), accounts: { connect: accounts }, emailId },
-          update: { scope, accounts: { set: accounts }, emailId, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
+          create: { type: AuthorizationType.AccessToken, clientId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
+          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
         }),
 
         // delete used code token
@@ -101,22 +98,19 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
         where: {
           type_token: { token: refresh_token, type: AuthorizationType.RefreshToken },
           clientId: client.id
-        },
-        include: {
-          accounts: { select: { id: true }}
-        },
+        }
       });
 
       assert(refreshAuthorization, OAuth2ErrorCode.invalid_grant, 'Invalid refresh_token');
       assert(!isExpired(refreshAuthorization.expiresAt), OAuth2ErrorCode.invalid_grant, 'refresh_token expired');
 
-      const { clientId, userId, scope, accounts, emailId } = refreshAuthorization;
+      const { clientId, userId, scope } = refreshAuthorization;
 
       const [accessAuthorization] = await db.$transaction([
         // create new access token
         db.authorization.upsert({
           where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
-          create: { type: AuthorizationType.AccessToken, clientId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), accounts: { connect: accounts }, emailId },
+          create: { type: AuthorizationType.AccessToken, clientId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
           update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
         }),
 

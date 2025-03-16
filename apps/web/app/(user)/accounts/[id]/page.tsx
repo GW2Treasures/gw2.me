@@ -43,13 +43,13 @@ const getAccount = cache(async function getAccount(id: string) {
   return account;
 });
 
-const getAuthorizations = cache(function getApplications(accountId: string, userId: string) {
-  return db.authorization.findMany({
-    where: { type: 'AccessToken', userId, accounts: { some: { id: accountId }}},
+const getApplications = cache(function getApplications(accountId: string, userId: string) {
+  return db.applicationGrant.findMany({
+    where: { userId, accounts: { some: { id: accountId }}},
     select: {
       id: true,
       scope: true,
-      client: { select: { application: { select: { id: true, name: true, imageId: true }}}},
+      application: { select: { id: true, name: true, imageId: true }},
     }
   });
 });
@@ -59,9 +59,9 @@ type AccountPageProps = PageProps<{ id: string }>;
 export default async function AccountPage({ params }: AccountPageProps) {
   const { id } = await params;
   const account = await getAccount(id);
-  const authorizations = await getAuthorizations(account.id, account.userId);
+  const applications = await getApplications(account.id, account.userId);
 
-  const hasApplicationMissingPermissions = authorizations.some((authorization) => {
+  const hasApplicationMissingPermissions = applications.some((authorization) => {
     const requiredPermissions = scopeToPermissions(authorization.scope as Scope[]);
     return !hasApiTokenWithRequiredPermissions(account.apiTokens, requiredPermissions);
   });
@@ -139,17 +139,17 @@ export default async function AccountPage({ params }: AccountPageProps) {
           </tr>
         </thead>
         <tbody>
-          {authorizations.map((authorization) => (
-            <tr key={authorization.id}>
+          {applications.map((grant) => (
+            <tr key={grant.id}>
               <td>
                 <FlexRow>
-                  <ApplicationImage fileId={authorization.client.application.imageId}/> {authorization.client.application.name}
-                  {!hasApiTokenWithRequiredPermissions(account.apiTokens, scopeToPermissions(authorization.scope as Scope[])) && (
+                  <ApplicationImage fileId={grant.application.imageId}/> {grant.application.name}
+                  {!hasApiTokenWithRequiredPermissions(account.apiTokens, scopeToPermissions(grant.scope as Scope[])) && (
                     <Tip tip="Missing permissions"><Icon icon="warning" color="#ffa000"/></Tip>
                   )}
                 </FlexRow>
               </td>
-              <td><PermissionList permissions={scopeToPermissions(authorization.scope as Scope[])}/></td>
+              <td><PermissionList permissions={scopeToPermissions(grant.scope as Scope[])}/></td>
             </tr>
           ))}
         </tbody>

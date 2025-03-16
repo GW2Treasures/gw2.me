@@ -34,7 +34,6 @@ const getUser = cache(function getUser(id: string) {
               application: { select: { name: true, imageId: true }},
             }
           },
-          email: { select: { email: true }}
         }
       },
       accounts: {
@@ -42,7 +41,7 @@ const getUser = cache(function getUser(id: string) {
       },
       providers: true,
       emails: {
-        include: { _count: { select: { authorizations: true }}},
+        include: { _count: { select: { applicationGrants: true }}},
         orderBy: { email: 'asc' }
       },
       sessions: {
@@ -88,7 +87,6 @@ export default async function AdminUserDetailPage({ params }: AdminUserDetailPag
         <Authorizations.Column id="clientId" title="Client Id" hidden>{({ client }) => <Code inline borderless>{client.id}</Code>}</Authorizations.Column>
         <Authorizations.Column id="type" title="Type" sortBy="type">{({ type }) => type}</Authorizations.Column>
         <Authorizations.Column id="scope" title="Scope" hidden>{({ scope }) => scope.join(' ')}</Authorizations.Column>
-        <Authorizations.Column id="email" title="Email" hidden>{({ email }) => email?.email}</Authorizations.Column>
         <Authorizations.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Authorizations.Column>
         <Authorizations.Column id="expiresAt" title="Expires At" sortBy="expiresAt">{({ expiresAt }) => expiresAt ? <FormatDate date={expiresAt}/> : 'Never'}</Authorizations.Column>
         <Authorizations.Column id="usedAt" title="Used At" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'Never'}</Authorizations.Column>
@@ -121,7 +119,7 @@ export default async function AdminUserDetailPage({ params }: AdminUserDetailPag
           <Emails.Column id="email" title="Email">{({ email }) => email}</Emails.Column>
           <Emails.Column id="default" title="Default">{({ isDefaultForUserId }) => isDefaultForUserId && <Icon icon="checkmark"/>}</Emails.Column>
           <Emails.Column id="verified" title="Verified">{({ verified, verificationToken }) => verified ? <Icon icon="checkmark"/> : !!verificationToken && <Icon icon="time"/>}</Emails.Column>
-          <Emails.Column id="authorizations" title="Authorizations">{({ _count }) => _count.authorizations}</Emails.Column>
+          <Emails.Column id="grants" title="Grants">{({ _count }) => _count.applicationGrants}</Emails.Column>
           <Emails.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Emails.Column>
           <Emails.Column small title="Actions" id="actions">
             {({ id, verified }) => (

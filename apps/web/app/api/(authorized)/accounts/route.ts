@@ -1,14 +1,13 @@
-import { db } from '@/lib/db';
 import { AccountsResponse, Scope } from '@gw2me/client';
 import { Authorization } from '@gw2me/database';
 import { NextResponse } from 'next/server';
-import { Gw2Scopes, withAuthorization } from '../auth';
+import { getApplicationGrantByAuthorization, Gw2Scopes, withAuthorization } from '../auth';
 import { corsHeaders } from '@/lib/cors-header';
 
 export const GET = withAuthorization({ oneOf: [...Gw2Scopes, Scope.Accounts] })(
   async (authorization: Authorization) => {
-    const accounts = await db.account.findMany({
-      where: { authorizations: { some: { id: authorization.id }}},
+    // get accounts from application grant
+    const accounts = await getApplicationGrantByAuthorization(authorization).accounts({
       orderBy: { createdAt: 'asc' },
       select: {
         accountId: true,
@@ -16,7 +15,7 @@ export const GET = withAuthorization({ oneOf: [...Gw2Scopes, Scope.Accounts] })(
         displayName: authorization.scope.includes(Scope.Accounts_DisplayName),
         verified: authorization.scope.includes(Scope.Accounts_Verified)
       }
-    });
+    }) ?? [];
 
     const response: AccountsResponse = {
       accounts: accounts.map(({ accountId, accountName, displayName, verified }) => ({
