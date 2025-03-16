@@ -108,7 +108,7 @@ export async function authorizeInternal(
           ...identifier,
           scope: scopes,
           redirectUri: authorizationRequest.type === 'OAuth2' ? authorizationRequest.data.redirect_uri : undefined,
-          codeChallenge: `${authorizationRequest.data.code_challenge_method}:${authorizationRequest.data.code_challenge}`,
+          codeChallenge: authorizationRequest.data.code_challenge_method ? `${authorizationRequest.data.code_challenge_method}:${authorizationRequest.data.code_challenge}` : null,
           token: generateCode(),
           expiresAt: expiresAt(60),
           accounts: { connect: accountIds.map((id) => ({ id })) },
