@@ -1,24 +1,20 @@
 import { getSession, getUser } from '@/lib/session';
 import { Scope } from '@gw2me/client';
-import { redirect } from 'next/navigation';
-import layoutStyles from './layout.module.css';
+import layoutStyles from '../../layout.module.css';
 import styles from './page.module.css';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Icon, IconProp } from '@gw2treasures/ui';
-import { FC, ReactNode } from 'react';
-import { getApplicationByClientId, normalizeScopes, validateRequest } from './validate';
 import { hasGW2Scopes, scopeToPermissions } from '@/lib/scope';
-import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { cache, FC, ReactNode } from 'react';
+import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { db } from '@/lib/db';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { PermissionList } from '@/components/Permissions/PermissionList';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
-import { AuthorizeActionParams, authorize, authorizeInternal } from './actions';
+import { authorize, authorizeInternal, cancelAuthorization } from './actions';
 import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
-import { createRedirectUrl } from '@/lib/redirectUrl';
-import { OAuth2ErrorCode } from '@/lib/oauth/error';
-import { AuthorizationType, User, UserEmail } from '@gw2me/database';
+import { AuthorizationRequestState, AuthorizationType, User, UserEmail } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
 import { LoginForm } from 'app/login/form';
 import { Metadata } from 'next';
@@ -27,75 +23,74 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import Link from 'next/link';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
-import { PageProps, searchParamsToURLSearchParams } from '@/lib/next';
+import { PageProps } from '@/lib/next';
+import { isExpired } from '@/lib/date';
+import { AuthorizationRequest } from '../types';
+import { normalizeScopes } from 'app/(authorize)/oauth2/authorize/validate';
 
-export default async function AuthorizePage({ searchParams: asyncSearchParams }: PageProps) {
-  const searchParams = await asyncSearchParams;
+const getPendingAuthorizationRequest = cache(
+  (id: string) => db.authorizationRequest.findUnique({
+    where: { id, state: AuthorizationRequestState.Pending },
+    include: { client: { include: { application: { include: { owner: true }}}}},
+  })
+);
 
-  // build return url for /account/add?return=X
-  const returnUrl = `/oauth2/authorize?${searchParamsToURLSearchParams(searchParams).toString()}`;
+export default async function AuthorizePage({ params }: PageProps<{ id: string }>) {
+  const { id } = await params;
 
-  // validate request
-  const { error, request } = await validateRequest(searchParams);
+  const selfUrl = `/authorize/${id}`;
 
-  if(error !== undefined) {
-    return <Notice type="error">{error}</Notice>;
+  // get the request
+  const authRequest = await getPendingAuthorizationRequest(id) as (AuthorizationRequest & { client: NonNullable<Awaited<ReturnType<typeof getPendingAuthorizationRequest>>>['client'] }) | null;
+
+  if(!authRequest) {
+    return <Notice type="error">Authorization request not found.</Notice>;
   }
+
+  if(isExpired(authRequest.expiresAt)) {
+    // TODO: allow user to go back to application?
+    return <Notice type="error">Authorization request expired.</Notice>;
+  }
+
+  const { client } = authRequest;
 
   // get current user
   const session = await getSession();
   const user = await getUser();
 
   // declare some variables for easier access
-  const client = await getApplicationByClientId(request.client_id);
-  const previousAuthorization = session ? await getPreviousAuthorization(request.client_id, session.userId) : undefined;
+  const previousAuthorization = session ? await getPreviousAuthorization(client.id, session.userId) : undefined;
   const previousScope = new Set(previousAuthorization?.scope as Scope[]);
   const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
-  const scopes = new Set(decodeURIComponent(request.scope).split(' ') as Scope[]);
-  const redirect_uri = new URL(request.redirect_uri);
+  const scopes = new Set(decodeURIComponent(authRequest.data.scope).split(' ') as Scope[]);
 
   // normalize the previous scopes
   normalizeScopes(previousScope);
 
   // if `include_granted_scopes` is set add all previous scopes to the current scopes
-  if(request.include_granted_scopes) {
+  if(authRequest.data.include_granted_scopes) {
     previousScope.forEach((scope) => scopes.add(scope));
   }
 
   // normalize the current scopes
   normalizeScopes(scopes);
 
-  const verifiedAccountsOnly = scopes.has(Scope.Accounts_Verified) && request.verified_accounts_only === 'true';
+  const verifiedAccountsOnly = scopes.has(Scope.Accounts_Verified) && authRequest.data.verified_accounts_only === 'true';
 
   // get new/existing scopes
   const newScopes = Array.from(scopes).filter((scope) => !previousScope.has(scope));
   const oldScopes = Array.from(previousScope).filter((scope) => scopes.has(scope));
 
-  // build params for the authorize action
-  const authorizeActionParams: AuthorizeActionParams = {
-    clientId: request.client_id,
-    redirect_uri: redirect_uri.toString(),
-    scopes: Array.from(scopes),
-    state: request.state,
-    codeChallenge: request.code_challenge ? `${request.code_challenge_method}:${request.code_challenge}` : undefined,
-  };
-
   // handle prompt!=consent
   const allPreviouslyAuthorized = newScopes.length === 0;
   let autoAuthorizeState: FormState | undefined;
-  if(allPreviouslyAuthorized && request.prompt !== 'consent') {
-    autoAuthorizeState = await authorizeInternal(authorizeActionParams, previousAccountIds, previousAuthorization?.emailId ?? undefined);
+  if(allPreviouslyAuthorized && authRequest.data.prompt !== 'consent') {
+    autoAuthorizeState = await authorizeInternal(id, previousAccountIds, previousAuthorization?.emailId ?? undefined);
   }
 
   // handle prompt=none
-  if(!allPreviouslyAuthorized && request.prompt === 'none') {
-    const errorUrl = await createRedirectUrl(redirect_uri, {
-      state: request.state,
-      error: OAuth2ErrorCode.access_denied,
-      error_description: 'user not previously authorized',
-    });
-
-    redirect(errorUrl.toString());
+  if(!allPreviouslyAuthorized && authRequest.data.prompt === 'none') {
+    await cancelAuthorization(authRequest.id);
   }
 
   // get emails
@@ -116,15 +111,10 @@ export default async function AuthorizePage({ searchParams: asyncSearchParams }:
       })
     : [];
 
-  // build cancel url
-  const cancelUrl = await createRedirectUrl(redirect_uri, {
-    state: request.state,
-    error: OAuth2ErrorCode.access_denied,
-    error_description: 'user canceled authorization',
-  });
 
   // bind parameters to authorize action
-  const authorizeAction = authorize.bind(null, authorizeActionParams);
+  const authorizeAction = authorize.bind(null, id);
+  const cancelAction = cancelAuthorization.bind(null, id);
 
   return (
     <>
@@ -136,8 +126,10 @@ export default async function AuthorizePage({ searchParams: asyncSearchParams }:
       {!session || !user ? (
         <>
           <p className={styles.intro}>To authorize this application, you need to log in first.</p>
-          <LoginForm returnTo={returnUrl}/>
-          <LinkButton external href={cancelUrl.toString()} flex appearance="tertiary" className={styles.button}>Cancel</LinkButton>
+          <LoginForm returnTo={selfUrl}/>
+          <form action={cancelAction} style={{ display: 'flex' }}>
+            <SubmitButton flex appearance="tertiary" className={styles.button}>Cancel</SubmitButton>
+          </form>
         </>
       ) : (
         <Form action={authorizeAction} initialState={autoAuthorizeState}>
@@ -150,11 +142,11 @@ export default async function AuthorizePage({ searchParams: asyncSearchParams }:
               <p className={styles.intro}>{client.application.name} wants to access additional data.</p>
             )}
 
-            {newScopes.length > 0 && renderScopes(newScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, returnUrl)}
+            {newScopes.length > 0 && renderScopes(newScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, authRequest.id)}
 
             {oldScopes.length > 0 && (
               <Expandable label="Show previously authorized permissions.">
-                {renderScopes(oldScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, returnUrl)}
+                {renderScopes(oldScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, authRequest.id)}
               </Expandable>
             )}
 
@@ -176,7 +168,7 @@ export default async function AuthorizePage({ searchParams: asyncSearchParams }:
                       </FlexRow>
                     </Checkbox>
                   ))}
-                  <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
+                  <LinkButton href={`/authorize/${authRequest.id}/add-account`} appearance="menu" icon="add">Add account</LinkButton>
                 </div>
               </div>
             )}
@@ -189,11 +181,13 @@ export default async function AuthorizePage({ searchParams: asyncSearchParams }:
             </p>
 
             <div className={styles.buttons}>
-              <LinkButton external href={cancelUrl.toString()} flex className={styles.button}>Cancel</LinkButton>
+              <Button type="submit" formAction={cancelAction} flex className={styles.button}>Cancel</Button>
               <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {client.application.name}</SubmitButton>
             </div>
 
-            <div className={styles.redirectNote}>Authorizing will redirect you to <b>{redirect_uri.origin}</b></div>
+            {authRequest.type === 'OAuth2' && (
+              <div className={styles.redirectNote}>Authorizing will redirect you to <b>{new URL(authRequest.data.redirect_uri).origin}</b></div>
+            )}
           </div>
         </Form>
       )}
@@ -201,26 +195,18 @@ export default async function AuthorizePage({ searchParams: asyncSearchParams }:
   );
 }
 
-export async function generateMetadata({ searchParams: asyncSearchParams }: PageProps): Promise<Metadata> {
-  const searchParams = await asyncSearchParams;
-  const { error, request } = await validateRequest(searchParams);
-
-  if(error !== undefined) {
-    return {
-      title: error
-    };
-  }
-
-  const application = await getApplicationByClientId(request.client_id);
+export async function generateMetadata({ params }: PageProps<{ id: string }>): Promise<Metadata> {
+  const { id } = await params;
+  const authRequest = await getPendingAuthorizationRequest(id);
 
   return {
-    title: `Authorize ${application.application.name}`
+    title: `Authorize ${authRequest?.client.application.name}`
   };
 }
 
 export interface ScopeItemProps {
-  icon: IconProp
-  children: ReactNode;
+  icon: IconProp,
+  children: ReactNode,
 }
 
 const ScopeItem: FC<ScopeItemProps> = ({ icon, children }) => {
@@ -234,7 +220,7 @@ function getPreviousAuthorization(clientId: string, userId: string) {
   });
 }
 
-function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id: string }}, emails: UserEmail[], emailId: undefined | string, returnUrl: string) {
+function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id: string }}, emails: UserEmail[], emailId: undefined | string, authorizationRequestId: string) {
   return (
     <ul className={styles.scopeList}>
       {scopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
@@ -243,7 +229,7 @@ function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id:
           <p className={styles.p}>Your email address</p>
           <div style={{ marginBlock: 8, display: 'flex', gap: 16 }}>
             {emails.length > 0 && (<Select name="email" options={emails.map(({ id, email }) => ({ label: email, value: id }))} defaultValue={emailId}/>)}
-            <LinkButton href={`/emails/add?return=${encodeURIComponent(returnUrl)}`} icon="add">Add Email</LinkButton>
+            <LinkButton href={`/authorize/${authorizationRequestId}/add-email`} icon="add">Add Email</LinkButton>
           </div>
         </ScopeItem>
       )}

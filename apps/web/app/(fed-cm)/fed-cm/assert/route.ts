@@ -8,7 +8,7 @@ import { db } from '@/lib/db';
 import { generateCode } from '@/lib/token';
 import { expiresAt } from '@/lib/date';
 import { Scope } from '@gw2me/client';
-import { normalizeScopes } from 'app/oauth2/authorize/validate';
+import { normalizeScopes } from 'app/(authorize)/oauth2/authorize/validate';
 
 export async function POST(request: NextRequest) {
   // verify `Sec-Fetch-Dest: webidentity` header is set
@@ -33,6 +33,9 @@ export async function POST(request: NextRequest) {
 
   // get data from request
   const formData = await request.formData();
+
+  console.log('[fed-cm/assert] request', formData);
+
   const clientId = getFormDataString(formData, 'client_id');
   const accountId = getFormDataString(formData, 'account_id');
   const disclosureShownFor: ('name' | 'email' | 'picture')[] = getFormDataString(formData, 'disclosure_shown_for')?.split(',')
@@ -110,6 +113,19 @@ export async function POST(request: NextRequest) {
       { error: { code: OAuth2ErrorCode.invalid_scope, details: 'undisclosed new scopes' }},
       { status: 400, headers: corsHeaders(request) }
     );
+    // const authorizationRequest = await createAuthorizationRequest(AuthorizationRequestType.FedCM, {
+    //   client_id: clientId,
+    //   response_type: 'code',
+    //   scope: Array.from(scopes).join(' '),
+    //   include_granted_scopes: 'true',
+    // });
+
+    // const continue_on = new URL(`/authorize/${authorizationRequest.id}`, getUrlFromRequest(request)).toString();
+
+    // return NextResponse.json(
+    //   { continue_on },
+    //   { headers: corsHeaders(request) }
+    // );
   }
 
   // create code

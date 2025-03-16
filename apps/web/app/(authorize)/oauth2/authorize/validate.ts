@@ -6,19 +6,7 @@ import { ClientType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { createRedirectUrl } from '@/lib/redirectUrl';
-
-export interface AuthorizeRequestParams {
-  response_type: string;
-  redirect_uri: string;
-  client_id: string;
-  scope: string;
-  state?: string;
-  code_challenge?: string;
-  code_challenge_method?: string;
-  prompt?: string;
-  include_granted_scopes?: string;
-  verified_accounts_only?: string;
-}
+import type { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
 
 export const getApplicationByClientId = cache(async function getApplicationByClientId(clientId: string | undefined) {
   assert(clientId, OAuth2ErrorCode.invalid_request, 'client_id is missing');
@@ -46,12 +34,12 @@ export const getApplicationByClientId = cache(async function getApplicationByCli
   return client;
 });
 
-async function verifyClientId({ client_id }: Partial<AuthorizeRequestParams>) {
+async function verifyClientId({ client_id }: Partial<AuthorizationRequestData.OAuth2>) {
   await getApplicationByClientId(client_id);
 }
 
 /** @see https://datatracker.ietf.org/doc/html/rfc6749#section-3.1.2 */
-async function verifyRedirectUri({ client_id, redirect_uri }: Partial<AuthorizeRequestParams>) {
+async function verifyRedirectUri({ client_id, redirect_uri }: Partial<AuthorizationRequestData.OAuth2>) {
   assert(redirect_uri, OAuth2ErrorCode.invalid_request, 'redirect_uri is missing');
 
   const url = tryOrFail(() => new URL(redirect_uri), OAuth2ErrorCode.invalid_request, 'invalid redirect_uri');
@@ -67,7 +55,7 @@ async function verifyRedirectUri({ client_id, redirect_uri }: Partial<AuthorizeR
 }
 
 /** @see https://datatracker.ietf.org/doc/html/rfc6749#section-3.1.1 */
-function verifyResponseType({ response_type }: Partial<AuthorizeRequestParams>) {
+function verifyResponseType({ response_type }: Partial<AuthorizationRequestData.OAuth2>) {
   const supportedResponseTypes = ['code'];
 
   assert(response_type, OAuth2ErrorCode.invalid_request, 'missing response_type');
@@ -75,7 +63,7 @@ function verifyResponseType({ response_type }: Partial<AuthorizeRequestParams>) 
 }
 
 /** @see https://datatracker.ietf.org/doc/html/rfc6749#section-3.3 */
-function verifyScopes({ scope }: Partial<AuthorizeRequestParams>) {
+function verifyScopes({ scope }: Partial<AuthorizationRequestData.OAuth2>) {
   assert(scope, OAuth2ErrorCode.invalid_request, 'missing scopes');
 
   const validScopes: string[] = Object.values(Scope);
@@ -87,7 +75,7 @@ function verifyScopes({ scope }: Partial<AuthorizeRequestParams>) {
 }
 
 /** @see https://datatracker.ietf.org/doc/html/rfc7636#section-4.3 */
-async function verifyPKCE({ client_id, code_challenge, code_challenge_method }: Partial<AuthorizeRequestParams>) {
+async function verifyPKCE({ client_id, code_challenge, code_challenge_method }: Partial<AuthorizationRequestData.OAuth2>) {
   const supportedAlgorithms = ['S256'];
 
   const hasPKCE = !!code_challenge || !!code_challenge_method;
@@ -101,19 +89,19 @@ async function verifyPKCE({ client_id, code_challenge, code_challenge_method }: 
   fail(client.type === ClientType.Public && !hasPKCE, OAuth2ErrorCode.invalid_request, 'PKCE is required for public clients');
 }
 
-function verifyIncludeGrantedScopes({ include_granted_scopes }: Partial<AuthorizeRequestParams>) {
+function verifyIncludeGrantedScopes({ include_granted_scopes }: Partial<AuthorizationRequestData.OAuth2>) {
   assert(include_granted_scopes === undefined || include_granted_scopes === 'true', OAuth2ErrorCode.invalid_request, 'invalid include_granted_scopes');
 }
 
-function verifyPrompt({ prompt }: Partial<AuthorizeRequestParams>) {
+function verifyPrompt({ prompt }: Partial<AuthorizationRequestData.OAuth2>) {
   assert([undefined, 'none', 'consent'].includes(prompt), OAuth2ErrorCode.invalid_request, 'invalid prompt');
 }
 
-function verifyVerifiedAccountsOnly({ verified_accounts_only }: Partial<AuthorizeRequestParams>) {
+function verifyVerifiedAccountsOnly({ verified_accounts_only }: Partial<AuthorizationRequestData.OAuth2>) {
   assert(verified_accounts_only === undefined || verified_accounts_only === 'true', OAuth2ErrorCode.invalid_request, 'invalid verified_accounts_only');
 }
 
-export const validateRequest = cache(async function validateRequest(request: Partial<AuthorizeRequestParams>): Promise<{ error: string, request?: undefined } | { error: undefined, request: AuthorizeRequestParams }> {
+export const validateRequest = cache(async function validateRequest(request: Partial<AuthorizationRequestData.OAuth2>): Promise<{ error: string, request?: undefined } | { error: undefined, request: AuthorizationRequestData.OAuth2 }> {
   try {
     // first verify client_id and redirect_uri
     await verifyClientId(request);
@@ -139,7 +127,7 @@ export const validateRequest = cache(async function validateRequest(request: Par
       verifyVerifiedAccountsOnly(request),
     ]);
 
-    return { error: undefined, request: request as AuthorizeRequestParams };
+    return { error: undefined, request: request as AuthorizationRequestData.OAuth2 };
   } catch(error) {
     let redirect_uri: URL;
 

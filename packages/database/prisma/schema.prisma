@@ -27,6 +27,7 @@ model User {
 
   applications   Application[]   @relation("applications")
   authorizations Authorization[] @relation("userAuthorization")
+  authorizationRequests AuthorizationRequest[]
 
   accounts Account[] @relation("userAccount")
 }
@@ -179,8 +180,9 @@ model Client {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  authorizations Authorization[] @relation("clientAuthorization")
-  secrets        ClientSecret[]  @relation("clientSecret")
+  authorizations        Authorization[]        @relation("clientAuthorization")
+  secrets               ClientSecret[]         @relation("clientSecret")
+  authorizationRequests AuthorizationRequest[]
 }
 
 enum ClientType {
@@ -236,6 +238,36 @@ enum AuthorizationType {
   Code
   AccessToken
   RefreshToken
+}
+
+model AuthorizationRequest {
+  id String @id @default(uuid())
+
+  type  AuthorizationRequestType
+  state AuthorizationRequestState @default(Pending)
+
+  data Json
+
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum AuthorizationRequestType {
+  OAuth2
+  FedCM
+}
+
+enum AuthorizationRequestState {
+  Pending
+  Canceled
+  Authorized
 }
 
 model ApiToken {
