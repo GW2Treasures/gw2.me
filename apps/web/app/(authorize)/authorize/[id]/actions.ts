@@ -90,6 +90,7 @@ export async function authorizeInternal(
     };
 
     [,, authorization] = await db.$transaction([
+      // set pending authorization request to authorized
       db.authorizationRequest.update({
         where: { id },
         data: {
@@ -123,6 +124,7 @@ export async function authorizeInternal(
 
   switch(authorizationRequest.type) {
     case AuthorizationRequestType.OAuth2: {
+      // create redirect url for app
       const url = await createRedirectUrl(authorizationRequest.data.redirect_uri, {
         state: authorizationRequest.data.state,
         code: authorization.token,
@@ -133,28 +135,34 @@ export async function authorizeInternal(
     }
 
     case AuthorizationRequestType.FedCM: {
+      // redirect user to page that calls `IdentityProvider.resolve()`
       return redirect('/fed-cm/authorize');
     }
   }
 }
 
 export async function cancelAuthorization(id: string) {
+  // set the authorization request to canceled so it can't be used anymore
   const authRequest = await cancelAuthorizationRequest(id);
 
+  // redirect user
   switch(authRequest.type) {
     case AuthorizationRequestType.OAuth2: {
       const data = authRequest.data;
 
+      // create redirect url for app
       const cancelUrl = await createRedirectUrl(data.redirect_uri, {
         state: data.state,
         error: OAuth2ErrorCode.access_denied,
         error_description: 'user canceled authorization',
       });
 
+      // redirect back to app
       return redirect(cancelUrl.toString());
     }
 
     case AuthorizationRequestType.FedCM: {
+      // redirect user to page that calls `IdentityProvider.close()`
       return redirect('/fed-cm/cancel');
     }
   }

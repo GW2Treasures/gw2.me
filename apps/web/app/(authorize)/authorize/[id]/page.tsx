@@ -1,6 +1,5 @@
 import { getSession, getUser } from '@/lib/session';
 import { Scope } from '@gw2me/client';
-import { redirect } from 'next/navigation';
 import layoutStyles from '../../layout.module.css';
 import styles from './page.module.css';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
@@ -15,9 +14,7 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { authorize, authorizeInternal, cancelAuthorization } from './actions';
 import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
-import { createRedirectUrl } from '@/lib/redirectUrl';
-import { OAuth2ErrorCode } from '@/lib/oauth/error';
-import { AuthorizationRequestState, AuthorizationRequestType, AuthorizationType, User, UserEmail } from '@gw2me/database';
+import { AuthorizationRequestState, AuthorizationType, User, UserEmail } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
 import { LoginForm } from 'app/login/form';
 import { Metadata } from 'next';
@@ -30,7 +27,6 @@ import { PageProps } from '@/lib/next';
 import { isExpired } from '@/lib/date';
 import { AuthorizationRequest } from '../types';
 import { normalizeScopes } from 'app/(authorize)/oauth2/authorize/validate';
-import { cancelAuthorizationRequest } from '../helper';
 
 const getPendingAuthorizationRequest = cache(
   (id: string) => db.authorizationRequest.findUnique({
@@ -42,7 +38,7 @@ const getPendingAuthorizationRequest = cache(
 export default async function AuthorizePage({ params }: PageProps<{ id: string }>) {
   const { id } = await params;
 
-  const returnUrl = `/authorize/${id}`;
+  const selfUrl = `/authorize/${id}`;
 
   // get the request
   const authRequest = await getPendingAuthorizationRequest(id) as (AuthorizationRequest & { client: NonNullable<Awaited<ReturnType<typeof getPendingAuthorizationRequest>>>['client'] }) | null;
@@ -52,6 +48,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
   }
 
   if(isExpired(authRequest.expiresAt)) {
+    // TODO: allow user to go back to application?
     return <Notice type="error">Authorization request expired.</Notice>;
   }
 
@@ -84,11 +81,6 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
   const newScopes = Array.from(scopes).filter((scope) => !previousScope.has(scope));
   const oldScopes = Array.from(previousScope).filter((scope) => scopes.has(scope));
 
-  const redirect_uri = authRequest.type === 'OAuth2' ?
-    new URL(authRequest.data.redirect_uri)
-    : undefined;
-
-
   // handle prompt!=consent
   const allPreviouslyAuthorized = newScopes.length === 0;
   let autoAuthorizeState: FormState | undefined;
@@ -98,22 +90,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
 
   // handle prompt=none
   if(!allPreviouslyAuthorized && authRequest.data.prompt === 'none') {
-    await cancelAuthorizationRequest(authRequest.id);
-
-    switch(authRequest.type) {
-      case AuthorizationRequestType.OAuth2: {
-        const errorUrl = await createRedirectUrl(authRequest.data.redirect_uri, {
-          state: authRequest.data.state,
-          error: OAuth2ErrorCode.access_denied,
-          error_description: 'user not previously authorized',
-        });
-
-        return redirect(errorUrl.toString());
-      }
-
-      case AuthorizationRequestType.FedCM:
-        return redirect('/fed-cm/cancel');
-    }
+    await cancelAuthorization(authRequest.id);
   }
 
   // get emails
@@ -149,7 +126,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
       {!session || !user ? (
         <>
           <p className={styles.intro}>To authorize this application, you need to log in first.</p>
-          <LoginForm returnTo={returnUrl}/>
+          <LoginForm returnTo={selfUrl}/>
           <form action={cancelAction} style={{ display: 'flex' }}>
             <SubmitButton flex appearance="tertiary" className={styles.button}>Cancel</SubmitButton>
           </form>
@@ -165,11 +142,11 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
               <p className={styles.intro}>{client.application.name} wants to access additional data.</p>
             )}
 
-            {newScopes.length > 0 && renderScopes(newScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, returnUrl)}
+            {newScopes.length > 0 && renderScopes(newScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, selfUrl)}
 
             {oldScopes.length > 0 && (
               <Expandable label="Show previously authorized permissions.">
-                {renderScopes(oldScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, returnUrl)}
+                {renderScopes(oldScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, selfUrl)}
               </Expandable>
             )}
 
@@ -191,7 +168,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
                       </FlexRow>
                     </Checkbox>
                   ))}
-                  <LinkButton href={`/accounts/add?return=${encodeURIComponent(returnUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
+                  <LinkButton href={`/accounts/add?return=${encodeURIComponent(selfUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
                 </div>
               </div>
             )}
@@ -208,8 +185,8 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
               <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {client.application.name}</SubmitButton>
             </div>
 
-            {redirect_uri && (
-              <div className={styles.redirectNote}>Authorizing will redirect you to <b>{redirect_uri.origin}</b></div>
+            {authRequest.type === 'OAuth2' && (
+              <div className={styles.redirectNote}>Authorizing will redirect you to <b>{new URL(authRequest.data.redirect_uri).origin}</b></div>
             )}
           </div>
         </Form>
@@ -228,8 +205,8 @@ export async function generateMetadata({ params }: PageProps<{ id: string }>): P
 }
 
 export interface ScopeItemProps {
-  icon: IconProp
-  children: ReactNode;
+  icon: IconProp,
+  children: ReactNode,
 }
 
 const ScopeItem: FC<ScopeItemProps> = ({ icon, children }) => {
@@ -243,7 +220,7 @@ function getPreviousAuthorization(clientId: string, userId: string) {
   });
 }
 
-function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id: string }}, emails: UserEmail[], emailId: undefined | string, returnUrl: string) {
+function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id: string }}, emails: UserEmail[], emailId: undefined | string, selfUrl: string) {
   return (
     <ul className={styles.scopeList}>
       {scopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
@@ -252,7 +229,7 @@ function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id:
           <p className={styles.p}>Your email address</p>
           <div style={{ marginBlock: 8, display: 'flex', gap: 16 }}>
             {emails.length > 0 && (<Select name="email" options={emails.map(({ id, email }) => ({ label: email, value: id }))} defaultValue={emailId}/>)}
-            <LinkButton href={`/emails/add?return=${encodeURIComponent(returnUrl)}`} icon="add">Add Email</LinkButton>
+            <LinkButton href={`/emails/add?return=${encodeURIComponent(selfUrl)}`} icon="add">Add Email</LinkButton>
           </div>
         </ScopeItem>
       )}
