@@ -52,6 +52,7 @@ export async function authorizeInternal(
   accountIds: string[],
   emailId: string | undefined | null
 ) {
+  // get authorization request
   const authorizationRequest = await db.authorizationRequest.findUnique({
     where: { id, state: 'Pending', ...notExpired },
   }) as AuthorizationRequest | null;
@@ -60,18 +61,6 @@ export async function authorizeInternal(
     return { error: 'Authorization request not found' };
   }
 
-  // get scopes
-  const scopes = authorizationRequest.data.scope.split(' ') as Scope[];
-
-  // verify at least one account was selected
-  if((hasGW2Scopes(scopes) || scopes.includes(Scope.Accounts)) && accountIds.length === 0) {
-    return { error: 'At least one account has to be selected.' };
-  }
-
-  // verify email was selected
-  if(scopes.includes(Scope.Email) && !emailId) {
-    return { error: 'Email has to be selected' };
-  }
 
   // get session and verify
   const session = await getSession();
@@ -79,6 +68,39 @@ export async function authorizeInternal(
   if(!session) {
     return { error: 'Not logged in' };
   }
+
+
+  // get scopes
+  const scopes = authorizationRequest.data.scope.split(' ') as Scope[];
+
+  // include previously granted scopes
+  if(authorizationRequest.data.include_granted_scopes) {
+    // get previous authorization
+    const previousAuthorization = await db.authorization.findFirst({
+      where: { clientId: authorizationRequest.clientId, userId: session.userId, type: { not: AuthorizationType.Code }},
+      include: { accounts: { select: { id: true }}}
+    });
+
+    // add scopes
+    previousAuthorization?.scope.forEach((scope) => {
+      if(!scopes.includes(scope as Scope)) {
+        scopes.push(scope as Scope);
+      }
+    });
+  }
+
+
+  // verify at least one account was selected
+  if((hasGW2Scopes(scopes) || scopes.includes(Scope.Accounts)) && accountIds.length === 0) {
+    return { error: 'At least one account has to be selected.' };
+  }
+
+
+  // verify email was selected
+  if(scopes.includes(Scope.Email) && !emailId) {
+    return { error: 'Email has to be selected' };
+  }
+
 
   let authorization: Authorization;
 
