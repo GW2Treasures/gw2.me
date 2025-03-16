@@ -142,11 +142,11 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
               <p className={styles.intro}>{client.application.name} wants to access additional data.</p>
             )}
 
-            {newScopes.length > 0 && renderScopes(newScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, selfUrl)}
+            {newScopes.length > 0 && renderScopes(newScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, authRequest.id)}
 
             {oldScopes.length > 0 && (
               <Expandable label="Show previously authorized permissions.">
-                {renderScopes(oldScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, selfUrl)}
+                {renderScopes(oldScopes, user, emails, previousAuthorization?.emailId ?? user.defaultEmail?.id, authRequest.id)}
               </Expandable>
             )}
 
@@ -168,7 +168,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
                       </FlexRow>
                     </Checkbox>
                   ))}
-                  <LinkButton href={`/accounts/add?return=${encodeURIComponent(selfUrl)}`} appearance="menu" icon="add">Add account</LinkButton>
+                  <LinkButton href={`/authorize/${authRequest.id}/add-account`} appearance="menu" icon="add">Add account</LinkButton>
                 </div>
               </div>
             )}
@@ -220,7 +220,7 @@ function getPreviousAuthorization(clientId: string, userId: string) {
   });
 }
 
-function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id: string }}, emails: UserEmail[], emailId: undefined | string, selfUrl: string) {
+function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id: string }}, emails: UserEmail[], emailId: undefined | string, authorizationRequestId: string) {
   return (
     <ul className={styles.scopeList}>
       {scopes.includes(Scope.Identify) && <ScopeItem icon="user">Your username <b>{user.name}</b></ScopeItem>}
@@ -229,7 +229,7 @@ function renderScopes(scopes: Scope[], user: User & { defaultEmail: null | { id:
           <p className={styles.p}>Your email address</p>
           <div style={{ marginBlock: 8, display: 'flex', gap: 16 }}>
             {emails.length > 0 && (<Select name="email" options={emails.map(({ id, email }) => ({ label: email, value: id }))} defaultValue={emailId}/>)}
-            <LinkButton href={`/emails/add?return=${encodeURIComponent(selfUrl)}`} icon="add">Add Email</LinkButton>
+            <LinkButton href={`/authorize/${authorizationRequestId}/add-email`} icon="add">Add Email</LinkButton>
           </div>
         </ScopeItem>
       )}
