@@ -149,6 +149,7 @@ export async function POST(request: NextRequest) {
       db.authorization.create({
         data: {
           ...identifier,
+          applicationId: client.applicationId,
           scope: Array.from(scopes),
           token: generateCode(),
           expiresAt: expiresAt(60),

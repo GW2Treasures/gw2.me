@@ -12,35 +12,10 @@ import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { revokeAccess } from './actions';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { Icon } from '@gw2treasures/ui';
+import { FormatDate } from '@/components/Format/FormatDate';
 
 const getUserData = cache(async () => {
   const session = await getSessionOrRedirect();
-
-  // const authorizationFilter: Prisma.AuthorizationWhereInput = {
-  //   userId: session.userId,
-  //   OR: [
-  //     { expiresAt: { gte: new Date() }},
-  //     { expiresAt: null }
-  //   ],
-  // };
-
-  // const clients = await db.client.findMany({
-  //   where: { authorizations: { some: authorizationFilter }},
-  //   select: {
-  //     id: true,
-
-  //     application: {
-  //     },
-
-  //     // include the last used authorization
-  //     authorizations: {
-  //       take: 1,
-  //       where: { ...authorizationFilter, usedAt: { not: null }},
-  //       orderBy: { usedAt: 'desc' },
-  //       select: { usedAt: true }
-  //     }
-  //   }
-  // });
 
   const applications = await db.application.findMany({
     where: { users: { some: { userId: session.userId }}},
@@ -50,6 +25,12 @@ const getUserData = cache(async () => {
       imageId: true,
       public: true,
       publicUrl: true,
+      authorizations: {
+        take: 1,
+        where: { usedAt: { not: null }},
+        orderBy: { usedAt: 'desc' },
+        select: { usedAt: true }
+      }
     },
   });
 
@@ -60,8 +41,6 @@ const getUserData = cache(async () => {
 
 export default async function ProfilePage() {
   const { applications } = await getUserData();
-
-  // TODO: Add lastUsed back
 
   return (
     <PageLayout>
@@ -93,8 +72,7 @@ export default async function ProfilePage() {
                       <FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow>
                     )}
                   </td>
-                  <td/>
-                  {/* <td>{client.authorizations[0]?.usedAt ? <FormatDate date={client.authorizations[0].usedAt}/> : 'never'}</td> */}
+                  <td>{application.authorizations[0]?.usedAt ? <FormatDate date={application.authorizations[0].usedAt}/> : 'never'}</td>
                   <td><Button type="submit" name="applicationId" value={application.id} intent="delete" icon="delete">Revoke Access</Button></td>
                 </tr>
               ))}

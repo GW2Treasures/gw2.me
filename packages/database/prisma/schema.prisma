@@ -166,8 +166,9 @@ model Application {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  clients Client[]           @relation("applicationClients")
-  users   ApplicationGrant[] @relation("applicationGrants")
+  clients        Client[]           @relation("applicationClients")
+  authorizations Authorization[]
+  users          ApplicationGrant[] @relation("applicationGrants")
 }
 
 model Client {
@@ -225,6 +226,8 @@ model ApplicationGrant {
   
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  
+  authorizations Authorization[]
 }
 
 model Authorization {
@@ -246,8 +249,13 @@ model Authorization {
   clientId String
   client   Client @relation("clientAuthorization", fields: [clientId], references: [id], onDelete: Cascade)
 
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
   userId String
   user   User   @relation("userAuthorization", fields: [userId], references: [id], onDelete: Cascade)
+
+  applicationGrant ApplicationGrant @relation(fields: [applicationId, userId], references: [applicationId, userId])
 
   @@unique([type, token])
   @@unique([type, clientId, userId])

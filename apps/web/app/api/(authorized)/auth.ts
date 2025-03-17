@@ -109,6 +109,6 @@ function responseHeaders(request: NextRequest) {
 
 export function getApplicationGrantByAuthorization(authorization: Authorization) {
   return db.applicationGrant.findFirst({
-    where: { application: { clients: { some: { id: authorization.clientId }}}, userId: authorization.userId }
+    where: { applicationId: authorization.applicationId }
   });
 }

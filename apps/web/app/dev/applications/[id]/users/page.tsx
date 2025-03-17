@@ -16,8 +16,15 @@ const getUsers = (applicationId: string, ownerId: string) => {
     include: {
       _count: { select: { accounts: true }},
       user: { select: { name: true }},
-      email: { select: { email: true, verified: true }}
-    }
+      email: { select: { email: true, verified: true }},
+      authorizations: {
+        take: 1,
+        where: { usedAt: { not: null }},
+        orderBy: { usedAt: 'desc' },
+        select: { usedAt: true }
+      },
+    },
+    orderBy: { createdAt: 'asc' }
   });
 };
 
@@ -62,7 +69,8 @@ export default async function EditApplicationPage({ params }: EditApplicationPag
         <Users.Column id="scope" title="Scopes" sortBy={({ scope }) => scope.length}>{({ scope }) => scope.join(' ')}</Users.Column>
         <Users.Column id="email" title="Email" sortBy={(user) => getEmail(user)?.email} hidden={!anyHasMail}>{(user) => getEmail(user)?.email}</Users.Column>
         <Users.Column id="accounts" title="Accounts" sortBy={({ _count }) => _count.accounts} align="right">{({ _count }) => _count.accounts}</Users.Column>
-        <Users.Column id="createdAt" title="CreatedAt" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Users.Column>
+        <Users.Column id="usedAt" title="Last Used" sortBy={({ authorizations }) => authorizations[0]?.usedAt}>{({ authorizations }) => authorizations[0]?.usedAt ? <FormatDate date={authorizations[0].usedAt}/> : null}</Users.Column>
+        <Users.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Users.Column>
       </Users.Table>
     </>
   );

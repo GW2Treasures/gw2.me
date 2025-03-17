@@ -53,14 +53,14 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
 
       assertPKCECodeChallenge(authorization.codeChallenge, code_verifier);
 
-      const { clientId, userId, scope } = authorization;
+      const { clientId, applicationId, userId, scope } = authorization;
 
       const [refreshAuthorization, accessAuthorization] = await db.$transaction([
         // create refresh token
         client.type === ClientType.Confidential
           ? db.authorization.upsert({
               where: { type_clientId_userId: { type: AuthorizationType.RefreshToken, clientId, userId }},
-              create: { type: AuthorizationType.RefreshToken, clientId, userId, scope, token: generateRefreshToken() },
+              create: { type: AuthorizationType.RefreshToken, clientId, applicationId, userId, scope, token: generateRefreshToken() },
               update: { scope }
             })
           : db.authorization.findFirst({ take: 0 }),
@@ -68,7 +68,7 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
         // create access token
         db.authorization.upsert({
           where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
-          create: { type: AuthorizationType.AccessToken, clientId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
+          create: { type: AuthorizationType.AccessToken, clientId, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
           update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
         }),
 
@@ -104,13 +104,13 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
       assert(refreshAuthorization, OAuth2ErrorCode.invalid_grant, 'Invalid refresh_token');
       assert(!isExpired(refreshAuthorization.expiresAt), OAuth2ErrorCode.invalid_grant, 'refresh_token expired');
 
-      const { clientId, userId, scope } = refreshAuthorization;
+      const { clientId, applicationId, userId, scope } = refreshAuthorization;
 
       const [accessAuthorization] = await db.$transaction([
         // create new access token
         db.authorization.upsert({
           where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
-          create: { type: AuthorizationType.AccessToken, clientId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
+          create: { type: AuthorizationType.AccessToken, clientId, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
           update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
         }),
 

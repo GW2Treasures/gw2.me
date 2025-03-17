@@ -126,6 +126,7 @@ export async function authorizeInternal(
       db.authorization.create({
         data: {
           ...identifier,
+          applicationId: authorizationRequest.client.applicationId,
           scope: scopes,
           redirectUri: authorizationRequest.type === 'OAuth2' ? authorizationRequest.data.redirect_uri : undefined,
           codeChallenge: authorizationRequest.data.code_challenge_method ? `${authorizationRequest.data.code_challenge_method}:${authorizationRequest.data.code_challenge}` : null,

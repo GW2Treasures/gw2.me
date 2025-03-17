@@ -5,7 +5,6 @@ import { getUrlFromRequest } from '@/lib/url';
 import { db } from '@/lib/db';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { corsHeaders } from '@/lib/cors-header';
-import { notExpired } from '@/lib/db/helper';
 
 export async function GET(request: NextRequest) {
   // verify `Sec-Fetch-Dest: webidentity` header is set
@@ -30,7 +29,7 @@ export async function GET(request: NextRequest) {
 
   // get approved applications that are not expired and include the scopes "identify email"
   const approvedClients = await db.client.findMany({
-    where: { authorizations: { some: { type: 'AccessToken', userId: user.id, ...notExpired }}},
+    where: { application: { users: { some: { userId: user.id }}}},
     select: { id: true }
   });
 
