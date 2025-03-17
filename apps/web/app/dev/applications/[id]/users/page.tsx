@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { getSessionOrRedirect } from '@/lib/session';
 import { PageProps } from '@/lib/next';
-import { getApplicationById } from '../layout';
+import { getApplicationById } from '../helper';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { Code } from '@/components/Layout/Code';
 import { FormatDate } from '@/components/Format/FormatDate';

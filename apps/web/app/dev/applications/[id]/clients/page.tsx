@@ -4,7 +4,7 @@ import { ApplicationForm } from './form';
 import { deleteClientSecret, generateClientSecret } from './_actions/secret';
 import { PageProps } from '@/lib/next';
 import { editOAuth2Clients } from './_actions/edit';
-import { getApplicationById } from '../layout';
+import { getApplicationById } from '../helper';
 
 const getClients = (applicationId: string, ownerId: string) => {
   return db.client.findMany({

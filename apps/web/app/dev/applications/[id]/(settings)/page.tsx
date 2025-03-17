@@ -3,7 +3,7 @@ import { getSessionOrRedirect } from '@/lib/session';
 import { ApplicationForm } from './form';
 import { editApplication } from '../../_actions/edit';
 import { PageProps } from '@/lib/next';
-import { getApplicationById } from '../layout';
+import { getApplicationById } from '../helper';
 
 
 type EditApplicationPageProps = PageProps<{ id: string }>;

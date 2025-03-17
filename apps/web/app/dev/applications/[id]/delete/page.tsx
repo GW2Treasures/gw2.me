@@ -5,7 +5,7 @@ import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitBut
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { getSessionOrRedirect } from '@/lib/session';
 import { PageProps } from '@/lib/next';
-import { getApplicationById } from '../layout';
+import { getApplicationById } from '../helper';
 
 type DeleteApplicationPageProps = PageProps<{ id: string; }>;
 
