@@ -3,31 +3,16 @@ import { deleteApplication } from './actions';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
-import { db } from '@/lib/db';
 import { getSessionOrRedirect } from '@/lib/session';
-import { notFound } from 'next/navigation';
 import { PageProps } from '@/lib/next';
-
-async function getApplication(id: string) {
-  const session = await getSessionOrRedirect();
-
-  const application = await db.application.findUnique({
-    where: { id, ownerId: session.userId },
-    select: { id: true, name: true }
-  });
-
-  if(!application) {
-    notFound();
-  }
-
-  return application;
-}
+import { getApplicationById } from '../layout';
 
 type DeleteApplicationPageProps = PageProps<{ id: string; }>;
 
 export default async function DeleteApplicationPage({ params }: DeleteApplicationPageProps) {
   const { id } = await params;
-  const app = await getApplication(id);
+  const session = await getSessionOrRedirect();
+  const app = await getApplicationById(id, session.userId);
 
   return (
     <Form action={deleteApplication.bind(null, app.id)}>
@@ -44,7 +29,8 @@ export default async function DeleteApplicationPage({ params }: DeleteApplicatio
 
 export async function generateMetadata({ params }: DeleteApplicationPageProps) {
   const { id } = await params;
-  const application = await getApplication(id);
+  const session = await getSessionOrRedirect();
+  const application = await getApplicationById(id, session.userId);
 
   return {
     title: `Delete ${application.name}`

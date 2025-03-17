@@ -9,18 +9,22 @@ import { cache } from 'react';
 import { NavBar } from './navbar';
 import { getSessionOrRedirect } from '@/lib/session';
 
-const getApplicationById = cache(
-  (id: string, userId: string) => db.application.findUnique({ where: { id, ownerId: userId }}),
+export const getApplicationById = cache(
+  async (id: string, userId: string) => {
+    const application = await db.application.findUnique({ where: { id, ownerId: userId }});
+
+    if(!application) {
+      notFound();
+    }
+
+    return application;
+  },
 );
 
 export default async function DevApplicationDetailLayout({ params, children }: LayoutProps<{ id: string }>) {
   const { id } = await params;
   const { userId } = await getSessionOrRedirect();
   const application = await getApplicationById(id, userId);
-
-  if(!application) {
-    notFound();
-  }
 
   return (
     <PageLayout>
@@ -33,6 +37,7 @@ export default async function DevApplicationDetailLayout({ params, children }: L
       <NavBar base={`/dev/applications/${id}/`} items={[
         { segment: '(settings)', label: 'Settings', href: `/dev/applications/${id}/` },
         { segment: 'clients', label: 'OAuth2 Client' },
+        { segment: 'users', label: 'Users' },
       ]}/>
       {children}
     </PageLayout>

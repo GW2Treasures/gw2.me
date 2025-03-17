@@ -1,39 +1,31 @@
 import { db } from '@/lib/db';
 import { getSessionOrRedirect } from '@/lib/session';
-import { notFound } from 'next/navigation';
-import { cache } from 'react';
 import { ApplicationForm } from './form';
 import { deleteClientSecret, generateClientSecret } from './_actions/secret';
 import { PageProps } from '@/lib/next';
 import { editOAuth2Clients } from './_actions/edit';
+import { getApplicationById } from '../layout';
 
-const getApplication = cache(async (id: string) => {
-  const session = await getSessionOrRedirect();
-
-  const application = await db.application.findFirst({
-    where: { id, ownerId: session.userId },
-    include: { clients: { include: { secrets: { select: { id: true, createdAt: true, usedAt: true }}}}}
+const getClients = (applicationId: string, ownerId: string) => {
+  return db.client.findMany({
+    where: { applicationId, application: { ownerId }},
+    include: { secrets: { select: { id: true, createdAt: true, usedAt: true }}}
   });
-
-  if(!application) {
-    notFound();
-  }
-
-  return application;
-});
+};
 
 type EditApplicationPageProps = PageProps<{ id: string }>;
 
 export default async function EditApplicationPage({ params }: EditApplicationPageProps) {
   const { id } = await params;
-  const application = await getApplication(id);
+  const session = await getSessionOrRedirect();
+  const clients = await getClients(id, session.userId);
 
   return (
     <>
       <p>Check the <a href="/dev/docs/manage-apps#client">documentation</a> for more information on how to manage your OAuth2 client.</p>
 
-      <ApplicationForm applicationId={application.id} clients={application.clients}
-        editApplicationAction={editOAuth2Clients.bind(null, application.id)}
+      <ApplicationForm applicationId={id} clients={clients}
+        editApplicationAction={editOAuth2Clients.bind(null, id)}
         generateClientSecretAction={generateClientSecret}
         deleteClientSecretAction={deleteClientSecret}/>
     </>
@@ -42,9 +34,10 @@ export default async function EditApplicationPage({ params }: EditApplicationPag
 
 export async function generateMetadata({ params }: EditApplicationPageProps) {
   const { id } = await params;
-  const application = await getApplication(id);
+  const session = await getSessionOrRedirect();
+  const application = await getApplicationById(id, session.userId);
 
   return {
-    title: `Edit ${application.name}`
+    title: `Edit ${application.name} / Clients`
   };
 }
