@@ -1,9 +1,8 @@
 import { db } from '@/lib/db';
 import { SubtokenResponse, Scope } from '@gw2me/client';
 import { NextResponse } from 'next/server';
-import { Gw2Scopes, withAuthorization } from '../../../auth';
+import { Gw2Scopes, OptionsHandler, withAuthorization } from '../../../auth';
 import { Authorization } from '@gw2me/database';
-import { corsHeaders } from '@/lib/cors-header';
 import { fetchGw2Api } from '@/lib/gw2-api-request';
 import { RouteProps } from '@/lib/next';
 import { scopeToPermissions } from '@/lib/scope';
@@ -73,11 +72,7 @@ export const GET = withAuthorization<RouteProps<{ id: string }>>({ oneOf: Gw2Sco
   }
 );
 
-export const OPTIONS = (request: Request) => {
-  return new NextResponse(null, {
-    headers: corsHeaders(request)
-  });
-};
+export const OPTIONS = OptionsHandler;
 
 async function createSubtoken(apiToken: { id: string, token: string }, requiredPermissions: string[]): Promise<SubtokenResponse> {
   // create expiration time in 10 minutes

@@ -11,7 +11,7 @@ export function corsHeaders(request: Request) {
     'Access-Control-Allow-Credentials': 'true',
     ...(request.method === 'OPTIONS' ? {
       'Access-Control-Allow-Methods': 'OPTIONS, GET, POST',
-      'Access-Control-Allow-Headers': 'authorization',
+      'Access-Control-Allow-Headers': 'authorization, content-type',
       'Access-Control-Max-Age': '600'
     } : {})
   };

@@ -1,4 +1,4 @@
-import { gw2me } from '@/lib/client';
+import { getGw2MeUrl, gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { redirect } from 'next/navigation';
@@ -7,6 +7,7 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { PageProps } from '@/lib/next';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
+import { Client } from './client';
 
 export const dynamic = 'force-dynamic';
 
@@ -84,6 +85,8 @@ export default async function TokenPage({ searchParams: asyncSearchParams }: Pag
 
   return (
     <>
+      <Client clientId={process.env.DEMO_CLIENT_ID!} gw2meUrl={getGw2MeUrl()} accessToken={access_token}/>
+
       <form>
         <Label label="access_token">
           <TextInput value={access_token} readOnly name="access_token"/>
