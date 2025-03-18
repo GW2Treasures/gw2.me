@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
   // load application
   const client = await db.client.findUnique({
     where: { id: clientId },
-    select: { id: true, callbackUrls: true }
+    select: { id: true, applicationId: true, callbackUrls: true }
   });
 
   // check that application exists
@@ -76,14 +76,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // load previous authorization to include scopes and
-  const previousAuthorization = await db.authorization.findFirst({
-    where: { clientId, userId: user.id, type: { not: AuthorizationType.Code }},
-    select: { scope: true, accounts: { select: { id: true }}}
+  // load application grant
+  const applicationGrantIdentifier = {
+    userId_applicationId: { userId: user.id, applicationId: client.applicationId }
+  };
+  const applicationGrant = await db.applicationGrant.findUnique({
+    where: applicationGrantIdentifier,
+    select: { scope: true, emailId: true, accounts: { select: { id: true }}}
   });
 
   // get previously authorized scopes
-  const previousScopes = new Set(previousAuthorization?.scope as Scope[]);
+  const previousScopes = new Set(applicationGrant?.scope as Scope[]);
 
   // get requested scopes if params.scopes is set, otherwise default to Identify+Email
   const requestedScopes = new Set(params.scope?.split(' ') as Scope[] ?? [Scope.Identify, Scope.Email]);
@@ -146,12 +149,27 @@ export async function POST(request: NextRequest) {
       db.authorization.create({
         data: {
           ...identifier,
+          applicationId: client.applicationId,
           scope: Array.from(scopes),
           token: generateCode(),
           expiresAt: expiresAt(60),
-          emailId: user.defaultEmail?.id,
-          accounts: previousAuthorization?.accounts ? { connect: previousAuthorization.accounts } : undefined,
         },
+      }),
+
+      // create or update applicationGrant
+      db.applicationGrant.upsert({
+        where: applicationGrantIdentifier,
+        create: {
+          ...applicationGrantIdentifier.userId_applicationId,
+          scope: Array.from(scopes),
+          accounts: applicationGrant?.accounts ? { connect: applicationGrant.accounts } : undefined,
+          emailId: user.defaultEmail?.id,
+        },
+        update: {
+          scope: Array.from(scopes),
+          accounts: applicationGrant?.accounts ? { connect: applicationGrant.accounts } : undefined,
+          emailId: applicationGrant?.emailId ?? user.defaultEmail?.id,
+        }
       }),
     ]);
   } catch(error) {

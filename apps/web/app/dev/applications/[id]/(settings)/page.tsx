@@ -1,30 +1,17 @@
 import { db } from '@/lib/db';
 import { getSessionOrRedirect } from '@/lib/session';
-import { notFound } from 'next/navigation';
-import { cache } from 'react';
 import { ApplicationForm } from './form';
 import { editApplication } from '../../_actions/edit';
 import { PageProps } from '@/lib/next';
+import { getApplicationById } from '../helper';
 
-const getApplication = cache(async (id: string) => {
-  const session = await getSessionOrRedirect();
-
-  const application = await db.application.findFirst({
-    where: { id, ownerId: session.userId }
-  });
-
-  if(!application) {
-    notFound();
-  }
-
-  return application;
-});
 
 type EditApplicationPageProps = PageProps<{ id: string }>;
 
 export default async function EditApplicationPage({ params }: EditApplicationPageProps) {
   const { id } = await params;
-  const application = await getApplication(id);
+  const session = await getSessionOrRedirect();
+  const application = await getApplicationById(id, session.userId);
 
   const emails = await db.userEmail.findMany({
     where: { userId: application.ownerId, verified: true },
@@ -42,7 +29,8 @@ export default async function EditApplicationPage({ params }: EditApplicationPag
 
 export async function generateMetadata({ params }: EditApplicationPageProps) {
   const { id } = await params;
-  const application = await getApplication(id);
+  const session = await getSessionOrRedirect();
+  const application = await getApplicationById(id, session.userId);
 
   return {
     title: `Edit ${application.name}`

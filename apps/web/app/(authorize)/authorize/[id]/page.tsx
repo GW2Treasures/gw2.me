@@ -14,7 +14,7 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { authorize, authorizeInternal, cancelAuthorization } from './actions';
 import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
-import { AuthorizationRequestState, AuthorizationType, User, UserEmail } from '@gw2me/database';
+import { AuthorizationRequestState, User, UserEmail } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
 import { LoginForm } from 'app/login/form';
 import { Metadata } from 'next';
@@ -59,7 +59,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
   const user = await getUser();
 
   // declare some variables for easier access
-  const previousAuthorization = session ? await getPreviousAuthorization(client.id, session.userId) : undefined;
+  const previousAuthorization = session ? await getApplicationGrant(client.applicationId, session.userId) : undefined;
   const previousScope = new Set(previousAuthorization?.scope as Scope[]);
   const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
   const scopes = new Set(decodeURIComponent(authRequest.data.scope).split(' ') as Scope[]);
@@ -213,9 +213,9 @@ const ScopeItem: FC<ScopeItemProps> = ({ icon, children }) => {
   return <li><Icon icon={icon}/><div>{children}</div></li>;
 };
 
-function getPreviousAuthorization(clientId: string, userId: string) {
-  return db.authorization.findFirst({
-    where: { clientId, userId, type: { not: AuthorizationType.Code }},
+function getApplicationGrant(applicationId: string, userId: string) {
+  return db.applicationGrant.findUnique({
+    where: { userId_applicationId: { userId, applicationId }},
     include: { accounts: { select: { id: true }}}
   });
 }

@@ -4,23 +4,28 @@ import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { revalidatePath } from 'next/cache';
+import { getFormDataString } from '@/lib/form-data';
 
 export async function revokeAccess(_: FormState, formData: FormData): Promise<FormState> {
-  const clientId = formData.get('clientId');
+  const applicationId = getFormDataString(formData, 'applicationId');
 
-  if(!clientId || typeof clientId !== 'string') {
-    return { error: 'Invalid client id' };
+  if(!applicationId) {
+    return { error: 'Invalid application id' };
   }
 
   const session = await getSession();
-
   if(!session) {
     return { error: 'Not logged in' };
   }
 
-  await db.authorization.deleteMany({
-    where: { clientId, userId: session.userId }
-  });
+  await db.$transaction([
+    db.authorization.deleteMany({
+      where: { userId: session.userId, client: { applicationId }}
+    }),
+    db.applicationGrant.deleteMany({
+      where: { userId: session.userId, applicationId }
+    })
+  ]);
 
   revalidatePath('/applications');
 

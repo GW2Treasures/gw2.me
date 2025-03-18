@@ -1,12 +1,14 @@
 import { redirect } from 'next/navigation';
-import { validateRequest } from './validate';
+import { getApplicationByClientId, validateRequest } from './validate';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { AuthorizationRequestType } from '@gw2me/database';
 import { PageProps } from '@/lib/next';
-import { cancelAuthorizationRequest, createAuthorizationRequest, getPreviousAuthorizationMatchingScopes } from 'app/(authorize)/authorize/helper';
+import { cancelAuthorizationRequest, createAuthorizationRequest } from 'app/(authorize)/authorize/helper';
 import { authorizeInternal } from 'app/(authorize)/authorize/[id]/actions';
 import { createRedirectUrl } from '@/lib/redirectUrl';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
+import { db } from '@/lib/db';
+import { getSession } from '@/lib/session';
 
 export default async function AuthorizePage({ searchParams }: PageProps) {
   // validate request
@@ -23,12 +25,22 @@ export default async function AuthorizePage({ searchParams }: PageProps) {
 
   // if the prompt was not consent, we can try to instantly authorize the request
   if(request.prompt !== 'consent') {
-    // check if the user has previously authorized the same scopes
-    const previousAuthorization = await getPreviousAuthorizationMatchingScopes(authorizationRequest);
+    // get session
+    const session = await getSession();
 
-    if(previousAuthorization) {
+    // get application grant
+    const client = await getApplicationByClientId(request.client_id);
+    const appGrant = session
+      ? await getApplicationGrant(client.application.id, session.userId)
+      : undefined;
+
+    // check if the user has previously authorized the same scopes
+    const requestedScopes = new Set(authorizationRequest.data.scope.split(' '));
+    const hasEveryScopeAuthorized = appGrant && requestedScopes.values().every((scope) => appGrant.scope.includes(scope));
+
+    if(hasEveryScopeAuthorized) {
       // authorize the request. If this fails for some reason, we just ignore it and continue to redirect the user to the auth screen
-      await authorizeInternal(authorizationRequest.id, previousAuthorization.accounts.map(({ id }) => id), previousAuthorization.emailId);
+      await authorizeInternal(authorizationRequest.id, appGrant.accounts.map(({ id }) => id), appGrant.emailId);
     } else if(request.prompt === 'none') {
       // if the request has prompt=none, we have to cancel the authorization request and redirect the user back
       await cancelAuthorizationRequest(authorizationRequest.id);
@@ -49,3 +61,11 @@ export default async function AuthorizePage({ searchParams }: PageProps) {
 export const metadata = {
   title: 'Authorize'
 };
+
+
+function getApplicationGrant(applicationId: string, userId: string) {
+  return db.applicationGrant.findUnique({
+    where: { userId_applicationId: { userId, applicationId }},
+    include: { accounts: { select: { id: true }}}
+  });
+}

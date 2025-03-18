@@ -55,7 +55,8 @@ export async function authorizeInternal(
   // get authorization request
   const authorizationRequest = await db.authorizationRequest.findUnique({
     where: { id, state: 'Pending', ...notExpired },
-  }) as AuthorizationRequest | null;
+    include: { client: { select: { applicationId: true }}}
+  }) as (AuthorizationRequest & ({ client: { applicationId: string }})) | null;
 
   if(!authorizationRequest) {
     return { error: 'Authorization request not found' };
@@ -70,19 +71,25 @@ export async function authorizeInternal(
   }
 
 
+  // unique "applicationGrant" identifier
+  const applicationGrantIdentifier = {
+    userId_applicationId: { userId: session.userId, applicationId: authorizationRequest.client.applicationId }
+  };
+
+
   // get scopes
   const scopes = authorizationRequest.data.scope.split(' ') as Scope[];
 
   // include previously granted scopes
   if(authorizationRequest.data.include_granted_scopes) {
-    // get previous authorization
-    const previousAuthorization = await db.authorization.findFirst({
-      where: { clientId: authorizationRequest.clientId, userId: session.userId, type: { not: AuthorizationType.Code }},
-      include: { accounts: { select: { id: true }}}
+    // get app grant
+    const appGrant = await db.applicationGrant.findUnique({
+      select: { scope: true },
+      where: applicationGrantIdentifier
     });
 
     // add scopes
-    previousAuthorization?.scope.forEach((scope) => {
+    appGrant?.scope.forEach((scope) => {
       if(!scopes.includes(scope as Scope)) {
         scopes.push(scope as Scope);
       }
@@ -111,7 +118,23 @@ export async function authorizeInternal(
       userId: session.userId
     };
 
-    [,, authorization] = await db.$transaction([
+    [, authorization] = await db.$transaction([
+      // delete old pending authorization codes for this app
+      db.authorization.deleteMany({ where: identifier }),
+
+      // create code authorization in db
+      db.authorization.create({
+        data: {
+          ...identifier,
+          applicationId: authorizationRequest.client.applicationId,
+          scope: scopes,
+          redirectUri: authorizationRequest.type === 'OAuth2' ? authorizationRequest.data.redirect_uri : undefined,
+          codeChallenge: authorizationRequest.data.code_challenge_method ? `${authorizationRequest.data.code_challenge_method}:${authorizationRequest.data.code_challenge}` : null,
+          token: generateCode(),
+          expiresAt: expiresAt(60),
+        },
+      }),
+
       // set pending authorization request to authorized
       db.authorizationRequest.update({
         where: { id },
@@ -121,21 +144,20 @@ export async function authorizeInternal(
         },
       }),
 
-      // delete old pending authorization codes for this app
-      db.authorization.deleteMany({ where: identifier }),
-
-      // create code authorization in db
-      db.authorization.create({
-        data: {
-          ...identifier,
+      // create or update applicationGrant
+      db.applicationGrant.upsert({
+        where: applicationGrantIdentifier,
+        create: {
+          ...applicationGrantIdentifier.userId_applicationId,
           scope: scopes,
-          redirectUri: authorizationRequest.type === 'OAuth2' ? authorizationRequest.data.redirect_uri : undefined,
-          codeChallenge: authorizationRequest.data.code_challenge_method ? `${authorizationRequest.data.code_challenge_method}:${authorizationRequest.data.code_challenge}` : null,
-          token: generateCode(),
-          expiresAt: expiresAt(60),
+          accounts: { connect: accountIds.map((id) => ({ id })) },
+          emailId,
+        },
+        update: {
+          scope: scopes,
           accounts: { connect: accountIds.map((id) => ({ id })) },
           emailId
-        },
+        }
       }),
     ]);
   } catch(error) {

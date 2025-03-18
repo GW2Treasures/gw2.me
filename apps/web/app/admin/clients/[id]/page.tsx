@@ -21,7 +21,6 @@ const getClient = cache(function getClient(id: string) {
       application: true,
       authorizations: {
         include: {
-          email: true,
           user: true,
         }
       },
@@ -54,7 +53,6 @@ export default async function AdminUserDetailPage({ params }: AdminClientDetailP
         <Authorizations.Column id="type" title="Type" sortBy="type">{({ type }) => type}</Authorizations.Column>
         <Authorizations.Column id="user" title="User" sortBy="userId">{({ user }) => <Link href={`/admin/users/${user.id}`}><FlexRow><Icon icon="user"/>{user.name}</FlexRow></Link>}</Authorizations.Column>
         <Authorizations.Column id="scope" title="Scope" hidden>{({ scope }) => scope.join(' ')}</Authorizations.Column>
-        <Authorizations.Column id="email" title="Email" hidden>{({ email }) => email?.email}</Authorizations.Column>
         <Authorizations.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Authorizations.Column>
         <Authorizations.Column id="expiresAt" title="Expires At" sortBy="expiresAt">{({ expiresAt }) => expiresAt ? (expiresAt < now ? <s><FormatDate date={expiresAt}/></s> : <FormatDate date={expiresAt}/>) : 'Never'}</Authorizations.Column>
         <Authorizations.Column id="usedAt" title="Used At" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'Never'}</Authorizations.Column>

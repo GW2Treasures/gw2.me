@@ -29,12 +29,7 @@ const getUser = cache(function getUser(id: string) {
     include: {
       authorizations: {
         include: {
-          client: {
-            include: {
-              application: { select: { name: true, imageId: true }},
-            }
-          },
-          email: { select: { email: true }}
+          application: { select: { name: true, imageId: true }},
         }
       },
       accounts: {
@@ -42,7 +37,7 @@ const getUser = cache(function getUser(id: string) {
       },
       providers: true,
       emails: {
-        include: { _count: { select: { authorizations: true }}},
+        include: { _count: { select: { applicationGrants: true }}},
         orderBy: { email: 'asc' }
       },
       sessions: {
@@ -84,11 +79,11 @@ export default async function AdminUserDetailPage({ params }: AdminUserDetailPag
       <Headline id="authorizations" actions={<ColumnSelection table={Authorizations}/>}>Authorizations ({user.authorizations.length})</Headline>
       <Authorizations.Table>
         <Authorizations.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Authorizations.Column>
-        <Authorizations.Column id="app" title="App">{({ client }) => <FlexRow><ApplicationImage fileId={client.application.imageId}/> {client.application.name}</FlexRow>}</Authorizations.Column>
-        <Authorizations.Column id="clientId" title="Client Id" hidden>{({ client }) => <Code inline borderless>{client.id}</Code>}</Authorizations.Column>
+        <Authorizations.Column id="app" title="App">{({ application }) => <FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow>}</Authorizations.Column>
+        <Authorizations.Column id="clientId" title="Client Id" hidden>{({ clientId }) => <Code inline borderless>{clientId}</Code>}</Authorizations.Column>
+        <Authorizations.Column id="applicationId" title="Application Id" hidden>{({ applicationId }) => <Code inline borderless>{applicationId}</Code>}</Authorizations.Column>
         <Authorizations.Column id="type" title="Type" sortBy="type">{({ type }) => type}</Authorizations.Column>
         <Authorizations.Column id="scope" title="Scope" hidden>{({ scope }) => scope.join(' ')}</Authorizations.Column>
-        <Authorizations.Column id="email" title="Email" hidden>{({ email }) => email?.email}</Authorizations.Column>
         <Authorizations.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Authorizations.Column>
         <Authorizations.Column id="expiresAt" title="Expires At" sortBy="expiresAt">{({ expiresAt }) => expiresAt ? <FormatDate date={expiresAt}/> : 'Never'}</Authorizations.Column>
         <Authorizations.Column id="usedAt" title="Used At" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'Never'}</Authorizations.Column>
@@ -121,7 +116,7 @@ export default async function AdminUserDetailPage({ params }: AdminUserDetailPag
           <Emails.Column id="email" title="Email">{({ email }) => email}</Emails.Column>
           <Emails.Column id="default" title="Default">{({ isDefaultForUserId }) => isDefaultForUserId && <Icon icon="checkmark"/>}</Emails.Column>
           <Emails.Column id="verified" title="Verified">{({ verified, verificationToken }) => verified ? <Icon icon="checkmark"/> : !!verificationToken && <Icon icon="time"/>}</Emails.Column>
-          <Emails.Column id="authorizations" title="Authorizations">{({ _count }) => _count.authorizations}</Emails.Column>
+          <Emails.Column id="grants" title="Grants">{({ _count }) => _count.applicationGrants}</Emails.Column>
           <Emails.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Emails.Column>
           <Emails.Column small title="Actions" id="actions">
             {({ id, verified }) => (

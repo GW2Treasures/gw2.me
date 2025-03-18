@@ -5,7 +5,6 @@ import { cache } from 'react';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
-import { AuthorizationType } from '@gw2me/database';
 import { Icon } from '@gw2treasures/ui';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
@@ -19,7 +18,7 @@ const getAccounts = cache(async () => {
     include: {
       _count: {
         select: {
-          authorizations: { where: { type: AuthorizationType.AccessToken }},
+          applicationGrants: true,
           apiTokens: true
         }
       }
@@ -50,10 +49,10 @@ export default async function ProfilePage() {
           <Accounts.Column title="Verified" id="verified" sortBy={({ verified }) => verified ? 1 : 0}>
             {({ verified }) => <FlexRow><Icon icon={verified ? 'verified' : 'unverified'}/> {verified ? 'Verified' : 'Not Verified'}</FlexRow>}
           </Accounts.Column>
-          <Accounts.Column title="Authorized Applications" id="apps" align="right" sortBy={({ _count }) => _count.authorizations}>
-            {({ _count }) => _count.authorizations}
+          <Accounts.Column title="Authorized Applications" id="apps" align="right" sortBy={({ _count }) => _count.applicationGrants}>
+            {({ _count }) => _count.applicationGrants}
           </Accounts.Column>
-          <Accounts.Column title="API Keys" id="keys" align="right" sortBy={({ _count }) => _count.authorizations}>
+          <Accounts.Column title="API Keys" id="keys" align="right" sortBy={({ _count }) => _count.apiTokens}>
             {({ _count }) => _count.apiTokens}
           </Accounts.Column>
           <Accounts.Column small title="Actions" id="actions">
