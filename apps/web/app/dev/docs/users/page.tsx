@@ -17,7 +17,7 @@ export default function DevDocsGW2APIPage() {
       </p>
 
       <p>
-        The endpoint <Code inline>https://gw2.me/api/user</Code> will return the user&apos;s account id and username.
+        The endpoint <Code inline>https://gw2.me/api/user</Code> will return the user&apos;s id and name.
         You will need to pass the <Code inline>access_token</Code> as a header (<Code inline>Authorization: Bearer &lt;access_token&gt;</Code>).
         If the users has also authorized the <Code inline>{Scope.Email}</Code> scope, the response will additionally include the user&apos;s email address and verification status.
       </p>
