@@ -3,7 +3,7 @@
 import { Gw2MeClient, Scope } from '@gw2me/client';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
+import { startTransition, useCallback, useEffect, useMemo, useState, type FC } from 'react';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
@@ -24,23 +24,21 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
   const [mode, setMode] = useState<'passive' | 'active'>();
   const gw2me = useMemo(() => new Gw2MeClient({ client_id: clientId }, { url: gw2meUrl }), [clientId, gw2meUrl]);
 
-  // check if this browser supports mode=button
   useEffect(() => {
-    let supportsFedCmMode = false;
+    setLoading(false);
+
+    // check if this browser supports mode=button
     try {
       navigator.credentials.get({
         identity: Object.defineProperty(
           {}, 'mode', {
-            get () { supportsFedCmMode = true; }
+            get () { startTransition(() => { setSupportsFedCmMode(true); }); }
           }
         )
       } as CredentialRequestOptions).catch(() => {});
     } catch {
       // empty on purpose
     }
-
-    setSupportsFedCmMode(supportsFedCmMode);
-    setLoading(false);
   }, []);
 
   // trigger FedCM
