@@ -1,5 +1,5 @@
 import type { Options } from './types';
-import { jsonOrError } from './util';
+import { jsonOrError, okOrError } from './util';
 
 export interface UserResponse {
   user: {
@@ -7,7 +7,8 @@ export interface UserResponse {
     name: string;
     email?: string;
     emailVerified?: boolean;
-  }
+  },
+  settings?: unknown;
 }
 
 export interface AccountsResponse {
@@ -36,6 +37,17 @@ export class Gw2MeApi {
       headers: { 'Authorization': `Bearer ${this.access_token}` },
       cache: 'no-store',
     }).then(jsonOrError);
+  }
+
+  saveSettings(settings: unknown): Promise<void> {
+    return fetch(this.#getUrl('api/user/settings'), {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(settings),
+    }).then(okOrError);
   }
 
   accounts(): Promise<AccountsResponse> {

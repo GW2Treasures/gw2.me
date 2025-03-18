@@ -12,6 +12,7 @@ export default function DevLayout({ children }: LayoutProps) {
         { segment: ['docs', 'access-tokens'], label: 'Getting Access Tokens' },
         { segment: ['docs', 'refresh-tokens'], label: 'Refreshing Tokens' },
         { segment: ['docs', 'gw2-api'], label: 'Guild Wars 2 API' },
+        { segment: ['docs', 'users'], label: 'Users' },
         { segment: ['docs', 'scopes'], label: 'Scopes' },
         { segment: ['docs', 'fed-cm'], label: 'FedCM API' },
         { segment: ['docs', 'best-practices'], label: 'Best Practices' },

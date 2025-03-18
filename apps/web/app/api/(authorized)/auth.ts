@@ -112,3 +112,7 @@ export function getApplicationGrantByAuthorization(authorization: Authorization)
     where: { userId_applicationId: { userId: authorization.userId, applicationId: authorization.applicationId }}
   });
 }
+
+export function OptionsHandler(request: NextRequest) {
+  return new NextResponse(null, { headers: corsHeaders(request), status: 204 });
+}
