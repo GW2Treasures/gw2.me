@@ -49,10 +49,6 @@ export default function DevDocsGW2APIPage() {
       </p>
 
       <p>
-        Since the settings allow storing arbitrary data, it is your responsibility to validate the schema of the settings object before using it.
-      </p>
-
-      <p>
         If you have stored settings for the user, the <Code inline>https://gw2.me/api/user</Code> endpoint will include the settings in addition to the user details in the response.
       </p>
 
@@ -74,6 +70,7 @@ export default function DevDocsGW2APIPage() {
 
       <p>
         Keep in mind that, if the access token is visible to the user (e.g. in a client-side app), the user can modify these settings. Only store settings that are not critical to your app.
+        It is your responsibility to validate the settings object before using it.
       </p>
     </PageLayout>
   );
