@@ -6,15 +6,15 @@ export namespace AuthorizationRequestData {
     response_type: string;
     client_id: string;
     scope: string;
-    state?: string;
     code_challenge?: string;
     code_challenge_method?: string;
-    prompt?: string;
     include_granted_scopes?: string;
     verified_accounts_only?: string;
   }
 
   export interface OAuth2 extends Common {
+    prompt?: string;
+    state?: string;
     redirect_uri: string;
   }
 
