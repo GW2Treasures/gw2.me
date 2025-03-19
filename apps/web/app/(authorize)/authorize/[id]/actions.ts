@@ -118,9 +118,25 @@ export async function authorizeInternal(
       userId: session.userId
     };
 
-    [, authorization] = await db.$transaction([
+    [,, authorization] = await db.$transaction([
       // delete old pending authorization codes for this app
       db.authorization.deleteMany({ where: identifier }),
+
+      // create or update applicationGrant
+      db.applicationGrant.upsert({
+        where: applicationGrantIdentifier,
+        create: {
+          ...applicationGrantIdentifier.userId_applicationId,
+          scope: scopes,
+          accounts: { connect: accountIds.map((id) => ({ id })) },
+          emailId,
+        },
+        update: {
+          scope: scopes,
+          accounts: { connect: accountIds.map((id) => ({ id })) },
+          emailId
+        }
+      }),
 
       // create code authorization in db
       db.authorization.create({
@@ -142,22 +158,6 @@ export async function authorizeInternal(
           state: AuthorizationRequestState.Authorized,
           userId: session.userId,
         },
-      }),
-
-      // create or update applicationGrant
-      db.applicationGrant.upsert({
-        where: applicationGrantIdentifier,
-        create: {
-          ...applicationGrantIdentifier.userId_applicationId,
-          scope: scopes,
-          accounts: { connect: accountIds.map((id) => ({ id })) },
-          emailId,
-        },
-        update: {
-          scope: scopes,
-          accounts: { connect: accountIds.map((id) => ({ id })) },
-          emailId
-        }
       }),
     ]);
   } catch(error) {
