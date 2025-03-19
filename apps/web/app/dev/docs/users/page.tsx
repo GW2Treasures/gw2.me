@@ -77,5 +77,5 @@ export default function DevDocsGW2APIPage() {
 }
 
 export const metadata = {
-  title: 'Access the Guild Wars 2 API',
+  title: 'Users',
 };

@@ -132,5 +132,5 @@ export default function DevDocsRegisterAppPage() {
 }
 
 export const metadata = {
-  title: 'Register Application',
+  title: 'Manage Applications',
 };
