@@ -7,7 +7,7 @@ settings:
 overrides:
   react: 19.0.0
   react-dom: 19.0.0
-  '@types/react': 19.0.11
+  '@types/react': 19.0.12
   '@types/react-dom': 19.0.4
 
 importers:
@@ -64,11 +64,11 @@ importers:
         specifier: 22.13.10
         version: 22.13.10
       '@types/react':
-        specifier: 19.0.11
-        version: 19.0.11
+        specifier: 19.0.12
+        version: 19.0.12
       '@types/react-dom':
         specifier: 19.0.4
-        version: 19.0.4(@types/react@19.0.11)
+        version: 19.0.4(@types/react@19.0.12)
       eslint:
         specifier: 8.57.1
         version: 8.57.1
@@ -113,11 +113,11 @@ importers:
         specifier: 0.0.309
         version: 0.0.309
       '@types/react':
-        specifier: 19.0.11
-        version: 19.0.11
+        specifier: 19.0.12
+        version: 19.0.12
       '@types/react-dom':
         specifier: 19.0.4
-        version: 19.0.4(@types/react@19.0.11)
+        version: 19.0.4(@types/react@19.0.12)
       archiver:
         specifier: 7.0.1
         version: 7.0.1
@@ -235,7 +235,7 @@ importers:
         version: 6.6.3
       '@testing-library/react':
         specifier: 16.2.0
-        version: 16.2.0(@testing-library/dom@10.0.0)(@types/react-dom@19.0.4(@types/react@19.0.11))(@types/react@19.0.11)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        version: 16.2.0(@testing-library/dom@10.0.0)(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -246,11 +246,11 @@ importers:
         specifier: 6.4.17
         version: 6.4.17
       '@types/react':
-        specifier: 19.0.11
-        version: 19.0.11
+        specifier: 19.0.12
+        version: 19.0.12
       '@types/react-dom':
         specifier: 19.0.4
-        version: 19.0.4(@types/react@19.0.11)
+        version: 19.0.4(@types/react@19.0.12)
       eslint:
         specifier: 8.57.1
         version: 8.57.1
@@ -384,8 +384,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@types/react':
-        specifier: 19.0.11
-        version: 19.0.11
+        specifier: 19.0.12
+        version: 19.0.12
       eslint:
         specifier: 8.57.1
         version: 8.57.1
@@ -1588,7 +1588,7 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       '@testing-library/dom': ^10.0.0
-      '@types/react': 19.0.11
+      '@types/react': 19.0.12
       '@types/react-dom': 19.0.4
       react: 19.0.0
       react-dom: 19.0.0
@@ -1707,10 +1707,10 @@ packages:
   '@types/react-dom@19.0.4':
     resolution: {integrity: sha512-4fSQ8vWFkg+TGhePfUzVmat3eC14TXYSsiiDSLI0dVLsrm9gZFABjPy/Qu6TKgl1tq1Bu1yDsuQgY3A3DOjCcg==}
     peerDependencies:
-      '@types/react': 19.0.11
+      '@types/react': 19.0.12
 
-  '@types/react@19.0.11':
-    resolution: {integrity: sha512-vrdxRZfo9ALXth6yPfV16PYTLZwsUWhVjjC+DkfE5t1suNSbBrWC9YqSuuxJZ8Ps6z1o2ycRpIqzZJIgklq4Tw==}
+  '@types/react@19.0.12':
+    resolution: {integrity: sha512-V6Ar115dBDrjbtXSrS+/Oruobc+qVbbUxDFC1RSbRqLt5SYvxxyIDrSC85RWml54g+jfNeEMZhEj7wW07ONQhA==}
 
   '@types/readdir-glob@1.1.4':
     resolution: {integrity: sha512-uEJsErL2wFCTcbbmJpIuD8OWYNabgv1oaYP2bOkzZXKtk3c6LCYQEKngIqBj2VR2NMv9DOAXSkxSYOWtHxh2gQ==}
@@ -5954,15 +5954,15 @@ snapshots:
       lodash: 4.17.21
       redent: 3.0.0
 
-  '@testing-library/react@16.2.0(@testing-library/dom@10.0.0)(@types/react-dom@19.0.4(@types/react@19.0.11))(@types/react@19.0.11)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@testing-library/react@16.2.0(@testing-library/dom@10.0.0)(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@babel/runtime': 7.23.2
       '@testing-library/dom': 10.0.0
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
     optionalDependencies:
-      '@types/react': 19.0.11
-      '@types/react-dom': 19.0.4(@types/react@19.0.11)
+      '@types/react': 19.0.12
+      '@types/react-dom': 19.0.4(@types/react@19.0.12)
 
   '@tootallnate/once@2.0.0': {}
 
@@ -6087,11 +6087,11 @@ snapshots:
     dependencies:
       '@types/node': 22.13.10
 
-  '@types/react-dom@19.0.4(@types/react@19.0.11)':
+  '@types/react-dom@19.0.4(@types/react@19.0.12)':
     dependencies:
-      '@types/react': 19.0.11
+      '@types/react': 19.0.12
 
-  '@types/react@19.0.11':
+  '@types/react@19.0.12':
     dependencies:
       csstype: 3.1.2
 
