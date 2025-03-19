@@ -34,9 +34,13 @@ export default function DevDocsFedCmPage() {
         Instead the user will be shown a browser dialog where they can grant permission to sign in.
       </p>
       <p>
-        It is possible to request specific <Link href="/dev/docs/scopes">scopes</Link> when using FedCM in browsers supporting FedCM params (Chrome 132+). If the user has not granted these scopes before,
-        the user will be shown an authorization dialog using the FedCM Continuation API. All previously granted scopes are always included,
-        as if <Code inline>include_granted_scopes</Code> is used with the normal OAuth2 flow. If the browser does not support FedCM params, the scopes will default to <Code inline>identify email</Code>.
+        It is possible to request specific <Link href="/dev/docs/scopes">scopes</Link> when using FedCM in browsers supporting FedCM params (Chrome 132+).
+        If the user has not granted these scopes before, the user will be shown an authorization dialog using the FedCM Continuation API.
+        All previously granted scopes are always included, as if <Code inline>include_granted_scopes</Code> is used with the normal OAuth2 flow.
+        If the browser does not support FedCM params, the scopes will default to <Code inline>identify email</Code>.
+      </p>
+      <p>
+        <Link href="/dev/docs/access-tokens#pkce">PKCE</Link> is required when using FedCM.
       </p>
       <p>
         It is only possible to initialize FedCM authentication from an origin which matches one of the registered OAuth2 redirect URLs.
@@ -53,5 +57,5 @@ export default function DevDocsFedCmPage() {
 }
 
 export const metadata = {
-  title: 'Access the Guild Wars 2 API',
+  title: 'Federated Credential Management (FedCM)',
 };

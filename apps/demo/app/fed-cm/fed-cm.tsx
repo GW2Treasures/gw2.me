@@ -9,13 +9,15 @@ import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
+import { PKCEChallenge } from '@gw2me/client/pkce';
 
 export interface FedCmProps {
-  clientId: string;
-  gw2meUrl: string;
+  clientId: string,
+  gw2meUrl: string,
+  pkceChallenge: PKCEChallenge,
 }
 
-export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
+export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl, pkceChallenge }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [supportsFedCmMode, setSupportsFedCmMode] = useState(false);
@@ -54,7 +56,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
     setAbort(abortController);
     setError(undefined);
 
-    gw2me.fedCM.request({ mode, mediation, signal: abortController.signal, scopes }).then((credential) => {
+    gw2me.fedCM.request({ mode, mediation, signal: abortController.signal, scopes, ...pkceChallenge }).then((credential) => {
       setAbort(undefined);
 
       if(credential) {
@@ -68,7 +70,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
         setError(e.toString());
       }
     });
-  }, [abort, gw2me.fedCM, gw2meUrl, mediation, mode, router, scopes]);
+  }, [abort, gw2me.fedCM, gw2meUrl, mediation, mode, pkceChallenge, router, scopes]);
 
   if(loading || !gw2me.fedCM.isSupported()) {
     return (

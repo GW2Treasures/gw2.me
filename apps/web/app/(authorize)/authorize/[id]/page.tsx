@@ -14,7 +14,7 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { authorize, authorizeInternal, cancelAuthorization } from './actions';
 import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
-import { AuthorizationRequestState, User, UserEmail } from '@gw2me/database';
+import { AuthorizationRequestState, AuthorizationRequestType, User, UserEmail } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
 import { LoginForm } from 'app/login/form';
 import { Metadata } from 'next';
@@ -82,14 +82,19 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
   const oldScopes = Array.from(previousScope).filter((scope) => scopes.has(scope));
 
   // handle prompt!=consent
+  // TODO: is this required? This should already be handled in the OAuth2 entrypoint (/oauth2/authorize).
+  //   All requests getting here should always show the consent screen.
   const allPreviouslyAuthorized = newScopes.length === 0;
+  const canImmediateAuthorize = authRequest.type === AuthorizationRequestType.OAuth2 && authRequest.data.prompt !== 'consent';
   let autoAuthorizeState: FormState | undefined;
-  if(allPreviouslyAuthorized && authRequest.data.prompt !== 'consent') {
+  if(allPreviouslyAuthorized && canImmediateAuthorize) {
     autoAuthorizeState = await authorizeInternal(id, previousAccountIds, previousAuthorization?.emailId ?? undefined);
   }
 
   // handle prompt=none
-  if(!allPreviouslyAuthorized && authRequest.data.prompt === 'none') {
+  // TODO: is this required? This should already be handled in the OAuth2 entrypoint (/oauth2/authorize).
+  //   All requests with prompt=none should already have been aborted there.
+  if(!allPreviouslyAuthorized && authRequest.type === AuthorizationRequestType.OAuth2 && authRequest.data.prompt === 'none') {
     await cancelAuthorization(authRequest.id);
   }
 
