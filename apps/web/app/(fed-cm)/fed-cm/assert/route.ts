@@ -141,20 +141,9 @@ export async function POST(request: NextRequest) {
       userId: user.id
     };
 
-    [, authorization] = await db.$transaction([
+    [,, authorization] = await db.$transaction([
       // delete old pending authorization codes for this app
       db.authorization.deleteMany({ where: identifier }),
-
-      // create code authorization in db
-      db.authorization.create({
-        data: {
-          ...identifier,
-          applicationId: client.applicationId,
-          scope: Array.from(scopes),
-          token: generateCode(),
-          expiresAt: expiresAt(60),
-        },
-      }),
 
       // create or update applicationGrant
       db.applicationGrant.upsert({
@@ -170,6 +159,17 @@ export async function POST(request: NextRequest) {
           accounts: applicationGrant?.accounts ? { connect: applicationGrant.accounts } : undefined,
           emailId: applicationGrant?.emailId ?? user.defaultEmail?.id,
         }
+      }),
+
+      // create code authorization in db
+      db.authorization.create({
+        data: {
+          ...identifier,
+          applicationId: client.applicationId,
+          scope: Array.from(scopes),
+          token: generateCode(),
+          expiresAt: expiresAt(60),
+        },
       }),
     ]);
   } catch(error) {
