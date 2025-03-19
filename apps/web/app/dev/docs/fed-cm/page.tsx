@@ -18,7 +18,8 @@ export default function DevDocsFedCmPage() {
 
       <p>
         FedCM is a browser API for privacy-preserving federated authentication without the need for third-party cookies and redirects.
-        You can read more about FedCM on <ExternalLink href="https://developer.mozilla.org/en-US/docs/Web/API/FedCM_API">MDN</ExternalLink>.
+        You can read more about FedCM on <ExternalLink href="https://developer.mozilla.org/en-US/docs/Web/API/FedCM_API">MDN</ExternalLink>{' '}
+        or <ExternalLink href="https://developers.google.com/privacy-sandbox/cookies/fedcm">Google for Developers</ExternalLink>.
         FedCM is still an experimental technology only available in Chrome based browsers at the moment, though other browsers are working on implementing it already.
         The use of FedCM with gw2.me is optional.
       </p>
@@ -33,9 +34,9 @@ export default function DevDocsFedCmPage() {
         Instead the user will be shown a browser dialog where they can grant permission to sign in.
       </p>
       <p>
-        It is currently not yet possible to configure specific <Link href="/dev/docs/scopes">scopes</Link> when requesting authentication via FedCM.
-        At the moment the requested scopes are always <Code inline>identify</Code> and <Code inline>email</Code>, but all previously granted scopes are included as well,
-        as if <Code inline>include_granted_scopes</Code> is used with the normal OAuth2 flow. If other scopes or options are required, the normal OAuth2 flow has to be used.
+        It is possible to request specific <Link href="/dev/docs/scopes">scopes</Link> when using FedCM in browsers supporting FedCM params (Chrome 132+). If the user has not granted these scopes before,
+        the user will be shown an authorization dialog using the FedCM Continuation API. All previously granted scopes are always included,
+        as if <Code inline>include_granted_scopes</Code> is used with the normal OAuth2 flow. If the browser does not support FedCM params, the scopes will default to <Code inline>identify email</Code>.
       </p>
       <p>
         It is only possible to initialize FedCM authentication from an origin which matches one of the registered OAuth2 redirect URLs.

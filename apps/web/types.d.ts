@@ -29,5 +29,7 @@ interface Window {
 interface IdentityProvider {
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IdentityProvider/close_static) */
   close(): undefined
+
+  resolve(token: string, options?: { accountId: string }): undefined
 }
 

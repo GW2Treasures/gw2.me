@@ -179,8 +179,8 @@ export async function authorizeInternal(
     }
 
     case AuthorizationRequestType.FedCM: {
-      // redirect user to page that calls `IdentityProvider.resolve()`
-      return redirect('/fed-cm/authorize');
+      // redirect user to page that calls `IdentityProvider.resolve(code)`
+      return redirect(`/fed-cm/authorize?code=${encodeURIComponent(authorization.token)}`);
     }
   }
 }
@@ -206,8 +206,8 @@ export async function cancelAuthorization(id: string) {
     }
 
     case AuthorizationRequestType.FedCM: {
-      // redirect user to page that calls `IdentityProvider.close()`
-      return redirect('/fed-cm/cancel');
+      // redirecting the user to /fed-cm/authorize without a code query parameter will call `IdentityProvider.close()`
+      return redirect('/fed-cm/authorize');
     }
   }
 }

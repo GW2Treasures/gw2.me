@@ -8,6 +8,7 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 
 export interface FedCmProps {
   clientId: string;
@@ -22,6 +23,8 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
   const [error, setError] = useState<string>();
   const [mediation, setMediation] = useState<CredentialMediationRequirement>('optional');
   const [mode, setMode] = useState<'passive' | 'active'>();
+  const [scopes, setScopes] = useState<Scope[]>([Scope.Identify, Scope.Email]);
+
   const gw2me = useMemo(() => new Gw2MeClient({ client_id: clientId }, { url: gw2meUrl }), [clientId, gw2meUrl]);
 
   useEffect(() => {
@@ -51,7 +54,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
     setAbort(abortController);
     setError(undefined);
 
-    gw2me.fedCM.request({ mode, mediation, signal: abortController.signal, scopes: [Scope.Identify, Scope.Email] }).then((credential) => {
+    gw2me.fedCM.request({ mode, mediation, signal: abortController.signal, scopes }).then((credential) => {
       setAbort(undefined);
 
       if(credential) {
@@ -59,12 +62,13 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
         router.push(`/callback?code=${credential.token}&iss=${encodeURIComponent(new URL(gw2meUrl).origin)}`);
       }
     }).catch((e) => {
+      console.log(e);
       if(!(e instanceof DOMException && e.name === 'AbortError')) {
         setAbort(undefined);
         setError(e.toString());
       }
     });
-  }, [abort, gw2me.fedCM, gw2meUrl, mediation, mode, router]);
+  }, [abort, gw2me.fedCM, gw2meUrl, mediation, mode, router, scopes]);
 
   if(loading || !gw2me.fedCM.isSupported()) {
     return (
@@ -83,6 +87,14 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl }) => {
           <Select options={['passive', 'active'].map((m) => ({ label: m, value: m }))} value={mode} onChange={setMode as (value: string) => void}/>
         </Label>
       )}
+
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        {Object.values(Scope).map((scope) => (
+          <Checkbox key={scope} checked={scopes.includes(scope)} onChange={(checked) => setScopes(checked ? [...scopes, scope] : scopes.filter((s) => s !== scope))}>
+            {scope}
+          </Checkbox>
+        ))}
+      </div>
 
       <FlexRow>
         <Button onClick={handleClick} icon={abort ? 'loading' : 'gw2me'}>Trigger FedCM</Button>
