@@ -3,12 +3,14 @@ import { getUser } from '@/lib/session';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { getFormDataString } from '@/lib/form-data';
 import { corsHeaders } from '@/lib/cors-header';
-import { Authorization, AuthorizationType } from '@gw2me/database';
+import { Authorization, AuthorizationRequestType, AuthorizationType } from '@gw2me/database';
 import { db } from '@/lib/db';
 import { generateCode } from '@/lib/token';
 import { expiresAt } from '@/lib/date';
 import { Scope } from '@gw2me/client';
 import { normalizeScopes } from 'app/(authorize)/oauth2/authorize/validate';
+import { createAuthorizationRequest } from 'app/(authorize)/authorize/helper';
+import { getUrlFromRequest } from '@/lib/url';
 
 export async function POST(request: NextRequest) {
   // verify `Sec-Fetch-Dest: webidentity` header is set
@@ -93,6 +95,7 @@ export async function POST(request: NextRequest) {
   normalizeScopes(requestedScopes);
 
   // always include previous scopes if available (as if `include_granted_scopes` is set during OAuth authorization)
+  // TODO: this could be made configurable (params)
   const scopes = previousScopes.union(requestedScopes);
 
   // get new scopes
@@ -110,25 +113,25 @@ export async function POST(request: NextRequest) {
 
   // make sure all scopes were either previously authorized or disclosed
   if(undisclosedNewScopes.size > 0) {
-    // TODO: use continue_on to display auth screen
-    console.error('[fed-cm/assert] undisclosed scopes', undisclosedNewScopes);
-    return Response.json(
-      { error: { code: OAuth2ErrorCode.invalid_scope, details: 'undisclosed new scopes' }},
-      { status: 400, headers: corsHeaders(request) }
+    console.warn('[fed-cm/assert] undisclosed scopes', undisclosedNewScopes);
+
+    // the user needs to authorize the additional scopes, create an authorization request
+    const authorizationRequest = await createAuthorizationRequest(AuthorizationRequestType.FedCM, {
+      client_id: clientId,
+      response_type: 'code',
+      scope: Array.from(scopes).join(' '),
+      include_granted_scopes: 'true',
+    });
+
+    // get URL of the authorization request
+    const continue_on = new URL(`/authorize/${authorizationRequest.id}`, getUrlFromRequest(request)).toString();
+
+    // return the continue_on URL to the client
+    // if the client does not support continue_on, the client will simply show an error
+    return NextResponse.json(
+      { continue_on },
+      { headers: corsHeaders(request) }
     );
-    // const authorizationRequest = await createAuthorizationRequest(AuthorizationRequestType.FedCM, {
-    //   client_id: clientId,
-    //   response_type: 'code',
-    //   scope: Array.from(scopes).join(' '),
-    //   include_granted_scopes: 'true',
-    // });
-
-    // const continue_on = new URL(`/authorize/${authorizationRequest.id}`, getUrlFromRequest(request)).toString();
-
-    // return NextResponse.json(
-    //   { continue_on },
-    //   { headers: corsHeaders(request) }
-    // );
   }
 
   // create code
