@@ -27,7 +27,7 @@ export const Features = <T extends AuthorizationRequestType>({ type, data }: Fea
   const features = [
     data.code_challenge_method && 'PKCE',
     data.include_granted_scopes && 'Include Granted Scopes',
-    type === AuthorizationRequestType.OAuth2 && !(data as AuthorizationRequestData.OAuth2).prompt && `Prompt: ${(data as AuthorizationRequestData.OAuth2).prompt}`,
+    type === AuthorizationRequestType.OAuth2 && (data as AuthorizationRequestData.OAuth2).prompt && `Prompt: ${(data as AuthorizationRequestData.OAuth2).prompt}`,
     type === AuthorizationRequestType.OAuth2 && !(data as AuthorizationRequestData.OAuth2).state && 'No State',
     data.verified_accounts_only && 'Verified Accounts',
   ].filter(isTruthy).join(', ');
