@@ -3,19 +3,22 @@ import { Gw2MeClient } from '@gw2me/client';
 import { generatePKCEPair, type PKCEPair } from '@gw2me/client/pkce';
 import { unstable_noStore } from 'next/cache';
 
-let pkce: PKCEPair | undefined = undefined;
+const globalForPKCE = globalThis as unknown as {
+  pkce: PKCEPair | undefined;
+};
 
 // generate PKCE pair on first invocation
 // otherwise return cached PKCE pair because we don't store it
 // reusing a PKCE pair is against the spec, but this is just a demo
 // DO NOT DO IT LIKE THIS IN A REAL-WORLD APPLICATION
 export async function getPKCEPair() {
-  if(!pkce) {
-    pkce = await generatePKCEPair();
+  if(!globalForPKCE.pkce) {
+    globalForPKCE.pkce = await generatePKCEPair();
   }
 
-  return pkce;
+  return globalForPKCE.pkce;
 }
+
 
 export const gw2me = new Gw2MeClient({
   client_id: process.env.DEMO_CLIENT_ID!,
