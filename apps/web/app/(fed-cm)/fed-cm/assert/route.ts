@@ -92,10 +92,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const currentUrl = getUrlFromRequest(request);
+
   // verify origin matches a registered callback url
-  const validOrigin = client.callbackUrls.some((url) => new URL(url).origin === origin);
+  // or self origin for button embed
+  const validOrigin = currentUrl.origin === origin || client.callbackUrls.some((url) => new URL(url).origin === origin);
   if(!validOrigin) {
-    console.error('[fed-cm/assert] invalid origin');
+    console.error('[fed-cm/assert] invalid origin', origin);
     return Response.json(
       { error: { code: OAuth2ErrorCode.invalid_request, details: 'wrong origin' }},
       { status: 400, headers: corsHeaders(request) }
@@ -150,7 +153,7 @@ export async function POST(request: NextRequest) {
     });
 
     // get URL of the authorization request
-    const continue_on = new URL(`/authorize/${authorizationRequest.id}`, getUrlFromRequest(request)).toString();
+    const continue_on = new URL(`/authorize/${authorizationRequest.id}`, currentUrl).toString();
 
     // return the continue_on URL to the client
     // if the client does not support continue_on, the client will simply show an error
