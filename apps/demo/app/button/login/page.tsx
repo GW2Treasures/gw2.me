@@ -1,5 +1,6 @@
 import { getCallback, getGw2MeUrl, getPKCEPair } from '@/lib/client';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { Button } from './button';
 
 export default async function ButtonPage({ searchParams }: { searchParams: Promise<{ scope: string[] }> }) {
   const pkce = await getPKCEPair();
@@ -16,7 +17,7 @@ export default async function ButtonPage({ searchParams }: { searchParams: Promi
   return (
     <div>
       <p>This button is an <code>&lt;iframe src=&quot;https://gw2.me/embed/button&quot;&gt;</code>.</p>
-      <iframe src={buttonUrl.toString()} height={36} width={250} style={{ border: 'none', overflow: 'hidden' }} allow="identity-credentials-get"/>
+      <Button url={buttonUrl.toString()} baseUrl={getGw2MeUrl()} clientId={process.env.DEMO_CLIENT_ID!} redirectUri={getCallback()} scopes={Array.isArray(scope) ? scope.join(' ') : scope}/>
 
       <div style={{ marginBottom: 32 }}/>
 

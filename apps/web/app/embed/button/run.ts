@@ -65,21 +65,31 @@ function run(fedCmConfig: { configURL: string, clientId: string }, scope: string
     e.preventDefault();
 
     // attempt FedCM
-    try {
-      // not using await on purpose, so only sync errors are catched
-      fedcm('active').then((credential) => {
-        if(credential && 'token' in credential) {
-          // redirect to the redirect URL with the token
-          open(fedCmRedirectUrl.toString() + '&code=' + credential.token, '_top');
-        }
-      });
-    } catch {
-      // fallback to form submission
-      form.submit();
-    }
+    // try {
+    //   // not using await on purpose, so only sync errors are catched
+    //   fedcm('active').then((credential) => {
+    //     if(credential && 'token' in credential) {
+    //       // redirect to the redirect URL with the token
+    //       open(fedCmRedirectUrl.toString() + '&code=' + credential.token, '_top');
+    //     }
+    //   });
+    // } catch {
+    //   // fallback to form submission
+    //   form.submit();
+    // }
+    parent.postMessage({ type: 'gw2.me:pkce-required' }, '*');
   });
 
   // instantly attempt passive FedCM
+  // get PKCE
+  parent.postMessage({ type: 'gw2.me:pkce-required' }, '*');
+
+  window.addEventListener('message', (message) => {
+    if(parent && message.source === parent && typeof message.data === 'object' && 'type' in message.data && message.data.type === 'gw2.me:pkce') {
+      fedcm('active').then(console.log);
+    }
+  });
+
   fedcm('passive').then((credential) => {
     if(credential && 'token' in credential) {
       // redirect to the redirect URL with the token
