@@ -12,6 +12,7 @@ export default async function ButtonPage({ searchParams }: { searchParams: Promi
   buttonUrl.searchParams.set('scopes', Array.isArray(scope) ? scope.join(' ') : scope);
   buttonUrl.searchParams.set('code_challenge', pkce.challenge.code_challenge);
   buttonUrl.searchParams.set('code_challenge_method', pkce.challenge.code_challenge_method);
+  buttonUrl.searchParams.set('state', 'demo-state');
 
   return (
     <div>

@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
   const scopes = request.nextUrl.searchParams.get('scopes');
   const code_challenge = request.nextUrl.searchParams.get('code_challenge');
   const code_challenge_method = request.nextUrl.searchParams.get('code_challenge_method');
+  const state = request.nextUrl.searchParams.get('state');
 
   if(!clientId || !redirectUri || !scopes) {
     return new NextResponse(null, { status: 400 });
@@ -25,10 +26,14 @@ export async function GET(request: NextRequest) {
   const authorizationUrl = new URL(new Gw2MeClient({ client_id: clientId }, { url: new URL('/', currentUrl).toString() }).getAuthorizationUrl({
     redirect_uri: redirectUri,
     scopes: scopes.split(' ') as Scope[],
+    state: state ?? undefined,
   }));
 
   const fedCmRedirectUrl = new URL(redirectUri);
   fedCmRedirectUrl.searchParams.set('iss', currentUrl.origin);
+  if(state) {
+    fedCmRedirectUrl.searchParams.set('state', state);
+  }
 
   const html = await renderToHTML(
     <html lang="en">
