@@ -3,7 +3,7 @@ import { getUser } from '@/lib/session';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { getFormDataString } from '@/lib/form-data';
 import { corsHeaders } from '@/lib/cors-header';
-import { Authorization, AuthorizationRequestType, AuthorizationType } from '@gw2me/database';
+import { Authorization, AuthorizationRequestType, AuthorizationType, Prisma } from '@gw2me/database';
 import { db } from '@/lib/db';
 import { generateCode } from '@/lib/token';
 import { expiresAt } from '@/lib/date';
@@ -12,6 +12,7 @@ import { normalizeScopes } from 'app/(authorize)/oauth2/authorize/validate';
 import { createAuthorizationRequest } from 'app/(authorize)/authorize/helper';
 import { getUrlFromRequest } from '@/lib/url';
 import { PKCEChallenge } from '@gw2me/client/pkce';
+import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
 
 export async function POST(request: NextRequest) {
   // verify `Sec-Fetch-Dest: webidentity` header is set
@@ -135,19 +136,20 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  const authorizationRequestData: AuthorizationRequestData.FedCM = {
+    client_id: clientId,
+    response_type: 'code',
+    scope: Array.from(scopes).join(' '),
+    include_granted_scopes: 'true',
+    ...pkce,
+  };
+
   // make sure all scopes were either previously authorized or disclosed
   if(undisclosedNewScopes.size > 0) {
-    console.warn('[fed-cm/assert] undisclosed scopes', undisclosedNewScopes);
+    console.log('[fed-cm/assert] undisclosed scopes', undisclosedNewScopes);
 
     // the user needs to authorize the additional scopes, create an authorization request
-    // TODO: always create authorization request, even if the request is instantly authorized
-    const authorizationRequest = await createAuthorizationRequest(AuthorizationRequestType.FedCM, {
-      client_id: clientId,
-      response_type: 'code',
-      scope: Array.from(scopes).join(' '),
-      include_granted_scopes: 'true',
-      ...pkce,
-    });
+    const authorizationRequest = await createAuthorizationRequest(AuthorizationRequestType.FedCM, authorizationRequestData);
 
     // get URL of the authorization request
     const continue_on = new URL(`/authorize/${authorizationRequest.id}`, getUrlFromRequest(request)).toString();
@@ -201,6 +203,17 @@ export async function POST(request: NextRequest) {
           codeChallenge: `${pkce.code_challenge_method}:${pkce.code_challenge}`
         },
       }),
+
+      // create authorization request to track usage
+      db.authorizationRequest.create({
+        data: {
+          data: authorizationRequestData as unknown as Prisma.JsonObject,
+          type: 'FedCM',
+          state: 'Authorized',
+          clientId: client.id,
+          userId: user.id,
+        }
+      })
     ]);
   } catch(error) {
     console.error('[fed-cm/assert] error');
