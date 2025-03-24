@@ -20,18 +20,18 @@ import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitBut
 
 export interface ApplicationFormProps {
   applicationId: string;
-  clients: (Client & { secrets: Pick<ClientSecret, 'id' | 'createdAt' | 'usedAt'>[] })[];
+  client: Client & { secrets: Pick<ClientSecret, 'id' | 'createdAt' | 'usedAt'>[] };
   editApplicationAction: (state: FormState, data: FormData) => Promise<FormState>;
   generateClientSecretAction: (state: GenerateClientSecretFormState, data: FormData) => Promise<GenerateClientSecretFormState>;
   deleteClientSecretAction: (state: FormState, data: FormData) => Promise<FormState>;
 }
 
-export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, clients, editApplicationAction, generateClientSecretAction, deleteClientSecretAction }) => {
-  const client = clients[0];
+export const ClientForm: FC<ApplicationFormProps> = ({ applicationId, client, editApplicationAction, generateClientSecretAction, deleteClientSecretAction }) => {
+  const selfUrl = `/dev/applications/${applicationId}/clients/${client.id}`;
 
-  const [editState, editAction, isEditPending] = useActionState(editApplicationAction, {}, `/dev/applications/${applicationId}`);
-  const [generateSecretState, generateSecretAction, isGenerateSecretPending] = useActionState(generateClientSecretAction, {}, `/dev/applications/${applicationId}`);
-  const [deleteSecretState, deleteSecretAction, isDeleteSecretPending] = useActionState(deleteClientSecretAction, {}, `/dev/applications/${applicationId}`);
+  const [editState, editAction, isEditPending] = useActionState(editApplicationAction, {}, selfUrl);
+  const [generateSecretState, generateSecretAction, isGenerateSecretPending] = useActionState(generateClientSecretAction, {}, selfUrl);
+  const [deleteSecretState, deleteSecretAction, isDeleteSecretPending] = useActionState(deleteClientSecretAction, {}, selfUrl);
 
   const isPending = isEditPending || isGenerateSecretPending || isDeleteSecretPending;
 
@@ -51,6 +51,10 @@ export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, clien
       </form>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <Label label="Name">
+          <TextInput name="name" defaultValue={client.name} form="edit"/>
+        </Label>
+
         <Label label="Type">
           <TextInput readOnly value={client.type}/>
         </Label>
@@ -115,6 +119,7 @@ export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, clien
       <FlexRow wrap>
         <Button type="submit" form="edit" disabled={isPending} icon={isEditPending ? 'loading' : undefined}>Save</Button>
         <LinkButton target="_blank" href={new Gw2MeClient({ client_id: client.id }, { url: 'http://placeholder/' }).getAuthorizationUrl({ redirect_uri: client.callbackUrls[0], scopes: [Scope.Identify], prompt: 'consent', include_granted_scopes: true }).replace('http://placeholder/', '/')}>Test Link <Icon icon="external"/></LinkButton>
+        <LinkButton icon="delete" href={`${selfUrl}/delete`}>Delete Client</LinkButton>
       </FlexRow>
     </>
   );

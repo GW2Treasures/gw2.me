@@ -1,0 +1,43 @@
+.clients {
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+}
+
+.client {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 48px 16px 16px;
+  color: var(--color-text);
+  text-decoration: none;
+  position: relative;
+}
+
+.client:hover {
+  background-color: var(--color-background-light);
+}
+
+.chevron {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  margin-top: -8px;
+}
+
+.client + .client {
+  border-top: 1px solid var(--color-border);
+}
+
+.title {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.type {
+  border: 1px solid var(--color-border);
+  font-size: 14px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-weight: normal;
+  margin-left: 8px;
+}
