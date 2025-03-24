@@ -22,7 +22,7 @@ export default async function DevApplicationDetailLayout({ params, children }: L
       </PageTitle>
       <NavBar base={`/dev/applications/${id}/`} items={[
         { segment: '(settings)', label: 'Settings', href: `/dev/applications/${id}/` },
-        { segment: 'clients', label: 'OAuth2 Client' },
+        { segment: 'clients', label: 'Clients' },
         { segment: 'users', label: 'Users' },
       ]}/>
       {children}

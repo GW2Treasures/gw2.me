@@ -6,7 +6,7 @@ import { getSession } from '@/lib/session';
 import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { revalidatePath } from 'next/cache';
 
-export async function editOAuth2Clients(applicationId: string, _: FormState, form: FormData): Promise<FormState> {
+export async function editOAuth2Client(applicationId: string, clientId: string, _: FormState, form: FormData): Promise<FormState> {
   const session = await getSession();
   if(!session) {
     return { error: 'Not logged in' };
@@ -14,7 +14,10 @@ export async function editOAuth2Clients(applicationId: string, _: FormState, for
 
   // get the existing application and verify ownership
   const application = await db.application.findUnique({
-    where: { id: applicationId, ownerId: session.userId }
+    where: { id: applicationId, ownerId: session.userId },
+    include: {
+      clients: { select: { id: true, name: true }}
+    }
   });
 
   if(!application) {
@@ -22,7 +25,16 @@ export async function editOAuth2Clients(applicationId: string, _: FormState, for
   }
 
   // get form data
+  const name = getFormDataString(form, 'name');
   const callbackUrlsRaw = getFormDataString(form, 'callbackUrls');
+
+  if(!name) {
+    return { error: 'Name is required' };
+  }
+
+  if(application.clients.some((other) => other.id !== clientId && other.name === name)) {
+    return { error: 'Name has to be unique' };
+  }
 
   if(callbackUrlsRaw === undefined) {
     return { error: 'Invalid redirect URLs' };
@@ -51,9 +63,12 @@ export async function editOAuth2Clients(applicationId: string, _: FormState, for
 
   revalidatePath(`/dev/applications/${applicationId}/clients`);
 
-  await db.client.updateMany({
-    where: { applicationId },
-    data: { callbackUrls },
+  await db.client.update({
+    where: { id: clientId, applicationId },
+    data: {
+      name,
+      callbackUrls
+    },
   });
 
   return { success: 'Application saved' };
