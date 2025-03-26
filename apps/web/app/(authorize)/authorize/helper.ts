@@ -5,15 +5,22 @@ import { expiresAt } from '@/lib/date';
 import { notExpired } from '@/lib/db/helper';
 import { getSession } from '@/lib/session';
 
+export const AuthorizationRequestExpiration: Record<AuthorizationRequestType, number> = {
+  [AuthorizationRequestType.OAuth2]: 60 * 5,
+  [AuthorizationRequestType.OAuth2_PAR]: 60,
+  [AuthorizationRequestType.FedCM]: 60 * 5,
+};
+
 export async function createAuthorizationRequest<T extends AuthorizationRequestType>(type: T, data: AuthorizationRequestData<T>): Promise<AuthorizationRequest> {
   // TODO: verify???
 
   const authorizationRequest = await db.authorizationRequest.create({
     data: {
+      state: type === AuthorizationRequestType.OAuth2_PAR ? 'Pushed' : 'Pending',
       data: data as unknown as Prisma.JsonObject,
       type,
       clientId: data.client_id,
-      expiresAt: expiresAt(60 * 5),
+      expiresAt: expiresAt(AuthorizationRequestExpiration[type]),
       userId: await getOptionalUserId(),
     }
   });
@@ -23,7 +30,7 @@ export async function createAuthorizationRequest<T extends AuthorizationRequestT
 
 export async function cancelAuthorizationRequest(id: string) {
   const canceled = await db.authorizationRequest.update({
-    where: { id, state: 'Pending', ...notExpired },
+    where: { id, state: { in: ['Pending', 'Pushed'] }, ...notExpired },
     data: {
       state: 'Canceled',
       userId: await getOptionalUserId(),

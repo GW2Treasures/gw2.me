@@ -190,7 +190,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
               <SubmitButton icon="gw2me-outline" type="submit" flex className={styles.authorizeButton}>Authorize {client.application.name}</SubmitButton>
             </div>
 
-            {authRequest.type === 'OAuth2' && (
+            {(authRequest.type === 'OAuth2' || authRequest.type === 'OAuth2_PAR') && (
               <div className={styles.redirectNote}>Authorizing will redirect you to <b>{new URL(authRequest.data.redirect_uri).origin}</b></div>
             )}
           </div>

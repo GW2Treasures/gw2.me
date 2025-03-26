@@ -37,7 +37,7 @@ export default async function AdminAuthorizationRequestsPage() {
 
       <AuthorizationRequests.Table>
         <AuthorizationRequests.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</AuthorizationRequests.Column>
-        <AuthorizationRequests.Column id="type" title="Type" sortBy="type">{({ type }) => type}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="type" title="Type" sortBy="type">{({ type }) => type === 'OAuth2_PAR' ? 'OAuth2 (PAR)' : type}</AuthorizationRequests.Column>
         <AuthorizationRequests.Column id="state" title="Status" sortBy="state">{({ state, expiresAt }) => <State state={state === AuthorizationRequestState.Pending && isExpired(expiresAt) ? 'Expired' : state}/>}</AuthorizationRequests.Column>
         <AuthorizationRequests.Column id="app" title="Application" sortBy="clientId">{({ client }) => <FlexRow><ApplicationImage fileId={client.application.imageId}/> {client.application.name}</FlexRow>}</AuthorizationRequests.Column>
         <AuthorizationRequests.Column id="features" title="Features">{({ type, data }) => <Features type={type} data={(data as unknown as AuthorizationRequestData)}/>}</AuthorizationRequests.Column>

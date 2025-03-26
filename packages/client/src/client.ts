@@ -15,6 +15,10 @@ export interface AuthorizationUrlParams {
   verified_accounts_only?: boolean;
 }
 
+export interface AuthorizationUrlRequestUriParams {
+  request_uri: string
+}
+
 export interface AuthTokenParams {
   code: string;
   redirect_uri: string;
@@ -52,6 +56,11 @@ export type IntrospectTokenResponse = {
   active: false,
 };
 
+export interface PushedAuthorizationRequestResponse {
+  request_uri: string,
+  expires_in: number,
+}
+
 export class Gw2MeClient {
   #client_id: string;
   #client_secret?: string;
@@ -68,45 +77,33 @@ export class Gw2MeClient {
     return new URL(url, this.options?.url || 'https://gw2.me/');
   }
 
-  public getAuthorizationUrl({
-    redirect_uri,
-    scopes,
-    state,
-    code_challenge,
-    code_challenge_method,
-    prompt,
-    include_granted_scopes,
-    verified_accounts_only,
-  }: AuthorizationUrlParams): string {
-    const params = new URLSearchParams({
-      client_id: this.#client_id,
-      response_type: 'code',
-      redirect_uri,
-      scope: scopes.join(' ')
-    });
+  public getAuthorizationUrl(params: AuthorizationUrlParams | AuthorizationUrlRequestUriParams): string {
+    const urlParams = 'request_uri' in params
+      ? new URLSearchParams({
+        client_id: this.#client_id,
+        response_type: 'code',
+        request_uri: params.request_uri
+      })
+      : constructAuthorizationParams(this.#client_id, params);
 
-    if(state) {
-      params.append('state', state);
+    return this.#getUrl(`/oauth2/authorize?${urlParams.toString()}`).toString();
+  }
+
+  public async pushAuthorizationRequest(params: AuthorizationUrlParams): Promise<PushedAuthorizationRequestResponse> {
+    const urlParams = constructAuthorizationParams(this.#client_id, params);
+    const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
+    if(this.#client_secret) {
+      headers.Authorization = `Basic ${btoa(`${this.#client_id}:${this.#client_secret}`)}`;
     }
 
-    if(code_challenge && code_challenge_method) {
-      params.append('code_challenge', code_challenge);
-      params.append('code_challenge_method', code_challenge_method);
-    }
+    const response: PushedAuthorizationRequestResponse = await fetch(this.#getUrl('/oauth2/par'), {
+      method: 'POST',
+      headers,
+      body: urlParams,
+      cache: 'no-store',
+    }).then(jsonOrError);
 
-    if(prompt) {
-      params.append('prompt', prompt);
-    }
-
-    if(include_granted_scopes) {
-      params.append('include_granted_scopes', 'true');
-    }
-
-    if(verified_accounts_only) {
-      params.append('verified_accounts_only', 'true');
-    }
-
-    return this.#getUrl(`/oauth2/authorize?${params.toString()}`).toString();
+    return response;
   }
 
   async getAccessToken({ code, redirect_uri, code_verifier }: AuthTokenParams): Promise<TokenResponse> {
@@ -241,4 +238,45 @@ export class Gw2MeClient {
   get fedCM() {
     return this.#fedCM;
   }
+}
+
+function constructAuthorizationParams(client_id: string, {
+  redirect_uri,
+  scopes,
+  state,
+  code_challenge,
+  code_challenge_method,
+  prompt,
+  include_granted_scopes,
+  verified_accounts_only,
+}: AuthorizationUrlParams) {
+  const params = new URLSearchParams({
+    client_id,
+    response_type: 'code',
+    redirect_uri,
+    scope: scopes.join(' ')
+  });
+
+  if(state) {
+    params.append('state', state);
+  }
+
+  if(code_challenge && code_challenge_method) {
+    params.append('code_challenge', code_challenge);
+    params.append('code_challenge_method', code_challenge_method);
+  }
+
+  if(prompt) {
+    params.append('prompt', prompt);
+  }
+
+  if(include_granted_scopes) {
+    params.append('include_granted_scopes', 'true');
+  }
+
+  if(verified_accounts_only) {
+    params.append('verified_accounts_only', 'true');
+  }
+
+  return params;
 }

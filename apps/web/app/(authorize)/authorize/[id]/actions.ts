@@ -51,7 +51,7 @@ export async function authorizeInternal(
   id: string,
   accountIds: string[],
   emailId: string | undefined | null
-) {
+): Promise<{ error: string }> {
   // get authorization request
   const authorizationRequest = await db.authorizationRequest.findUnique({
     where: { id, state: 'Pending', ...notExpired },
@@ -167,7 +167,8 @@ export async function authorizeInternal(
   }
 
   switch(authorizationRequest.type) {
-    case AuthorizationRequestType.OAuth2: {
+    case AuthorizationRequestType.OAuth2:
+    case AuthorizationRequestType.OAuth2_PAR: {
       // create redirect url for app
       const url = await createRedirectUrl(authorizationRequest.data.redirect_uri, {
         state: authorizationRequest.data.state,
@@ -191,7 +192,8 @@ export async function cancelAuthorization(id: string) {
 
   // redirect user
   switch(authRequest.type) {
-    case AuthorizationRequestType.OAuth2: {
+    case AuthorizationRequestType.OAuth2:
+    case AuthorizationRequestType.OAuth2_PAR: {
       const data = authRequest.data;
 
       // create redirect url for app

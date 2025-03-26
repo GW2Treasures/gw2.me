@@ -1,18 +1,22 @@
 import { redirect } from 'next/navigation';
 import { getApplicationByClientId, validateRequest } from './validate';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
-import { AuthorizationRequestType } from '@gw2me/database';
-import { PageProps } from '@/lib/next';
-import { cancelAuthorizationRequest, createAuthorizationRequest } from 'app/(authorize)/authorize/helper';
+import { AuthorizationRequest, AuthorizationRequestType } from '@gw2me/database';
+import { PageProps, SearchParams } from '@/lib/next';
+import { AuthorizationRequestExpiration, cancelAuthorizationRequest, createAuthorizationRequest } from 'app/(authorize)/authorize/helper';
 import { authorizeInternal } from 'app/(authorize)/authorize/[id]/actions';
 import { createRedirectUrl } from '@/lib/redirectUrl';
-import { OAuth2ErrorCode } from '@/lib/oauth/error';
+import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
+import { AuthorizationUrlRequestUriParams } from '@gw2me/client';
+import { assert } from '@/lib/oauth/assert';
+import { notExpired } from '@/lib/db/helper';
+import { expiresAt } from '@/lib/date';
+import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
 
 export default async function AuthorizePage({ searchParams }: PageProps) {
-  // validate request
-  const { error, request } = await validateRequest(await searchParams);
+  const { error, value } = await getAuthorizationRequest(await searchParams);
 
   // show unrecoverable error
   // TODO: convert this page to a route and redirect to an error page instead?
@@ -20,8 +24,7 @@ export default async function AuthorizePage({ searchParams }: PageProps) {
     return <Notice type="error">{error}</Notice>;
   }
 
-  // create and redirect to auth request
-  const authorizationRequest = await createAuthorizationRequest(AuthorizationRequestType.OAuth2, request);
+  const { request, authorizationRequest } = value;
 
   // if the prompt was not consent, we can try to instantly authorize the request
   if(request.prompt !== 'consent') {
@@ -35,7 +38,7 @@ export default async function AuthorizePage({ searchParams }: PageProps) {
       : undefined;
 
     // check if the user has previously authorized the same scopes
-    const requestedScopes = new Set(authorizationRequest.data.scope.split(' '));
+    const requestedScopes = new Set(request.scope.split(' '));
     const hasEveryScopeAuthorized = appGrant && requestedScopes.values().every((scope) => appGrant.scope.includes(scope));
 
     if(hasEveryScopeAuthorized) {
@@ -68,4 +71,65 @@ function getApplicationGrant(applicationId: string, userId: string) {
     where: { userId_applicationId: { userId, applicationId }},
     include: { accounts: { select: { id: true }}}
   });
+}
+
+type Optional<T> = { error: string, value?: undefined } | { error: undefined, value: T };
+
+async function getAuthorizationRequest(params: SearchParams): Promise<Optional<{ request: AuthorizationRequestData.OAuth2, authorizationRequest: AuthorizationRequest }>> {
+  if('request_uri' in params) {
+    try {
+      const authorizationRequest = await validatePushedRequest(params);
+      return { error: undefined, value: { request: authorizationRequest.data as unknown as AuthorizationRequestData.OAuth2, authorizationRequest }};
+    } catch(e) {
+      console.log(e);
+      if(e instanceof OAuth2Error) {
+        return { error: e.message };
+      }
+      return { error: 'Unknown error' };
+    }
+  }
+
+  // validate request
+  const { error, request } = await validateRequest(params, false);
+
+  if(error !== undefined) {
+    return { error };
+  }
+
+  // create auth request
+  const authorizationRequest = await createAuthorizationRequest(AuthorizationRequestType.OAuth2, request);
+  return { error, value: { request, authorizationRequest }};
+}
+
+async function validatePushedRequest(params: Partial<AuthorizationUrlRequestUriParams & { client_id: string }>) {
+  const clientId = params.client_id;
+  assert(clientId, OAuth2ErrorCode.invalid_request, 'client_id is missing');
+
+  const requestUri = params.request_uri;
+  assert(requestUri, OAuth2ErrorCode.invalid_request, 'Invalid request_uri');
+
+  const expectedPrefix = 'urn:ietf:params:oauth:request_uri:';
+  assert(requestUri.startsWith(expectedPrefix), OAuth2ErrorCode.invalid_request, 'Invalid request_uri');
+
+  const authorizationId = requestUri.substring(expectedPrefix.length);
+  assert(authorizationId, OAuth2ErrorCode.invalid_request, 'Invalid request_uri');
+
+  const authorizationRequest = await db.authorizationRequest.findUnique({
+    where: { id: authorizationId, type: 'OAuth2_PAR', state: 'Pushed', ...notExpired }
+  });
+  assert(authorizationRequest, OAuth2ErrorCode.invalid_request, 'Invalid request_uri');
+
+  // ensure the client_id matches
+  assert(authorizationRequest.clientId === clientId, OAuth2ErrorCode.invalid_request, 'Invalid client_id');
+
+  // update authorization request to pending and set expiration
+  await db.authorizationRequest.update({
+    where: { id: authorizationRequest.id },
+    data: {
+      state: 'Pending',
+      expiresAt: expiresAt(AuthorizationRequestExpiration[AuthorizationRequestType.OAuth2])
+    }
+  });
+
+  return authorizationRequest;
 }

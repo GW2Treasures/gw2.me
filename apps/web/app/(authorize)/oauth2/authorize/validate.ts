@@ -39,12 +39,18 @@ async function verifyClientId({ client_id }: Partial<AuthorizationRequestData.OA
 }
 
 /** @see https://datatracker.ietf.org/doc/html/rfc6749#section-3.1.2 */
-async function verifyRedirectUri({ client_id, redirect_uri }: Partial<AuthorizationRequestData.OAuth2>) {
+async function verifyRedirectUri({ client_id, redirect_uri }: Partial<AuthorizationRequestData.OAuth2>, isPAR: boolean) {
   assert(redirect_uri, OAuth2ErrorCode.invalid_request, 'redirect_uri is missing');
 
   const url = tryOrFail(() => new URL(redirect_uri), OAuth2ErrorCode.invalid_request, 'invalid redirect_uri');
 
   const client = await getApplicationByClientId(client_id);
+
+  // if this is a Pushed Authorization Requests (PAR),
+  // the redirect_uri doesn't have to be preregistered for confidential clients
+  if(client.type === 'Confidential' && isPAR) {
+    return;
+  }
 
   // ignore port for loopback ips (see https://datatracker.ietf.org/doc/html/rfc8252#section-7.3)
   if(url.hostname === '127.0.0.1' || url.hostname === '[::1]') {
@@ -101,11 +107,11 @@ function verifyVerifiedAccountsOnly({ verified_accounts_only }: Partial<Authoriz
   assert(verified_accounts_only === undefined || verified_accounts_only === 'true', OAuth2ErrorCode.invalid_request, 'invalid verified_accounts_only');
 }
 
-export const validateRequest = cache(async function validateRequest(request: Partial<AuthorizationRequestData.OAuth2>): Promise<{ error: string, request?: undefined } | { error: undefined, request: AuthorizationRequestData.OAuth2 }> {
+export const validateRequest = cache(async function validateRequest(request: Partial<AuthorizationRequestData.OAuth2>, isPAR: boolean): Promise<{ error: string, request?: undefined } | { error: undefined, request: AuthorizationRequestData.OAuth2 }> {
   try {
     // first verify client_id and redirect_uri
     await verifyClientId(request);
-    await verifyRedirectUri(request);
+    await verifyRedirectUri(request, isPAR);
   } catch(error) {
     if(error instanceof OAuth2Error) {
       // it is not safe to redirect back to the client, so we show an error
