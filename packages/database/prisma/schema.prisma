@@ -302,10 +302,12 @@ model AuthorizationRequest {
 
 enum AuthorizationRequestType {
   OAuth2
+  OAuth2_PAR
   FedCM
 }
 
 enum AuthorizationRequestState {
+  Pushed
   Pending
   Canceled
   Authorized

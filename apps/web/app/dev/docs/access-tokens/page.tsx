@@ -20,9 +20,13 @@ export default function DevDocsAccessTokensPage() {
       <p>
         The first step is to get the user to authorize your application&apos;s access.
         Navigate the user to <Code inline>https://gw2.me/oauth2/authorize</Code>.
-        If your application is a website, you can for example use a hyperlink or a redirect.
+        If your application is a website, you can for example use a hyperlink, a form or a redirect.
         Native and mobile applications should open the default browser.
         Don&apos;t use iframes or embedded browsers.
+      </p>
+
+      <p>
+        You can also used <Link href="#par">Pushed Authorization Requests (PAR)</Link>.
       </p>
 
       <Table>
@@ -98,7 +102,6 @@ export default function DevDocsAccessTokensPage() {
       <Code>
         https://gw2.me/oauth2/authorize<br/>  ?client_id=1554a6a3-8b8e-4ba7-9c5f-80576d081e10<br/>  &response_type=code<br/>  &redirect_uri=http%3A%2F%2Fexample.com%2Fcallback<br/>  &scope=identify+email+gw2%3Aaccount<br/>  &state=SaOfpb7Ny9mbV6EPCUDcnQ<br/>  &code_challenge=oFtTjTxdlTh9Tdwe8Rpbly8Qy8AL5rfKc9aueH_PmZM<br/>  &code_challenge_method=S256
       </Code>
-
 
       <p>If the user is not logged in to gw2.me yet, they get asked to login first. The user is then presented with a authorization page that shows your applications name, icon and all required scopes. If you requested any scopes for the Guild Wars 2 API, the user has to select at least one Guild Wars 2 account. The user can also add additional accounts on this screen.</p>
       <p>After the user authorized your application, the user is redirected to the specified <Code inline>redirect_uri</Code>.</p>
@@ -244,6 +247,64 @@ export default function DevDocsAccessTokensPage() {
       <p>
         All clients should verify that this parameter exactly matches to prevent mix-up attacks.
       </p>
+
+      <Headline id="par">Pushed Authorization Requests (PAR)</Headline>
+      <p>
+        Pushed Authorization Requests (<ExternalLink href="https://datatracker.ietf.org/doc/html/rfc9126">RFC 9126</ExternalLink>)
+        are a confidential and integrity-protected alternative to directly requesting the authorization.
+        PAR allows gw2.me to authenticate the client before any user interaction happens.
+      </p>
+      <p>
+        To push an authorization request to gw2.me, post the same parameters as for the
+        normal <Code inline>/oauth2/authorize</Code> endpoint described
+        in <Link href="#user-authorization">User Authorization</Link> as <Code inline>application/x-www-form-urlencoded</Code> to
+        the <Code inline>/oauth2/par</Code> endpoint.
+      </p>
+      <p>
+        A request could look like this (formatted for better readability):
+      </p>
+
+      <Code>
+        {[
+          'POST /oauth2/par',
+          'Host: gw2.me',
+          'Content-Type: application/x-www-form-urlencoded',
+          '',
+          '&client_id=1554a6a3-8b8e-4ba7-9c5f-80576d081e10',
+          '&response_type=code',
+          '&redirect_uri=http%3A%2F%2Fexample.com%2Fcallback',
+          '&scope=identify+email+gw2%3Aaccount',
+          '&state=SaOfpb7Ny9mbV6EPCUDcnQ',
+          '&code_challenge=oFtTjTxdlTh9Tdwe8Rpbly8Qy8AL5rfKc9aueH_PmZM',
+          '&code_challenge_method=S256'
+        ].join('\n')}
+      </Code>
+
+      <p>
+        The server will respond with a <Code inline>request_uri</Code>:
+      </p>
+
+      <Code>
+        <Highlight language="json" code={
+          JSON.stringify({
+            request_uri: 'urn:ietf:params:oauth:request_uri:5aac9d50-43de-4dd6-9693-a0e2ac48271f',
+            expires_in: 60
+          }, null, 2)
+        }/>
+      </Code>
+
+      <p>
+        The received <Code inline>request_uri</Code> can then be passed to to the normal authorize endpoint,
+        together with the <Code inline>client_id</Code>, to continue with the normal OAuth2 authorization flow.
+      </p>
+
+      <Code>
+        {[
+          'https://gw2.me/oauth2/authorize',
+          '  ?client_id=1554a6a3-8b8e-4ba7-9c5f-80576d081e10',
+          '  &request_uri=' + encodeURIComponent('urn:ietf:params:oauth:request_uri:5aac9d50-43de-4dd6-9693-a0e2ac48271f')
+        ].join('\n')}
+      </Code>
     </PageLayout>
   );
 }
