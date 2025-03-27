@@ -19,6 +19,7 @@ export async function getPKCEPair() {
   return globalForPKCE.pkce;
 }
 
+
 export const gw2me = new Gw2MeClient({
   client_id: process.env.DEMO_CLIENT_ID!,
   client_secret: process.env.DEMO_CLIENT_SECRET!,
