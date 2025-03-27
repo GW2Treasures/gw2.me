@@ -252,7 +252,8 @@ export default function DevDocsAccessTokensPage() {
       <p>
         Pushed Authorization Requests (<ExternalLink href="https://datatracker.ietf.org/doc/html/rfc9126">RFC 9126</ExternalLink>)
         are a confidential and integrity-protected alternative to directly requesting the authorization.
-        PAR allows gw2.me to authenticate the client before any user interaction happens.
+        PAR allows gw2.me to authenticate the client before any user interaction happens. Thanks to this added security,
+        redirect URIs don&apos;t have to be pre registered for confidential clients.
       </p>
       <p>
         To push an authorization request to gw2.me, post the same parameters as for the
