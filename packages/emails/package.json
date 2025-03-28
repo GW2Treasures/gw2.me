@@ -21,7 +21,7 @@
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/react": "19.0.12",
     "eslint": "8.57.1",
-    "react-email": "3.0.7",
+    "react-email": "4.0.2",
     "typescript": "5.8.2"
   },
   "dependencies": {
