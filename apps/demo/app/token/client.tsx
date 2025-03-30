@@ -10,7 +10,7 @@ export interface ClientProps {
 }
 
 export const Client: FC<ClientProps> = ({ clientId, gw2meUrl, accessToken }) => {
-  const gw2me = useMemo(() => new Gw2MeClient({ client_id: clientId }, { url: gw2meUrl }), [clientId, gw2meUrl]);
+  const gw2me = useMemo(() => new Gw2MeClient({ type: 'Confidential', client_id: clientId }, { url: gw2meUrl }), [clientId, gw2meUrl]);
 
   useEffect(() => {
     // @ts-expect-error global

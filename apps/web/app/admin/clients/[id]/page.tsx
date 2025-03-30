@@ -5,6 +5,7 @@ import { PageTitle } from '@/components/Layout/PageTitle';
 import { ColumnSelection } from '@/components/Table/ColumnSelection';
 import { db } from '@/lib/db';
 import { PageProps } from '@/lib/next';
+import { isTruthy } from '@gw2treasures/helper/is';
 import { Icon } from '@gw2treasures/ui';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
@@ -51,6 +52,7 @@ export default async function AdminUserDetailPage({ params }: AdminClientDetailP
       <Authorizations.Table>
         <Authorizations.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Authorizations.Column>
         <Authorizations.Column id="type" title="Type" sortBy="type">{({ type }) => type}</Authorizations.Column>
+        <Authorizations.Column id="flags" title="Flags">{({ codeChallenge, dpopJkt }) => [codeChallenge && 'PKCE', dpopJkt && 'DPoP'].filter(isTruthy).join(', ')}</Authorizations.Column>
         <Authorizations.Column id="user" title="User" sortBy="userId">{({ user }) => <Link href={`/admin/users/${user.id}`}><FlexRow><Icon icon="user"/>{user.name}</FlexRow></Link>}</Authorizations.Column>
         <Authorizations.Column id="scope" title="Scope" hidden>{({ scope }) => scope.join(' ')}</Authorizations.Column>
         <Authorizations.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Authorizations.Column>
