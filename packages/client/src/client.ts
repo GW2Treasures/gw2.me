@@ -1,4 +1,5 @@
-import { Gw2MeApi } from './api';
+import { Gw2MeApi, type ApiOptions } from './api';
+import { createDPoPJwt } from './dpop';
 import { Gw2MeError, Gw2MeOAuthError } from './error';
 import { Gw2MeFedCM } from './fed-cm';
 import { type ClientInfo, type Options, Scope } from './types';
@@ -10,6 +11,7 @@ export interface AuthorizationUrlParams {
   state?: string;
   code_challenge?: string;
   code_challenge_method?: 'S256';
+  dpop_jkt?: string;
   prompt?: 'none' | 'consent'
   include_granted_scopes?: boolean;
   verified_accounts_only?: boolean;
@@ -21,18 +23,21 @@ export interface AuthorizationUrlRequestUriParams {
 
 export interface AuthTokenParams {
   code: string;
+  token_type?: 'Bearer' | 'DPoP';
   redirect_uri: string;
   code_verifier?: string;
+  dpopKeyPair?: CryptoKeyPair;
 }
 
 export interface RefreshTokenParams {
-  refresh_token: string;
+  refresh_token: string,
+  dpopKeyPair?: CryptoKeyPair,
 }
 
 export interface TokenResponse {
   access_token: string,
   issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
-  token_type: 'Bearer',
+  token_type: 'Bearer' | 'DPoP',
   expires_in: number,
   refresh_token?: string,
   scope: string,
@@ -62,38 +67,48 @@ export interface PushedAuthorizationRequestResponse {
 }
 
 export class Gw2MeClient {
-  #client_id: string;
-  #client_secret?: string;
-
+  #client: ClientInfo;
   #fedCM;
 
-  constructor({ client_id, client_secret }: ClientInfo, private options?: Partial<Options>) {
-    this.#client_id = client_id;
-    this.#client_secret = client_secret;
-    this.#fedCM = new Gw2MeFedCM(this.#getUrl('/fed-cm/config.json'), this.#client_id);
+  constructor(client: ClientInfo, private options?: Partial<Options>) {
+    this.#client = client;
+    this.#fedCM = new Gw2MeFedCM(this.#getUrl('/fed-cm/config.json'), client.client_id);
   }
 
   #getUrl(url: string) {
     return new URL(url, this.options?.url || 'https://gw2.me/');
   }
 
+  #getAuthorizationHeader() {
+    if(this.#client.type === 'Public') {
+      throw new Gw2MeError('Confidential client expected');
+    }
+
+    if(!this.#client.client_secret) {
+      throw new Gw2MeError('client_secret is required');
+    }
+
+    return `Basic ${btoa(`${this.#client.client_id}:${this.#client.client_secret}`)}`;
+  }
+
   public getAuthorizationUrl(params: AuthorizationUrlParams | AuthorizationUrlRequestUriParams): string {
     const urlParams = 'request_uri' in params
       ? new URLSearchParams({
-        client_id: this.#client_id,
+        client_id: this.#client.client_id,
         response_type: 'code',
         request_uri: params.request_uri
       })
-      : constructAuthorizationParams(this.#client_id, params);
+      : constructAuthorizationParams(this.#client.client_id, params);
 
     return this.#getUrl(`/oauth2/authorize?${urlParams.toString()}`).toString();
   }
 
   public async pushAuthorizationRequest(params: AuthorizationUrlParams): Promise<PushedAuthorizationRequestResponse> {
-    const urlParams = constructAuthorizationParams(this.#client_id, params);
+    const urlParams = constructAuthorizationParams(this.#client.client_id, params);
     const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
-    if(this.#client_secret) {
-      headers.Authorization = `Basic ${btoa(`${this.#client_id}:${this.#client_secret}`)}`;
+
+    if(this.#client.type === 'Confidential') {
+      headers.Authorization = this.#getAuthorizationHeader();
     }
 
     const response: PushedAuthorizationRequestResponse = await fetch(this.#getUrl('/oauth2/par'), {
@@ -106,23 +121,33 @@ export class Gw2MeClient {
     return response;
   }
 
-  async getAccessToken({ code, redirect_uri, code_verifier }: AuthTokenParams): Promise<TokenResponse> {
+  async getAccessToken({ code, token_type, redirect_uri, code_verifier, dpopKeyPair }: AuthTokenParams): Promise<TokenResponse> {
     const data = new URLSearchParams({
       grant_type: 'authorization_code',
-      code, client_id: this.#client_id, redirect_uri,
+      code, client_id: this.#client.client_id, redirect_uri,
     });
 
     const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
 
-    if(this.#client_secret) {
-      headers.Authorization = `Basic ${btoa(`${this.#client_id}:${this.#client_secret}`)}`;
+    if(this.#client.type === 'Confidential') {
+      headers.Authorization = this.#getAuthorizationHeader();
     }
 
     if(code_verifier) {
       data.set('code_verifier', code_verifier);
     }
 
-    const token = await fetch(this.#getUrl('/api/token'), {
+    const url = this.#getUrl('/api/token');
+
+    if(dpopKeyPair) {
+      headers.DPoP = await createDPoPJwt({
+        htm: 'POST',
+        htu: url.toString(),
+        accessToken: token_type === 'DPoP' ? code : undefined,
+      }, dpopKeyPair);
+    }
+
+    const token = await fetch(url, {
       method: 'POST',
       headers,
       body: data,
@@ -132,22 +157,34 @@ export class Gw2MeClient {
     return token;
   }
 
-  async refreshToken({ refresh_token }: RefreshTokenParams): Promise<TokenResponse> {
-    if(!this.#client_secret) {
-      throw new Gw2MeError('client_secret required');
+  async refreshToken({ refresh_token, dpopKeyPair }: RefreshTokenParams): Promise<TokenResponse> {
+    // TODO(dpop): Allow public clients if used with dpop
+    if(this.#client.type === 'Public') {
+      throw new Gw2MeError('Only confidential clients can use refresh tokens.');
     }
 
     const data = new URLSearchParams({
       grant_type: 'refresh_token',
-      refresh_token, client_id: this.#client_id,
+      refresh_token, client_id: this.#client.client_id,
     });
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Basic ${btoa(`${this.#client_id}:${this.#client_secret}`)}`
+      'Authorization': this.#getAuthorizationHeader(),
     };
 
-    const token = await fetch(this.#getUrl('/api/token'), {
+    const url = this.#getUrl('/api/token');
+
+    if(dpopKeyPair) {
+      headers.DPoP = await createDPoPJwt({
+        htm: 'POST',
+        htu: url.toString(),
+        // public clients have their refresh token DPoP bound, confidential clients not, as the secret is used proof of possession
+        accessToken: this.#client.type === 'Confidential' ? undefined : refresh_token,
+      }, dpopKeyPair);
+    }
+
+    const token = await fetch(url, {
       method: 'POST',
       headers,
       body: data,
@@ -161,8 +198,9 @@ export class Gw2MeClient {
     const body = new URLSearchParams({ token });
 
     const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
-    if(this.#client_secret) {
-      headers.Authorization = `Basic ${btoa(`${this.#client_id}:${this.#client_secret}`)}`;
+
+    if(this.#client.type === 'Confidential') {
+      headers.Authorization = this.#getAuthorizationHeader();
     }
 
     await fetch(this.#getUrl('/api/token/revoke'), {
@@ -177,8 +215,9 @@ export class Gw2MeClient {
     const body = new URLSearchParams({ token });
 
     const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
-    if(this.#client_secret) {
-      headers.Authorization = `Basic ${btoa(`${this.#client_id}:${this.#client_secret}`)}`;
+
+    if(this.#client.type === 'Confidential') {
+      headers.Authorization = this.#getAuthorizationHeader();
     }
 
     const response = await fetch(this.#getUrl('/api/token/introspect'), {
@@ -231,8 +270,8 @@ export class Gw2MeClient {
     return { code, state };
   }
 
-  api(access_token: string) {
-    return new Gw2MeApi(access_token, this.options);
+  api(access_token: string, options?: Partial<Omit<ApiOptions, keyof Options>>) {
+    return new Gw2MeApi(access_token, { ...this.options, ...options });
   }
 
   get fedCM() {
@@ -246,6 +285,7 @@ function constructAuthorizationParams(client_id: string, {
   state,
   code_challenge,
   code_challenge_method,
+  dpop_jkt,
   prompt,
   include_granted_scopes,
   verified_accounts_only,
@@ -264,6 +304,10 @@ function constructAuthorizationParams(client_id: string, {
   if(code_challenge && code_challenge_method) {
     params.append('code_challenge', code_challenge);
     params.append('code_challenge_method', code_challenge_method);
+  }
+
+  if(dpop_jkt) {
+    params.append('dpop_jkt', dpop_jkt);
   }
 
   if(prompt) {
