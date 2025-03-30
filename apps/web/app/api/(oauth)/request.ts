@@ -3,11 +3,13 @@ import { assert } from '@/lib/oauth/assert';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { NextRequest, NextResponse } from 'next/server';
 import { getRequestAuthorization, RequestAuthorization } from './auth';
+import { getUrlFromRequest } from '@/lib/url';
 
 export interface OAuth2RequestHandlerProps {
   headers: Headers,
   params: Record<string, string | undefined>,
   requestAuthorization: RequestAuthorization,
+  url: URL,
 }
 
 export function handleRequest<T>(handler: (props: OAuth2RequestHandlerProps) => T) {
@@ -23,11 +25,14 @@ export function handleRequest<T>(handler: (props: OAuth2RequestHandlerProps) => 
       // authorize client
       const requestAuthorization = await getRequestAuthorization(request.headers, parsedParams);
 
+      const url = getUrlFromRequest(request);
+
       // handle request
       const response = await handler({
         headers: request.headers,
         params: parsedParams,
         requestAuthorization,
+        url
       });
 
       // return response as JSON
@@ -38,6 +43,7 @@ export function handleRequest<T>(handler: (props: OAuth2RequestHandlerProps) => 
       if(error instanceof OAuth2Error) {
         // TODO: use better http status based on error.code
         // TODO: include WWW-Authenticate if missing authentication (see https://datatracker.ietf.org/doc/html/rfc6750#section-3)
+        // TODO: include WWW-Authenticate if missing DPoP (see https://datatracker.ietf.org/doc/html/rfc9449)
         return NextResponse.json(
           { error: error.code, error_description: error.description },
           { status: 500, headers: responseHeaders(request) }

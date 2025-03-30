@@ -3,8 +3,9 @@ import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { redirect } from 'next/navigation';
 import { AuthorizationUrlParams, Scope } from '@gw2me/client';
-import { getCallback, getPKCEPair, gw2me } from '@/lib/client';
+import { getCallback, getDPoPPair, getPKCEPair, gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
+import { jwkThumbprint } from '@gw2me/client/dpop';
 
 export default function HomePage() {
   return (
@@ -26,6 +27,7 @@ export default function HomePage() {
             <Checkbox name="include_granted_scopes" formValue="true">include_granted_scopes</Checkbox>
             <Checkbox name="verified_accounts_only" formValue="true">verified_accounts_only</Checkbox>
             <Checkbox name="par" formValue="true">Use Pushed Authorization Requests (PAR)</Checkbox>
+            <Checkbox name="dpop" formValue="true" defaultChecked>Use Demonstrating Proof of Possession (DPoP)</Checkbox>
           </div>
         </Label>
       </div>
@@ -47,14 +49,17 @@ async function login(formData: FormData) {
   const include_granted_scopes = formData.get('include_granted_scopes') === 'true';
   const verified_accounts_only = formData.get('verified_accounts_only') === 'true';
   const par = formData.get('par') === 'true';
+  const dpop = formData.get('dpop') === 'true';
 
   const { challenge } = await getPKCEPair();
+  const dpopKeys = await getDPoPPair();
 
   const requestParams: AuthorizationUrlParams = {
     redirect_uri: getCallback(),
     scopes,
     state: 'example',
     ...challenge,
+    dpop_jkt: dpop ? await jwkThumbprint(dpopKeys.publicKey) : undefined,
     prompt,
     include_granted_scopes,
     verified_accounts_only,

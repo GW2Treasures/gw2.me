@@ -1,3 +1,5 @@
+import { base64urlEncode } from './base64';
+
 export interface PKCEChallenge {
   code_challenge: string;
   code_challenge_method: 'S256';
@@ -28,11 +30,4 @@ export async function generatePKCEPair(): Promise<PKCEPair> {
       code_challenge: base64urlEncode(new Uint8Array(challenge))
     }
   };
-}
-
-function base64urlEncode(data: Uint8Array) {
-  return btoa(String.fromCharCode(...data))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
 }

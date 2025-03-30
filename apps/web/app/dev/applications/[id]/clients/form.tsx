@@ -118,7 +118,7 @@ export const ClientForm: FC<ApplicationFormProps> = ({ applicationId, client, ed
 
       <FlexRow wrap>
         <Button type="submit" form="edit" disabled={isPending} icon={isEditPending ? 'loading' : undefined}>Save</Button>
-        <LinkButton target="_blank" href={new Gw2MeClient({ client_id: client.id }, { url: 'http://placeholder/' }).getAuthorizationUrl({ redirect_uri: client.callbackUrls[0], scopes: [Scope.Identify], prompt: 'consent', include_granted_scopes: true }).replace('http://placeholder/', '/')}>Test Link <Icon icon="external"/></LinkButton>
+        <LinkButton target="_blank" href={new Gw2MeClient({ type: 'Public', client_id: client.id }, { url: 'http://placeholder/' }).getAuthorizationUrl({ redirect_uri: client.callbackUrls[0], scopes: [Scope.Identify], prompt: 'consent', include_granted_scopes: true }).replace('http://placeholder/', '/')}>Test Link <Icon icon="external"/></LinkButton>
         <LinkButton icon="delete" href={`${selfUrl}/delete`}>Delete Client</LinkButton>
       </FlexRow>
     </>

@@ -16,6 +16,7 @@ export namespace AuthorizationRequestData {
     prompt?: string;
     state?: string;
     redirect_uri: string;
+    dpop_jkt?: string;
   }
 
   export type FedCM = Common;

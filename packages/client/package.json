@@ -10,6 +10,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./dpop": {
+      "types": "./dist/dpop.d.ts",
+      "default": "./dist/dpop.js"
+    },
     "./pkce": {
       "types": "./dist/pkce.d.ts",
       "default": "./dist/pkce.js"
@@ -17,8 +21,8 @@
   },
   "scripts": {
     "build": "pnpm run clean && if test $CI; then pnpm run build:ci; else pnpm run build:local; fi",
-    "build:local": "tsup src/index.ts src/pkce.ts && tsc --emitDeclarationOnly --declaration --declarationMap",
-    "build:ci": "tsup src/index.ts src/pkce.ts --minify --dts",
+    "build:local": "tsup src/index.ts src/dpop.ts src/pkce.ts && tsc --emitDeclarationOnly --declaration --declarationMap",
+    "build:ci": "tsup src/index.ts src/dpop.ts src/pkce.ts --minify --dts",
     "clean": "rm -rf dist/",
     "lint": "eslint src",
     "publish-package": "gw2treasures-publish-package"
