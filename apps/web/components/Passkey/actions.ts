@@ -3,7 +3,17 @@
 import 'server-only';
 import { getSession, getUser } from '@/lib/session';
 import { getBaseUrlFromHeaders } from '@/lib/url';
-import { generateAuthenticationOptions, generateRegistrationOptions, verifyAuthenticationResponse, verifyRegistrationResponse, type AuthenticationResponseJSON, type AuthenticatorTransportFuture, type RegistrationResponseJSON } from '@simplewebauthn/server';
+import {
+  generateAuthenticationOptions,
+  generateRegistrationOptions,
+  PublicKeyCredentialCreationOptionsJSON,
+  PublicKeyCredentialRequestOptionsJSON,
+  verifyAuthenticationResponse,
+  verifyRegistrationResponse,
+  type AuthenticationResponseJSON,
+  type AuthenticatorTransportFuture,
+  type RegistrationResponseJSON
+} from '@simplewebauthn/server';
 import { createChallengeJwt, verifyChallengeJwt } from './challenge';
 import { db } from '@/lib/db';
 import { userAgent } from 'next/server';
@@ -29,7 +39,7 @@ export type RegistrationParams =
   | { type: 'add' }
   | { type: 'new', username: string };
 
-export async function getRegistrationOptions(params: RegistrationParams) {
+export async function getRegistrationOptions(params: RegistrationParams): Promise<{ options: PublicKeyCredentialCreationOptionsJSON, challenge: string }> {
   let user;
   if(params.type === 'add') {
     user = await getUser();
@@ -62,12 +72,10 @@ export async function getRegistrationOptions(params: RegistrationParams) {
     }
   });
 
-  console.log(options); // TODO: remove
-
-  return { options, challenge: createChallengeJwt(options) };
+  return { options, challenge: await createChallengeJwt(options) };
 }
 
-export async function getAuthenticationOptions() {
+export async function getAuthenticationOptions(): Promise<{ options: PublicKeyCredentialRequestOptionsJSON, challenge: string }> {
   const { rpID } = await getRelayingParty();
 
   const rememberedUser = await getPreviousUser();
@@ -82,16 +90,14 @@ export async function getAuthenticationOptions() {
     timeout: 3 * 60 * 1000, // 3 minutes
   });
 
-  console.log(options);
-
-  return { options, challenge: createChallengeJwt(options) };
+  return { options, challenge: await createChallengeJwt(options) };
 }
 
 export async function submitRegistration(params: RegistrationParams & { returnTo?: string }, challengeJwt: string, registration: RegistrationResponseJSON) {
   console.log(registration); // TODO: remove
 
   const { origin, rpID } = await getRelayingParty();
-  const { challenge, webAuthnUserId } = verifyChallengeJwt(challengeJwt);
+  const { challenge, webAuthnUserId } = await verifyChallengeJwt(challengeJwt);
 
   const verification = await verifyRegistrationResponse({
     expectedChallenge: challenge,
@@ -142,7 +148,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
 
     const cookieStore = await cookies();
     cookieStore.set(authCookie(session.id));
-    cookieStore.set(userCookie(session.userId));
+    cookieStore.set(await userCookie(session.userId));
     cookieStore.delete(LoginErrorCookieName);
   }
 
@@ -187,7 +193,7 @@ export async function submitAuthentication(challengeJwt: string, authentication:
   }
 
   const { rpID, origin } = await getRelayingParty();
-  const { challenge } = verifyChallengeJwt(challengeJwt);
+  const { challenge } = await verifyChallengeJwt(challengeJwt);
 
   const { verified, authenticationInfo } = await verifyAuthenticationResponse({
     response: authentication,
@@ -227,7 +233,7 @@ export async function submitAuthentication(challengeJwt: string, authentication:
   // set session cookie
   const cookieStore = await cookies();
   cookieStore.set(authCookie(session.id));
-  cookieStore.set(userCookie(passkey.userId));
+  cookieStore.set(await userCookie(passkey.userId));
   cookieStore.delete(LoginErrorCookieName);
 
   // redirect

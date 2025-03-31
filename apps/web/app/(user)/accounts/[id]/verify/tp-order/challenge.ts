@@ -1,6 +1,6 @@
 import { expiresAt, toTimestamp } from '@/lib/date';
 import { db } from '@/lib/db';
-import { createSigner } from '@/lib/jwt';
+import { createJwt } from '@/lib/jwt';
 import { getSessionOrRedirect } from '@/lib/session';
 
 // items that can be part of the challenge
@@ -25,12 +25,11 @@ export function createChallenge(accountId: string) {
   const expiration = expiresAt(15 * 60);
 
   // sign the challenge
-  const sign = createSigner();
-  const jwt = sign({
+  const jwt = createJwt({
     sub: accountId,
     itm: itemId,
     cns: coins,
-    exp: toTimestamp(expiration)
+    exp: toTimestamp(expiration),
   } satisfies TpOrderChallengeJwtPayload);
 
   return jwt;

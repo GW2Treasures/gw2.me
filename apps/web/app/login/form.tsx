@@ -14,7 +14,7 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { LoginOptions, login } from './action';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { cookies } from 'next/headers';
-import { createVerifier } from '@/lib/jwt';
+import { verifyJwt } from '@/lib/jwt';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, UserCookieName } from '@/lib/cookie';
@@ -87,11 +87,9 @@ export async function getPreviousUser() {
     return undefined;
   }
 
-  const verifyJwt = createVerifier();
-
-  let jwtPayload: { sub: string };
+  let jwtPayload;
   try {
-    jwtPayload = verifyJwt(jwt);
+    jwtPayload = await verifyJwt(jwt, { requiredClaims: ['sub'] });
   } catch {
     return undefined;
   }
@@ -135,10 +133,8 @@ export async function getLoginErrorCookieValue(): Promise<LoginError | undefined
     return undefined;
   }
 
-  const verifyJwt = createVerifier();
-
   try {
-    const error: { err: LoginError } = verifyJwt(errorCookie);
+    const error: { err: LoginError } = await verifyJwt(errorCookie, { requiredClaims: ['err'] });
     return error.err;
   } catch {
     return LoginError.Unknown;

@@ -1,5 +1,5 @@
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
-import { createSigner } from './jwt';
+import { createJwt } from './jwt';
 import { LoginError } from 'app/login/form';
 
 const baseDomain = process.env.BASE_DOMAIN;
@@ -23,9 +23,8 @@ export function authCookie(sessionId: string): ResponseCookie {
   };
 }
 
-export function userCookie(userId: string): ResponseCookie {
-  const signJwt = createSigner();
-  const userJwt = signJwt({ sub: userId });
+export async function userCookie(userId: string): Promise<ResponseCookie> {
+  const userJwt = await createJwt({ sub: userId });
 
   return {
     name: UserCookieName,
@@ -41,9 +40,8 @@ export function userCookie(userId: string): ResponseCookie {
   };
 }
 
-export function loginErrorCookie(err: LoginError): ResponseCookie {
-  const signJwt = createSigner();
-  const errorJwt = signJwt({ err });
+export async function loginErrorCookie(err: LoginError): Promise<ResponseCookie> {
+  const errorJwt = await createJwt({ err });
 
   return {
     name: LoginErrorCookieName,

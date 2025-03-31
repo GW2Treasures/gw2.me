@@ -1,6 +1,6 @@
 'use server';
 
-import { createVerifier } from '@/lib/jwt';
+import { verifyJwt } from '@/lib/jwt';
 import { TpOrderChallengeJwtPayload, getAccountForChallenge } from './challenge';
 import { fetchGw2Api } from '@/lib/gw2-api-request';
 import { db } from '@/lib/db';
@@ -24,8 +24,7 @@ export async function verifyChallenge(challengeJwt: string): Promise<VerifyChall
     // verify challenge jwt
     let challenge: TpOrderChallengeJwtPayload;
     try {
-      const verifyJwt = createVerifier();
-      challenge = verifyJwt(challengeJwt);
+      challenge = await verifyJwt(challengeJwt, { requiredClaims: ['sub', 'itm', 'cns', 'exp'] });
     } catch(e) {
       console.error(e);
       return { error: 'invalid_challenge' };
