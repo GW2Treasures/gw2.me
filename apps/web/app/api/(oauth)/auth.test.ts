@@ -1,13 +1,14 @@
-/** @jest-environment node */
+// @vitest-environment node
+import { describe, expect, it, beforeEach, beforeAll } from 'vitest';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { getRequestAuthorization, RequestAuthorization } from './auth';
 import { dbMock } from '@/lib/db.mock';
 import { Client, ClientSecret, ClientType } from '@gw2me/database';
-import { describe, expect, it } from '@jest/globals';
 import { generateClientSecretAndHash } from '@/lib/token';
 
 const client: Client & { secrets: ClientSecret[] } = {
   id: 'test',
+  name: 'test',
   applicationId: 'app-id',
   callbackUrls: [],
   createdAt: new Date(),

@@ -1,10 +1,10 @@
 import { PrismaClient } from '@gw2me/database';
-import { mockDeep, mockReset } from 'jest-mock-extended';
-import { beforeEach, jest } from '@jest/globals';
+import { beforeEach, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 
 export const dbMock = mockDeep<PrismaClient>();
 
-jest.mock('./db', () => ({
+vi.mock('./db', () => ({
   __esModule: true,
   db: dbMock,
 }));
@@ -12,7 +12,6 @@ jest.mock('./db', () => ({
 beforeEach(() => {
   mockReset(dbMock);
   dbMock.$transaction.mockImplementation(
-    // @ts-expect-error any
     (arrayOrCallback) => typeof arrayOrCallback === 'function' ? arrayOrCallback(dbMock) : Promise.all(arrayOrCallback)
   );
 });

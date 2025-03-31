@@ -1,6 +1,9 @@
-import type { MatcherFunction } from 'expect';
 import { OAuth2Error, OAuth2ErrorCode } from './error';
-import { expect } from '@jest/globals';
+import { expect } from 'vitest';
+
+type RecordValue<T> = T extends Record<string, infer X> ? X : never;
+type RawMatcherFn = RecordValue<Parameters<typeof expect.extend>[0]>;
+type MatcherFunction<Args extends Array<unknown>> = (this: ReturnType<typeof expect.getState>, actual: unknown, ...args: Args) => ReturnType<RawMatcherFn>;
 
 const toBeOAuth2Error: MatcherFunction<[code?: OAuth2ErrorCode, description?: string]> = function (actual, code, description) {
   if(!(actual instanceof OAuth2Error)) {
@@ -33,13 +36,13 @@ const toThrowOAuth2Error: MatcherFunction<[code?: OAuth2ErrorCode, description?:
 
 expect.extend({ toBeOAuth2Error, toThrowOAuth2Error });
 
-declare module 'expect' {
+declare module 'vitest' {
   interface AsymmetricMatchers {
     toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): void;
     toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): void;
   }
-  interface Matchers<R> {
-    toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): R;
-    toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): R;
+  interface Assertion<T> {
+    toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): T;
+    toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): T;
   }
 }

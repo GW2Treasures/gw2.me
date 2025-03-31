@@ -1,11 +1,11 @@
-/** @jest-environment node */
+// @vitest-environment node
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { assertPKCECodeChallenge, handleTokenRequest } from './token';
 import { dbMock } from '@/lib/db.mock';
 import { Account, Authorization, Client } from '@gw2me/database';
 import { expiresAt } from '@/lib/date';
 import { Scope } from '@gw2me/client';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it, beforeEach } from 'vitest';
 import { OAuth2RequestHandlerProps } from '../request';
 
 type MockAuthorization = Authorization & { accounts: Pick<Account, 'id'>[] };
@@ -29,6 +29,7 @@ const mockAuthorization: MockAuthorization = {
 
 const client: Client = {
   id: 'test',
+  name: 'test',
   applicationId: 'app-id',
   callbackUrls: [],
   createdAt: new Date(),
@@ -78,7 +79,7 @@ describe('/api/token', () => {
       });
     });
 
-    describe('refresh_token', () => {
+    describe.skip('refresh_token', () => {
       // TODO: add refresh token tests
     });
   });
