@@ -1,19 +1,21 @@
-import { createSigner, createVerifier } from '@/lib/jwt';
+import { expiresAt, toTimestamp } from '@/lib/date';
+import { createJwt, verifyJwt } from '@/lib/jwt';
 import type { PublicKeyCredentialCreationOptionsJSON, PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/browser';
 
 export function createChallengeJwt(data: PublicKeyCredentialCreationOptionsJSON | PublicKeyCredentialRequestOptionsJSON) {
   const challenge = data.challenge;
   const userId = 'user' in data ? data.user.id : undefined;
 
-  const signJwt = createSigner({ expiresIn: data.timeout });
-  const challengeJwt = signJwt({ sub: userId, challenge });
+  const challengeJwt = createJwt({ sub: userId, challenge, exp: data.timeout ? toTimestamp(expiresAt(data.timeout)) : undefined });
 
   return challengeJwt;
 }
 
-export function verifyChallengeJwt(challengeJwt: string): { webAuthnUserId?: string, challenge: string } {
+export async function verifyChallengeJwt(challengeJwt: string): Promise<{ webAuthnUserId?: string, challenge: string }> {
   try {
-    const { sub, challenge } = createVerifier()(challengeJwt);
+    console.log(challengeJwt);
+
+    const { sub, challenge }: { sub?: string, challenge: string } = await verifyJwt(challengeJwt, { requiredClaims: ['challenge'] });
     return { webAuthnUserId: sub, challenge };
   } catch(e) {
     throw new Error('Passkey challenge invalid', { cause: e });

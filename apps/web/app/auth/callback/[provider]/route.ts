@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
   // make sure provider exists and is configured
   if(!provider) {
     console.error(`Invalid provider ${provider}`);
-    cookieStore.set(loginErrorCookie(LoginError.Unknown));
+    cookieStore.set(await loginErrorCookie(LoginError.Unknown));
     redirect('/login');
   }
 
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
   const { state, ...searchParams } = Object.fromEntries(new URL(request.url).searchParams.entries());
 
   if(!state) {
-    cookieStore.set(loginErrorCookie(LoginError.Unknown));
+    cookieStore.set(await loginErrorCookie(LoginError.Unknown));
     redirect('/login');
   }
 
@@ -171,7 +171,7 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
 
     // set session cookie
     cookieStore.set(authCookie(session.id));
-    cookieStore.set(userCookie(userId));
+    cookieStore.set(await userCookie(userId));
     cookieStore.delete(LoginErrorCookieName);
 
     // redirect
@@ -188,7 +188,7 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
     const errorCode = error instanceof LoginCallbackError ? error.errorCode : LoginError.Unknown;
 
     // set error cookie
-    cookieStore.set(loginErrorCookie(errorCode));
+    cookieStore.set(await loginErrorCookie(errorCode));
 
     // redirect to return URL
     const redirectTo = returnUrl ?? (requestType === 'add' ? '/providers' : '/login');

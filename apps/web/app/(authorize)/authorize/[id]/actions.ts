@@ -41,7 +41,7 @@ export async function authorize(id: string, _: FormState, formData: FormData): P
   if(session) {
     // make sure user cookie is set for better login flow later
     const cookieStore = await cookies();
-    cookieStore.set(userCookie(session.userId));
+    cookieStore.set(await userCookie(session.userId));
   }
 
   return authorizeInternal(id, accountIds, emailId);

@@ -3,7 +3,7 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { notFound, redirect } from 'next/navigation';
 import { TpOrderChallengeJwtPayload, getAccountForChallenge } from './challenge';
 import { getItem } from './get-item';
-import { createVerifier } from '@/lib/jwt';
+import { verifyJwt } from '@/lib/jwt';
 import { TpOrderChallengeForm } from './form';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { startChallenge } from './start-challenge.action';
@@ -37,8 +37,7 @@ export default async function TpOrderVerifyAccountPage({ params, searchParams }:
 
   let challenge: TpOrderChallengeJwtPayload;
   try {
-    const verifyJwt = createVerifier();
-    challenge = verifyJwt(jwt);
+    challenge = await verifyJwt(jwt, { requiredClaims: ['sub', 'itm', 'cns', 'exp'] });
   } catch(e) {
     console.error(e);
 
