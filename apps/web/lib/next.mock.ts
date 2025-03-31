@@ -1,7 +1,9 @@
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 // mock after
-jest.mock('next/server', () => ({
+vi.mock('next/server', () => ({
   __esModule: true,
-  after: jest.fn()
+  after: vi.fn()
 }));
+
+vi.mock('server-only', () => ({}));
