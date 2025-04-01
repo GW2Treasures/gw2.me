@@ -51,15 +51,37 @@ export interface IntrospectTokenParams {
   token: string,
 }
 
-export type IntrospectTokenResponse = {
-  active: true,
-  scope: string,
-  client_id: string,
-  token_type: 'Bearer',
-  exp?: number,
-} | {
-  active: false,
-};
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace IntrospectTokenResponse {
+  export interface Inactive {
+    active: false,
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  export namespace Active {
+    export interface Common {
+      active: true,
+      scope: string,
+      client_id: string,
+      exp?: number,
+    }
+
+    export interface Bearer extends Common {
+      token_type: 'Bearer',
+    }
+
+    export interface DPoP extends Common {
+      token_type: 'DPoP',
+      cnf: { jkt: string }
+    }
+  }
+
+  export type Active = Active.Bearer | Active.DPoP;
+}
+
+export type IntrospectTokenResponse =
+  | IntrospectTokenResponse.Inactive
+  | IntrospectTokenResponse.Active;
 
 export interface PushedAuthorizationRequestResponse {
   request_uri: string,
