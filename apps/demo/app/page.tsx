@@ -26,6 +26,7 @@ export default function HomePage() {
             <Checkbox name="include_granted_scopes" formValue="true">include_granted_scopes</Checkbox>
             <Checkbox name="verified_accounts_only" formValue="true">verified_accounts_only</Checkbox>
             <Checkbox name="par" formValue="true">Use Pushed Authorization Requests (PAR)</Checkbox>
+            <Checkbox name="dpop" formValue="true" checked disabled>Use Demonstrating Proof of Possession (DPoP)</Checkbox>
           </div>
         </Label>
       </div>
@@ -48,6 +49,7 @@ async function login(formData: FormData) {
   const include_granted_scopes = formData.get('include_granted_scopes') === 'true';
   const verified_accounts_only = formData.get('verified_accounts_only') === 'true';
   const par = formData.get('par') === 'true';
+  // const dpop = formData.get('dpop') === 'true';
 
   const { challenge } = await getPKCEPair();
 
