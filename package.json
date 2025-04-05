@@ -15,7 +15,7 @@
   "devDependencies": {
     "eslint-formatter-gha": "1.5.2",
     "turbo": "2.5.0",
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   },
   "pnpm": {
     "overrides": {
