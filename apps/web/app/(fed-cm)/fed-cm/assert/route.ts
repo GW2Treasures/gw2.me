@@ -187,7 +187,7 @@ export async function POST(request: NextRequest) {
         },
         update: {
           scope: Array.from(scopes),
-          accounts: applicationGrant?.accounts ? { connect: applicationGrant.accounts } : undefined,
+          accounts: applicationGrant?.accounts ? { set: applicationGrant.accounts } : undefined,
           emailId: applicationGrant?.emailId ?? user.defaultEmail?.id,
         }
       }),
