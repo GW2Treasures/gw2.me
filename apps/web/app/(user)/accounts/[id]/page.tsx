@@ -25,6 +25,7 @@ import { PermissionList } from '@/components/Permissions/PermissionList';
 import { scopeToPermissions } from '@/lib/scope';
 import { Scope } from '@gw2me/client';
 import { allPermissions } from '@/components/Permissions/data';
+import Link from 'next/link';
 
 const getAccount = cache(async function getAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -131,29 +132,36 @@ export default async function AccountPage({ params }: AccountPageProps) {
         </Notice>
       )}
 
-      <Table>
-        <thead>
-          <tr>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>Required Permissions</Table.HeaderCell>
-          </tr>
-        </thead>
-        <tbody>
-          {applications.map((grant) => (
-            <tr key={grant.id}>
-              <td>
-                <FlexRow>
-                  <ApplicationImage fileId={grant.application.imageId}/> {grant.application.name}
-                  {!hasApiTokenWithRequiredPermissions(account.apiTokens, scopeToPermissions(grant.scope as Scope[])) && (
-                    <Tip tip="Missing permissions"><Icon icon="warning" color="#ffa000"/></Tip>
-                  )}
-                </FlexRow>
-              </td>
-              <td><PermissionList permissions={scopeToPermissions(grant.scope as Scope[])}/></td>
+      {applications.length === 0 ? (
+        <p>
+          You have not authorized any applications to access this account yet.{' '}
+          <Link href="/discover">Discover</Link> applications that can use your account data.
+        </p>
+      ) : (
+        <Table>
+          <thead>
+            <tr>
+              <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell>Required Permissions</Table.HeaderCell>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {applications.map((grant) => (
+              <tr key={grant.id}>
+                <td>
+                  <FlexRow>
+                    <ApplicationImage fileId={grant.application.imageId}/> {grant.application.name}
+                    {!hasApiTokenWithRequiredPermissions(account.apiTokens, scopeToPermissions(grant.scope as Scope[])) && (
+                      <Tip tip="Missing permissions"><Icon icon="warning" color="#ffa000"/></Tip>
+                    )}
+                  </FlexRow>
+                </td>
+                <td><PermissionList permissions={scopeToPermissions(grant.scope as Scope[])}/></td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
     </PageLayout>
   );
 }
