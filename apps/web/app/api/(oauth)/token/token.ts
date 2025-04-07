@@ -83,7 +83,7 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
         db.authorization.upsert({
           where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
           create: { type: AuthorizationType.AccessToken, clientId, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt },
-          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt }
+          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt ?? null }
         }),
 
         // delete used code token

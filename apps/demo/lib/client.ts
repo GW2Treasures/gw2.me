@@ -42,7 +42,14 @@ export function getGw2MeUrl() {
   return process.env.GW2ME_URL ?? 'https://gw2.me';
 }
 
-export function getCallback() {
+export function getCallback(isDPoP: boolean) {
   unstable_noStore();
-  return process.env.CALLBACK_URL ?? 'https://demo.gw2.me/callback';
+
+  const redirect_uri = new URL(process.env.CALLBACK_URL ?? 'https://demo.gw2.me/callback');
+
+  if(isDPoP) {
+    redirect_uri.searchParams.set('dpop', 'true');
+  }
+
+  return redirect_uri.toString();
 }

@@ -5,7 +5,7 @@ import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 
 export const dynamic = 'force-dynamic';
 
-async function getToken(code: string) {
+async function getToken(code: string, isDPoP: boolean) {
   const { code_verifier } = await getPKCEPair();
   const dpopKeyPair = await getDPoPPair();
 
@@ -13,8 +13,8 @@ async function getToken(code: string) {
     code,
     token_type: 'DPoP',
     code_verifier,
-    redirect_uri: getCallback(),
-    dpopKeyPair
+    redirect_uri: getCallback(isDPoP),
+    dpopKeyPair: isDPoP ? dpopKeyPair : undefined,
   });
 }
 
@@ -43,7 +43,7 @@ async function parseSearchParams(searchParams: SearchParams): Promise<TokenRespo
 
   try {
     const { code } = gw2me.parseAuthorizationResponseSearchParams(params);
-    return await getToken(code);
+    return await getToken(code, params.has('dpop'));
   } catch(e) {
     return { error: String(e) };
   }

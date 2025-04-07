@@ -55,7 +55,7 @@ async function login(formData: FormData) {
   const dpopKeys = await getDPoPPair();
 
   const requestParams: AuthorizationUrlParams = {
-    redirect_uri: getCallback(),
+    redirect_uri: getCallback(dpop),
     scopes,
     state: 'example',
     ...challenge,

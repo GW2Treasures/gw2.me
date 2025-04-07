@@ -20,6 +20,20 @@ async function refreshTokenAction(data: FormData) {
     throw new Error();
   }
 
+  const token = await gw2me.refreshToken({ refresh_token });
+
+  redirect(`/token?access_token=${token.access_token}&refresh_token=${token.refresh_token}&token_type=${token.token_type}`);
+}
+
+async function refreshTokenActionDPoP(data: FormData) {
+  'use server';
+
+  const refresh_token = data.get('refresh_token')?.toString();
+
+  if(!refresh_token) {
+    throw new Error();
+  }
+
   const token = await gw2me.refreshToken({ refresh_token, dpopKeyPair: await getDPoPPair() });
 
   redirect(`/token?access_token=${token.access_token}&refresh_token=${token.refresh_token}&token_type=${token.token_type}`);
@@ -104,6 +118,7 @@ export default async function TokenPage({ searchParams: asyncSearchParams }: Pag
 
         <FlexRow>
           <Button icon="revision" type="submit" formAction={refreshTokenAction} disabled={!refresh_token}>Refresh Token</Button>
+          <Button icon="revision" type="submit" formAction={refreshTokenActionDPoP} disabled={!refresh_token}>Refresh Token (with DPoP)</Button>
           <Button icon="delete" type="submit" formAction={revokeAccessToken} disabled={!access_token}>Revoke access_token</Button>
           <Button icon="delete" type="submit" formAction={revokeRefreshToken} disabled={!refresh_token}>Revoke refresh_token</Button>
         </FlexRow>
