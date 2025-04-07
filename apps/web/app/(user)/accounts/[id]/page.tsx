@@ -5,7 +5,7 @@ import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { notFound } from 'next/navigation';
-import { deleteApiKey, updateDisplayName } from './actions';
+import { deleteApiKey, shareAccount, updateDisplayName } from './actions';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
@@ -26,6 +26,8 @@ import { scopeToPermissions } from '@/lib/scope';
 import { Scope } from '@gw2me/client';
 import { allPermissions } from '@/components/Permissions/data';
 import Link from 'next/link';
+import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
+import { FormatDate } from '@/components/Format/FormatDate';
 
 const getAccount = cache(async function getAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -33,7 +35,8 @@ const getAccount = cache(async function getAccount(id: string) {
   const account = await db.account.findUnique({
     where: { id, userId: session.userId },
     include: {
-      apiTokens: true
+      apiTokens: true,
+      shares: { include: { user: { select: { name: true }}}},
     }
   });
 
@@ -66,6 +69,8 @@ export default async function AccountPage({ params }: AccountPageProps) {
     const requiredPermissions = scopeToPermissions(authorization.scope as Scope[]);
     return !hasApiTokenWithRequiredPermissions(account.apiTokens, requiredPermissions);
   });
+
+  const Shares = createDataTable(account.shares, ({ id }) => id);
 
   return (
     <PageLayout>
@@ -122,6 +127,36 @@ export default async function AccountPage({ params }: AccountPageProps) {
           </tbody>
         </Table>
       </Form>
+
+      <Headline id="shareAccount">Share Account</Headline>
+      <p>You can share this account with your friends.</p>
+
+      {!account.verified ? (
+        <p>You have to <Link href={`/accounts/${account.id}/verify`}>verify your account ownership</Link> before you can share this account.</p>
+      ) : (
+        <div style={{ padding: 16, border: '1px solid var(--color-border-dark)', borderRadius: 2, backgroundColor: 'var(--color-background-light)', marginBottom: 32 }}>
+          <Form action={shareAccount}>
+            <input type="hidden" name="accountId" value={account.id}/>
+            <p>Enter the username of the user you want to share your account with.</p>
+            <Label label="Username">
+              <TextInput name="username"/>
+            </Label>
+            <FlexRow>
+              <SubmitButton>Share</SubmitButton>
+            </FlexRow>
+          </Form>
+        </div>
+      )}
+
+      {account.shares.length > 0 ? (
+        <Shares.Table>
+          <Shares.Column id="user" title="User">{({ user }) => user.name}</Shares.Column>
+          <Shares.Column id="status" title="Status">{({ state }) => state}</Shares.Column>
+          <Shares.Column id="createdAt" title="Shared since">{({ createdAt }) => <FormatDate date={createdAt}/>}</Shares.Column>
+        </Shares.Table>
+      ) : account.verified && (
+        <p>You have not shared your account with anyone yet.</p>
+      )}
 
       <Headline id="applications">Authorized Applications</Headline>
 
