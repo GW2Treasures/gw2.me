@@ -150,7 +150,7 @@ importers:
     dependencies:
       '@gw2api/fetch':
         specifier: 0.4.1
-        version: 0.4.1(@gw2api/types@0.0.24)
+        version: 0.4.1(@gw2api/types@0.0.25)
       '@gw2me/client':
         specifier: workspace:*
         version: link:../../packages/client
@@ -213,8 +213,8 @@ importers:
         version: 0.34.1
     devDependencies:
       '@gw2api/types':
-        specifier: 0.0.24
-        version: 0.0.24
+        specifier: 0.0.25
+        version: 0.0.25
       '@gw2treasures/eslint-config':
         specifier: 0.0.6
         version: 0.0.6(eslint@8.57.1)(typescript@5.8.3)
@@ -764,8 +764,8 @@ packages:
     peerDependencies:
       '@gw2api/types': ~0.0.5
 
-  '@gw2api/types@0.0.24':
-    resolution: {integrity: sha512-gFCQ83MPhlVgUE8x8CI7fEFO5DoDILI672z+e+9Kp/7BUIVlpExAJUZvAcXVSq19SqvB/fdKcLkLaY+FfI0Bmg==}
+  '@gw2api/types@0.0.25':
+    resolution: {integrity: sha512-GQuM7rZSD1WIqErb2BK+TNKvv63oPmf2OgGOp9ERNCRiyQBJsXpPwJuxXx6se4xAS9HLMab5u9feR+YzIKQFTA==}
 
   '@gw2treasures/eslint-config@0.0.6':
     resolution: {integrity: sha512-5kn5Kf5w3ZMQD2VhrKtk3DLBtCJczoC8lH9tfUo9nnIjOyoaQtSDUGNP2wVbTtwdHReq4gE9bvV+9cyAD6g+GA==}
@@ -4730,11 +4730,11 @@ snapshots:
 
   '@fontsource/bitter@5.2.6': {}
 
-  '@gw2api/fetch@0.4.1(@gw2api/types@0.0.24)':
+  '@gw2api/fetch@0.4.1(@gw2api/types@0.0.25)':
     dependencies:
-      '@gw2api/types': 0.0.24
+      '@gw2api/types': 0.0.25
 
-  '@gw2api/types@0.0.24': {}
+  '@gw2api/types@0.0.25': {}
 
   '@gw2treasures/eslint-config@0.0.6(eslint@8.57.1)(typescript@5.8.3)':
     dependencies:
