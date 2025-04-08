@@ -387,8 +387,8 @@ importers:
         specifier: 8.57.1
         version: 8.57.1
       react-email:
-        specifier: 4.0.4
-        version: 4.0.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 4.0.5
+        version: 4.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -3544,8 +3544,8 @@ packages:
     peerDependencies:
       react: 19.1.0
 
-  react-email@4.0.4:
-    resolution: {integrity: sha512-W+fdztx6qafK5xCYhKg1R/F0mQJHd+ubYTBk9FJMOqoEcgn7n/myPbPSKDWuGt/hYrvurCHs4DBNhj47sgecGA==}
+  react-email@4.0.5:
+    resolution: {integrity: sha512-OPOsrTXLAHJ9RWn8fYZYDeyiC+/+4yHwC/O56WXg+h3AComKUt+pI2Tj+8UJFFPK/7y9HG1WSCsy7tBdzHGiPg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -7753,7 +7753,7 @@ snapshots:
       react: 19.1.0
       scheduler: 0.26.0
 
-  react-email@4.0.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-email@4.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@babel/parser': 7.24.5
       '@babel/traverse': 7.25.6
