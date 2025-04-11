@@ -254,6 +254,7 @@ model Authorization {
 
   redirectUri   String?
   codeChallenge String?
+  dpopJkt       String?
 
   expiresAt DateTime?
   createdAt DateTime  @default(now())
