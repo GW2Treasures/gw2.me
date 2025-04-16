@@ -1,4 +1,4 @@
-import { supportedDPoPAlgorithms } from "@/lib/oauth/dpop";
+import { supportedDPoPAlgorithms } from '@/lib/oauth/dpop';
 import { AuthenticationMethod } from '@/lib/oauth/types';
 import { getUrlFromRequest } from '@/lib/url';
 import { Scope } from '@gw2me/client';

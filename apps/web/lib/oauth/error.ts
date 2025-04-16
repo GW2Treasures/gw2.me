@@ -1,5 +1,5 @@
-import { isTruthy } from "@gw2treasures/helper/is";
-import { NextResponse } from "next/server";
+import { isTruthy } from '@gw2treasures/helper/is';
+import { NextResponse } from 'next/server';
 
 export enum OAuth2ErrorCode {
   access_denied = 'access_denied',
