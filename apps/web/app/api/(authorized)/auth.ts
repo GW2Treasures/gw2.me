@@ -53,8 +53,7 @@ export function withAuthorization<Context>(scopes?: Scope[] | { oneOf: Scope[] }
           assert(tokenType === 'DPoP', OAuth2ErrorCode.invalid_request, 'Invalid authorization type (expected DPoP)');
           const proof = request.headers.get('DPoP');
           assert(proof, OAuth2ErrorCode.invalid_request);
-          const { jkt } = await checkProof(proof, { htm: request.method, htu: request.nextUrl, accessToken: authorization.token });
-          assert(jkt === authorization.dpopJkt);
+          await checkProof(proof, { htm: request.method, htu: request.nextUrl, accessToken: authorization.token }, authorization.dpopJkt);
         } else {
           assert(tokenType === 'Bearer', OAuth2ErrorCode.invalid_request, 'Invalid authorization type (expected Bearer)');
         }

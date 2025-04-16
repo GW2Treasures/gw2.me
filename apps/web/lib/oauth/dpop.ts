@@ -8,40 +8,54 @@ export const supportedDPoPAlgorithms: string[] = [
   'ES256'
 ];
 
-export async function checkProof(proof: string, { htm, htu, accessToken }: { htm: string, htu: URL, accessToken?: string }) {
+// https://datatracker.ietf.org/doc/html/rfc9449#section-4.3
+export async function checkProof(proof: string, { htm, htu, accessToken }: { htm: string, htu: URL, accessToken?: string }, expectedJwkThumbprint?: string | null) {
+  // verify JWT
   const { protectedHeader, payload } = await jwtVerify(proof, EmbeddedJWK, {
     typ: 'dpop+jwt',
     maxTokenAge: 10,
     requiredClaims: ['jti', 'htm', 'htu', 'iat'],
   });
 
+  // ensure request method matches
   if(htm !== payload.htm) {
-    throw new DPoPError('htm mismatch');
+    throw new DPoPError(OAuth2ErrorCode.invalid_request, 'htm mismatch');
   }
 
+  // ensure (normalized) request url matches
   if(normalizeHtu(htu) !== normalizeHtu(payload.htu)) {
-    throw new DPoPError('htu mismatch');
+    throw new DPoPError(OAuth2ErrorCode.invalid_request, 'htu mismatch');
   }
 
+  // if this is a proof for a specific access token, ensure the ath claim matches the base64url encoded sha256 hash of the token,
+  // otherwise ensure no ath claim is present in the JWT
   if(accessToken) {
     const accessTokenHash = createHash('sha256').update(accessToken).digest('base64url');
+
     if(accessTokenHash !== payload.ath) {
-      throw new DPoPError('ath mismatch');
+      throw new DPoPError(OAuth2ErrorCode.invalid_request, 'ath mismatch');
     }
   } else if(payload.ath) {
-    throw new DPoPError('ath not allowed');
+    throw new DPoPError(OAuth2ErrorCode.invalid_request, 'ath not allowed');
   }
 
+  // calculate jwk thumbprint of provided public key
   const jkt = await calculateJwkThumbprint(protectedHeader['jwk']!, 'sha256');
 
+  // verify calculated jwk thumbprint matches expected
+  if(expectedJwkThumbprint && expectedJwkThumbprint !== jkt) {
+    throw new DPoPError(OAuth2ErrorCode.invalid_dpop_proof, 'DPoP public key mismatch');
+  }
+
+  // return jwk thumbprint
   return {
     jkt
   };
 }
 
 class DPoPError extends OAuth2Error {
-  constructor(description: string) {
-    super(OAuth2ErrorCode.invalid_request, { description });
+  constructor(code: OAuth2ErrorCode, description: string) {
+    super(code, { description });
     Object.setPrototypeOf(this, DPoPError.prototype);
   }
 }

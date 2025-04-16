@@ -54,15 +54,18 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
 
       assertPKCECodeChallenge(authorization.codeChallenge, code_verifier);
 
+      // DPoP
       const proof = headers.get('dpop');
+
+      // if the authorization is DPoP bound, the DPoP header is required
+      if(authorization.dpopJkt) {
+        assert(proof, OAuth2ErrorCode.invalid_dpop_proof, 'DPoP proof required');
+      }
+
       const dpop = proof
-        ? await checkProof(proof, { htm: 'POST', htu: url, accessToken: authorization.dpopJkt ? authorization.token : undefined })
+        ? await checkProof(proof, { htm: 'POST', htu: url, accessToken: authorization.dpopJkt ? authorization.token : undefined }, authorization.dpopJkt)
         : undefined;
 
-      if(authorization.dpopJkt) {
-        assert(dpop, OAuth2ErrorCode.invalid_dpop_proof, 'DPoP proof required');
-        assert(authorization.dpopJkt === dpop.jkt, OAuth2ErrorCode.invalid_dpop_proof, 'DPoP public key mismatch');
-      }
 
       const { clientId, applicationId, userId, scope } = authorization;
 
@@ -120,14 +123,15 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
 
       // DPoP
       const proof = headers.get('dpop');
-      const dpop = proof
-        ? await checkProof(proof, { htm: 'POST', htu: url, accessToken: refreshAuthorization.dpopJkt ? refreshAuthorization.token : undefined })
-        : undefined;
 
+      // if the authorization is DPoP bound, the DPoP header is required
       if(refreshAuthorization.dpopJkt) {
-        assert(dpop, OAuth2ErrorCode.invalid_dpop_proof, 'DPoP proof required');
-        assert(refreshAuthorization.dpopJkt === dpop.jkt, OAuth2ErrorCode.invalid_dpop_proof, 'DPoP public key mismatch');
+        assert(proof, OAuth2ErrorCode.invalid_dpop_proof, 'DPoP proof required');
       }
+
+      const dpop = proof
+        ? await checkProof(proof, { htm: 'POST', htu: url, accessToken: refreshAuthorization.dpopJkt ? refreshAuthorization.token : undefined }, refreshAuthorization.dpopJkt)
+        : undefined;
 
       const { clientId, applicationId, userId, scope } = refreshAuthorization;
 

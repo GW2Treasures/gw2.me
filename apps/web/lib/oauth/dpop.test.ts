@@ -16,7 +16,7 @@ describe('dpop', () => {
       vi.useRealTimers();
     });
 
-    it('verifies valid JWT', async () => {
+    it('verifies valid proof', async () => {
       vi.setSystemTime(new Date('2025-03-31T07:59:40Z'));
 
       const result = await checkProof(validJwt, {
@@ -26,7 +26,17 @@ describe('dpop', () => {
       expect(result).toHaveProperty('jkt');
     });
 
-    it('verifies valid JWT', async () => {
+    it('verifies valid proof and verifies jwk thumbprint', async () => {
+      vi.setSystemTime(new Date('2025-03-31T07:59:40Z'));
+
+      const result = await checkProof(validJwt, {
+        htm: 'POST',
+        htu: new URL('http://localhost:4000/api/token'),
+      }, 'D4x_ofww24_Y5kCvbcuGUIFqej7InUQoKBAFzsrSCK8');
+      expect(result).toHaveProperty('jkt');
+    });
+
+    it('verifies valid proof with access token', async () => {
       vi.setSystemTime(new Date('2025-04-07T11:43:42Z'));
 
       const result = await checkProof(validJwtWithAth, {
@@ -90,6 +100,17 @@ describe('dpop', () => {
           htm: 'POST',
           htu: new URL('http://localhost:4000/api/token'),
         })
+      ).rejects.toThrowError();
+    });
+
+    it('throws if thumbprint does not match expected', async () => {
+      vi.setSystemTime(new Date('2025-03-31T07:59:40Z'));
+
+      await expect(
+        checkProof(validJwt, {
+          htm: 'POST',
+          htu: new URL('http://localhost:4000/api/token'),
+        }, 'thumbprint')
       ).rejects.toThrowError();
     });
   });
