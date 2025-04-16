@@ -95,6 +95,17 @@ async function verifyPKCE({ client_id, code_challenge, code_challenge_method }: 
   fail(client.type === ClientType.Public && !hasPKCE, OAuth2ErrorCode.invalid_request, 'PKCE is required for public clients');
 }
 
+/** @see https://datatracker.ietf.org/doc/html/rfc9449#section-10 */
+function verifyDPoP({ dpop_jkt }: Partial<AuthorizationRequestData.OAuth2>) {
+  if(!dpop_jkt) {
+    return;
+  }
+
+  // verify that dpop_jkt is a valid sha256 hash (256 bits = 32 bytes = 64 hex chars)
+  const decoded = Buffer.from(dpop_jkt, 'base64url').toString('hex');
+  assert(decoded.length === 64, OAuth2ErrorCode.invalid_request, 'invalid dpop_jkt');
+}
+
 function verifyIncludeGrantedScopes({ include_granted_scopes }: Partial<AuthorizationRequestData.OAuth2>) {
   assert(include_granted_scopes === undefined || include_granted_scopes === 'true', OAuth2ErrorCode.invalid_request, 'invalid include_granted_scopes');
 }
@@ -131,6 +142,7 @@ export const validateRequest = cache(async function validateRequest(request: Par
       verifyPrompt(request),
       verifyIncludeGrantedScopes(request),
       verifyVerifiedAccountsOnly(request),
+      verifyDPoP(request),
     ]);
 
     return { error: undefined, request: request as AuthorizationRequestData.OAuth2 };
