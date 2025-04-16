@@ -31,5 +31,8 @@ interface IdentityProvider {
   close(): undefined
 
   resolve(token: string, options?: { accountId: string }): undefined
-}
 
+  /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IdentityProvider/getUserInfo_static) */
+  getUserInfo(config: { configURL: string, clientId: string }): Promise<{ email: string, name: string, givenName: string, picture: string }[]>
+}
+declare const IdentityProvider: IdentityProvider;
