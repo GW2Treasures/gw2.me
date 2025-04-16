@@ -37,6 +37,7 @@
     "@gw2treasures/eslint-config": "0.1.0",
     "@gw2treasures/eslint-plugin-nextjs": "0.1.0",
     "@gw2treasures/tsconfig": "0.0.1",
+    "@next/eslint-plugin-next": "15.3.0",
     "@prisma/nextjs-monorepo-workaround-plugin": "6.6.0",
     "@testing-library/dom": "10.4.0",
     "@testing-library/react": "16.3.0",
@@ -46,9 +47,9 @@
     "@types/react-dom": "19.1.2",
     "@vitejs/plugin-react": "4.4.0",
     "eslint": "9.24.0",
-    "eslint-config-next": "15.3.0",
     "jsdom": "26.1.0",
     "typescript": "5.8.3",
+    "typescript-eslint": "8.30.1",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.1.1",
     "vitest-mock-extended": "3.1.0"
