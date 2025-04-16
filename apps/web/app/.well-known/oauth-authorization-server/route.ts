@@ -1,7 +1,7 @@
-import { AuthenticationMethod } from "@/lib/oauth/types";
-import { getUrlFromRequest } from "@/lib/url";
-import { Scope } from "@gw2me/client";
-import { NextRequest, NextResponse } from "next/server";
+import { AuthenticationMethod } from '@/lib/oauth/types';
+import { getUrlFromRequest } from '@/lib/url';
+import { Scope } from '@gw2me/client';
+import { NextRequest, NextResponse } from 'next/server';
 
 export function GET(request: NextRequest) {
   const currentUrl = getUrlFromRequest(request);

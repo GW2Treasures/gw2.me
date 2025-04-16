@@ -27,7 +27,6 @@ export interface AuthorizeActionParams {
   codeChallenge?: string
 }
 
-// eslint-disable-next-line require-await
 export async function authorize(id: string, _: FormState, formData: FormData): Promise<FormState> {
   // get account ids from form
   const accountIds = formData.getAll('accounts').filter(isString);
