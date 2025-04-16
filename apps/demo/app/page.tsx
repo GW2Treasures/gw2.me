@@ -66,7 +66,7 @@ async function login(formData: FormData) {
   };
 
   if(par) {
-    const pushed = await gw2me.pushAuthorizationRequest(requestParams);
+    const pushed = await gw2me.pushAuthorizationRequest({ ...requestParams, dpopKeyPair: dpop ? dpopKeys : undefined });
     const authUrl = gw2me.getAuthorizationUrl(pushed);
     redirect(authUrl);
   } else {

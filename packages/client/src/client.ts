@@ -1,5 +1,5 @@
 import { Gw2MeApi, type ApiOptions } from './api';
-import { createDPoPJwt } from './dpop';
+import { createDPoPJwt, jwkThumbprint } from './dpop';
 import { Gw2MeError, Gw2MeOAuthError } from './error';
 import { Gw2MeFedCM } from './fed-cm';
 import { type ClientInfo, type Options, Scope } from './types';
@@ -15,6 +15,10 @@ export interface AuthorizationUrlParams {
   prompt?: 'none' | 'consent'
   include_granted_scopes?: boolean;
   verified_accounts_only?: boolean;
+}
+
+export interface PushedAuthorizationRequestParams extends AuthorizationUrlParams {
+  dpopKeyPair?: CryptoKeyPair,
 }
 
 export interface AuthorizationUrlRequestUriParams {
@@ -125,15 +129,32 @@ export class Gw2MeClient {
     return this.#getUrl(`/oauth2/authorize?${urlParams.toString()}`).toString();
   }
 
-  public async pushAuthorizationRequest(params: AuthorizationUrlParams): Promise<PushedAuthorizationRequestResponse> {
-    const urlParams = constructAuthorizationParams(this.#client.client_id, params);
+  public async pushAuthorizationRequest(params: PushedAuthorizationRequestParams): Promise<PushedAuthorizationRequestResponse> {
+    const url = this.#getUrl('/oauth2/par');
     const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
 
+    // use DPoP if key pair is provided
+    if(params.dpopKeyPair) {
+      // generate DPoP proof
+      headers.DPoP = await createDPoPJwt({
+        htm: 'POST',
+        htu: url.toString(),
+      }, params.dpopKeyPair);
+
+      // overwrite dpop_jkt with jwk thumbprint of public key to ensure they match
+      params.dpop_jkt = await jwkThumbprint(params.dpopKeyPair.publicKey);
+    }
+
+    // create params
+    const urlParams = constructAuthorizationParams(this.#client.client_id, params);
+
+    // use authorization for confidential clients
     if(this.#client.type === 'Confidential') {
       headers.Authorization = this.#getAuthorizationHeader();
     }
 
-    const response: PushedAuthorizationRequestResponse = await fetch(this.#getUrl('/oauth2/par'), {
+    // send PAR
+    const response: PushedAuthorizationRequestResponse = await fetch(url, {
       method: 'POST',
       headers,
       body: urlParams,
