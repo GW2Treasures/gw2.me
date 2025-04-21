@@ -50,7 +50,7 @@
     "eslint": "9.25.1",
     "tsup": "8.4.0",
     "typescript": "5.8.3",
-    "typescript-eslint": "8.30.1",
+    "typescript-eslint": "8.31.0",
     "undici-types": "7.8.0"
   }
 }
