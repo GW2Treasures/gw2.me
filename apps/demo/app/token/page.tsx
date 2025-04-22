@@ -137,6 +137,7 @@ export default async function TokenPage({ searchParams: asyncSearchParams }: Pag
       {typeof accounts === 'object' && typeof introspectAccessToken === 'object' && introspectAccessToken.active && accounts?.accounts?.map((account) => (
         <form key={account.id} action={getSubtoken.bind(null, account.id)} style={{ marginBottom: 16 }}>
           <input type="hidden" name="access_token" value={access_token}/>
+          <input type="hidden" name="token_type" value={token_type}/>
           <b>{account.displayName ? `${account.displayName} (${account.name})` : account.name}</b>
           <FlexRow>
             {introspectAccessToken.scope.split(' ').filter((scope) => scope.startsWith('gw2:')).map((scope) => scope.substring(4)).map((permission) => (
