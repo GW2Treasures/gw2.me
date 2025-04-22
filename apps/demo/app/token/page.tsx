@@ -1,4 +1,4 @@
-import { getDPoPPair, getGw2MeUrl, gw2me } from '@/lib/client';
+import { createDPoPJwt, getGw2MeUrl, gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { redirect } from 'next/navigation';
@@ -34,7 +34,7 @@ async function refreshTokenActionDPoP(data: FormData) {
     throw new Error();
   }
 
-  const token = await gw2me.refreshToken({ refresh_token, dpopKeyPair: await getDPoPPair() });
+  const token = await gw2me.refreshToken({ refresh_token, dpop: createDPoPJwt });
 
   redirect(`/token?access_token=${token.access_token}&refresh_token=${token.refresh_token}&token_type=${token.token_type}`);
 }
@@ -79,7 +79,7 @@ async function getSubtoken(accountId: string, data: FormData) {
   // get requested permissions
   const requestedPermissions = data.getAll('permission').filter((permission) => typeof permission === 'string');
 
-  const api = gw2me.api(access_token, { dpopKeyPair: token_type === 'DPoP' ? await getDPoPPair() : undefined });
+  const api = gw2me.api(access_token, { dpop: token_type === 'DPoP' ? createDPoPJwt : undefined });
   const { subtoken } = await api.subtoken(accountId, { permissions: requestedPermissions });
 
   redirect(`https://api.guildwars2.com/v2/tokeninfo?v=latest&access_token=${encodeURIComponent(subtoken)}`);
@@ -93,7 +93,7 @@ export default async function TokenPage({ searchParams: asyncSearchParams }: Pag
   const token_type = searchParams.token_type === 'DPoP' ? 'DPoP' : 'Bearer';
 
   const api = access_token
-    ? gw2me.api(access_token, { dpopKeyPair: token_type === 'DPoP' ? await getDPoPPair() : undefined })
+    ? gw2me.api(access_token, { dpop: token_type === 'DPoP' ? createDPoPJwt : undefined })
     : undefined;
 
   const [user, accounts, introspectAccessToken, introspectRefreshToken] = await Promise.all([

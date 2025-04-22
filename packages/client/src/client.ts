@@ -1,48 +1,49 @@
 import { Gw2MeApi, type ApiOptions } from './api';
-import { createDPoPJwt, jwkThumbprint } from './dpop';
 import { Gw2MeError, Gw2MeOAuthError } from './error';
 import { Gw2MeFedCM } from './fed-cm';
-import { type ClientInfo, type Options, Scope } from './types';
+import { type ClientInfo, type DPoPCallback, type Options, Scope } from './types';
 import { jsonOrError } from './util';
 
 export interface AuthorizationUrlParams {
-  redirect_uri: string;
-  scopes: Scope[];
-  state?: string;
-  code_challenge?: string;
-  code_challenge_method?: 'S256';
-  dpop_jkt?: string;
+  redirect_uri: string,
+  scopes: Scope[],
+  state?: string,
+  code_challenge?: string,
+  code_challenge_method?: 'S256',
+  dpop_jkt?: string,
   prompt?: 'none' | 'consent'
-  include_granted_scopes?: boolean;
-  verified_accounts_only?: boolean;
+  include_granted_scopes?: boolean,
+  verified_accounts_only?: boolean,
 }
 
 export interface PushedAuthorizationRequestParams extends AuthorizationUrlParams {
-  dpopKeyPair?: CryptoKeyPair,
+  dpop?: DPoPCallback,
 }
 
 export interface AuthorizationUrlRequestUriParams {
-  request_uri: string
+  request_uri: string,
 }
 
+export type TokenType = 'Bearer' | 'DPoP';
+
 export interface AuthTokenParams {
-  code: string;
-  token_type?: 'Bearer' | 'DPoP';
-  redirect_uri: string;
-  code_verifier?: string;
-  dpopKeyPair?: CryptoKeyPair;
+  code: string,
+  token_type?: TokenType,
+  redirect_uri: string,
+  code_verifier?: string,
+  dpop?: DPoPCallback,
 }
 
 export interface RefreshTokenParams {
   refresh_token: string,
-  refresh_token_type?: 'Bearer' | 'DPoP';
-  dpopKeyPair?: CryptoKeyPair,
+  refresh_token_type?: TokenType,
+  dpop?: DPoPCallback,
 }
 
 export interface TokenResponse {
   access_token: string,
   issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
-  token_type: 'Bearer' | 'DPoP',
+  token_type: TokenType,
   expires_in: number,
   refresh_token?: string,
   scope: string,
@@ -131,15 +132,9 @@ export class Gw2MeClient {
     const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
 
     // use DPoP if key pair is provided
-    if(params.dpopKeyPair) {
+    if(params.dpop) {
       // generate DPoP proof
-      headers.DPoP = await createDPoPJwt({
-        htm: 'POST',
-        htu: url.toString(),
-      }, params.dpopKeyPair);
-
-      // overwrite dpop_jkt with jwk thumbprint of public key to ensure they match
-      params.dpop_jkt = await jwkThumbprint(params.dpopKeyPair.publicKey);
+      headers.DPoP = await params.dpop({ htm: 'POST', htu: url.toString() });
     }
 
     // create params
@@ -161,7 +156,7 @@ export class Gw2MeClient {
     return response;
   }
 
-  async getAccessToken({ code, token_type, redirect_uri, code_verifier, dpopKeyPair }: AuthTokenParams): Promise<TokenResponse> {
+  async getAccessToken({ code, token_type, redirect_uri, code_verifier, dpop }: AuthTokenParams): Promise<TokenResponse> {
     const data = new URLSearchParams({
       grant_type: 'authorization_code',
       code, client_id: this.#client.client_id, redirect_uri,
@@ -179,12 +174,12 @@ export class Gw2MeClient {
 
     const url = this.#getUrl('/api/token');
 
-    if(dpopKeyPair) {
-      headers.DPoP = await createDPoPJwt({
+    if(dpop) {
+      headers.DPoP = await dpop({
         htm: 'POST',
         htu: url.toString(),
         accessToken: token_type === 'DPoP' ? code : undefined,
-      }, dpopKeyPair);
+      });
     }
 
     const token = await fetch(url, {
@@ -197,7 +192,7 @@ export class Gw2MeClient {
     return token;
   }
 
-  async refreshToken({ refresh_token, refresh_token_type, dpopKeyPair }: RefreshTokenParams): Promise<TokenResponse> {
+  async refreshToken({ refresh_token, refresh_token_type, dpop }: RefreshTokenParams): Promise<TokenResponse> {
     const data = new URLSearchParams({
       grant_type: 'refresh_token',
       refresh_token, client_id: this.#client.client_id,
@@ -213,13 +208,13 @@ export class Gw2MeClient {
 
     const url = this.#getUrl('/api/token');
 
-    if(dpopKeyPair) {
-      headers.DPoP = await createDPoPJwt({
+    if(dpop) {
+      headers.DPoP = await dpop({
         htm: 'POST',
         htu: url.toString(),
         // public clients have their refresh token DPoP bound, confidential clients not, as the secret is used proof of possession
         accessToken: refresh_token_type === 'DPoP' ? refresh_token : undefined,
-      }, dpopKeyPair);
+      });
     }
 
     const token = await fetch(url, {

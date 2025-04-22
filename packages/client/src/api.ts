@@ -1,37 +1,36 @@
-import { createDPoPJwt } from './dpop';
-import type { Options } from './types';
+import type { DPoPCallback, Options } from './types';
 import { jsonOrError, okOrError } from './util';
 
 export interface UserResponse {
   user: {
-    id: string;
-    name: string;
-    email?: string;
-    emailVerified?: boolean;
+    id: string,
+    name: string,
+    email?: string,
+    emailVerified?: boolean,
   },
-  settings?: unknown;
+  settings?: unknown,
 }
 
 export interface AccountsResponse {
   accounts: {
-    id: string;
-    name: string;
-    verified?: boolean;
-    displayName?: string | null;
+    id: string,
+    name: string,
+    verified?: boolean,
+    displayName?: string | null,
   }[]
 }
 
 export interface SubtokenOptions {
-  permissions?: string[];
+  permissions?: string[],
 }
 
 export interface SubtokenResponse {
-  subtoken: string;
-  expiresAt: string;
+  subtoken: string,
+  expiresAt: string,
 }
 
 export interface ApiOptions extends Options {
-  dpopKeyPair?: CryptoKeyPair
+  dpop?: DPoPCallback,
 }
 
 export class Gw2MeApi {
@@ -74,14 +73,17 @@ export class Gw2MeApi {
   async #requestWithDpop(endpoint: string | URL, init?: RequestInit): Promise<Request> {
     const url = endpoint instanceof URL ? endpoint : this.#getUrl(endpoint);
 
-    const dpopKeyPair = this.options?.dpopKeyPair;
+    const dpop = this.options?.dpop;
 
     const headers = new Headers(init?.headers);
-    headers.set('Authorization', `${dpopKeyPair ? 'DPoP' : 'Bearer'} ${this.access_token}`);
+    headers.set('Authorization', `${dpop ? 'DPoP' : 'Bearer'} ${this.access_token}`);
 
-    if(dpopKeyPair) {
-      const dpop = await createDPoPJwt({ htm: init?.method ?? 'GET', htu: url.toString(), accessToken: this.access_token }, dpopKeyPair);
-      headers.set('DPoP', dpop);
+    if(dpop) {
+      headers.set('DPoP', await dpop({
+        htm: init?.method ?? 'GET',
+        htu: url.toString(),
+        accessToken: this.access_token
+      }));
     }
 
     return new Request(

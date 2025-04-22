@@ -1,4 +1,5 @@
 import { base64urlEncode } from './base64';
+import type { DPoPParams } from './types';
 
 export function generateDPoPKeyPair() {
   return crypto.subtle.generateKey({
@@ -7,14 +8,7 @@ export function generateDPoPKeyPair() {
   }, false, ['sign']);
 }
 
-interface DPoPOptions {
-  htm: 'GET' | 'POST' | (string & {}),
-  htu: string,
-  nonce?: string,
-  accessToken?: string,
-}
-
-export async function createDPoPJwt({ htm, htu, nonce, accessToken }: DPoPOptions, keyPair: CryptoKeyPair) {
+export async function createDPoPJwt({ htm, htu, nonce, accessToken }: DPoPParams, keyPair: CryptoKeyPair) {
   // TODO: support user algorithms based on used key
   const header = JSON.stringify({
     alg: 'ES256',

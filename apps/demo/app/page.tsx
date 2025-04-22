@@ -3,7 +3,7 @@ import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { redirect } from 'next/navigation';
 import { AuthorizationUrlParams, Scope } from '@gw2me/client';
-import { getCallback, getDPoPPair, getPKCEPair, gw2me } from '@/lib/client';
+import { createDPoPJwt, getCallback, getDPoPPair, getPKCEPair, gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { jwkThumbprint } from '@gw2me/client/dpop';
 
@@ -66,7 +66,7 @@ async function login(formData: FormData) {
   };
 
   if(par) {
-    const pushed = await gw2me.pushAuthorizationRequest({ ...requestParams, dpopKeyPair: dpop ? dpopKeys : undefined });
+    const pushed = await gw2me.pushAuthorizationRequest({ ...requestParams, dpop: dpop ? createDPoPJwt : undefined });
     const authUrl = gw2me.getAuthorizationUrl(pushed);
     redirect(authUrl);
   } else {
