@@ -20,11 +20,13 @@ export async function checkProof(proof: string, { htm, htu, accessToken }: { htm
 
   // ensure request method matches
   if(htm !== payload.htm) {
+    console.log('htm mismatch', htm, payload.htm);
     throw new DPoPError(OAuth2ErrorCode.invalid_request, 'htm mismatch');
   }
 
   // ensure (normalized) request url matches
   if(normalizeHtu(htu) !== normalizeHtu(payload.htu)) {
+    console.log('htu mismatch', htu, payload.htu);
     throw new DPoPError(OAuth2ErrorCode.invalid_request, 'htu mismatch');
   }
 
