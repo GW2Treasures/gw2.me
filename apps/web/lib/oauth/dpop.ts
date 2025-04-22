@@ -15,6 +15,7 @@ export async function checkProof(proof: string, { htm, htu, accessToken }: { htm
     typ: 'dpop+jwt',
     maxTokenAge: 10,
     requiredClaims: ['jti', 'htm', 'htu', 'iat'],
+    algorithms: supportedDPoPAlgorithms
   });
 
   // ensure request method matches
