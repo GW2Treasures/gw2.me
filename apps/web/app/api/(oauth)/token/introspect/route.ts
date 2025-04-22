@@ -19,13 +19,16 @@ export const POST = handleRequest(async ({ params, requestAuthorization }): Prom
     return { active: false };
   }
 
-  return {
+  const common: IntrospectTokenResponse.Active.Common = {
     active: true,
     client_id: authorization.clientId,
     scope: authorization.scope.join(' '),
-    token_type: 'Bearer',
     exp: authorization.expiresAt ? toTimestamp(authorization.expiresAt) : undefined,
   };
+
+  return authorization.dpopJkt
+    ? { ...common, token_type: 'DPoP', cnf: { jkt: authorization.dpopJkt }}
+    : { ...common, token_type: 'Bearer' };
 });
 
 export const OPTIONS = handleOptionsRequest();

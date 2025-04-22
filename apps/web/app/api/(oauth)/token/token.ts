@@ -7,11 +7,12 @@ import { TokenResponse } from '@gw2me/client';
 import { ClientType, AuthorizationType } from '@gw2me/database';
 import { createHash } from 'crypto';
 import { OAuth2RequestHandlerProps } from '../request';
+import { checkProof } from '@/lib/oauth/dpop';
 
 // 7 days
 const ACCESS_TOKEN_EXPIRATION = 604800;
 
-export async function handleTokenRequest({ params, requestAuthorization }: OAuth2RequestHandlerProps): Promise<TokenResponse> {
+export async function handleTokenRequest({ headers, params, requestAuthorization, url }: OAuth2RequestHandlerProps): Promise<TokenResponse> {
   // get grant_type
   const grant_type = params['grant_type'];
   assert(isValidGrantType(grant_type), OAuth2ErrorCode.unsupported_grant_type, 'Invalid grant_type');
@@ -53,11 +54,27 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
 
       assertPKCECodeChallenge(authorization.codeChallenge, code_verifier);
 
+      // DPoP
+      const proof = headers.get('dpop');
+
+      // if the authorization is DPoP bound, the DPoP header is required
+      if(authorization.dpopJkt) {
+        assert(proof, OAuth2ErrorCode.invalid_dpop_proof, 'DPoP proof required');
+      }
+
+      const dpop = proof
+        ? await checkProof(proof, { htm: 'POST', htu: url, accessToken: authorization.dpopJkt ? authorization.token : undefined }, authorization.dpopJkt)
+        : undefined;
+
+
       const { clientId, applicationId, userId, scope } = authorization;
+
+      // TODO(dpop): If DPoP (and PKCE) is used allow public clients to create refresh tokens
+      const canCreateRefreshToken = client.type === ClientType.Confidential;
 
       const [refreshAuthorization, accessAuthorization] = await db.$transaction([
         // create refresh token
-        client.type === ClientType.Confidential
+        canCreateRefreshToken
           ? db.authorization.upsert({
               where: { type_clientId_userId: { type: AuthorizationType.RefreshToken, clientId, userId }},
               create: { type: AuthorizationType.RefreshToken, clientId, applicationId, userId, scope, token: generateRefreshToken() },
@@ -68,8 +85,8 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
         // create access token
         db.authorization.upsert({
           where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
-          create: { type: AuthorizationType.AccessToken, clientId, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
-          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
+          create: { type: AuthorizationType.AccessToken, clientId, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt },
+          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt ?? null }
         }),
 
         // delete used code token
@@ -79,7 +96,7 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
       return {
         access_token: accessAuthorization.token,
         issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
-        token_type: 'Bearer',
+        token_type: dpop ? 'DPoP' : 'Bearer',
         expires_in: ACCESS_TOKEN_EXPIRATION,
         refresh_token: refreshAuthorization?.token,
         scope: scope.join(' ')
@@ -104,14 +121,26 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
       assert(refreshAuthorization, OAuth2ErrorCode.invalid_grant, 'Invalid refresh_token');
       assert(!isExpired(refreshAuthorization.expiresAt), OAuth2ErrorCode.invalid_grant, 'refresh_token expired');
 
+      // DPoP
+      const proof = headers.get('dpop');
+
+      // if the authorization is DPoP bound, the DPoP header is required
+      if(refreshAuthorization.dpopJkt) {
+        assert(proof, OAuth2ErrorCode.invalid_dpop_proof, 'DPoP proof required');
+      }
+
+      const dpop = proof
+        ? await checkProof(proof, { htm: 'POST', htu: url, accessToken: refreshAuthorization.dpopJkt ? refreshAuthorization.token : undefined }, refreshAuthorization.dpopJkt)
+        : undefined;
+
       const { clientId, applicationId, userId, scope } = refreshAuthorization;
 
       const [accessAuthorization] = await db.$transaction([
         // create new access token
         db.authorization.upsert({
           where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
-          create: { type: AuthorizationType.AccessToken, clientId, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
-          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
+          create: { type: AuthorizationType.AccessToken, clientId, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt },
+          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt ?? null }
         }),
 
         // set last used on refresh token
@@ -121,7 +150,7 @@ export async function handleTokenRequest({ params, requestAuthorization }: OAuth
       return {
         access_token: accessAuthorization.token,
         issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
-        token_type: 'Bearer',
+        token_type: dpop ? 'DPoP' : 'Bearer',
         expires_in: ACCESS_TOKEN_EXPIRATION,
         refresh_token: refreshAuthorization.token,
         scope: scope.join(' ')

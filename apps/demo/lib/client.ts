@@ -2,9 +2,11 @@ import 'server-only';
 import { Gw2MeClient } from '@gw2me/client';
 import { generatePKCEPair, type PKCEPair } from '@gw2me/client/pkce';
 import { unstable_noStore } from 'next/cache';
+import { generateDPoPKeyPair } from '@gw2me/client/dpop';
 
-const globalForPKCE = globalThis as unknown as {
-  pkce: PKCEPair | undefined;
+const globalForPKCEAndDPoP = globalThis as unknown as {
+  pkce: PKCEPair | undefined,
+  dpop: CryptoKeyPair | undefined,
 };
 
 // generate PKCE pair on first invocation
@@ -12,11 +14,19 @@ const globalForPKCE = globalThis as unknown as {
 // reusing a PKCE pair is against the spec, but this is just a demo
 // DO NOT DO IT LIKE THIS IN A REAL-WORLD APPLICATION
 export async function getPKCEPair() {
-  if(!globalForPKCE.pkce) {
-    globalForPKCE.pkce = await generatePKCEPair();
+  if(!globalForPKCEAndDPoP.pkce) {
+    globalForPKCEAndDPoP.pkce = await generatePKCEPair();
   }
 
-  return globalForPKCE.pkce;
+  return globalForPKCEAndDPoP.pkce;
+}
+
+export async function getDPoPPair() {
+  if(!globalForPKCEAndDPoP.dpop) {
+    globalForPKCEAndDPoP.dpop = await generateDPoPKeyPair();
+  }
+
+  return globalForPKCEAndDPoP.dpop;
 }
 
 export const gw2me = new Gw2MeClient({
@@ -31,7 +41,14 @@ export function getGw2MeUrl() {
   return process.env.GW2ME_URL ?? 'https://gw2.me';
 }
 
-export function getCallback() {
+export function getCallback(isDPoP: boolean) {
   unstable_noStore();
-  return process.env.CALLBACK_URL ?? 'https://demo.gw2.me/callback';
+
+  const redirect_uri = new URL(process.env.CALLBACK_URL ?? 'https://demo.gw2.me/callback');
+
+  if(isDPoP) {
+    redirect_uri.searchParams.set('dpop', 'true');
+  }
+
+  return redirect_uri.toString();
 }
