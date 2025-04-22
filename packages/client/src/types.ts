@@ -25,5 +25,14 @@ export interface ClientInfo {
 }
 
 export interface Options {
-  url: string;
+  url: string,
 }
+
+export interface DPoPParams {
+  htm: 'POST' | 'GET' | (string & {}),
+  htu: string,
+  nonce?: string,
+  accessToken?: string,
+}
+
+export type DPoPCallback = (params: DPoPParams) => string | Promise<string>;

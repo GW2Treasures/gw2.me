@@ -1,4 +1,4 @@
-import { getCallback, getDPoPPair, getPKCEPair, gw2me } from '@/lib/client';
+import { createDPoPJwt, getCallback, getPKCEPair, gw2me } from '@/lib/client';
 import { nextSearchParamsToURLSearchParams, PageProps, SearchParams } from '@/lib/next';
 import { TokenResponse } from '@gw2me/client';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
@@ -7,14 +7,13 @@ export const dynamic = 'force-dynamic';
 
 async function getToken(code: string, isDPoP: boolean) {
   const { code_verifier } = await getPKCEPair();
-  const dpopKeyPair = await getDPoPPair();
 
   return gw2me.getAccessToken({
     code,
     token_type: isDPoP ? 'DPoP' : 'Bearer',
     code_verifier,
     redirect_uri: getCallback(isDPoP),
-    dpopKeyPair: isDPoP ? dpopKeyPair : undefined,
+    dpop: isDPoP ? createDPoPJwt : undefined,
   });
 }
 

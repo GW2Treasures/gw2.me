@@ -1,8 +1,8 @@
 import 'server-only';
-import { Gw2MeClient } from '@gw2me/client';
+import { type DPoPCallback, Gw2MeClient } from '@gw2me/client';
 import { generatePKCEPair, type PKCEPair } from '@gw2me/client/pkce';
 import { unstable_noStore } from 'next/cache';
-import { generateDPoPKeyPair } from '@gw2me/client/dpop';
+import { createDPoPJwt as _createDPoPJwt, generateDPoPKeyPair } from '@gw2me/client/dpop';
 
 const globalForPKCEAndDPoP = globalThis as unknown as {
   pkce: PKCEPair | undefined,
@@ -28,6 +28,10 @@ export async function getDPoPPair() {
 
   return globalForPKCEAndDPoP.dpop;
 }
+
+export const createDPoPJwt: DPoPCallback = async (params) => {
+  return _createDPoPJwt(params, await getDPoPPair());
+};
 
 export const gw2me = new Gw2MeClient({
   client_id: process.env.DEMO_CLIENT_ID!,
