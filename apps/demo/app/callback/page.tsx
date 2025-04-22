@@ -11,7 +11,7 @@ async function getToken(code: string, isDPoP: boolean) {
 
   return gw2me.getAccessToken({
     code,
-    token_type: 'DPoP',
+    token_type: isDPoP ? 'DPoP' : 'Bearer',
     code_verifier,
     redirect_uri: getCallback(isDPoP),
     dpopKeyPair: isDPoP ? dpopKeyPair : undefined,
