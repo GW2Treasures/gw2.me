@@ -27,7 +27,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl, pkceChallenge }) => 
   const [mode, setMode] = useState<'passive' | 'active'>();
   const [scopes, setScopes] = useState<Scope[]>([Scope.Identify, Scope.Email]);
 
-  const gw2me = useMemo(() => new Gw2MeClient({ type: 'Confidential', client_id: clientId }, { url: gw2meUrl }), [clientId, gw2meUrl]);
+  const gw2me = useMemo(() => new Gw2MeClient({ client_id: clientId }, { url: gw2meUrl }), [clientId, gw2meUrl]);
 
   useEffect(() => {
     setLoading(false);

@@ -30,7 +30,6 @@ export async function getDPoPPair() {
 }
 
 export const gw2me = new Gw2MeClient({
-  type: 'Confidential',
   client_id: process.env.DEMO_CLIENT_ID!,
   client_secret: process.env.DEMO_CLIENT_SECRET!,
 }, {

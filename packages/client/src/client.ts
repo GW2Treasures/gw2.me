@@ -35,6 +35,7 @@ export interface AuthTokenParams {
 
 export interface RefreshTokenParams {
   refresh_token: string,
+  refresh_token_type?: 'Bearer' | 'DPoP';
   dpopKeyPair?: CryptoKeyPair,
 }
 
@@ -106,10 +107,6 @@ export class Gw2MeClient {
   }
 
   #getAuthorizationHeader() {
-    if(this.#client.type === 'Public') {
-      throw new Gw2MeError('Confidential client expected');
-    }
-
     if(!this.#client.client_secret) {
       throw new Gw2MeError('client_secret is required');
     }
@@ -149,7 +146,7 @@ export class Gw2MeClient {
     const urlParams = constructAuthorizationParams(this.#client.client_id, params);
 
     // use authorization for confidential clients
-    if(this.#client.type === 'Confidential') {
+    if(this.#client.client_secret) {
       headers.Authorization = this.#getAuthorizationHeader();
     }
 
@@ -172,7 +169,7 @@ export class Gw2MeClient {
 
     const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
 
-    if(this.#client.type === 'Confidential') {
+    if(this.#client.client_secret) {
       headers.Authorization = this.#getAuthorizationHeader();
     }
 
@@ -200,12 +197,7 @@ export class Gw2MeClient {
     return token;
   }
 
-  async refreshToken({ refresh_token, dpopKeyPair }: RefreshTokenParams): Promise<TokenResponse> {
-    // TODO(dpop): Allow public clients if used with dpop
-    if(this.#client.type === 'Public') {
-      throw new Gw2MeError('Only confidential clients can use refresh tokens.');
-    }
-
+  async refreshToken({ refresh_token, refresh_token_type, dpopKeyPair }: RefreshTokenParams): Promise<TokenResponse> {
     const data = new URLSearchParams({
       grant_type: 'refresh_token',
       refresh_token, client_id: this.#client.client_id,
@@ -213,8 +205,11 @@ export class Gw2MeClient {
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': this.#getAuthorizationHeader(),
     };
+
+    if(this.#client.client_secret) {
+      headers['Authorization'] = this.#getAuthorizationHeader();
+    }
 
     const url = this.#getUrl('/api/token');
 
@@ -223,7 +218,7 @@ export class Gw2MeClient {
         htm: 'POST',
         htu: url.toString(),
         // public clients have their refresh token DPoP bound, confidential clients not, as the secret is used proof of possession
-        accessToken: this.#client.type === 'Confidential' ? undefined : refresh_token,
+        accessToken: refresh_token_type === 'DPoP' ? refresh_token : undefined,
       }, dpopKeyPair);
     }
 
@@ -242,7 +237,7 @@ export class Gw2MeClient {
 
     const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
 
-    if(this.#client.type === 'Confidential') {
+    if(this.#client.client_secret) {
       headers.Authorization = this.#getAuthorizationHeader();
     }
 
@@ -259,7 +254,7 @@ export class Gw2MeClient {
 
     const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
 
-    if(this.#client.type === 'Confidential') {
+    if(this.#client.client_secret) {
       headers.Authorization = this.#getAuthorizationHeader();
     }
 

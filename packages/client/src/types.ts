@@ -19,21 +19,10 @@ export enum Scope {
   GW2_Guilds = 'gw2:guilds',
 }
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace ClientInfo {
-  export interface Confidential {
-    type: 'Confidential',
-    client_id: string,
-    client_secret?: string,
-  }
-
-  export interface Public {
-    type: 'Public',
-    client_id: string,
-  }
+export interface ClientInfo {
+  client_id: string,
+  client_secret?: string,
 }
-
-export type ClientInfo = ClientInfo.Confidential | ClientInfo.Public;
 
 export interface Options {
   url: string;
