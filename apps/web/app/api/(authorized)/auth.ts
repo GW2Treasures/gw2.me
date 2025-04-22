@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { assert } from '@/lib/oauth/assert';
 import { checkProof } from '@/lib/oauth/dpop';
 import { errorToResponse, OAuth2AuthorizationError, OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
+import { getUrlFromRequest } from '@/lib/url';
 import { Scope } from '@gw2me/client';
 import { Authorization, AuthorizationType } from '@gw2me/database';
 import { unstable_rethrow as rethrow } from 'next/navigation';
@@ -53,7 +54,7 @@ export function withAuthorization<Context>(scopes?: Scope[] | { oneOf: Scope[] }
           assert(tokenType === 'DPoP', OAuth2ErrorCode.invalid_request, 'Invalid authorization type (expected DPoP)');
           const proof = request.headers.get('DPoP');
           assert(proof, OAuth2ErrorCode.invalid_request);
-          await checkProof(proof, { htm: request.method, htu: request.nextUrl, accessToken: authorization.token }, authorization.dpopJkt);
+          await checkProof(proof, { htm: request.method, htu: getUrlFromRequest(request), accessToken: authorization.token }, authorization.dpopJkt);
         } else {
           assert(tokenType === 'Bearer', OAuth2ErrorCode.invalid_request, 'Invalid authorization type (expected Bearer)');
         }
