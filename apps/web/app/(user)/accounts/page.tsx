@@ -23,7 +23,8 @@ const getAccounts = cache(async () => {
         _count: {
           select: {
             applicationGrants: true,
-            apiTokens: true
+            apiTokens: true,
+            shares: true,
           }
         }
       },
@@ -77,6 +78,7 @@ export default async function ProfilePage() {
             {({ id, verified }) => (
               <FlexRow>
                 <LinkButton href={`/accounts/${id}`} icon="settings">Manage</LinkButton>
+                <LinkButton href={`/accounts/${id}/share`} icon="share">Share</LinkButton>
                 {!verified && (<LinkButton href={`/accounts/${id}/verify`} icon="verified">Verify</LinkButton>)}
               </FlexRow>
             )}
@@ -85,7 +87,10 @@ export default async function ProfilePage() {
       )}
 
       <Headline id="shared">Shared Accounts</Headline>
-      <p>Other users can share accounts with you. To share your own accounts, click &quot;Manage&quot; in the table above.</p>
+      <p>
+        Other users can share their accounts with you.
+        {sharedAccounts.length === 0 && ' No one has shared their account with you yet.'}
+      </p>
 
       <Form action={manageSharedAccount}>
         {sharedAccounts.length > 0 && (

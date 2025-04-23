@@ -1,11 +1,11 @@
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { db } from '@/lib/db';
-import { getSessionOrRedirect } from '@/lib/session';
+import { getSessionOrRedirect, getUser } from '@/lib/session';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { notFound } from 'next/navigation';
-import { deleteApiKey, manageSharedUser, shareAccount, updateDisplayName } from './actions';
+import { deleteApiKey, manageSharedUser, updateDisplayName } from './actions';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
@@ -49,11 +49,17 @@ const getAccount = cache(async function getAccount(id: string) {
 
 const getApplications = cache(function getApplications(accountId: string, userId: string) {
   return db.applicationGrant.findMany({
-    where: { userId, accounts: { some: { id: accountId }}},
+    where: {
+      OR: [
+        { userId, accounts: { some: { id: accountId }}},
+        { sharedAccounts: { some: { account: { userId, id: accountId }}}}
+      ]
+    },
     select: {
       id: true,
       scope: true,
       application: { select: { id: true, name: true, imageId: true }},
+      user: { select: { id: true, name: true }},
     }
   });
 });
@@ -62,6 +68,7 @@ type AccountPageProps = PageProps<{ id: string }>;
 
 export default async function AccountPage({ params }: AccountPageProps) {
   const { id } = await params;
+  const user = await getUser();
   const account = await getAccount(id);
   const applications = await getApplications(account.id, account.userId);
 
@@ -69,6 +76,8 @@ export default async function AccountPage({ params }: AccountPageProps) {
     const requiredPermissions = scopeToPermissions(authorization.scope as Scope[]);
     return !hasApiTokenWithRequiredPermissions(account.apiTokens, requiredPermissions);
   });
+
+  const hasApplicationGrantsForOtherUsers = applications.some((grant) => grant.user.id !== account.userId);
 
   const Shares = createDataTable(account.shares, ({ id }) => id);
 
@@ -128,25 +137,10 @@ export default async function AccountPage({ params }: AccountPageProps) {
         </Table>
       </Form>
 
-      <Headline id="shareAccount">Share Account</Headline>
-      <p>You can share this account with your friends. They will never be able to access your API keys.</p>
-
-      {!account.verified ? (
-        <p>You have to <Link href={`/accounts/${account.id}/verify`}>verify your account ownership</Link> before you can share this account.</p>
-      ) : (
-        <div style={{ padding: 16, border: '1px solid var(--color-border-dark)', borderRadius: 2, backgroundColor: 'var(--color-background-light)', marginBottom: 32 }}>
-          <Form action={shareAccount}>
-            <input type="hidden" name="accountId" value={account.id}/>
-            <p>Enter the username of the user you want to share your account with.</p>
-            <Label label="Username">
-              <TextInput name="username"/>
-            </Label>
-            <FlexRow>
-              <SubmitButton>Share</SubmitButton>
-            </FlexRow>
-          </Form>
-        </div>
-      )}
+      <Headline id="shareAccount" actions={<LinkButton icon="share" href={`/accounts/${account.id}/share`}>Share</LinkButton>}>
+        Share Account
+      </Headline>
+      <p>Share this account with your friends. They will never be able to access your API keys.</p>
 
       <Form action={manageSharedUser}>
         {account.shares.length > 0 ? (
@@ -180,6 +174,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
           <thead>
             <tr>
               <Table.HeaderCell>Name</Table.HeaderCell>
+              {hasApplicationGrantsForOtherUsers && (<Table.HeaderCell>User</Table.HeaderCell>)}
               <Table.HeaderCell>Required Permissions</Table.HeaderCell>
             </tr>
           </thead>
@@ -194,6 +189,13 @@ export default async function AccountPage({ params }: AccountPageProps) {
                     )}
                   </FlexRow>
                 </td>
+                {hasApplicationGrantsForOtherUsers && (
+                  <td>
+                    {grant.user.id === account.userId
+                      ? <FlexRow><Icon icon="user"/> {user!.name}</FlexRow>
+                      : <FlexRow><Icon icon="share"/> {grant.user.name}</FlexRow>}
+                  </td>
+                )}
                 <td><PermissionList permissions={scopeToPermissions(grant.scope as Scope[])}/></td>
               </tr>
             ))}

@@ -69,6 +69,10 @@ export const shareAccount = createAction(async function shareAccount(_, formData
     return { error: 'Not logged in' };
   }
 
+  if(!username) {
+    return { error: 'Please enter a username' };
+  }
+
   // find account
   const account = await db.account.findUnique({
     where: { id: accountId, userId: owner.id },
