@@ -27,7 +27,13 @@ export const GET = withAuthorization<RouteProps<{ id: string }>>({ oneOf: Gw2Sco
 
     // load account and api token
     const account = await db.account.findFirst({
-      where: { accountId, applicationGrants: { some: { applicationId: authorization.applicationId, userId: authorization.userId }}},
+      where: {
+        accountId,
+        OR: [
+          { applicationGrants: { some: { applicationId: authorization.applicationId, userId: authorization.userId }}},
+          { shares: { some: { applicationGrants: { some: { applicationId: authorization.applicationId, userId: authorization.userId }}}}},
+        ]
+      },
       select: {
         apiTokens: {
           where: { permissions: { hasEvery: requestedPermissions }},
