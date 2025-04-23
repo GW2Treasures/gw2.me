@@ -30,7 +30,8 @@ model User {
   authorizationRequests AuthorizationRequest[]
   applicationGrants     ApplicationGrant[] @relation("applicationGrants")
 
-  accounts Account[] @relation("userAccount")
+  accounts       Account[]       @relation("userAccount")
+  sharedAccounts SharedAccount[] @relation("sharedAccounts")
 }
 
 enum UserRole {
@@ -222,7 +223,8 @@ model ApplicationGrant {
 
   scope String[]
 
-  accounts Account[] @relation("applicationGrants")
+  accounts       Account[]       @relation("applicationGrants")
+  sharedAccounts SharedAccount[] @relation("sharedAccounts")
 
   emailId String?
   email   UserEmail? @relation(fields: [emailId], references: [id], onDelete: Cascade)
@@ -349,11 +351,40 @@ model Account {
   apiTokens ApiToken[] @relation("accountApiToken")
   
   applicationGrants ApplicationGrant[] @relation("applicationGrants")
+  
+  shares SharedAccount[] @relation("sharedAccount")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([accountId, userId])
+}
+
+model SharedAccount {
+  id String @id @default(uuid())
+
+  accountId String
+  account   Account @relation("sharedAccount", fields: [accountId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation("sharedAccounts", fields: [userId], references: [id], onDelete: Cascade)
+
+  state SharedAccountState
+
+  applicationGrants ApplicationGrant[] @relation("sharedAccounts")
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([accountId, userId])
+}
+
+enum SharedAccountState {
+  /// The account owner has shared the account with another user, but they haven't accepted yet.
+  Pending
+
+  /// The account is currently being shared.
+  Active
 }
 
 model File {

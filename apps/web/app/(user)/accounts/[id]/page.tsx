@@ -1,11 +1,11 @@
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { db } from '@/lib/db';
-import { getSessionOrRedirect } from '@/lib/session';
+import { getSessionOrRedirect, getUser } from '@/lib/session';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { notFound } from 'next/navigation';
-import { deleteApiKey, updateDisplayName } from './actions';
+import { deleteApiKey, manageSharedUser, updateDisplayName } from './actions';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
@@ -26,6 +26,8 @@ import { scopeToPermissions } from '@/lib/scope';
 import { Scope } from '@gw2me/client';
 import { allPermissions } from '@/components/Permissions/data';
 import Link from 'next/link';
+import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
+import { FormatDate } from '@/components/Format/FormatDate';
 
 const getAccount = cache(async function getAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -33,7 +35,8 @@ const getAccount = cache(async function getAccount(id: string) {
   const account = await db.account.findUnique({
     where: { id, userId: session.userId },
     include: {
-      apiTokens: true
+      apiTokens: true,
+      shares: { include: { user: { select: { name: true }}}},
     }
   });
 
@@ -46,11 +49,17 @@ const getAccount = cache(async function getAccount(id: string) {
 
 const getApplications = cache(function getApplications(accountId: string, userId: string) {
   return db.applicationGrant.findMany({
-    where: { userId, accounts: { some: { id: accountId }}},
+    where: {
+      OR: [
+        { userId, accounts: { some: { id: accountId }}},
+        { sharedAccounts: { some: { account: { userId, id: accountId }}}}
+      ]
+    },
     select: {
       id: true,
       scope: true,
       application: { select: { id: true, name: true, imageId: true }},
+      user: { select: { id: true, name: true }},
     }
   });
 });
@@ -59,6 +68,7 @@ type AccountPageProps = PageProps<{ id: string }>;
 
 export default async function AccountPage({ params }: AccountPageProps) {
   const { id } = await params;
+  const user = await getUser();
   const account = await getAccount(id);
   const applications = await getApplications(account.id, account.userId);
 
@@ -66,6 +76,10 @@ export default async function AccountPage({ params }: AccountPageProps) {
     const requiredPermissions = scopeToPermissions(authorization.scope as Scope[]);
     return !hasApiTokenWithRequiredPermissions(account.apiTokens, requiredPermissions);
   });
+
+  const hasApplicationGrantsForOtherUsers = applications.some((grant) => grant.user.id !== account.userId);
+
+  const Shares = createDataTable(account.shares, ({ id }) => id);
 
   return (
     <PageLayout>
@@ -85,7 +99,9 @@ export default async function AccountPage({ params }: AccountPageProps) {
         </FlexRow>
       </Form>
 
-      <Headline id="api-keys" actions={<LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>}>API Keys</Headline>
+      <Headline id="api-keys" actions={<LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>}>
+        API Keys
+      </Headline>
 
       {(!hasApiTokenWithRequiredPermissions(account.apiTokens, allPermissions)) && (
         <Notice>
@@ -123,6 +139,24 @@ export default async function AccountPage({ params }: AccountPageProps) {
         </Table>
       </Form>
 
+      <Headline id="shareAccount" actions={<LinkButton icon="share" href={`/accounts/${account.id}/share`}>Share</LinkButton>}>
+        Share Account
+      </Headline>
+      <p>Share this account with your friends.</p>
+
+      <Form action={manageSharedUser}>
+        {account.shares.length > 0 ? (
+          <Shares.Table>
+            <Shares.Column id="user" title="User">{({ user }) => <FlexRow><Icon icon="share"/> {user.name}</FlexRow>}</Shares.Column>
+            <Shares.Column id="status" title="Status">{({ state }) => state}</Shares.Column>
+            <Shares.Column id="createdAt" title="Shared since">{({ createdAt }) => <FormatDate date={createdAt}/>}</Shares.Column>
+            <Shares.Column id="actions" title="Actions" small>{({ id }) => <Button type="submit" name="removeSharedAccountId" value={id} icon="delete">Remove</Button>}</Shares.Column>
+          </Shares.Table>
+        ) : account.verified && (
+          <p>You have not shared your account with anyone yet.</p>
+        )}
+      </Form>
+
       <Headline id="applications">Authorized Applications</Headline>
 
       {hasApplicationMissingPermissions && (
@@ -142,6 +176,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
           <thead>
             <tr>
               <Table.HeaderCell>Name</Table.HeaderCell>
+              {hasApplicationGrantsForOtherUsers && (<Table.HeaderCell>User</Table.HeaderCell>)}
               <Table.HeaderCell>Required Permissions</Table.HeaderCell>
             </tr>
           </thead>
@@ -156,6 +191,13 @@ export default async function AccountPage({ params }: AccountPageProps) {
                     )}
                   </FlexRow>
                 </td>
+                {hasApplicationGrantsForOtherUsers && (
+                  <td>
+                    {grant.user.id === account.userId
+                      ? <FlexRow><Icon icon="user"/> {user!.name}</FlexRow>
+                      : <FlexRow><Icon icon="share"/> {grant.user.name}</FlexRow>}
+                  </td>
+                )}
                 <td><PermissionList permissions={scopeToPermissions(grant.scope as Scope[])}/></td>
               </tr>
             ))}

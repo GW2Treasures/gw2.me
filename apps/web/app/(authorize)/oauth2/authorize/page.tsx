@@ -43,7 +43,7 @@ export default async function AuthorizePage({ searchParams }: PageProps) {
 
     if(hasEveryScopeAuthorized) {
       // authorize the request. If this fails for some reason, we just ignore it and continue to redirect the user to the auth screen
-      await authorizeInternal(authorizationRequest.id, appGrant.accounts.map(({ id }) => id), appGrant.emailId);
+      await authorizeInternal(authorizationRequest.id, appGrant.accounts.map(({ id }) => id), appGrant.sharedAccounts.map(({ id }) => id), appGrant.emailId);
     } else if(request.prompt === 'none') {
       // if the request has prompt=none, we have to cancel the authorization request and redirect the user back
       await cancelAuthorizationRequest(authorizationRequest.id);
@@ -69,7 +69,10 @@ export const metadata = {
 function getApplicationGrant(applicationId: string, userId: string) {
   return db.applicationGrant.findUnique({
     where: { userId_applicationId: { userId, applicationId }},
-    include: { accounts: { select: { id: true }}}
+    include: {
+      accounts: { select: { id: true }},
+      sharedAccounts: { select: { id: true }},
+    }
   });
 }
 

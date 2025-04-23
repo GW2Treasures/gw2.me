@@ -14,7 +14,7 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { authorize, authorizeInternal, cancelAuthorization } from './actions';
 import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
-import { AuthorizationRequestState, AuthorizationRequestType, User, UserEmail } from '@gw2me/database';
+import { AuthorizationRequestState, AuthorizationRequestType, SharedAccountState, User, UserEmail } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
 import { LoginForm } from 'app/login/form';
 import { Metadata } from 'next';
@@ -62,6 +62,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
   const previousAuthorization = session ? await getApplicationGrant(client.applicationId, session.userId) : undefined;
   const previousScope = new Set(previousAuthorization?.scope as Scope[]);
   const previousAccountIds = previousAuthorization?.accounts.map(({ id }) => id) ?? [];
+  const previousSharedAccountIds = previousAuthorization?.sharedAccounts.map(({ id }) => id) ?? [];
   const scopes = new Set(decodeURIComponent(authRequest.data.scope).split(' ') as Scope[]);
 
   // normalize the previous scopes
@@ -88,7 +89,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
   const canImmediateAuthorize = authRequest.type === AuthorizationRequestType.OAuth2 && authRequest.data.prompt !== 'consent';
   let autoAuthorizeState: FormState | undefined;
   if(allPreviouslyAuthorized && canImmediateAuthorize) {
-    autoAuthorizeState = await authorizeInternal(id, previousAccountIds, previousAuthorization?.emailId ?? undefined);
+    autoAuthorizeState = await authorizeInternal(id, previousAccountIds, previousSharedAccountIds, previousAuthorization?.emailId ?? undefined);
   }
 
   // handle prompt=none
@@ -105,16 +106,26 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
 
   // get accounts
   const gw2Permissions = Array.from(scopes).filter((scope) => scope.startsWith('gw2:')).map((permission) => permission.substring(4));
-  const accounts = session && scopes.has(Scope.Accounts)
-    ? await db.account.findMany({
-        where: { userId: session.userId },
-        orderBy: { createdAt: 'asc' },
-        select: {
-          id: true, accountName: true, displayName: true, verified: true,
-          _count: { select: { apiTokens: { where: { permissions: { hasEvery: gw2Permissions }}}}}
-        }
-      })
-    : [];
+  const [accounts, sharedAccounts] = session && scopes.has(Scope.Accounts)
+    ? await Promise.all([
+        db.account.findMany({
+          where: { userId: session.userId },
+          orderBy: { createdAt: 'asc' },
+          select: {
+            id: true, accountName: true, displayName: true, verified: true,
+            _count: { select: { apiTokens: { where: { permissions: { hasEvery: gw2Permissions }}}}}
+          }
+        }),
+        db.sharedAccount.findMany({
+          where: { userId: session.userId, state: SharedAccountState.Active },
+          orderBy: { createdAt: 'asc' },
+          select: {
+            id: true,
+            account: { select: { accountName: true, _count: { select: { apiTokens: { where: { permissions: { hasEvery: gw2Permissions }}}}}}}
+          }
+        })
+      ])
+    : [[], []];
 
 
   // bind parameters to authorize action
@@ -173,6 +184,18 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
                       </FlexRow>
                     </Checkbox>
                   ))}
+                  {!verifiedAccountsOnly && sharedAccounts.map((sharedAccount) => (
+                    <Checkbox key={sharedAccount.id} defaultChecked={previousSharedAccountIds.includes(sharedAccount.id)} name="sharedAccounts" formValue={sharedAccount.id}>
+                      <FlexRow>
+                        {sharedAccount.account.accountName} <Tip tip="Shared Account"><Icon icon="share"/></Tip>
+                        {sharedAccount.account._count.apiTokens === 0 && (
+                          <Tip tip="No API key of this account has all requested permissions">
+                            <Icon icon="warning" color="#ffa000"/>
+                          </Tip>
+                        )}
+                      </FlexRow>
+                    </Checkbox>
+                  ))}
                   <LinkButton href={`/authorize/${authRequest.id}/add-account`} appearance="menu" icon="add">Add account</LinkButton>
                 </div>
               </div>
@@ -221,7 +244,10 @@ const ScopeItem: FC<ScopeItemProps> = ({ icon, children }) => {
 function getApplicationGrant(applicationId: string, userId: string) {
   return db.applicationGrant.findUnique({
     where: { userId_applicationId: { userId, applicationId }},
-    include: { accounts: { select: { id: true }}}
+    include: {
+      accounts: { select: { id: true }},
+      sharedAccounts: { select: { id: true }},
+    }
   });
 }
 
