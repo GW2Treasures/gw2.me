@@ -40,7 +40,7 @@ export default function DevDocsGW2APIPage() {
       <Code>
         <Highlight language="json" code={
           JSON.stringify({
-            accounts: [{ id: 'C2BFF77D-B669-E111-809D-78E7D1936EF0', name: 'darthmaim.6017' }]
+            accounts: [{ id: 'C2BFF77D-B669-E111-809D-78E7D1936EF0', name: 'darthmaim.6017', shared: false }]
           }, null, 2)
         }/>
       </Code>
@@ -50,6 +50,14 @@ export default function DevDocsGW2APIPage() {
         the <Code inline>displayName</Code> the user has set (or <Code inline>null</Code>, if the user has not set a custom display name).
         Similarly, if the scope <Code inline>accounts.verified</Code> is included, the response will contain
         the boolean <Code inline>verified</Code> with the ownership verification status of each account.
+      </p>
+
+      <p>
+        Users can share accounts with other users. Shared accounts will have <Code inline>shared: true</Code> set.
+        You can use this flag to prohibit or highlight these accounts in your app.
+        The <Code inline>verified</Code> property will be false if the authorization includes
+        the <Code inline>accounts.verified</Code> scope, as the user is not the owner of the account.
+        Shared accounts otherwise work the same as regular accounts.
       </p>
 
       <Headline id="subtoken">Request Subtoken</Headline>
