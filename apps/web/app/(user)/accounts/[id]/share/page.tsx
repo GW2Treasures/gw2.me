@@ -50,7 +50,7 @@ export default async function ShareAccountPage({ params }: ShareAccountPageProps
           <input type="hidden" name="accountId" value={account.id}/>
           <p>Enter the username of the user you want to share your account with. They will never be able to access your API keys.</p>
           <Label label="Username">
-            <TextInput name="username"/>
+            <TextInput name="gw2.me:share-username" data-1p-ignore data-lpignore="true" data-protonpass-ignore="true" data-bwignore/>
           </Label>
           <FlexRow>
             <LinkButton href={`/accounts/${id}`} icon="chevron-left" appearance="tertiary">Cancel</LinkButton>

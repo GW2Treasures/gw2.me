@@ -62,7 +62,7 @@ export const deleteApiKey = createAction(async function deleteApiKey(_, formData
 
 export const shareAccount = createAction(async function shareAccount(_, formData) {
   const accountId = getFormDataString(formData, 'accountId');
-  const username = getFormDataString(formData, 'username');
+  const username = getFormDataString(formData, 'gw2.me:share-username');
 
   const owner = await getUser();
   if(!owner) {
