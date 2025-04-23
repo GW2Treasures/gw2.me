@@ -15,6 +15,7 @@ export interface AccountsResponse {
   accounts: {
     id: string,
     name: string,
+    shared: boolean,
     verified?: boolean,
     displayName?: string | null,
   }[]
