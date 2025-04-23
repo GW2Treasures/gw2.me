@@ -8,6 +8,7 @@ import { PageProps } from '@/lib/next';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { Client } from './client';
+import { Icon } from '@gw2treasures/ui';
 
 export const dynamic = 'force-dynamic';
 
@@ -138,7 +139,11 @@ export default async function TokenPage({ searchParams: asyncSearchParams }: Pag
         <form key={account.id} action={getSubtoken.bind(null, account.id)} style={{ marginBottom: 16 }}>
           <input type="hidden" name="access_token" value={access_token}/>
           <input type="hidden" name="token_type" value={token_type}/>
-          <b>{account.displayName ? `${account.displayName} (${account.name})` : account.name}</b>
+          <FlexRow>
+            <b>{account.displayName ? `${account.displayName} (${account.name})` : account.name}</b>
+            {account.verified && <Icon icon="verified"/>}
+            {account.shared && <Icon icon="share"/>}
+          </FlexRow>
           <FlexRow>
             {introspectAccessToken.scope.split(' ').filter((scope) => scope.startsWith('gw2:')).map((scope) => scope.substring(4)).map((permission) => (
               <Checkbox key={permission} defaultChecked name="permission" formValue={permission}>{permission}</Checkbox>
