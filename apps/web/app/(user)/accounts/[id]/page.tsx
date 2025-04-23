@@ -5,7 +5,7 @@ import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { notFound } from 'next/navigation';
-import { deleteApiKey, shareAccount, updateDisplayName } from './actions';
+import { deleteApiKey, manageSharedUser, shareAccount, updateDisplayName } from './actions';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
@@ -129,7 +129,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
       </Form>
 
       <Headline id="shareAccount">Share Account</Headline>
-      <p>You can share this account with your friends.</p>
+      <p>You can share this account with your friends. They will never be able to access your API keys.</p>
 
       {!account.verified ? (
         <p>You have to <Link href={`/accounts/${account.id}/verify`}>verify your account ownership</Link> before you can share this account.</p>
@@ -148,15 +148,18 @@ export default async function AccountPage({ params }: AccountPageProps) {
         </div>
       )}
 
-      {account.shares.length > 0 ? (
-        <Shares.Table>
-          <Shares.Column id="user" title="User">{({ user }) => user.name}</Shares.Column>
-          <Shares.Column id="status" title="Status">{({ state }) => state}</Shares.Column>
-          <Shares.Column id="createdAt" title="Shared since">{({ createdAt }) => <FormatDate date={createdAt}/>}</Shares.Column>
-        </Shares.Table>
-      ) : account.verified && (
-        <p>You have not shared your account with anyone yet.</p>
-      )}
+      <Form action={manageSharedUser}>
+        {account.shares.length > 0 ? (
+          <Shares.Table>
+            <Shares.Column id="user" title="User">{({ user }) => user.name}</Shares.Column>
+            <Shares.Column id="status" title="Status">{({ state }) => state}</Shares.Column>
+            <Shares.Column id="createdAt" title="Shared since">{({ createdAt }) => <FormatDate date={createdAt}/>}</Shares.Column>
+            <Shares.Column id="actions" title="Actions" small>{({ id }) => <Button type="submit" name="removeSharedAccountId" value={id} icon="delete">Remove</Button>}</Shares.Column>
+          </Shares.Table>
+        ) : account.verified && (
+          <p>You have not shared your account with anyone yet.</p>
+        )}
+      </Form>
 
       <Headline id="applications">Authorized Applications</Headline>
 

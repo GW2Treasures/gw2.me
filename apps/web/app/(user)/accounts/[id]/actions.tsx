@@ -120,3 +120,34 @@ export const shareAccount = createAction(async function shareAccount(_, formData
   revalidatePath(`/accounts/${account.id}`);
   return { success: `${user.name} received an invitation to use your shared account.` };
 });
+
+export const manageSharedUser = createAction(async (_, formData) => {
+  const removeSharedAccountId = getFormDataString(formData, 'removeSharedAccountId');
+
+  const session = await getSession();
+  if(!session) {
+    return { error: 'Not logged in' };
+  }
+
+  if(removeSharedAccountId) {
+    const shared = await db.sharedAccount.delete({
+      where: { id: removeSharedAccountId, account: { userId: session.userId }},
+      select: {
+        accountId: true,
+        state: true,
+        user: { select: { name: true }},
+        _count: { select: { applicationGrants: true }}
+      },
+    });
+
+    revalidatePath(`/accounts/${shared.accountId}`);
+
+    return {
+      success: (shared.state === SharedAccountState.Active && shared._count.applicationGrants > 0)
+        ? `This account is no longer shared with ${shared.user.name}. They might still be able to access the Guild Wars 2 API for up to 10 minutes.`
+        : `This account is no longer shared with ${shared.user.name}.`
+    };
+  }
+
+  return { error: 'Unknown action' };
+});
