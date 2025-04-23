@@ -2,11 +2,15 @@
 
 import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { db } from '@/lib/db';
-import { getSession } from '@/lib/session';
+import { getSession, getUser } from '@/lib/session';
 import { revalidatePath } from 'next/cache';
 import { createAction } from '@/lib/actions';
 import { getFormDataString } from '@/lib/form-data';
 import { SharedAccountState } from '@gw2me/database';
+import { after } from 'next/server';
+import { sendMail } from '@/lib/mail';
+import AccountShareInvitation from '@gw2me/emails/account-share-invitation';
+import { getBaseUrlFromHeaders } from '@/lib/url';
 
 export async function updateDisplayName(id: string, state: FormState, formData: FormData): Promise<FormState> {
   const displayName = formData.get('displayName');
@@ -60,15 +64,15 @@ export const shareAccount = createAction(async function shareAccount(_, formData
   const accountId = getFormDataString(formData, 'accountId');
   const username = getFormDataString(formData, 'username');
 
-  const session = await getSession();
-  if(!session) {
+  const owner = await getUser();
+  if(!owner) {
     return { error: 'Not logged in' };
   }
 
   // find account
   const account = await db.account.findUnique({
-    where: { id: accountId, userId: session.userId },
-    select: { id: true, shares: { select: { userId: true }}}
+    where: { id: accountId, userId: owner.id },
+    select: { id: true, accountName: true, shares: { select: { userId: true }}}
   });
 
   if(!account) {
@@ -77,7 +81,8 @@ export const shareAccount = createAction(async function shareAccount(_, formData
 
   // find user
   const user = await db.user.findUnique({
-    where: { name: username, NOT: { id: session.id }}
+    where: { name: username, NOT: { id: owner.id }},
+    include: { defaultEmail: true },
   });
 
   if(!user) {
@@ -100,7 +105,17 @@ export const shareAccount = createAction(async function shareAccount(_, formData
     }
   });
 
-  // TODO: send email to notify user
+  // send email to user if they have a default email configured
+  const email = user.defaultEmail?.email;
+  if(email) {
+    const accountsLink = new URL('/accounts', await getBaseUrlFromHeaders()).toString();
+
+    after(() => sendMail(
+      'Invitation for ' + account.accountName,
+      email,
+      <AccountShareInvitation username={user.name} accountName={account.accountName} owner={owner.name} accountsLink={accountsLink}/>
+    ));
+  }
 
   revalidatePath(`/accounts/${account.id}`);
   return { success: `${user.name} received an invitation to use your shared account.` };

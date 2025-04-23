@@ -16,7 +16,7 @@ export default function Template({ children, preview }: { children: ReactNode, p
     <Html>
       <Head/>
       <Preview>{preview}</Preview>
-      <Body style={{ ...styles.text, backgroundColor: '#eee' }}>
+      <Body style={{ ...styles.text, backgroundColor: '#eee', padding: 16 }}>
         <Container style={{ backgroundColor: '#fff', borderRadius: 2, boxShadow: '0 0 2px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.14)' }}>
           <Section>
             <Row style={{ backgroundColor: '#b7000d', color: '#fff', padding: 16, borderRadius: '2px 2px 0 0' }}>
