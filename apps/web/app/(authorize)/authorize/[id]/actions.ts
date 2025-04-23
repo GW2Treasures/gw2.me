@@ -30,6 +30,7 @@ export interface AuthorizeActionParams {
 export async function authorize(id: string, _: FormState, formData: FormData): Promise<FormState> {
   // get account ids from form
   const accountIds = formData.getAll('accounts').filter(isString);
+  const sharedAccountIds = formData.getAll('sharedAccounts').filter(isString);
 
   // get email id from form
   const emailId = getFormDataString(formData, 'email');
@@ -43,12 +44,13 @@ export async function authorize(id: string, _: FormState, formData: FormData): P
     cookieStore.set(await userCookie(session.userId));
   }
 
-  return authorizeInternal(id, accountIds, emailId);
+  return authorizeInternal(id, accountIds, sharedAccountIds, emailId);
 }
 
 export async function authorizeInternal(
   id: string,
   accountIds: string[],
+  sharedAccountIds: string[],
   emailId: string | undefined | null
 ): Promise<{ error: string }> {
   // get authorization request
@@ -97,10 +99,11 @@ export async function authorizeInternal(
 
 
   // verify at least one account was selected
-  if((hasGW2Scopes(scopes) || scopes.includes(Scope.Accounts)) && accountIds.length === 0) {
+  if((hasGW2Scopes(scopes) || scopes.includes(Scope.Accounts)) && accountIds.length + sharedAccountIds.length === 0) {
     return { error: 'At least one account has to be selected.' };
   }
 
+  console.log({ accountIds, sharedAccountIds });
 
   // verify email was selected
   if(scopes.includes(Scope.Email) && !emailId) {
@@ -128,11 +131,13 @@ export async function authorizeInternal(
           ...applicationGrantIdentifier.userId_applicationId,
           scope: scopes,
           accounts: { connect: accountIds.map((id) => ({ id })) },
+          sharedAccounts: { connect: sharedAccountIds.map((id) => ({ id })) },
           emailId,
         },
         update: {
           scope: scopes,
           accounts: { set: accountIds.map((id) => ({ id })) },
+          sharedAccounts: { set: sharedAccountIds.map((id) => ({ id })) },
           emailId
         }
       }),

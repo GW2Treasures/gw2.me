@@ -224,7 +224,7 @@ model ApplicationGrant {
   scope String[]
 
   accounts       Account[]       @relation("applicationGrants")
-  sharedAccounts SharedAccount[] @relation("applicationGrants")
+  sharedAccounts SharedAccount[] @relation("sharedAccounts")
 
   emailId String?
   email   UserEmail? @relation(fields: [emailId], references: [id], onDelete: Cascade)
@@ -371,7 +371,7 @@ model SharedAccount {
 
   state SharedAccountState
 
-  applicationGrants ApplicationGrant[] @relation("applicationGrants")
+  applicationGrants ApplicationGrant[] @relation("sharedAccounts")
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
