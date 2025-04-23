@@ -99,7 +99,9 @@ export default async function AccountPage({ params }: AccountPageProps) {
         </FlexRow>
       </Form>
 
-      <Headline id="api-keys" actions={<LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>}>API Keys</Headline>
+      <Headline id="api-keys" actions={<LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>}>
+        API Keys
+      </Headline>
 
       {(!hasApiTokenWithRequiredPermissions(account.apiTokens, allPermissions)) && (
         <Notice>
@@ -140,12 +142,12 @@ export default async function AccountPage({ params }: AccountPageProps) {
       <Headline id="shareAccount" actions={<LinkButton icon="share" href={`/accounts/${account.id}/share`}>Share</LinkButton>}>
         Share Account
       </Headline>
-      <p>Share this account with your friends. They will never be able to access your API keys.</p>
+      <p>Share this account with your friends.</p>
 
       <Form action={manageSharedUser}>
         {account.shares.length > 0 ? (
           <Shares.Table>
-            <Shares.Column id="user" title="User">{({ user }) => user.name}</Shares.Column>
+            <Shares.Column id="user" title="User">{({ user }) => <FlexRow><Icon icon="share"/> {user.name}</FlexRow>}</Shares.Column>
             <Shares.Column id="status" title="Status">{({ state }) => state}</Shares.Column>
             <Shares.Column id="createdAt" title="Shared since">{({ createdAt }) => <FormatDate date={createdAt}/>}</Shares.Column>
             <Shares.Column id="actions" title="Actions" small>{({ id }) => <Button type="submit" name="removeSharedAccountId" value={id} icon="delete">Remove</Button>}</Shares.Column>
