@@ -113,8 +113,8 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
       '@types/chrome':
-        specifier: 0.0.316
-        version: 0.0.316
+        specifier: 0.0.317
+        version: 0.0.317
       '@types/react':
         specifier: 19.1.2
         version: 19.1.2
@@ -1492,8 +1492,8 @@ packages:
   '@types/babel__traverse@7.20.7':
     resolution: {integrity: sha512-dkO5fhS7+/oos4ciWxyEyjWe48zmG6wbCheo/G2ZnHx4fs3EU6YC6UM8rk56gAjNJ9P3MTH2jo5jb92/K6wbng==}
 
-  '@types/chrome@0.0.316':
-    resolution: {integrity: sha512-zoXIly8A41t8U5oC/14hgwjJ3k6kOE6ODJcCSGYda9AFOSloySO6OSO+RHayndb4BaJWg9s5FrXhYkemgsSEkA==}
+  '@types/chrome@0.0.317':
+    resolution: {integrity: sha512-ibKycbXX8ZZToFshjgWg98BTvFUSvQht8m53Xc+87ye3Z6ZoHJubLjoiDsil8rtW+noWE+Z0+7y0nwLxArU+CQ==}
 
   '@types/cookie@0.4.1':
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
@@ -5520,7 +5520,7 @@ snapshots:
     dependencies:
       '@babel/types': 7.27.0
 
-  '@types/chrome@0.0.316':
+  '@types/chrome@0.0.317':
     dependencies:
       '@types/filesystem': 0.0.35
       '@types/har-format': 1.2.15
