@@ -181,14 +181,14 @@
 }
 
 .gw2treasures {
-  width: 20px;
-  height: 20px;
-  padding: 2px;
+  width: 24px;
+  height: 24px;
+  padding: 4px;
   background: #b7000d;
   --icon-color: #fff;
   border-radius: 2px;
   margin-right: 8px;
-  vertical-align: -4px;
+  vertical-align: -6px;
 }
 
 .loginButton {
