@@ -197,6 +197,11 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
                     </Checkbox>
                   ))}
                   <LinkButton href={`/authorize/${authRequest.id}/add-account`} appearance="menu" icon="add">Add account</LinkButton>
+                  {!verifiedAccountsOnly && (
+                    <div className={styles.tip}>
+                      <b>Tip:</b> You can <Link href="/accounts">share your accounts</Link> with your friends to see each other&apos;s accounts.
+                    </div>
+                  )}
                 </div>
               </div>
             )}

@@ -49,6 +49,24 @@
   font-size: 15px;
 }
 
+.tip {
+  composes: p;
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.p > a {
+  color: inherit;
+  text-decoration: underline;
+  transition: color .2s ease;
+}
+
+.p > a:hover {
+  color: var(--color-brand);
+}
+
 .form {
   display: flex;
   flex-direction: column;
