@@ -89,6 +89,17 @@ export default async function HomePage() {
 
           <div className={styles.accountsSection}>
             <div>
+              <div className={styles.sectionHeader}>Share your Guild Wars 2 Accounts</div>
+              <p>
+                You can share your Guild Wars 2 accounts with your friends. This way, they can use see your accounts in their applications and keep track of your progress, without getting access to your API keys.
+                You get full insight into which user currently has access to your accounts, they applications they are using, and you can revoke access at any time.
+              </p>
+              <LinkButton href="/accounts" icon="chevron-right" appearance="menu" className={styles.discoverButton}><span>Share your Accounts</span></LinkButton>
+            </div>
+          </div>
+
+          <div className={styles.accountsSection}>
+            <div>
               <div className={styles.sectionHeader}>Review and Revoke Access</div>
               <p>Keep an overview over which applications are currently authorized to access your Guild Wars 2 accounts. You can also revoke access for each application at any time.</p>
               <LinkButton href="/applications" icon="chevron-right" appearance="menu" className={styles.discoverButton}><span>Review your Applications</span></LinkButton>
