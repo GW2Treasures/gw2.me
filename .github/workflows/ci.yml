@@ -74,7 +74,7 @@ jobs:
           ${{ matrix.target }}.output=type=image,push=true
           *.platform=linux/amd64,linux/arm64
           *.cache-from=type=gha,scope=build-${{ matrix.target }}
-          *.cache-to=type=gha,scope=build-${{ matrix.target }},mode=max
+          *.cache-to=type=gha,scope=build-${{ matrix.target }},mode=max,ignore-error=true
 
   test-compose:
     name: Test / docker compose
