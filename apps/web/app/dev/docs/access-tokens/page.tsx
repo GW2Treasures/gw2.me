@@ -97,7 +97,7 @@ export default function DevDocsAccessTokensPage() {
           <tr>
             <td><Code inline>verified_accounts_only</Code> (optional)</td>
             <td><Code inline borderless>&quot;true&quot;</Code></td>
-            <td>Only allow the user to select verified accounts. This requires the <Link href="/dev/docs/scopes"><Code inline>accounts.verified</Code> scope</Link>.</td>
+            <td>Only allow the user to select verified accounts. Shared accounts are hidden. This requires the <Link href="/dev/docs/scopes"><Code inline>accounts.verified</Code> scope</Link>.</td>
           </tr>
         </tbody>
       </Table>
