@@ -33,7 +33,7 @@ const getUser = cache(function getUser(id: string) {
         }
       },
       accounts: {
-        select: { id: true, accountId: true, accountName: true, displayName: true, verified: true, createdAt: true, apiTokens: { select: { id: true }}}
+        select: { id: true, accountId: true, accountName: true, displayName: true, verified: true, createdAt: true, _count: { select: { apiTokens: true, shares: true }}}
       },
       providers: true,
       emails: {
@@ -96,7 +96,8 @@ export default async function AdminUserDetailPage({ params }: AdminUserDetailPag
         <Accounts.Column id="name" title="Name">{({ accountName }) => accountName}</Accounts.Column>
         <Accounts.Column id="display" title="Display Name">{({ displayName }) => displayName}</Accounts.Column>
         <Accounts.Column id="verified" title="Verified">{({ verified }) => verified && <Icon icon="checkmark"/>}</Accounts.Column>
-        <Accounts.Column id="tokens" title="API keys">{({ apiTokens }) => apiTokens.length}</Accounts.Column>
+        <Accounts.Column id="tokens" title="API keys">{({ _count }) => _count.apiTokens}</Accounts.Column>
+        <Accounts.Column id="shares" title="Shares">{({ _count }) => _count.shares}</Accounts.Column>
         <Accounts.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Accounts.Column>
       </Accounts.Table>
 
