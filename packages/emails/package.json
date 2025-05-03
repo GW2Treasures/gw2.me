@@ -20,7 +20,7 @@
     "@gw2treasures/eslint-config": "0.1.0",
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/react": "19.1.2",
-    "eslint": "9.25.1",
+    "eslint": "9.26.0",
     "react-email": "4.0.11",
     "typescript": "5.8.3",
     "typescript-eslint": "8.31.1"
