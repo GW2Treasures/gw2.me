@@ -1,9 +1,10 @@
 import { corsHeaders } from '@/lib/cors-header';
-import { assert } from '@/lib/oauth/assert';
+import { assert, tryOrFail } from '@/lib/oauth/assert';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { NextRequest, NextResponse } from 'next/server';
 import { getRequestAuthorization, RequestAuthorization } from './auth';
 import { getUrlFromRequest } from '@/lib/url';
+import { MIMEType } from 'util';
 
 export interface OAuth2RequestHandlerProps {
   headers: Headers,
@@ -16,7 +17,10 @@ export function handleRequest<T>(handler: (props: OAuth2RequestHandlerProps) => 
   return async (request: NextRequest) => {
     try {
       // ensure request is using application/x-www-form-urlencoded
-      assert(request.headers.get('Content-Type') === 'application/x-www-form-urlencoded', OAuth2ErrorCode.invalid_request, 'Only application/x-www-form-urlencoded requests are supported.');
+      tryOrFail(() => {
+        const mimetype = new MIMEType(request.headers.get('Content-Type') ?? '');
+        assert(mimetype.essence === 'application/x-www-form-urlencoded', OAuth2ErrorCode.invalid_request, 'Only application/x-www-form-urlencoded requests are supported.');
+      }, OAuth2ErrorCode.invalid_request, 'Could not parse Content-Type');
 
       // get form data and convert to object
       const params = await request.formData();
