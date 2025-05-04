@@ -23,7 +23,12 @@ export function fail(condition: unknown, code: OAuth2ErrorCode, description?: st
 export function tryOrFail<T>(callback: () => T, code: OAuth2ErrorCode, description?: string): T {
   try {
     return callback();
-  } catch {
+  } catch(e) {
+    // rethrow inner OAuth2 errors
+    if(e instanceof OAuth2Error) {
+      throw e;
+    }
+
     throw new OAuth2Error(code, { description });
   }
 }
