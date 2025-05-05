@@ -9,6 +9,7 @@ import { isTruthy } from '@gw2treasures/helper/is';
 import { Icon } from '@gw2treasures/ui';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { List } from '@gw2treasures/ui/components/Layout/List';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { ensureUserIsAdmin } from 'app/admin/admin';
 import Link from 'next/link';
@@ -47,6 +48,13 @@ export default async function AdminUserDetailPage({ params }: AdminClientDetailP
   return (
     <PageLayout>
       <PageTitle>{client.application.name} / {client.id}</PageTitle>
+
+      {client.type}
+
+      <Headline id="callbackUrls">Callback URLs</Headline>
+      <List>
+        {client.callbackUrls.map((url) => <li key={url}>{url}</li>)}
+      </List>
 
       <Headline id="authorizations" actions={<ColumnSelection table={Authorizations}/>}>Authorizations ({client.authorizations.length})</Headline>
       <Authorizations.Table>
