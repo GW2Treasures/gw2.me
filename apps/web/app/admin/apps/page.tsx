@@ -48,6 +48,7 @@ export default async function AdminAppsPage() {
       <Apps.Table>
         <Apps.Column id="id" title="Id" hidden>{({ id }) => <Code inline borderless>{id}</Code>}</Apps.Column>
         <Apps.Column id="name" title="Name" sortBy={({ application }) => application.name}>{({ application }) => <FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow>}</Apps.Column>
+        <Apps.Column id="type" title="Type" sortBy="type" hidden>{({ type }) => type}</Apps.Column>
         <Apps.Column id="public" title="Public URL" sortBy={({ application }) => application.name} hidden>{({ application }) => application.publicUrl}</Apps.Column>
         <Apps.Column id="owner" title="Owner" sortBy={({ application }) => application.owner.name}>{({ application }) => <Link href={`/admin/users/${application.owner.id}`}><FlexRow><Icon icon="user"/>{application.owner.name}</FlexRow></Link>}</Apps.Column>
         <Apps.Column id="email" title="Email" sortBy={({ application }) => application.email?.email} hidden>{({ application }) => application.email?.email}</Apps.Column>
