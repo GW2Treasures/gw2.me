@@ -24,7 +24,7 @@ describe('OAuth2 request authorization', () => {
     });
 
     it('works', () =>
-      expect(getRequestAuthorization(new Headers(), { client_id: client.id })).resolves.toStrictEqual({ method: 'none', client } satisfies RequestAuthorization));
+      expect(getRequestAuthorization(new Headers(), { client_id: client.id })).resolves.toStrictEqual({ method: 'none', client_id: 'test', client } satisfies RequestAuthorization));
 
     it('throws if client_secret_basic is used', () =>
       expect(getRequestAuthorization(new Headers({ 'Authorization': `Basic ${btoa(`${client.id}:xxx`)}` }), {}))
@@ -63,10 +63,10 @@ describe('OAuth2 request authorization', () => {
 
     it('supports client_secret_basic', () =>
       expect(getRequestAuthorization(new Headers({ 'Authorization': `Basic ${btoa(`${client.id}:${secret.raw}`)}` }), {}))
-        .resolves.toStrictEqual({ method: 'client_secret_basic', client_secret: secret.raw, client: confidentialClient } satisfies RequestAuthorization));
+        .resolves.toStrictEqual({ method: 'client_secret_basic', client_id: 'test', client_secret: secret.raw, client: confidentialClient } satisfies RequestAuthorization));
 
     it('supports client_secret_post', () =>
       expect(getRequestAuthorization(new Headers(), { client_id: confidentialClient.id, client_secret: secret.raw }))
-        .resolves.toStrictEqual({ method: 'client_secret_post', client_secret: secret.raw, client: confidentialClient } satisfies RequestAuthorization));
+        .resolves.toStrictEqual({ method: 'client_secret_post', client_id: 'test', client_secret: secret.raw, client: confidentialClient } satisfies RequestAuthorization));
   });
 });
