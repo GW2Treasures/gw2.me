@@ -2,6 +2,7 @@ import type { DPoPCallback, Options } from './types';
 import { jsonOrError, okOrError } from './util';
 
 export interface UserResponse {
+  sub: string,
   user: {
     id: string,
     name: string,

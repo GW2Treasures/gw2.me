@@ -28,6 +28,7 @@ export const GET = withAuthorization([Scope.Identify])(
     const { email, settings } = grant;
 
     const response: UserResponse = {
+      sub: user.id,
       user: {
         id: user.id,
         name: user.name,
