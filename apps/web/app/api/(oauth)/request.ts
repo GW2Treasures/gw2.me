@@ -24,10 +24,15 @@ export function handleRequest<T>(handler: (props: OAuth2RequestHandlerProps) => 
 
       // get form data and convert to object
       const params = await request.formData();
-      const parsedParams = Object.fromEntries(Array.from(params.entries()).filter(([, value]) => typeof value === 'string')) as Record<string, string>;
+      const parsedParams = Object.fromEntries(Array.from(params.entries()).filter(([, value]) => typeof value === 'string')) as Record<string, string | undefined>;
 
       // authorize client
       const requestAuthorization = await getRequestAuthorization(request.headers, parsedParams);
+
+      // ensure client_id is set in params
+      if(!parsedParams.client_id) {
+        parsedParams.client_id = requestAuthorization.client.id;
+      }
 
       const url = getUrlFromRequest(request);
 

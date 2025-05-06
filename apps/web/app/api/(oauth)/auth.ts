@@ -7,9 +7,10 @@ import { ClientType, Client } from '@gw2me/database';
 import { scryptSync, timingSafeEqual } from 'crypto';
 import { after } from 'next/server';
 
-export type RequestAuthorization =
- | { method: 'none', client: Client }
- | { method: 'client_secret_basic' | 'client_secret_post', client_secret: string, client: Client };
+export type RequestAuthorization = { client_id: string, client: Client } & (
+ | { method: 'none' }
+ | { method: 'client_secret_basic' | 'client_secret_post', client_secret: string }
+);
 
 export async function getRequestAuthorization(
   headers: Headers,
@@ -40,7 +41,7 @@ export async function getRequestAuthorization(
     assert(client.type === ClientType.Public, OAuth2ErrorCode.invalid_request, 'Missing authorization for confidential client');
 
     // public client, all is good :)
-    return { method: 'none', client };
+    return { method: 'none', client_id, client };
   }
 
   // only allow 1 authorization method
@@ -65,6 +66,10 @@ export async function getRequestAuthorization(
 
         client_id = id;
         client_secret = password;
+
+        if(params.client_id) {
+          assert(params.client_id === client_id, OAuth2ErrorCode.invalid_request, 'client_id in body does not match authentication');
+        }
       } else {
         assert(params.client_id, OAuth2ErrorCode.invalid_request, 'Missing client_id parameter');
         assert(params.client_secret, OAuth2ErrorCode.invalid_request, 'Missing client_secret parameter');
@@ -90,7 +95,7 @@ export async function getRequestAuthorization(
         data: { usedAt: new Date() }
       }));
 
-      return { method, client_secret, client };
+      return { method, client_id, client_secret, client };
     }
   }
 
