@@ -380,8 +380,8 @@ importers:
         specifier: 0.0.16
         version: 0.0.16(react@19.1.0)
       '@react-email/text':
-        specifier: 0.1.3
-        version: 0.1.3(react@19.1.0)
+        specifier: 0.1.4
+        version: 0.1.4(react@19.1.0)
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -399,8 +399,8 @@ importers:
         specifier: 9.26.0
         version: 9.26.0
       react-email:
-        specifier: 4.0.11
-        version: 4.0.11(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 4.0.13
+        version: 4.0.13(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1171,8 +1171,8 @@ packages:
     peerDependencies:
       react: 19.1.0
 
-  '@react-email/text@0.1.3':
-    resolution: {integrity: sha512-H22KR54MXUg29a+1/lTfg9oCQA65V8+TL4v19OzV7RsOxnEnzGOc287XKh8vc+v7ENewrMV97BzUPOnKz3bqkA==}
+  '@react-email/text@0.1.4':
+    resolution: {integrity: sha512-cMNE02y8172DocpNGh97uV5HSTawaS4CKG/zOku8Pu+m6ehBKbAjgtQZDIxhgstw8+TWraFB8ltS1DPjfG8nLA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: 19.1.0
@@ -3654,8 +3654,8 @@ packages:
     peerDependencies:
       react: 19.1.0
 
-  react-email@4.0.11:
-    resolution: {integrity: sha512-t/8ZlVSOXVlmtbLLAinTePYefdx1FipPiu9a4RmFar7vizevrDoTNz8mEzOBEMTJp/OhloP3UOkLJN0iCjBDrg==}
+  react-email@4.0.13:
+    resolution: {integrity: sha512-U858xl3mferQ3nkkCA5mG9tkAMuMpdVFS4bU8TLZv8eG6+kQDGI9gbfB+YVpD+IzUjJZB2ft+LBsEs4k0Sav9A==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -5306,7 +5306,7 @@ snapshots:
     dependencies:
       react: 19.1.0
 
-  '@react-email/text@0.1.3(react@19.1.0)':
+  '@react-email/text@0.1.4(react@19.1.0)':
     dependencies:
       react: 19.1.0
 
@@ -8240,7 +8240,7 @@ snapshots:
       react: 19.1.0
       scheduler: 0.26.0
 
-  react-email@4.0.11(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-email@4.0.13(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@babel/parser': 7.27.0
       '@babel/traverse': 7.27.0
