@@ -35,8 +35,10 @@ export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> =
     console.log('initializing webauthn condition ui');
 
     try {
+      // get authentication options from server
       const { options, challenge } = await getAuthenticationOptions();
 
+      // if the authentication has a timeout, start a timer to show a notice to the user when it expires
       if(options.timeout) {
         startAuthenticationTimeout(options.timeout);
       }
