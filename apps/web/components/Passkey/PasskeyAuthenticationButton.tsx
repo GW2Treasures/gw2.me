@@ -21,6 +21,8 @@ export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> =
   const notice = useShowNotice();
 
   useEffect(() => {
+    // check if the browser supports passkeys
+    // this is done in a useEffect so its always false during SSR
     setSupportsPasskeys(browserSupportsWebAuthn());
   }, []);
 
@@ -28,6 +30,8 @@ export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> =
     // hide any notice that might still be visible
     notice.show(null);
 
+    // if we know which user is trying to login, start the authentication process
+    // otherwise open the dialog to let the user choose if they want to login or register
     if(loginOptions.userId) {
       startTransition(async () => {
         try {
@@ -41,6 +45,7 @@ export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> =
           await submitAuthentication(challenge, authentication, loginOptions.returnTo);
         } catch(e) {
           console.error(e);
+
           if(e instanceof Error) {
             if(e.name === 'NotAllowedError') {
               // user has canceled
