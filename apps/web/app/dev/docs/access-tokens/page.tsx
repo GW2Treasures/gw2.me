@@ -9,6 +9,7 @@ import { Table } from '@gw2treasures/ui/components/Table/Table';
 import Link from 'next/link';
 import styles from '../layout.module.css';
 import { Highlight } from '@/components/Layout/Highlight';
+import { HighlightUrl } from '@/components/Layout/HighlightUrl';
 
 export default function DevDocsAccessTokensPage() {
   return (
@@ -104,18 +105,16 @@ export default function DevDocsAccessTokensPage() {
 
       <p>An example request could look like this (URL formatted for better readability)</p>
 
-      <Code>
-        https://gw2.me/oauth2/authorize<br/>  ?client_id=1554a6a3-8b8e-4ba7-9c5f-80576d081e10<br/>  &response_type=code<br/>  &redirect_uri=http%3A%2F%2Fexample.com%2Fcallback<br/>  &scope=identify+email+gw2%3Aaccount<br/>  &state=SaOfpb7Ny9mbV6EPCUDcnQ<br/>  &code_challenge=oFtTjTxdlTh9Tdwe8Rpbly8Qy8AL5rfKc9aueH_PmZM<br/>  &code_challenge_method=S256
-      </Code>
+      <HighlightUrl url="https://gw2.me/oauth2/authorize?client_id=1554a6a3-8b8e-4ba7-9c5f-80576d081e10&response_type=code&redirect_uri=http%3A%2F%2Fexample.com%2Fcallback&scope=identify+email+gw2%3Aaccount&state=SaOfpb7Ny9mbV6EPCUDcnQ&code_challenge=oFtTjTxdlTh9Tdwe8Rpbly8Qy8AL5rfKc9aueH_PmZM&code_challenge_method=S256"/>
 
       <p>If the user is not logged in to gw2.me yet, they get asked to login first. The user is then presented with a authorization page that shows your applications name, icon and all required scopes. If you requested any scopes for the Guild Wars 2 API, the user has to select at least one Guild Wars 2 account. The user can also add additional accounts on this screen.</p>
       <p>After the user authorized your application, the user is redirected to the specified <Code inline>redirect_uri</Code>.</p>
 
       <p>If the authorization was successful, the url will contain the query parameter <Code inline>code</Code> with an authorization code that needs to be exchanged for an access token in the next step.</p>
-      <Code>https://example.com/callback<br/>  ?state=SaOfpb7Ny9mbV6EPCUDcnQ<br/>  &iss=https%3A%2F%2Fgw2.me<br/>  &<strong>code=ciA-F7NVbINw1dcEVeYdww</strong></Code>
+      <HighlightUrl highlight="code" url="https://example.com/callback?state=SaOfpb7Ny9mbV6EPCUDcnQ&iss=https%3A%2F%2Fgw2.me&code=ciA-F7NVbINw1dcEVeYdww"/>
 
       <p>If the authorization was not successful, the url will contain the <Code inline>error</Code> and <Code inline>error_description</Code> query parameters detailing the reason.</p>
-      <Code>https://example.com/callback<br/>  ?state=SaOfpb7Ny9mbV6EPCUDcnQ<br/>  &iss=https%3A%2F%2Fgw2.me<br/>  &<strong>error=access_denied</strong><br/>  &<strong>error_description=user+canceled+authorization</strong></Code>
+      <HighlightUrl highlight={['error', 'error_description']} url="https://example.com/callback?state=SaOfpb7Ny9mbV6EPCUDcnQ&iss=https%3A%2F%2Fgw2.me&error=access_denied&error_description=user+canceled+authorization"/>
 
       <p>
         The url for both the success and error response will always contain <Code inline>iss</Code> and
@@ -334,13 +333,7 @@ export default function DevDocsAccessTokensPage() {
         together with the <Code inline>client_id</Code>, to continue with the normal OAuth2 authorization flow.
       </p>
 
-      <Code>
-        {[
-          'https://gw2.me/oauth2/authorize',
-          '  ?client_id=1554a6a3-8b8e-4ba7-9c5f-80576d081e10',
-          '  &request_uri=' + encodeURIComponent('urn:ietf:params:oauth:request_uri:5aac9d50-43de-4dd6-9693-a0e2ac48271f')
-        ].join('\n')}
-      </Code>
+      <HighlightUrl url="https://gw2.me/oauth2/authorize?client_id=1554a6a3-8b8e-4ba7-9c5f-80576d081e10&request_uri=urn:ietf:params:oauth:request_uri:5aac9d50-43de-4dd6-9693-a0e2ac48271f"/>
     </PageLayout>
   );
 }
