@@ -1,0 +1,12 @@
+.q {
+  padding-left: 2ch;
+}
+
+.highlight {
+  composes: q;
+
+  background-color: #2196f316;
+  border-left: solid #2196f350;
+  margin: 0 -16px;
+  padding: 2px 16px 2px calc(2ch + 12px);
+}
