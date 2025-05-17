@@ -28,6 +28,27 @@ export default function DevDocsScopePage() {
         </tbody>
       </Table>
 
+      <Headline id="examples">Example projects</Headline>
+
+      <p>This is a list of small example projects in different languages or frameworks that can be used as reference when adding gw2.me to your own project.</p>
+
+      <Table>
+        <thead>
+          <tr>
+            <Table.HeaderCell small>Language</Table.HeaderCell>
+            <Table.HeaderCell>Library</Table.HeaderCell>
+            <Table.HeaderCell>Description</Table.HeaderCell>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Java</th>
+            <td><ExternalLink href="https://github.com/darthmaim/gw2.me-example-spring-boot">darthmaim/gw2.me-example-spring-boot</ExternalLink></td>
+            <td>Spring Boot project using Spring Security to integrate gw2.me.</td>
+          </tr>
+        </tbody>
+      </Table>
+
       <Headline id="third-party">Third-party Libraries</Headline>
 
       <p>If you made your own client library to access gw2.me, please create a Pull Request or Issue in the <ExternalLink href="https://github.com/GW2Treasures/gw2.me">GitHub repository</ExternalLink> to have it included on this page.</p>
