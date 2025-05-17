@@ -12,8 +12,9 @@ services:
       - BASE_DOMAIN=localhost
       - FORCE_COLOR=1
       - JWT_SECRET=gw2.me-secret
+      - PORT=4000
     ports:
-      - 4000:3000
+      - 4000:4000
 
   demo:
     image: ghcr.io/gw2treasures/gw2.me/demo:${IMAGE_VERSION:-latest}
