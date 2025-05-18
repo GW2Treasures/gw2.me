@@ -34,7 +34,7 @@ importers:
         version: 0.1.4(react@19.1.0)
       '@gw2treasures/ui':
         specifier: 0.4.0
-        version: 0.4.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.1.0))(@gw2treasures/tsconfig@0.0.1)(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 0.4.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.1.0))(@gw2treasures/tsconfig@0.0.1)(next@15.3.2(@babel/core@7.26.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next:
         specifier: 15.3.2
         version: 15.3.2(@babel/core@7.26.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -95,7 +95,7 @@ importers:
         version: 0.1.4(react@19.1.0)
       '@gw2treasures/ui':
         specifier: 0.4.0
-        version: 0.4.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.1.0))(@gw2treasures/tsconfig@0.0.1)(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 0.4.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.1.0))(@gw2treasures/tsconfig@0.0.1)(next@15.3.2(@babel/core@7.26.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -174,7 +174,7 @@ importers:
         version: 0.1.4(react@19.1.0)
       '@gw2treasures/ui':
         specifier: 0.4.0
-        version: 0.4.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.1.0))(@gw2treasures/tsconfig@0.0.1)(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 0.4.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.1.0))(@gw2treasures/tsconfig@0.0.1)(next@15.3.2(@babel/core@7.26.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@react-email/render':
         specifier: 1.1.2
         version: 1.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -188,8 +188,8 @@ importers:
         specifier: 3.7.0
         version: 3.7.0
       aaguids:
-        specifier: 0.0.25
-        version: 0.0.25
+        specifier: 0.0.26
+        version: 0.0.26
       hast-util-to-jsx-runtime:
         specifier: 2.3.6
         version: 2.3.6
@@ -1637,8 +1637,8 @@ packages:
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  aaguids@0.0.25:
-    resolution: {integrity: sha512-fldZ87FuDoIwOiM7IJj92ZdysqJsiBnrOyxya9WvwcaeK591AeQdxutbO6uRIX/6t2kAALYg339HiTA4zVdBkQ==}
+  aaguids@0.0.26:
+    resolution: {integrity: sha512-ixjfBSWM8gY2OoniZA7IHaaquelMvy5JBA8gnrIdXR5omlZQpv6k9bS6VmD5N0WLVci0jRqY8eh/LfRV+HXVQw==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -4827,7 +4827,7 @@ snapshots:
 
   '@gw2treasures/tsconfig@0.0.1': {}
 
-  '@gw2treasures/ui@0.4.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.1.0))(@gw2treasures/tsconfig@0.0.1)(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@gw2treasures/ui@0.4.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.1.0))(@gw2treasures/tsconfig@0.0.1)(next@15.3.2(@babel/core@7.26.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@floating-ui/react': 0.27.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@floating-ui/react-dom': 2.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -5696,7 +5696,7 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  aaguids@0.0.25: {}
+  aaguids@0.0.26: {}
 
   abort-controller@3.0.0:
     dependencies:
