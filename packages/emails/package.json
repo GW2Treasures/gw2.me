@@ -19,7 +19,7 @@
   "devDependencies": {
     "@gw2treasures/eslint-config": "0.1.0",
     "@gw2treasures/tsconfig": "0.0.1",
-    "@types/react": "19.1.4",
+    "@types/react": "19.1.5",
     "eslint": "9.27.0",
     "react-email": "4.0.15",
     "typescript": "5.8.3",

@@ -7,7 +7,7 @@ settings:
 overrides:
   react: 19.1.0
   react-dom: 19.1.0
-  '@types/react': 19.1.4
+  '@types/react': 19.1.5
   '@types/react-dom': 19.1.5
 
 importers:
@@ -67,11 +67,11 @@ importers:
         specifier: 22.15.21
         version: 22.15.21
       '@types/react':
-        specifier: 19.1.4
-        version: 19.1.4
+        specifier: 19.1.5
+        version: 19.1.5
       '@types/react-dom':
         specifier: 19.1.5
-        version: 19.1.5(@types/react@19.1.4)
+        version: 19.1.5(@types/react@19.1.5)
       eslint:
         specifier: 9.27.0
         version: 9.27.0(jiti@2.4.2)
@@ -116,11 +116,11 @@ importers:
         specifier: 0.0.323
         version: 0.0.323
       '@types/react':
-        specifier: 19.1.4
-        version: 19.1.4
+        specifier: 19.1.5
+        version: 19.1.5
       '@types/react-dom':
         specifier: 19.1.5
-        version: 19.1.5(@types/react@19.1.4)
+        version: 19.1.5(@types/react@19.1.5)
       archiver:
         specifier: 7.0.1
         version: 7.0.1
@@ -238,7 +238,7 @@ importers:
         version: 10.4.0
       '@testing-library/react':
         specifier: 16.3.0
-        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@types/node':
         specifier: 22.15.21
         version: 22.15.21
@@ -246,11 +246,11 @@ importers:
         specifier: 6.4.17
         version: 6.4.17
       '@types/react':
-        specifier: 19.1.4
-        version: 19.1.4
+        specifier: 19.1.5
+        version: 19.1.5
       '@types/react-dom':
         specifier: 19.1.5
-        version: 19.1.5(@types/react@19.1.4)
+        version: 19.1.5(@types/react@19.1.5)
       '@types/web':
         specifier: 0.0.235
         version: 0.0.235
@@ -396,8 +396,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@types/react':
-        specifier: 19.1.4
-        version: 19.1.4
+        specifier: 19.1.5
+        version: 19.1.5
       eslint:
         specifier: 9.27.0
         version: 9.27.0(jiti@2.4.2)
@@ -1376,7 +1376,7 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       '@testing-library/dom': ^10.0.0
-      '@types/react': 19.1.4
+      '@types/react': 19.1.5
       '@types/react-dom': 19.1.5
       react: 19.1.0
       react-dom: 19.1.0
@@ -1461,10 +1461,10 @@ packages:
   '@types/react-dom@19.1.5':
     resolution: {integrity: sha512-CMCjrWucUBZvohgZxkjd6S9h0nZxXjzus6yDfUb+xLxYM7VvjKNH1tQrE9GWLql1XoOP4/Ds3bwFqShHUYraGg==}
     peerDependencies:
-      '@types/react': 19.1.4
+      '@types/react': 19.1.5
 
-  '@types/react@19.1.4':
-    resolution: {integrity: sha512-EB1yiiYdvySuIITtD5lhW4yPyJ31RkJkkDw794LaQYrxCSaQV/47y5o1FMC4zF9ZyjUjzJMZwbovEnT5yHTW6g==}
+  '@types/react@19.1.5':
+    resolution: {integrity: sha512-piErsCVVbpMMT2r7wbawdZsq4xMvIAhQuac2gedQHysu1TZYEigE6pnFfgZT+/jQnrRuF5r+SHzuehFjfRjr4g==}
 
   '@types/readdir-glob@1.1.4':
     resolution: {integrity: sha512-uEJsErL2wFCTcbbmJpIuD8OWYNabgv1oaYP2bOkzZXKtk3c6LCYQEKngIqBj2VR2NMv9DOAXSkxSYOWtHxh2gQ==}
@@ -5382,15 +5382,15 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@babel/runtime': 7.23.2
       '@testing-library/dom': 10.4.0
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
     optionalDependencies:
-      '@types/react': 19.1.4
-      '@types/react-dom': 19.1.5(@types/react@19.1.4)
+      '@types/react': 19.1.5
+      '@types/react-dom': 19.1.5(@types/react@19.1.5)
 
   '@types/archiver@6.0.3':
     dependencies:
@@ -5480,11 +5480,11 @@ snapshots:
     dependencies:
       '@types/node': 22.15.21
 
-  '@types/react-dom@19.1.5(@types/react@19.1.4)':
+  '@types/react-dom@19.1.5(@types/react@19.1.5)':
     dependencies:
-      '@types/react': 19.1.4
+      '@types/react': 19.1.5
 
-  '@types/react@19.1.4':
+  '@types/react@19.1.5':
     dependencies:
       csstype: 3.1.2
 
