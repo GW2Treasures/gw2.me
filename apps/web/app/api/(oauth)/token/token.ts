@@ -72,26 +72,28 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
       // TODO(dpop): If DPoP (and PKCE) is used allow public clients to create refresh tokens
       const canCreateRefreshToken = client.type === ClientType.Confidential;
 
-      const [refreshAuthorization, accessAuthorization] = await db.$transaction([
+      const [refreshAuthorization, accessAuthorization] = await db.$transaction(async (tx) => {
         // create refresh token
-        canCreateRefreshToken
-          ? db.authorization.upsert({
+        const refreshAuthorization = canCreateRefreshToken
+          ? await tx.authorization.upsert({
               where: { type_clientId_userId: { type: AuthorizationType.RefreshToken, clientId, userId }},
               create: { type: AuthorizationType.RefreshToken, clientId, applicationId, userId, scope, token: generateRefreshToken() },
               update: { scope }
             })
-          : db.authorization.findFirst({ take: 0 }),
+          : null;
 
         // create access token
-        db.authorization.upsert({
+        const accessAuthorization = await tx.authorization.upsert({
           where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
           create: { type: AuthorizationType.AccessToken, clientId, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt },
           update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt ?? null }
-        }),
+        });
 
         // delete used code token
-        db.authorization.delete({ where: { id: authorization.id }}),
-      ]);
+        await tx.authorization.delete({ where: { id: authorization.id }});
+
+        return [refreshAuthorization, accessAuthorization];
+      });
 
       return {
         access_token: accessAuthorization.token,
