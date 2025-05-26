@@ -1,3 +1,10 @@
-import config from '@gw2treasures/eslint-config';
+import config from '@gw2treasures/eslint-config/react';
+import autoImports from './.wxt/eslint-auto-imports.mjs';
 
-export default config;
+export default [
+  { ignores: ['.wxt', '.output'] },
+
+  autoImports,
+
+  ...config,
+];
