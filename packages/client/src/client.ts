@@ -1,8 +1,8 @@
-import { Gw2MeApi, type ApiOptions } from './api';
-import { Gw2MeError, Gw2MeOAuthError } from './error';
-import { Gw2MeFedCM } from './fed-cm';
-import { type ClientInfo, type DPoPCallback, type Options, Scope } from './types';
-import { jsonOrError } from './util';
+import { Gw2MeApi, type ApiOptions } from './api.js';
+import { Gw2MeError, Gw2MeOAuthError } from './error.js';
+import { Gw2MeFedCM } from './fed-cm.js';
+import { type ClientInfo, type DPoPCallback, type Options, Scope } from './types.js';
+import { jsonOrError } from './util.js';
 
 export interface AuthorizationUrlParams {
   redirect_uri: string,
