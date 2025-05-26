@@ -8,21 +8,24 @@
     "./package.json": "./package.json",
     ".": {
       "types": "./dist/index.d.ts",
+      "module": "./dist/index.mjs",
       "default": "./dist/index.js"
     },
     "./dpop": {
       "types": "./dist/dpop.d.ts",
+      "module": "./dist/dpop.mjs",
       "default": "./dist/dpop.js"
     },
     "./pkce": {
       "types": "./dist/pkce.d.ts",
+      "module": "./dist/pkce.mjs",
       "default": "./dist/pkce.js"
     }
   },
   "scripts": {
     "build": "pnpm run clean && if test $CI; then pnpm run build:ci; else pnpm run build:local; fi",
-    "build:local": "tsup src/index.ts src/dpop.ts src/pkce.ts && tsc --emitDeclarationOnly --declaration --declarationMap",
-    "build:ci": "tsup src/index.ts src/dpop.ts src/pkce.ts --minify --dts",
+    "build:local": "tsup src/index.ts src/dpop.ts src/pkce.ts --format esm,cjs && tsc --emitDeclarationOnly --declaration --declarationMap",
+    "build:ci": "tsup src/index.ts src/dpop.ts src/pkce.ts --format esm,cjs --minify --dts",
     "clean": "rm -rf dist/",
     "lint": "eslint src",
     "publish-package": "gw2treasures-publish-package"
