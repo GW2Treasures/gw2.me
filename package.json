@@ -5,6 +5,7 @@
     "dev:web": "turbo run dev --filter=web",
     "dev:demo": "turbo run dev --filter=demo",
     "dev:emails": "turbo run dev --filter=@gw2me/emails",
+    "dev:extension": "turbo run dev --filter=extension",
     "prisma:studio": "pnpm run --filter @gw2me/database prisma:studio",
     "prisma:migrate-dev": "pnpm run --filter @gw2me/database prisma:migrate-dev",
     "build": "turbo run build",
@@ -35,7 +36,8 @@
       "@prisma/engines",
       "esbuild",
       "prisma",
-      "sharp"
+      "sharp",
+      "spawn-sync"
     ]
   },
   "packageManager": "pnpm@10.30.1"

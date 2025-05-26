@@ -3,14 +3,17 @@
   "private": true,
   "version": "0.0.6",
   "description": "Generate Guild Wars 2 Subtokens",
+  "type": "module",
   "scripts": {
-    "build": "pnpm run clean && webpack build --mode=production --no-devtool",
-    "clean": "rm -rf dist/ artifacts/",
-    "watch": "pnpm run watch:chromium",
-    "watch:chromium": "pnpm run clean && webpack watch --mode=development --config-name=chromium",
-    "watch:firefox": "pnpm run clean && webpack watch --mode=development --config-name=firefox",
-    "lint": "eslint .",
-    "pack": "pnpm run build && node pack.mjs"
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "tsc --noEmit",
+    "postinstall": "wxt prepare",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -25,24 +28,16 @@
   "devDependencies": {
     "@gw2treasures/eslint-config": "0.2.0",
     "@gw2treasures/tsconfig": "0.0.1",
-    "@types/archiver": "7.0.0",
-    "@types/chrome": "0.1.37",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "archiver": "7.0.1",
-    "copy-webpack-plugin": "13.0.1",
-    "css-loader": "7.1.4",
+    "@wxt-dev/module-react": "1.1.5",
     "eslint": "9.39.3",
-    "style-loader": "4.0.0",
-    "ts-loader": "9.5.4",
     "typescript": "5.9.3",
-    "webpack": "5.105.2",
-    "webpack-cli": "6.0.1"
+    "wxt": "0.20.17"
   },
   "dependencies": {
     "@fontsource/bitter": "5.2.10",
     "@gw2me/client": "workspace:*",
-    "@gw2treasures/icons": "0.1.4",
     "@gw2treasures/ui": "0.5.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
