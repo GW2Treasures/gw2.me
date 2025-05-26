@@ -1,5 +1,5 @@
-export * from './types';
-export * from './client';
-export * from './api';
-export * from './error';
-export type * from './fed-cm';
+export * from './types.js';
+export * from './client.js';
+export * from './api.js';
+export * from './error.js';
+export type * from './fed-cm.js';

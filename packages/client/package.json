@@ -2,30 +2,26 @@
   "name": "@gw2me/client",
   "version": "0.8.2",
   "description": "gw2.me client library",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "type": "module",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "types": "./dist/index.d.ts",
-      "module": "./dist/index.mjs",
       "default": "./dist/index.js"
     },
     "./dpop": {
       "types": "./dist/dpop.d.ts",
-      "module": "./dist/dpop.mjs",
       "default": "./dist/dpop.js"
     },
     "./pkce": {
       "types": "./dist/pkce.d.ts",
-      "module": "./dist/pkce.mjs",
       "default": "./dist/pkce.js"
     }
   },
   "scripts": {
     "build": "pnpm run clean && if test $CI; then pnpm run build:ci; else pnpm run build:local; fi",
-    "build:local": "tsup src/index.ts src/dpop.ts src/pkce.ts --format esm,cjs && tsc --emitDeclarationOnly --declaration --declarationMap",
-    "build:ci": "tsup src/index.ts src/dpop.ts src/pkce.ts --format esm,cjs --minify --dts",
+    "build:local": "tsup src/index.ts src/dpop.ts src/pkce.ts --format esm && tsc --emitDeclarationOnly --declaration --declarationMap",
+    "build:ci": "tsup src/index.ts src/dpop.ts src/pkce.ts --format esm --minify --dts",
     "clean": "rm -rf dist/",
     "lint": "eslint src",
     "publish-package": "gw2treasures-publish-package"

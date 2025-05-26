@@ -1,4 +1,4 @@
-import { base64urlEncode } from './base64';
+import { base64urlEncode } from './base64.js';
 
 export interface PKCEChallenge {
   code_challenge: string;

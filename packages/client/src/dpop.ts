@@ -1,5 +1,5 @@
-import { base64urlEncode } from './base64';
-import type { DPoPParams } from './types';
+import { base64urlEncode } from './base64.js';
+import type { DPoPParams } from './types.js';
 
 export function generateDPoPKeyPair() {
   return crypto.subtle.generateKey({

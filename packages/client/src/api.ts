@@ -1,5 +1,5 @@
-import type { DPoPCallback, Options } from './types';
-import { jsonOrError, okOrError } from './util';
+import type { DPoPCallback, Options } from './types.js';
+import { jsonOrError, okOrError } from './util.js';
 
 export interface UserResponse {
   sub: string,

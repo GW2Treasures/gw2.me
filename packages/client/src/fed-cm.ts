@@ -1,5 +1,5 @@
-import { Gw2MeError } from './error';
-import { Scope } from './types';
+import { Gw2MeError } from './error.js';
+import { Scope } from './types.js';
 
 export interface FedCMRequestOptions {
   scopes: Scope[],
