@@ -1,13 +1,7 @@
 {
-  "extends": "@gw2treasures/tsconfig/react",
+  "extends": "./.wxt/tsconfig.json",
   "compilerOptions": {
-    "noEmit": false,
-    "jsx": "react-jsx",
-    "baseUrl": "./"
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "node_modules/@gw2treasures/ui/**/*.{ts,tsx,css}"
-  ],
+    "allowImportingTsExtensions": true,
+    "jsx": "react-jsx"
+  }
 }
