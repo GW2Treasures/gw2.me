@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "eslint-formatter-gha": "1.5.2",
-    "turbo": "2.5.3",
+    "turbo": "2.5.4",
     "typescript": "5.8.3"
   },
   "pnpm": {
