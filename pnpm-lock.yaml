@@ -188,8 +188,8 @@ importers:
         specifier: 3.7.0
         version: 3.7.0
       aaguids:
-        specifier: 0.0.26
-        version: 0.0.26
+        specifier: 0.0.27
+        version: 0.0.27
       hast-util-to-jsx-runtime:
         specifier: 2.3.6
         version: 2.3.6
@@ -1656,8 +1656,8 @@ packages:
   '@xtuc/long@4.2.2':
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  aaguids@0.0.26:
-    resolution: {integrity: sha512-ixjfBSWM8gY2OoniZA7IHaaquelMvy5JBA8gnrIdXR5omlZQpv6k9bS6VmD5N0WLVci0jRqY8eh/LfRV+HXVQw==}
+  aaguids@0.0.27:
+    resolution: {integrity: sha512-NIWSgICHHGlW9gjKc8viXRbpPDYsnItqfw9PzD2aZ5lK1s0jSdsTqu4rckrsXfjhXyD/hMd8OGZjG4cx1DD33A==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -5736,7 +5736,7 @@ snapshots:
 
   '@xtuc/long@4.2.2': {}
 
-  aaguids@0.0.26: {}
+  aaguids@0.0.27: {}
 
   abort-controller@3.0.0:
     dependencies:
