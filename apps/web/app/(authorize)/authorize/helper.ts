@@ -6,9 +6,9 @@ import { notExpired } from '@/lib/db/helper';
 import { getSession } from '@/lib/session';
 
 export const AuthorizationRequestExpiration: Record<AuthorizationRequestType, number> = {
-  [AuthorizationRequestType.OAuth2]: 60 * 5,
-  [AuthorizationRequestType.OAuth2_PAR]: 60,
-  [AuthorizationRequestType.FedCM]: 60 * 5,
+  [AuthorizationRequestType.OAuth2]: 60 * 60, // 1 hour
+  [AuthorizationRequestType.OAuth2_PAR]: 60, // 1 minute
+  [AuthorizationRequestType.FedCM]: 60 * 60, // 1 hour
 };
 
 export async function createAuthorizationRequest<T extends AuthorizationRequestType>(type: T, data: AuthorizationRequestData<T>): Promise<AuthorizationRequest> {
