@@ -37,7 +37,7 @@
     "@react-email/render": "1.1.2",
     "@react-email/row": "0.0.12",
     "@react-email/section": "0.0.16",
-    "@react-email/text": "0.1.4"
+    "@react-email/text": "0.1.5"
   },
   "peerDependencies": {
     "react": "^19.0.0"
