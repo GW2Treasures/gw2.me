@@ -47,7 +47,7 @@
     "@types/react-dom": "19.1.6",
     "@types/web": "0.0.241",
     "@vitejs/plugin-react": "4.5.2",
-    "eslint": "9.28.0",
+    "eslint": "9.29.0",
     "jsdom": "26.1.0",
     "typescript": "5.8.3",
     "typescript-eslint": "8.34.0",
