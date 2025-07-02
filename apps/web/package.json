@@ -22,7 +22,7 @@
     "@simplewebauthn/browser": "13.1.0",
     "@simplewebauthn/server": "13.1.1",
     "@wooorm/starry-night": "3.8.0",
-    "aaguids": "0.0.27",
+    "aaguids": "0.0.28",
     "hast-util-to-jsx-runtime": "2.3.6",
     "jose": "6.0.11",
     "next": "15.3.4",
