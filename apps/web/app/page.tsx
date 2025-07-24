@@ -36,8 +36,8 @@ export default async function HomePage() {
             </div>
             <div className={styles.browserContent}>
               <div className={styles.sectionHeader}>Connect Applications</div>
-              <p>Connect your Guild Wars 2 accounts directly to applications. You do not have to create an API key and copy-paste it for every application anymore. If you have multiple accounts, you can simply choose the accounts the application should have access to.</p>
-              <p>For all applications with gw2.me integration it is just one click to authorize access to your Guild Wars 2 accounts. You review the requested permissions and authorize them using the secure OAuth 2.0 protocol. The application will only receive the permissions you granted.</p>
+              <p>Connect your Guild Wars 2 accounts directly to applications. You do not have to create API keys and copy-paste them for every application anymore. If you have multiple accounts, you can simply choose the accounts the application should have access to.</p>
+              <p>You just add an API key once to gw2.me, then for all applications with gw2.me integration it is just one click to authorize access to your Guild Wars 2 accounts. You review the requested permissions and authorize them using the secure OAuth 2 protocol. The application will only receive the permissions you granted, and never receive your API key.</p>
               <LinkButton href="/discover" icon="chevron-right" appearance="menu" className={styles.discoverButton}><span>Discover Applications</span></LinkButton>
             </div>
             <div className={styles.authMock}>
@@ -118,7 +118,7 @@ export default async function HomePage() {
 
           <div className={styles.sectionHeader}>For Developers</div>
           <p>If you are a developer, you can integrate gw2.me into your applications. gw2.me will take care of the authorization and Guild Wars 2 account management, so you can focus on developing your application.</p>
-          <p>Since gw2.me is an OAuth 2.0 provider, you can use existing libraries to use gw2.me in your application. Or use our extensive developer documentation to call the few API endpoints yourself.</p>
+          <p>Since gw2.me is an OAuth 2 provider, you can use existing libraries to use gw2.me in your application. Or use our extensive developer documentation to call the few API endpoints yourself.</p>
           <LinkButton href="/dev/docs" icon="chevron-right" appearance="menu" className={styles.discoverButton}><span>Check Documentation</span></LinkButton>
         </div>
       </div>
