@@ -350,8 +350,8 @@ importers:
   packages/emails:
     dependencies:
       '@react-email/body':
-        specifier: 0.0.11
-        version: 0.0.11(react@19.1.1)
+        specifier: 0.1.0
+        version: 0.1.0(react@19.1.1)
       '@react-email/column':
         specifier: 0.0.13
         version: 0.0.13(react@19.1.1)
@@ -402,8 +402,8 @@ importers:
         specifier: 9.32.0
         version: 9.32.0(jiti@2.4.2)
       react-email:
-        specifier: 4.2.5
-        version: 4.2.5
+        specifier: 4.2.8
+        version: 4.2.8
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1117,8 +1117,8 @@ packages:
   '@prisma/nextjs-monorepo-workaround-plugin@6.12.0':
     resolution: {integrity: sha512-fAquBdU+3nabAE7t7I/VPtFTMDNwElk2Tb7l9YoY3+YHtmM7cC97jZRZ6ZGgM4GaRgEQ4ze4nm1ynsFc4CYoog==}
 
-  '@react-email/body@0.0.11':
-    resolution: {integrity: sha512-ZSD2SxVSgUjHGrB0Wi+4tu3MEpB4fYSbezsFNEJk2xCWDBkFiOeEsjTmR5dvi+CxTK691hQTQlHv0XWuP7ENTg==}
+  '@react-email/body@0.1.0':
+    resolution: {integrity: sha512-o1bcSAmDYNNHECbkeyceCVPGmVsYvT+O3sSO/Ct7apKUu3JphTi31hu+0Nwqr/pgV5QFqdoT5vdS3SW5DJFHgQ==}
     peerDependencies:
       react: 19.1.1
 
@@ -3595,8 +3595,8 @@ packages:
     peerDependencies:
       react: 19.1.1
 
-  react-email@4.2.5:
-    resolution: {integrity: sha512-LESJxw/Lt3pD+IlziIDfSUGBhwq+4XrwEyxjLKP4piBpqqfUzOQT9VpFDby1kyWSgFrOhABNymVgLQF5HRpmQg==}
+  react-email@4.2.8:
+    resolution: {integrity: sha512-Eqzs/xZnS881oghPO/4CQ1cULyESuUhEjfYboXmYNOokXnJ6QP5GKKJZ6zjkg9SnKXxSrIxSo5PxzCI5jReJMA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -5159,7 +5159,7 @@ snapshots:
 
   '@prisma/nextjs-monorepo-workaround-plugin@6.12.0': {}
 
-  '@react-email/body@0.0.11(react@19.1.1)':
+  '@react-email/body@0.1.0(react@19.1.1)':
     dependencies:
       react: 19.1.1
 
@@ -8058,7 +8058,7 @@ snapshots:
       react: 19.1.1
       scheduler: 0.26.0
 
-  react-email@4.2.5:
+  react-email@4.2.8:
     dependencies:
       '@babel/parser': 7.28.0
       '@babel/traverse': 7.28.0
