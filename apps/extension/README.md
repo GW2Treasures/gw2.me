@@ -4,7 +4,7 @@ This is the gw2.me browser extension. Visit https://github.com/GW2Treasures/gw2.
 
 ## Build Instructions
 
-To build the extension you need Node.js 18+ and the latest version of npm.
+To build the extension you need Node.js 20+ and the latest version of npm.
 
 1. Install all dependencies by running `npm install`.
 2. Build the extension by running `npm run build`.
