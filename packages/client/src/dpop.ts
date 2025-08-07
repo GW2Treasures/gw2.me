@@ -34,7 +34,7 @@ export async function createDPoPJwt({ htm, htu, nonce, accessToken }: DPoPParams
 
 const encoder = new TextEncoder();
 
-function stringToBuffer(value: string): Uint8Array {
+function stringToBuffer(value: string) {
   return encoder.encode(value);
 }
 
