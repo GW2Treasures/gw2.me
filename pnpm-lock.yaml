@@ -153,7 +153,7 @@ importers:
     dependencies:
       '@gw2api/fetch':
         specifier: 0.4.1
-        version: 0.4.1(@gw2api/types@0.0.34)
+        version: 0.4.1(@gw2api/types@0.0.35)
       '@gw2me/client':
         specifier: workspace:*
         version: link:../../packages/client
@@ -216,8 +216,8 @@ importers:
         version: 0.34.3
     devDependencies:
       '@gw2api/types':
-        specifier: 0.0.34
-        version: 0.0.34
+        specifier: 0.0.35
+        version: 0.0.35
       '@gw2treasures/eslint-config':
         specifier: 0.1.0
         version: 0.1.0(@typescript-eslint/parser@8.39.0(eslint@9.33.0(jiti@2.4.2))(typescript@5.9.2))(eslint@9.33.0(jiti@2.4.2))(typescript@5.9.2)
@@ -773,8 +773,8 @@ packages:
     peerDependencies:
       '@gw2api/types': ~0.0.5
 
-  '@gw2api/types@0.0.34':
-    resolution: {integrity: sha512-/rmZquiKOx7AMHIdO/ssIahhrmJKjo7wzPCHaEKQSzynf9Lvyxq9ZHo92C2UF9f7iKbh7wxtgMr6dzib59fTdA==}
+  '@gw2api/types@0.0.35':
+    resolution: {integrity: sha512-JDKKe+uSeeIf8XScHpWYCVjamReMGDNNOURy5egpWScMOVOEBHM9cKnyEH2nni2yu+rDpXYJ8pWvfrOdPZ5TIg==}
 
   '@gw2treasures/eslint-config@0.1.0':
     resolution: {integrity: sha512-gnKTd+uMtUkDmDBaU/LDhHwf1UxfXeY8vx9tyb3ALpB6PK1KsTv6dVI5106142GJ4QVOKL/qL5DUceN2ILaw3g==}
@@ -4833,11 +4833,11 @@ snapshots:
 
   '@fontsource/bitter@5.2.8': {}
 
-  '@gw2api/fetch@0.4.1(@gw2api/types@0.0.34)':
+  '@gw2api/fetch@0.4.1(@gw2api/types@0.0.35)':
     dependencies:
-      '@gw2api/types': 0.0.34
+      '@gw2api/types': 0.0.35
 
-  '@gw2api/types@0.0.34': {}
+  '@gw2api/types@0.0.35': {}
 
   '@gw2treasures/eslint-config@0.1.0(@typescript-eslint/parser@8.39.0(eslint@9.33.0(jiti@2.4.2))(typescript@5.9.2))(eslint@9.33.0(jiti@2.4.2))(typescript@5.9.2)':
     dependencies:
