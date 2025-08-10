@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ id: str
     return new Response(null, { status: 304 });
   }
 
-  return new Response(file.data, {
+  return new Response(file.data as Uint8Array<ArrayBuffer>, {
     headers: {
       'Cache-Control': 'max-age=31536000, immutable',
       'Content-Type': file.type,
