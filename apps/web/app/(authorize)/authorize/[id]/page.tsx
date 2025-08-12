@@ -121,6 +121,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
           orderBy: { createdAt: 'asc' },
           select: {
             id: true,
+            displayName: true,
             account: { select: { accountName: true, _count: { select: { apiTokens: { where: { permissions: { hasEvery: gw2Permissions }}}}}}}
           }
         })
@@ -187,7 +188,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
                   {!verifiedAccountsOnly && sharedAccounts.map((sharedAccount) => (
                     <Checkbox key={sharedAccount.id} defaultChecked={previousSharedAccountIds.includes(sharedAccount.id)} name="sharedAccounts" formValue={sharedAccount.id}>
                       <FlexRow>
-                        {sharedAccount.account.accountName} <Tip tip="Shared Account"><Icon icon="share"/></Tip>
+                        {sharedAccount.displayName ? <>{sharedAccount.displayName} <span style={{ color: 'var(--color-text-muted)' }}>({sharedAccount.account.accountName})</span></> : sharedAccount.account.accountName} <Tip tip="Shared Account"><Icon icon="share"/></Tip>
                         {sharedAccount.account._count.apiTokens === 0 && (
                           <Tip tip="No API key of this account has all requested permissions">
                             <Icon icon="warning" color="#ffa000"/>

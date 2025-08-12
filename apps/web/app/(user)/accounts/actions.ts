@@ -13,7 +13,6 @@ export const manageSharedAccount = createAction(async (_, formData) => {
     return { error: 'Not logged in' };
   }
 
-
   const deleteSharedAccountId = getFormDataString(formData, 'deleteSharedAccountId');
   const acceptSharedAccountId = getFormDataString(formData, 'acceptSharedAccountId');
 

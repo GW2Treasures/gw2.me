@@ -11,6 +11,8 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { SharedAccountState } from '@gw2me/database';
 import { manageSharedAccount } from './actions';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
+import { AccountName } from '@/components/Account/AccountName';
+import commonStyles from '@gw2treasures/ui/common.module.css';
 
 const getAccounts = cache(async () => {
   const session = await getSessionOrRedirect();
@@ -49,7 +51,7 @@ const getAccounts = cache(async () => {
 export default async function ProfilePage() {
   const { accounts, sharedAccounts } = await getAccounts();
 
-  if(accounts.length === 0) {
+  if(accounts.length === 0 && sharedAccounts.length === 0) {
     redirect('/accounts/add');
   }
 
@@ -60,15 +62,15 @@ export default async function ProfilePage() {
     <PageLayout>
       <Headline id="accounts" actions={<LinkButton href="/accounts/add" icon="key-add">Add API Key</LinkButton>}>Guild Wars 2 Accounts</Headline>
 
-      {accounts.length > 0 && (
+      {accounts.length > 0 ? (
         <Accounts.Table>
           <Accounts.Column title="Account" id="accounts">
-            {({ displayName, accountName }) => <><Icon icon="user"/> <b>{displayName ?? accountName}</b> {displayName && `(${accountName})`}</>}
+            {({ displayName, accountName }) => <AccountName accountName={accountName} displayName={displayName}/>}
           </Accounts.Column>
           <Accounts.Column title="Verified" id="verified" sortBy={({ verified }) => verified ? 1 : 0}>
-            {({ verified }) => <FlexRow><Icon icon={verified ? 'verified' : 'unverified'}/> {verified ? 'Verified' : 'Not Verified'}</FlexRow>}
+            {({ verified }) => <FlexRow><Icon icon={verified ? 'verified' : 'unverified'}/> <span className={commonStyles.nowrap}>{verified ? 'Verified' : 'Not Verified'}</span></FlexRow>}
           </Accounts.Column>
-          <Accounts.Column title="Authorized Applications" id="apps" align="right" sortBy={({ _count }) => _count.applicationGrants}>
+          <Accounts.Column title="Applications" id="apps" align="right" sortBy={({ _count }) => _count.applicationGrants}>
             {({ _count }) => _count.applicationGrants}
           </Accounts.Column>
           <Accounts.Column title="API Keys" id="keys" align="right" sortBy={({ _count }) => _count.apiTokens}>
@@ -84,6 +86,8 @@ export default async function ProfilePage() {
             )}
           </Accounts.Column>
         </Accounts.Table>
+      ) : (
+        <p>You have not added any accounts yet.</p>
       )}
 
       <Headline id="shared">Shared Accounts</Headline>
@@ -95,14 +99,20 @@ export default async function ProfilePage() {
       <Form action={manageSharedAccount}>
         {sharedAccounts.length > 0 && (
           <SharedAccounts.Table>
-            <SharedAccounts.Column id="accountName" title="Account">{({ account }) => account.accountName}</SharedAccounts.Column>
+            <SharedAccounts.Column id="accountName" title="Account">{({ account, displayName }) => <AccountName icon="share" accountName={account.accountName} displayName={displayName}/>}</SharedAccounts.Column>
             <SharedAccounts.Column id="owner" title="Owner">{({ account }) => account.user.name}</SharedAccounts.Column>
-            <SharedAccounts.Column id="apps" title="Authorized Applications" sortBy={({ _count }) => _count.applicationGrants}>{({ _count }) => _count.applicationGrants}</SharedAccounts.Column>
+            <SharedAccounts.Column id="apps" title="Applications" sortBy={({ _count }) => _count.applicationGrants}>{({ _count }) => _count.applicationGrants}</SharedAccounts.Column>
             <SharedAccounts.Column id="actions" title="Actions" small>
               {({ id, state }) => (
                 <FlexRow>
-                  {state === SharedAccountState.Pending && <Button icon="checkmark" type="submit" name="acceptSharedAccountId" value={id}>Accept</Button>}
-                  <Button icon="cancel" type="submit" name="deleteSharedAccountId" value={id}>{state === SharedAccountState.Pending ? 'Decline' : 'Remove'}</Button>
+                  {state === SharedAccountState.Pending ? (
+                    <>
+                      <Button icon="checkmark" type="submit" name="acceptSharedAccountId" value={id}>Accept</Button>
+                      <Button icon="cancel" type="submit" name="deleteSharedAccountId" value={id}>Decline</Button>
+                    </>
+                  ) : (
+                    <LinkButton href={`/accounts/shared/${id}`} icon="settings">Manage</LinkButton>
+                  )}
                 </FlexRow>
               )}
             </SharedAccounts.Column>
