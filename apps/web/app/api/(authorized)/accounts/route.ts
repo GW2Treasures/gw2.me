@@ -20,6 +20,7 @@ export const GET = withAuthorization({ oneOf: [...Gw2Scopes, Scope.Accounts] })(
         applicationGrant.sharedAccounts({
           orderBy: { createdAt: 'asc' },
           select: {
+            displayName: authorization.scope.includes(Scope.Accounts_DisplayName),
             account: { select: { accountId: true, accountName: true }}
           }
         })
@@ -30,16 +31,16 @@ export const GET = withAuthorization({ oneOf: [...Gw2Scopes, Scope.Accounts] })(
         ...(accounts ?? []).map(({ accountId, accountName, displayName, verified }) => ({
           id: accountId,
           name: accountName,
-          shared: false,
+          displayName,
           verified,
-          displayName
+          shared: false,
         })),
-        ...(sharedAccounts ?? []).map(({ account }) => ({
+        ...(sharedAccounts ?? []).map(({ account, displayName }) => ({
           id: account.accountId,
           name: account.accountName,
-          shared: true,
-          displayName: authorization.scope.includes(Scope.Accounts_DisplayName) ? null : undefined,
+          displayName,
           verified: authorization.scope.includes(Scope.Accounts_Verified) ? false : undefined,
+          shared: true,
         })),
       ]
     };

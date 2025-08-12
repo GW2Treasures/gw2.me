@@ -364,6 +364,8 @@ model Account {
 
 model SharedAccount {
   id String @id @default(uuid())
+  
+  displayName String?
 
   accountId String
   account   Account @relation("sharedAccount", fields: [accountId], references: [id], onDelete: Cascade)
