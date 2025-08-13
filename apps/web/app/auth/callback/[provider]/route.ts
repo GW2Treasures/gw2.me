@@ -67,7 +67,8 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
 
     // get existing user provider
     const existingProvider = await db.userProvider.findUnique({
-      where: { provider_providerAccountId: providerId }
+      where: { provider_providerAccountId: providerId },
+      select: { userId: true }
     });
 
     // get existing session so we can reuse it
@@ -137,6 +138,7 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
           token: profile.token,
           user,
         },
+        select: { userId: true }
       });
 
       // update emails in db
@@ -167,7 +169,14 @@ export async function GET(request: NextRequest, { params }: RouteProps<{ provide
     const sessionName = browser && os ? `${browser.name} on ${os.name}` : 'Session';
 
     // create a new session
-    const session = await db.userSession.create({ data: { info: sessionName, userId }});
+    const session = await db.userSession.create({
+      data: {
+        info: sessionName,
+        userId,
+        providerType: providerId.provider,
+        providerAccountId: providerId.providerAccountId
+      }
+    });
 
     // set session cookie
     cookieStore.set(authCookie(session.id));

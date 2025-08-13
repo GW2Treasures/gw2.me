@@ -8,7 +8,7 @@ import { Prisma } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 
 /** Get the current session */
-export const getSession = cache(async function getSession(): Promise<{ id: string, userId: string } | undefined> {
+export const getSession = cache(async function getSession() {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get(SessionCookieName)?.value;
 
@@ -50,7 +50,7 @@ async function getSessionFromDb(sessionId: string) {
     const session = await db.userSession.update({
       where: { id: sessionId },
       data: { lastUsed: new Date() },
-      select: { id: true, userId: true },
+      select: { id: true, userId: true, providerAccountId: true, providerType: true },
     });
 
     return session;
