@@ -73,6 +73,10 @@ model UserSession {
   user   User   @relation("session", fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
+  provider          UserProvider?     @relation("sessionProvider", fields: [providerType, providerAccountId], references: [provider, providerAccountId], onDelete: Cascade)
+  providerType      UserProviderType?
+  providerAccountId String?
+
   createdAt DateTime @default(now())
   lastUsed  DateTime @default(now())
 }
@@ -90,6 +94,8 @@ model UserProvider {
 
   userId String
   user   User   @relation("provider", fields: [userId], references: [id], onDelete: Cascade)
+
+  sessions UserSession[] @relation("sessionProvider")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
