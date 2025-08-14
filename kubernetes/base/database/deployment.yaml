@@ -28,7 +28,7 @@ spec:
           claimName: database-pg17
       containers:
       - name: database-pg17
-        image: postgres:17.5-alpine
+        image: postgres:17.6-alpine
         resources:
           requests:
             memory: "128Mi"
