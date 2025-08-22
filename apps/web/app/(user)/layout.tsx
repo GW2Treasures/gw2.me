@@ -4,9 +4,8 @@ import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { useSelectedLayoutSegment } from 'next/navigation';
 import { ActiveButtonClass, NavLayout } from '@/components/Layout/NavLayout';
 import { Separator } from '@gw2treasures/ui/components/Layout/Separator';
-import { LayoutProps } from '@/lib/next';
 
-export default function ProfileLayout({ children }: LayoutProps) {
+export default function ProfileLayout({ children }: LayoutProps<'/'>) {
   const segment = useSelectedLayoutSegment();
 
   return (

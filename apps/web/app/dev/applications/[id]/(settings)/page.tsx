@@ -2,13 +2,11 @@ import { db } from '@/lib/db';
 import { getSessionOrRedirect } from '@/lib/session';
 import { ApplicationForm } from './form';
 import { editApplication } from '../../_actions/edit';
-import { PageProps } from '@/lib/next';
 import { getApplicationById } from '../helper';
+import { Metadata } from 'next';
 
 
-type EditApplicationPageProps = PageProps<{ id: string }>;
-
-export default async function EditApplicationPage({ params }: EditApplicationPageProps) {
+export default async function EditApplicationPage({ params }: PageProps<'/dev/applications/[id]'>) {
   const { id } = await params;
   const session = await getSessionOrRedirect();
   const application = await getApplicationById(id, session.userId);
@@ -27,7 +25,7 @@ export default async function EditApplicationPage({ params }: EditApplicationPag
   );
 }
 
-export async function generateMetadata({ params }: EditApplicationPageProps) {
+export async function generateMetadata({ params }: PageProps<'/dev/applications/[id]'>): Promise<Metadata> {
   const { id } = await params;
   const session = await getSessionOrRedirect();
   const application = await getApplicationById(id, session.userId);

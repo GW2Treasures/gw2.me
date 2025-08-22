@@ -1,6 +1,5 @@
 import { LoginErrorCookieName, authCookie, loginErrorCookie, userCookie } from '@/lib/cookie';
 import { db } from '@/lib/db';
-import { RouteProps } from '@/lib/next';
 import { getSession } from '@/lib/session';
 import { Prisma, UserProviderRequestType } from '@gw2me/database';
 import { providers } from 'app/auth/providers';
@@ -13,7 +12,7 @@ import { handleNewEmail } from './email';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest, { params }: RouteProps<{ provider: string }>) {
+export async function GET(request: NextRequest, { params }: RouteContext<'/auth/callback/[provider]'>) {
   const { provider: providerName } = await params;
   const cookieStore = await cookies();
 

@@ -4,10 +4,9 @@ import { NextResponse } from 'next/server';
 import { Gw2Scopes, OptionsHandler, withAuthorization } from '../../../auth';
 import { Authorization } from '@gw2me/database';
 import { fetchGw2Api } from '@/lib/gw2-api-request';
-import { RouteProps } from '@/lib/next';
 import { scopeToPermissions } from '@/lib/scope';
 
-export const GET = withAuthorization<RouteProps<{ id: string }>>({ oneOf: Gw2Scopes })(
+export const GET = withAuthorization<RouteContext<'/api/accounts/[id]/subtoken'>>({ oneOf: Gw2Scopes })(
   async (authorization: Authorization, request, { params }) => {
     const { id: accountId } = await params;
 

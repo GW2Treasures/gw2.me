@@ -9,9 +9,7 @@ import { cache } from 'react';
 import { startChallenge } from './tp-order/start-challenge.action';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
-import { PageProps } from '@/lib/next';
-
-type VerifyAccountPageProps = PageProps<{ id: string }>;
+import { Metadata } from 'next';
 
 const getAccount = cache(async function getAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -27,7 +25,7 @@ const getAccount = cache(async function getAccount(id: string) {
   return account;
 });
 
-export default async function VerifyAccountPage({ params }: VerifyAccountPageProps) {
+export default async function VerifyAccountPage({ params }: PageProps<'/accounts/[id]/verify'>) {
   const { id } = await params;
   const account = await getAccount(id);
 
@@ -63,6 +61,6 @@ export default async function VerifyAccountPage({ params }: VerifyAccountPagePro
   );
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Verify Account'
 };

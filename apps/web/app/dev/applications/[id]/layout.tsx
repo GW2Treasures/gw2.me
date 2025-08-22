@@ -1,13 +1,12 @@
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageTitle } from '@/components/Layout/PageTitle';
-import { LayoutProps } from '@/lib/next';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { NavBar } from './navbar';
 import { getSessionOrRedirect } from '@/lib/session';
 import { getApplicationById } from './helper';
 
-export default async function DevApplicationDetailLayout({ params, children }: LayoutProps<{ id: string }>) {
+export default async function DevApplicationDetailLayout({ params, children }: LayoutProps<'/dev/applications/[id]'>) {
   const { id } = await params;
   const { userId } = await getSessionOrRedirect();
   const application = await getApplicationById(id, userId);

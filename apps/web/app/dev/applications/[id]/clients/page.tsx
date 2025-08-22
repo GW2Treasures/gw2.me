@@ -2,7 +2,6 @@ import { FormatDate } from '@/components/Format/FormatDate';
 import { Code } from '@/components/Layout/Code';
 import { db } from '@/lib/db';
 import { notExpired } from '@/lib/db/helper';
-import { PageProps } from '@/lib/next';
 import { getSessionOrRedirect } from '@/lib/session';
 import { Icon } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
@@ -10,6 +9,7 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import Link from 'next/link';
 import { getApplicationById } from '../helper';
 import styles from './page.module.css';
+import { Metadata } from 'next';
 
 const getClients = (applicationId: string, ownerId: string) => {
   return db.client.findMany({
@@ -20,9 +20,7 @@ const getClients = (applicationId: string, ownerId: string) => {
   });
 };
 
-type ClientsPageProps = PageProps<{ id: string }>;
-
-export default async function ClientsPage({ params }: ClientsPageProps) {
+export default async function ClientsPage({ params }: PageProps<'/dev/applications/[id]/clients'>) {
   const { id } = await params;
   const session = await getSessionOrRedirect();
   const clients = await getClients(id, session.userId);
@@ -50,7 +48,7 @@ export default async function ClientsPage({ params }: ClientsPageProps) {
   );
 }
 
-export async function generateMetadata({ params }: ClientsPageProps) {
+export async function generateMetadata({ params }: PageProps<'/dev/applications/[id]/clients'>): Promise<Metadata> {
   const { id } = await params;
   const session = await getSessionOrRedirect();
   const application = await getApplicationById(id, session.userId);

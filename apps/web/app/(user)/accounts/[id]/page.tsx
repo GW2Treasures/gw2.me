@@ -17,7 +17,6 @@ import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { cache } from 'react';
-import { PageProps } from '@/lib/next';
 import { Permission } from '@gw2api/types/data/tokeninfo';
 import { PermissionCount } from '@/components/Permissions/PermissionCount';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
@@ -28,6 +27,7 @@ import { allPermissions } from '@/components/Permissions/data';
 import Link from 'next/link';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { FormatDate } from '@/components/Format/FormatDate';
+import { Metadata } from 'next';
 
 const getAccount = cache(async function getAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -64,9 +64,7 @@ const getApplications = cache(function getApplications(accountId: string, userId
   });
 });
 
-type AccountPageProps = PageProps<{ id: string }>;
-
-export default async function AccountPage({ params }: AccountPageProps) {
+export default async function AccountPage({ params }: PageProps<'/accounts/[id]'>) {
   const { id } = await params;
   const user = await getUser();
   const account = await getAccount(id);
@@ -208,7 +206,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
   );
 }
 
-export async function generateMetadata({ params }: AccountPageProps) {
+export async function generateMetadata({ params }: PageProps<'/accounts/[id]'>): Promise<Metadata> {
   const { id } = await params;
   const account = await getAccount(id);
 

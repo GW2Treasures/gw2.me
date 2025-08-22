@@ -1,4 +1,3 @@
-import { PageProps } from '@/lib/next';
 import { getSessionOrRedirect } from '@/lib/session';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
@@ -10,10 +9,9 @@ import { ClientTypeOptions } from 'app/dev/applications/_actions/helper';
 import Link from 'next/link';
 import { getApplicationById } from '../../helper';
 import { addClient } from '../_actions/add';
+import { Metadata } from 'next';
 
-type ClientsAddPageProps = PageProps<{ id: string }>;
-
-export default async function ClientsAddPage({ params }: ClientsAddPageProps) {
+export default async function ClientsAddPage({ params }: PageProps<'/dev/applications/[id]/clients/add'>) {
   const { id } = await params;
   const session = await getSessionOrRedirect();
   const application = await getApplicationById(id, session.userId);
@@ -41,7 +39,7 @@ export default async function ClientsAddPage({ params }: ClientsAddPageProps) {
   );
 }
 
-export async function generateMetadata({ params }: ClientsAddPageProps) {
+export async function generateMetadata({ params }: PageProps<'/dev/applications/[id]/clients/add'>): Promise<Metadata> {
   const { id } = await params;
   const session = await getSessionOrRedirect();
   const application = await getApplicationById(id, session.userId);

@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { getApplicationByClientId, validateRequest } from './validate';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { AuthorizationRequest, AuthorizationRequestType } from '@gw2me/database';
-import { PageProps, SearchParams } from '@/lib/next';
+import { SearchParams } from '@/lib/next';
 import { AuthorizationRequestExpiration, cancelAuthorizationRequest, createAuthorizationRequest } from 'app/(authorize)/authorize/helper';
 import { authorizeInternal } from 'app/(authorize)/authorize/[id]/actions';
 import { createRedirectUrl } from '@/lib/redirectUrl';
@@ -15,7 +15,7 @@ import { notExpired } from '@/lib/db/helper';
 import { expiresAt } from '@/lib/date';
 import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
 
-export default async function AuthorizePage({ searchParams }: PageProps) {
+export default async function AuthorizePage({ searchParams }: PageProps<'/oauth2/authorize'>) {
   const { error, value } = await getAuthorizationRequest(await searchParams);
 
   // show unrecoverable error

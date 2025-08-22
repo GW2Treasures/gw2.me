@@ -1,9 +1,9 @@
 import { PageLayout } from '@/components/Layout/PageLayout';
-import { PageProps, searchParamsToURLSearchParams } from '@/lib/next';
+import { searchParamsToURLSearchParams } from '@/lib/next';
 import { Icon } from '@gw2treasures/ui';
 import { ResolveFedCM } from './ResolveFedCM';
 
-export default async function Page({ searchParams }: PageProps) {
+export default async function Page({ searchParams }: PageProps<'/fed-cm/authorize'>) {
   const code = searchParamsToURLSearchParams(await searchParams).get('code');
 
   return (

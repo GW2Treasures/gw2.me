@@ -1,6 +1,4 @@
-import { LayoutProps } from '@/lib/next';
-
-export default function DocsLayout({ children }: LayoutProps) {
+export default function DocsLayout({ children }: LayoutProps<'/dev/docs'>) {
   return children;
 }
 
