@@ -1,11 +1,12 @@
+import { createDPoPJwt, getCallback, getDPoPPair, getPKCEPair, gw2me } from '@/lib/client';
+import { AuthorizationUrlParams, Scope } from '@gw2me/client';
+import { jwkThumbprint } from '@gw2me/client/dpop';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
-import { Select } from '@gw2treasures/ui/components/Form/Select';
-import { redirect } from 'next/navigation';
-import { AuthorizationUrlParams, Scope } from '@gw2me/client';
-import { createDPoPJwt, getCallback, getDPoPPair, getPKCEPair, gw2me } from '@/lib/client';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
-import { jwkThumbprint } from '@gw2me/client/dpop';
+import { Select } from '@gw2treasures/ui/components/Form/Select';
+import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export default function HomePage() {
   return (
@@ -37,7 +38,7 @@ export default function HomePage() {
   );
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'gw2.me Demo'
 };
 
