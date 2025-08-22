@@ -23,7 +23,6 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import Link from 'next/link';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
-import { PageProps } from '@/lib/next';
 import { isExpired } from '@/lib/date';
 import { AuthorizationRequest } from '../types';
 import { normalizeScopes } from 'app/(authorize)/oauth2/authorize/validate';
@@ -35,7 +34,7 @@ const getPendingAuthorizationRequest = cache(
   })
 );
 
-export default async function AuthorizePage({ params }: PageProps<{ id: string }>) {
+export default async function AuthorizePage({ params }: PageProps<'/authorize/[id]'>) {
   const { id } = await params;
 
   const selfUrl = `/authorize/${id}`;
@@ -229,7 +228,7 @@ export default async function AuthorizePage({ params }: PageProps<{ id: string }
   );
 }
 
-export async function generateMetadata({ params }: PageProps<{ id: string }>): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<'/authorize/[id]'>): Promise<Metadata> {
   const { id } = await params;
   const authRequest = await getPendingAuthorizationRequest(id);
 

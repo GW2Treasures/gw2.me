@@ -14,13 +14,13 @@ import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { cache } from 'react';
-import { PageProps } from '@/lib/next';
 import { Permission } from '@gw2api/types/data/tokeninfo';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { PermissionList } from '@/components/Permissions/PermissionList';
 import { scopeToPermissions } from '@/lib/scope';
 import { Scope } from '@gw2me/client';
 import Link from 'next/link';
+import { Metadata } from 'next';
 
 const getSharedAccount = cache(async function getSharedAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -53,9 +53,7 @@ const getApplications = cache(function getApplications(sharedAccountId: string, 
   });
 });
 
-type AccountPageProps = PageProps<{ id: string }>;
-
-export default async function AccountPage({ params }: AccountPageProps) {
+export default async function AccountPage({ params }: PageProps<'/accounts/shared/[id]'>) {
   const { id } = await params;
   const sharedAccount = await getSharedAccount(id);
   const applications = await getApplications(sharedAccount.id, sharedAccount.userId);
@@ -127,7 +125,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
   );
 }
 
-export async function generateMetadata({ params }: AccountPageProps) {
+export async function generateMetadata({ params }: PageProps<'/accounts/shared/[id]'>): Promise<Metadata> {
   const { id } = await params;
   const sharedAccount = await getSharedAccount(id);
 

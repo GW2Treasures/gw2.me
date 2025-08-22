@@ -9,7 +9,6 @@ import { isExpired } from '@/lib/date';
 import { db } from '@/lib/db';
 import { getFormDataString } from '@/lib/form-data';
 import { sendEmailVerificationMail } from '@/lib/mail/email-verification';
-import { PageProps } from '@/lib/next';
 import { AuthorizationRequestState } from '@gw2me/database';
 import { Icon } from '@gw2treasures/ui';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
@@ -20,6 +19,7 @@ import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
 import { ensureUserIsAdmin } from 'app/admin/admin';
 import { Features, State } from 'app/admin/authorization-requests/components';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 
@@ -54,9 +54,7 @@ const getUser = cache(function getUser(id: string) {
   });
 });
 
-type AdminUserDetailPageProps = PageProps<{ id: string }>;
-
-export default async function AdminUserDetailPage({ params }: AdminUserDetailPageProps) {
+export default async function AdminUserDetailPage({ params }: PageProps<'/admin/users/[id]'>) {
   await ensureUserIsAdmin();
   const { id } = await params;
   const user = await getUser(id);
@@ -151,7 +149,7 @@ export default async function AdminUserDetailPage({ params }: AdminUserDetailPag
   );
 }
 
-export async function generateMetadata({ params }: AdminUserDetailPageProps) {
+export async function generateMetadata({ params }: PageProps<'/admin/users/[id]'>): Promise<Metadata> {
   await ensureUserIsAdmin();
   const { id } = await params;
   const user = await getUser(id);

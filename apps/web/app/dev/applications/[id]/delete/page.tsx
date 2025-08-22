@@ -4,12 +4,10 @@ import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { getSessionOrRedirect } from '@/lib/session';
-import { PageProps } from '@/lib/next';
 import { getApplicationById } from '../helper';
+import { Metadata } from 'next';
 
-type DeleteApplicationPageProps = PageProps<{ id: string; }>;
-
-export default async function DeleteApplicationPage({ params }: DeleteApplicationPageProps) {
+export default async function DeleteApplicationPage({ params }: PageProps<'/dev/applications/[id]/delete'>) {
   const { id } = await params;
   const session = await getSessionOrRedirect();
   const app = await getApplicationById(id, session.userId);
@@ -27,7 +25,7 @@ export default async function DeleteApplicationPage({ params }: DeleteApplicatio
 }
 
 
-export async function generateMetadata({ params }: DeleteApplicationPageProps) {
+export async function generateMetadata({ params }: PageProps<'/dev/applications/[id]/delete'>): Promise<Metadata> {
   const { id } = await params;
   const session = await getSessionOrRedirect();
   const application = await getApplicationById(id, session.userId);

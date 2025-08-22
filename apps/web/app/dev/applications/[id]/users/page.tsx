@@ -1,6 +1,5 @@
 import { db } from '@/lib/db';
 import { getSessionOrRedirect } from '@/lib/session';
-import { PageProps } from '@/lib/next';
 import { getApplicationById } from '../helper';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { Code } from '@/components/Layout/Code';
@@ -9,6 +8,7 @@ import { Scope } from '@gw2me/client';
 import Link from 'next/link';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { ColumnSelection } from '@/components/Table/ColumnSelection';
+import { Metadata } from 'next';
 
 const getUsers = (applicationId: string, ownerId: string) => {
   return db.applicationGrant.findMany({
@@ -28,9 +28,7 @@ const getUsers = (applicationId: string, ownerId: string) => {
   });
 };
 
-type EditApplicationPageProps = PageProps<{ id: string }>;
-
-export default async function EditApplicationPage({ params }: EditApplicationPageProps) {
+export default async function ApplicationUsersPage({ params }: PageProps<'/dev/applications/[id]/users'>) {
   const { id } = await params;
   const session = await getSessionOrRedirect();
   const application = await getApplicationById(id, session.userId);
@@ -76,7 +74,7 @@ export default async function EditApplicationPage({ params }: EditApplicationPag
   );
 }
 
-export async function generateMetadata({ params }: EditApplicationPageProps) {
+export async function generateMetadata({ params }: PageProps<'/dev/applications/[id]/users'>): Promise<Metadata> {
   const { id } = await params;
   const session = await getSessionOrRedirect();
   const application = await getApplicationById(id, session.userId);

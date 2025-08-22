@@ -4,7 +4,6 @@ import { PageLayout } from '@/components/Layout/PageLayout';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { ColumnSelection } from '@/components/Table/ColumnSelection';
 import { db } from '@/lib/db';
-import { PageProps } from '@/lib/next';
 import { isTruthy } from '@gw2treasures/helper/is';
 import { Icon } from '@gw2treasures/ui';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
@@ -12,6 +11,7 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { List } from '@gw2treasures/ui/components/Layout/List';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { ensureUserIsAdmin } from 'app/admin/admin';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
@@ -30,9 +30,7 @@ const getClient = cache(function getClient(id: string) {
   });
 });
 
-type AdminClientDetailPageProps = PageProps<{ id: string }>;
-
-export default async function AdminUserDetailPage({ params }: AdminClientDetailPageProps) {
+export default async function AdminUserDetailPage({ params }: PageProps<'/admin/clients/[id]'>) {
   await ensureUserIsAdmin();
   const { id } = await params;
   const client = await getClient(id);
@@ -71,7 +69,7 @@ export default async function AdminUserDetailPage({ params }: AdminClientDetailP
   );
 }
 
-export async function generateMetadata({ params }: AdminClientDetailPageProps) {
+export async function generateMetadata({ params }: PageProps<'/admin/clients/[id]'>): Promise<Metadata> {
   await ensureUserIsAdmin();
   const { id } = await params;
   const client = await getClient(id);

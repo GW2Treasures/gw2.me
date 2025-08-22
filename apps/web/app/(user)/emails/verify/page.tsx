@@ -1,11 +1,11 @@
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { db } from '@/lib/db';
-import { PageProps } from '@/lib/next';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
+import { Metadata } from 'next';
 
-export default async function VerifyEmailPage({ searchParams }: PageProps) {
+export default async function VerifyEmailPage({ searchParams }: PageProps<'/emails/verify'>) {
   const { token } = await searchParams;
   const success = await verifyEmailAddress(Array.isArray(token) ? token[0] : token);
 
@@ -41,6 +41,6 @@ async function verifyEmailAddress(token: string | undefined): Promise<boolean> {
   }
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Verify email address'
 };

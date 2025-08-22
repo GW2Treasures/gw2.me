@@ -1,8 +1,8 @@
-import { PageProps } from '@/lib/next';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { AddEmailForm } from 'app/(user)/emails/add/form';
+import { Metadata } from 'next';
 
-export default async function AuthorizeAddEmailPage({ params }: PageProps<{ id: string }>) {
+export default async function AuthorizeAddEmailPage({ params }: PageProps<'/authorize/[id]/add-email'>) {
   const { id } = await params;
 
   return (
@@ -14,6 +14,6 @@ export default async function AuthorizeAddEmailPage({ params }: PageProps<{ id: 
   );
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Add Email'
 };

@@ -1,9 +1,8 @@
 import { db } from '@/lib/db';
 import { NextRequest } from 'next/server';
 import { notFound } from 'next/navigation';
-import { RouteProps } from '@/lib/next';
 
-export async function GET(request: NextRequest, { params }: RouteProps<{ id: string }>) {
+export async function GET(request: NextRequest, { params }: RouteContext<'/api/file/[id]'>) {
   const { id } = await params;
   const file = await db.file.findUnique({ where: { id }});
 

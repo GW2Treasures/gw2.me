@@ -1,6 +1,5 @@
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { db } from '@/lib/db';
-import { PageProps } from '@/lib/next';
 import { getSessionOrRedirect } from '@/lib/session';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
@@ -14,9 +13,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { shareAccount } from '../actions';
-
-
-type ShareAccountPageProps = PageProps<{ id: string }>;
 
 const getAccount = cache(async function getAccount(id: string) {
   const session = await getSessionOrRedirect();
@@ -32,7 +28,7 @@ const getAccount = cache(async function getAccount(id: string) {
   return account;
 });
 
-export default async function ShareAccountPage({ params }: ShareAccountPageProps) {
+export default async function ShareAccountPage({ params }: PageProps<'/accounts/[id]/share'>) {
   const { id } = await params;
   const account = await getAccount(id);
 
@@ -62,7 +58,7 @@ export default async function ShareAccountPage({ params }: ShareAccountPageProps
   );
 }
 
-export async function generateMetadata({ params }: ShareAccountPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<'/accounts/[id]/share'>): Promise<Metadata> {
   const { id } = await params;
   const account = await getAccount(id);
 

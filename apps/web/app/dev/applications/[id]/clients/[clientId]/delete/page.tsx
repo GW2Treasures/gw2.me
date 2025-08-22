@@ -4,11 +4,11 @@ import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Form } from '@gw2treasures/ui/components/Form/Form';
 import { getSessionOrRedirect } from '@/lib/session';
-import { PageProps } from '@/lib/next';
 import { getApplicationById } from '../../../helper';
 import { cache } from 'react';
 import { db } from '@/lib/db';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 
 
 const getClient = cache((clientId: string, applicationId: string, ownerId: string) => {
@@ -17,9 +17,7 @@ const getClient = cache((clientId: string, applicationId: string, ownerId: strin
   });
 });
 
-type DeleteClientPageProps = PageProps<{ id: string, clientId: string }>;
-
-export default async function DeleteClientPage({ params }: DeleteClientPageProps) {
+export default async function DeleteClientPage({ params }: PageProps<'/dev/applications/[id]/clients/[clientId]/delete'>) {
   const { id: applicationId, clientId } = await params;
   const session = await getSessionOrRedirect();
   const application = await getApplicationById(applicationId, session.userId);
@@ -42,7 +40,7 @@ export default async function DeleteClientPage({ params }: DeleteClientPageProps
 }
 
 
-export async function generateMetadata({ params }: DeleteClientPageProps) {
+export async function generateMetadata({ params }: PageProps<'/dev/applications/[id]/clients/[clientId]/delete'>): Promise<Metadata> {
   const { id: applicationId, clientId } = await params;
   const session = await getSessionOrRedirect();
   const application = await getApplicationById(applicationId, session.userId);
