@@ -1,12 +1,12 @@
-import { Bitter } from 'next/font/google';
-import './global.css';
-import './variables.css';
-import styles from './layout.module.css';
-import Link from 'next/link';
+import { getGw2MeUrl } from '@/lib/client';
 import { Icon } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
-import { getGw2MeUrl } from '@/lib/client';
-import { LayoutProps } from '@/lib/next';
+import { Metadata } from 'next';
+import { Bitter } from 'next/font/google';
+import Link from 'next/link';
+import './global.css';
+import styles from './layout.module.css';
+import './variables.css';
 
 const bitter = Bitter({
   subsets: ['latin' as const],
@@ -14,7 +14,7 @@ const bitter = Bitter({
   variable: '--font-bitter',
 });
 
-export default function RootLayout({ children }: LayoutProps) {
+export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={bitter.variable}>
       <head>
@@ -40,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps) {
   );
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: {
     template: '%s · gw2.me Demo',
     default: ''

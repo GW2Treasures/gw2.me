@@ -1,14 +1,14 @@
 import { createDPoPJwt, getGw2MeUrl, gw2me } from '@/lib/client';
-import { Label } from '@gw2treasures/ui/components/Form/Label';
-import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
-import { redirect } from 'next/navigation';
+import { Icon } from '@gw2treasures/ui';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
-import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { PageProps } from '@/lib/next';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
+import { Label } from '@gw2treasures/ui/components/Form/Label';
+import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
+import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
+import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import { Client } from './client';
-import { Icon } from '@gw2treasures/ui';
 
 export const dynamic = 'force-dynamic';
 
@@ -86,7 +86,7 @@ async function getSubtoken(accountId: string, data: FormData) {
   redirect(`https://api.guildwars2.com/v2/tokeninfo?v=latest&access_token=${encodeURIComponent(subtoken)}`);
 }
 
-export default async function TokenPage({ searchParams: asyncSearchParams }: PageProps) {
+export default async function TokenPage({ searchParams: asyncSearchParams }: PageProps<'/token'>) {
   const searchParams = await asyncSearchParams;
 
   const access_token = Array.isArray(searchParams.access_token) ? searchParams.access_token[0] : searchParams.access_token;
@@ -158,6 +158,6 @@ export default async function TokenPage({ searchParams: asyncSearchParams }: Pag
   );
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Token'
 };

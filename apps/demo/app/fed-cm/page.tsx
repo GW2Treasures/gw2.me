@@ -1,5 +1,6 @@
 import { getGw2MeUrl, getPKCEPair } from '@/lib/client';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { FedCm } from './fed-cm';
 
@@ -15,6 +16,6 @@ export default async function FedCMPage() {
   );
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'FedCM'
 };

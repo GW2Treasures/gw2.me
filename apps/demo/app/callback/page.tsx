@@ -1,7 +1,8 @@
 import { createDPoPJwt, getCallback, getPKCEPair, gw2me } from '@/lib/client';
-import { nextSearchParamsToURLSearchParams, PageProps, SearchParams } from '@/lib/next';
+import { nextSearchParamsToURLSearchParams, SearchParams } from '@/lib/next';
 import { TokenResponse } from '@gw2me/client';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +18,7 @@ async function getToken(code: string, isDPoP: boolean) {
   });
 }
 
-export default async function CallbackPage({ searchParams }: PageProps) {
+export default async function CallbackPage({ searchParams }: PageProps<'/callback'>) {
   const data = await parseSearchParams(await searchParams);
 
   return (
@@ -33,7 +34,7 @@ export default async function CallbackPage({ searchParams }: PageProps) {
   );
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'OAuth2 Callback'
 };
 
