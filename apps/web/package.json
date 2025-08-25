@@ -10,6 +10,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@fedcm/server": "0.0.5",
     "@gw2api/fetch": "0.4.1",
     "@gw2me/client": "workspace:*",
     "@gw2me/database": "workspace:*",
