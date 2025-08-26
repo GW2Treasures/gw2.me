@@ -6,6 +6,8 @@ import Link from 'next/link';
 import styles from '../layout.module.css';
 import { ExternalLink } from '@gw2treasures/ui/components/Link/ExternalLink';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
+import { Table } from '@gw2treasures/ui/components/Table/Table';
+import { Metadata } from 'next';
 
 export default function DevDocsFedCmPage() {
   return (
@@ -52,10 +54,51 @@ export default function DevDocsFedCmPage() {
         which is an OAuth2 authorization code. This authorization code can be exchanged for an access token as described in <Link href="/dev/docs/access-tokens#access-token">Access Token</Link>.
       </p>
 
+      <Headline id="params">Params</Headline>
+      <p>
+        The following <Code inline>params</Code> are currently supported when requesting FedCM.
+      </p>
+      <Table>
+        <thead>
+          <tr>
+            <Table.HeaderCell>Parameter</Table.HeaderCell>
+            <Table.HeaderCell small>Type</Table.HeaderCell>
+            <Table.HeaderCell>Description</Table.HeaderCell>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><Code inline>scope</Code> (optional)</td>
+            <td><Code inline borderless>String</Code></td>
+            <td>List of <Link href="/dev/docs/scopes">scopes</Link> separated by spaces. Defaults to <Code inline>identify email</Code>.</td>
+          </tr>
+          <tr>
+            <td><Code inline>code_challenge</Code></td>
+            <td><Code inline borderless>String</Code></td>
+            <td><Link href="/dev/docs/access-tokens#pkce">PKCE</Link> challenge. Required for public applications.</td>
+          </tr>
+          <tr>
+            <td><Code inline>code_challenge_method</Code></td>
+            <td><Code inline borderless>&quot;S256&quot;</Code></td>
+            <td><Link href="/dev/docs/access-tokens#pkce">PKCE</Link> challenge method. Only SHA-256 is supported.</td>
+          </tr>
+        </tbody>
+      </Table>
+
+      <p>
+        For backwards compatibility with browsers that do not support <Code inline>params</Code> yet, the deprecated <Code inline>nonce</Code> can be used
+        for the PKCE challenge by passing it in the form of <Code inline>{'"S256:<code_challenge>"'}</Code>
+      </p>
+
+      <p>
+        Check <ExternalLink href="https://github.com/GW2Treasures/gw2.me/issues/1818">the FedCM epic on GitHub</ExternalLink> to see which
+        additional features are planned in the future.
+      </p>
+
     </PageLayout>
   );
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Federated Credential Management (FedCM)',
 };
