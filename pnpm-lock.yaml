@@ -8,7 +8,7 @@ overrides:
   react: 19.1.1
   react-dom: 19.1.1
   '@types/react': 19.1.12
-  '@types/react-dom': 19.1.8
+  '@types/react-dom': 19.1.9
 
 importers:
 
@@ -70,8 +70,8 @@ importers:
         specifier: 19.1.12
         version: 19.1.12
       '@types/react-dom':
-        specifier: 19.1.8
-        version: 19.1.8(@types/react@19.1.12)
+        specifier: 19.1.9
+        version: 19.1.9(@types/react@19.1.12)
       eslint:
         specifier: 9.34.0
         version: 9.34.0(jiti@2.4.2)
@@ -119,8 +119,8 @@ importers:
         specifier: 19.1.12
         version: 19.1.12
       '@types/react-dom':
-        specifier: 19.1.8
-        version: 19.1.8(@types/react@19.1.12)
+        specifier: 19.1.9
+        version: 19.1.9(@types/react@19.1.12)
       archiver:
         specifier: 7.0.1
         version: 7.0.1
@@ -241,7 +241,7 @@ importers:
         version: 10.4.1
       '@testing-library/react':
         specifier: 16.3.0
-        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.8(@types/react@19.1.12))(@types/react@19.1.12)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.9(@types/react@19.1.12))(@types/react@19.1.12)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@types/node':
         specifier: 22.18.0
         version: 22.18.0
@@ -252,8 +252,8 @@ importers:
         specifier: 19.1.12
         version: 19.1.12
       '@types/react-dom':
-        specifier: 19.1.8
-        version: 19.1.8(@types/react@19.1.12)
+        specifier: 19.1.9
+        version: 19.1.9(@types/react@19.1.12)
       '@types/web':
         specifier: 0.0.265
         version: 0.0.265
@@ -1625,7 +1625,7 @@ packages:
     peerDependencies:
       '@testing-library/dom': ^10.0.0
       '@types/react': 19.1.12
-      '@types/react-dom': 19.1.8
+      '@types/react-dom': 19.1.9
       react: 19.1.1
       react-dom: 19.1.1
     peerDependenciesMeta:
@@ -1715,8 +1715,8 @@ packages:
   '@types/nodemailer@7.0.1':
     resolution: {integrity: sha512-UfHAghPmGZVzaL8x9y+mKZMWyHC399+iq0MOmya5tIyenWX3lcdSb60vOmp0DocR6gCDTYTozv/ULQnREyyjkg==}
 
-  '@types/react-dom@19.1.8':
-    resolution: {integrity: sha512-xG7xaBMJCpcK0RpN8jDbAACQo54ycO6h4dSSmgv8+fu6ZIAdANkx/WsawASUjVXYfy+J9AbUpRMNNEsXCDfDBQ==}
+  '@types/react-dom@19.1.9':
+    resolution: {integrity: sha512-qXRuZaOsAdXKFyOhRBg6Lqqc0yay13vN7KrIg4L7N4aaHN68ma9OK3NE1BoDFgFOTfM7zg+3/8+2n8rLUH3OKQ==}
     peerDependencies:
       '@types/react': 19.1.12
 
@@ -6348,7 +6348,7 @@ snapshots:
       picocolors: 1.1.1
       pretty-format: 27.5.1
 
-  '@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.8(@types/react@19.1.12))(@types/react@19.1.12)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
+  '@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.9(@types/react@19.1.12))(@types/react@19.1.12)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
       '@babel/runtime': 7.23.2
       '@testing-library/dom': 10.4.1
@@ -6356,7 +6356,7 @@ snapshots:
       react-dom: 19.1.1(react@19.1.1)
     optionalDependencies:
       '@types/react': 19.1.12
-      '@types/react-dom': 19.1.8(@types/react@19.1.12)
+      '@types/react-dom': 19.1.9(@types/react@19.1.12)
 
   '@types/archiver@6.0.3':
     dependencies:
@@ -6457,7 +6457,7 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@types/react-dom@19.1.8(@types/react@19.1.12)':
+  '@types/react-dom@19.1.9(@types/react@19.1.12)':
     dependencies:
       '@types/react': 19.1.12
 
