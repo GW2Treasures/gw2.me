@@ -309,7 +309,7 @@ importers:
   packages/database:
     dependencies:
       '@prisma/adapter-pg':
-        specifier: ^6.16.0
+        specifier: 6.16.0
         version: 6.16.0
       '@prisma/client':
         specifier: 6.16.0
