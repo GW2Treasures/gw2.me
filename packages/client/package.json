@@ -54,6 +54,6 @@
     "tsup": "8.5.0",
     "typescript": "5.9.2",
     "typescript-eslint": "8.43.0",
-    "undici-types": "7.15.0"
+    "undici-types": "7.16.0"
   }
 }
