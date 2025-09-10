@@ -9,7 +9,7 @@ import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Select, SelectProps } from '@gw2treasures/ui/components/Form/Select';
-import { Application, UserEmail } from '@gw2me/database';
+import type { Application, UserEmail } from '@gw2me/database';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { FormState } from '@gw2treasures/ui/components/Form/Form';
 

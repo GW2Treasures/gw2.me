@@ -1,24 +1,31 @@
 #!/usr/bin/env node
-import { writeFileSync, existsSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { ClientType } from '@gw2me/database';
+import { createPrismaClient } from '@gw2me/database/setup';
 import { randomBytes, scrypt } from 'node:crypto';
-import { ClientType, PrismaClient } from '@gw2me/database';
+import { existsSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import { loadEnvFile } from 'node:process';
+import { styleText } from 'node:util';
 
 async function run() {
   const demoDir = resolve('.');
-  console.log(`Setting up demo (${demoDir})`);
+  console.log(`Setting up demo ${styleText('gray', `(${demoDir})`)}`);
 
   // check if .env.local exists
   const envLocalExists = existsSync(join(demoDir, '.env.local'));
-
   if(envLocalExists) {
-    console.log('demo is already setup');
+    console.log(styleText('green', 'Demo is already setup'));
     return;
   }
 
   console.log('Running first time setup');
 
-  const db = new PrismaClient({});
+  // load .env
+  const databaseEnvFile = join(demoDir, '../../packages/database/.env');
+  console.log(`Loading .env ${styleText('gray', `(${databaseEnvFile})`)}`);
+  loadEnvFile(databaseEnvFile);
+
+  const db = createPrismaClient({ connectionString: process.env.DATABASE_URL! });
 
   // get user
   const existingUser = await db.user.findFirst({ where: { roles: { has: 'Admin' }}});
@@ -55,6 +62,8 @@ async function run() {
   // write clientId and secret to .env.local
   writeFileSync(join(demoDir, '.env.local'), `DEMO_CLIENT_ID="${application.clients[0].id}"\nDEMO_CLIENT_SECRET="${clientSecret}"\n`);
   console.log('.env.local created');
+
+  console.log(styleText('green', 'Demo setup done'));
 }
 
 run();
