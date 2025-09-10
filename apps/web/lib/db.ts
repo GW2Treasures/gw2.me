@@ -1,9 +1,9 @@
-import { PrismaClient } from '@gw2me/database';
+import { createPrismaClient } from '@gw2me/database/setup';
 
 // https://pris.ly/d/help/next-js-best-practices
 
 const prismaClientSingleton = () => {
-  return new PrismaClient();
+  return createPrismaClient({ connectionString: process.env.DATABASE_URL! });
 };
 
 type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
