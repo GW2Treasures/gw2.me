@@ -30,7 +30,7 @@
   },
   "files": ["lib"],
   "dependencies": {
-    "@prisma/adapter-pg": "^6.16.0",
+    "@prisma/adapter-pg": "6.16.0",
     "@prisma/client": "6.16.0"
   },
   "devDependencies": {
