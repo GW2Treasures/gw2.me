@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/GW2treasures/gw2.me#readme",
   "devDependencies": {
-    "@gw2treasures/eslint-config": "0.1.0",
+    "@gw2treasures/eslint-config": "0.1.1",
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/archiver": "6.0.3",
     "@types/chrome": "0.1.11",
