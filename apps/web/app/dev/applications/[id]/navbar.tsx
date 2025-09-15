@@ -6,8 +6,8 @@ import { FC, ReactNode } from 'react';
 import styles from './navbar.module.css';
 
 interface NavBarProps {
-  items: { label: ReactNode, segment: string, href?: string }[]
-  base?: '/' | `/${string}/`;
+  items: { label: ReactNode, segment: string, href?: string }[],
+  base?: '/' | `/${string}/`,
 }
 
 export const NavBar: FC<NavBarProps> = ({ items, base = '/' }) => {

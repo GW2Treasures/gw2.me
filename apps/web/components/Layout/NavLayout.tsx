@@ -2,8 +2,8 @@ import { FC, ReactNode } from 'react';
 import styles from './NavLayout.module.css';
 
 export interface NavLayoutProps {
-  content: ReactNode;
-  children: ReactNode;
+  content: ReactNode,
+  children: ReactNode,
 }
 
 export const NavLayout: FC<NavLayoutProps> = ({ content, children }) => {

@@ -13,8 +13,8 @@ import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { getFormDataString } from '@/lib/form-data';
 
 export interface LoginOptions {
-  returnTo?: string;
-  userId?: string;
+  returnTo?: string,
+  userId?: string,
 }
 
 export async function login(type: UserProviderRequestType, options: LoginOptions, _prevState: FormState, payload: FormData): Promise<FormState> {

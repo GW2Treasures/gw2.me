@@ -7,5 +7,5 @@ export function GET(request: NextRequest) {
   return NextResponse.json({
     enroll: providerPage,
     manage: providerPage
- });
+  });
 }

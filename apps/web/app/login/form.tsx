@@ -23,7 +23,7 @@ import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
 import { EpicGamesIcon } from 'app/auth/epicgames';
 
 interface LoginFormProps {
-  returnTo?: string;
+  returnTo?: string,
 }
 
 export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {

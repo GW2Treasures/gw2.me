@@ -12,28 +12,28 @@ export interface ProviderConfig {
 
   supportsPKCE: boolean,
 
-  getAuthUrl(options: { redirect_uri: string, state: string, code_challenge?: string, code_challenge_method?: string, prompt?: boolean }): string
+  getAuthUrl(options: { redirect_uri: string, state: string, code_challenge?: string, code_challenge_method?: string, prompt?: boolean }): string,
 
-  getUser(params: { searchParams: { code?: string } & Record<string, string | undefined>, authRequest: UserProviderRequest }): Promise<ProviderProfile>
+  getUser(params: { searchParams: { code?: string } & Record<string, string | undefined>, authRequest: UserProviderRequest }): Promise<ProviderProfile>,
 }
 
 export interface ProviderProfile {
   /** identifier used by the provider */
-  accountId: string;
+  accountId: string,
 
   /** display name that is used on the provider side to identify the user */
-  accountName: string;
+  accountName: string,
 
   /** username that should be used on gw2.me  */
-  username: string;
+  username: string,
 
   /** email */
-  email?: string;
+  email?: string,
 
-  emailVerified?: boolean;
+  emailVerified?: boolean,
 
   /** token to make additional requests in the future */
-  token: object;
+  token: object,
 }
 
 type OAuth2ProviderType = Exclude<UserProviderType, 'passkey'>;

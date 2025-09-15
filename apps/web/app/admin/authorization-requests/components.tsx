@@ -5,7 +5,7 @@ import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
 import { type FC } from 'react';
 
 export interface StateProps {
-  state: AuthorizationRequestState | 'Expired'
+  state: AuthorizationRequestState | 'Expired',
 }
 
 export const State: FC<StateProps> = ({ state }) => {

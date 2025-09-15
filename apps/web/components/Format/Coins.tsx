@@ -2,8 +2,8 @@ import type { FC } from 'react';
 import styles from './Coins.module.css';
 
 interface CoinsProps {
-  value: number;
-  showZero?: boolean;
+  value: number,
+  showZero?: boolean,
 }
 
 export const Coins: FC<CoinsProps> = ({ value, showZero = false }) => {

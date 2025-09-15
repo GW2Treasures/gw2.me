@@ -4,9 +4,9 @@ import { Gw2MeClient } from '@gw2me/client';
 import { type FC, useEffect, useMemo } from 'react';
 
 export interface ClientProps {
-  clientId: string;
-  gw2meUrl: string;
-  accessToken?: string;
+  clientId: string,
+  gw2meUrl: string,
+  accessToken?: string,
 }
 
 export const Client: FC<ClientProps> = ({ clientId, gw2meUrl, accessToken }) => {

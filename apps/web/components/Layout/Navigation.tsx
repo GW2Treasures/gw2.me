@@ -8,15 +8,15 @@ import { FC, ReactNode } from 'react';
 import { ActiveButtonClass } from './NavLayout';
 
 export interface NavigationItem {
-  icon?: IconProp;
-  segment: string | string[];
-  label: ReactNode;
+  icon?: IconProp,
+  segment: string | string[],
+  label: ReactNode,
 }
 
 export interface NavigationProps {
-  items: NavigationItem[]
-  prefix: `/${string}/`;
-  children?: ReactNode;
+  items: NavigationItem[],
+  prefix: `/${string}/`,
+  children?: ReactNode,
 }
 
 export const Navigation: FC<NavigationProps> = ({ items, children, prefix }) => {

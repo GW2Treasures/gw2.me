@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { FC } from 'react';
 
 interface GravatarProps {
-  email?: string
+  email?: string,
 }
 
 export const Gravatar: FC<GravatarProps> = ({ email }) => {

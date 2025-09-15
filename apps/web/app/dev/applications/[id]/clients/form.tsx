@@ -20,11 +20,11 @@ import { useHydrated } from '@/lib/use-hydrated';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
 
 export interface ApplicationFormProps {
-  applicationId: string;
-  client: Client & { secrets: Pick<ClientSecret, 'id' | 'createdAt' | 'usedAt'>[] };
-  editApplicationAction: (state: FormState, data: FormData) => Promise<FormState>;
-  generateClientSecretAction: (state: GenerateClientSecretFormState, data: FormData) => Promise<GenerateClientSecretFormState>;
-  deleteClientSecretAction: (state: FormState, data: FormData) => Promise<FormState>;
+  applicationId: string,
+  client: Client & { secrets: Pick<ClientSecret, 'id' | 'createdAt' | 'usedAt'>[] },
+  editApplicationAction: (state: FormState, data: FormData) => Promise<FormState>,
+  generateClientSecretAction: (state: GenerateClientSecretFormState, data: FormData) => Promise<GenerateClientSecretFormState>,
+  deleteClientSecretAction: (state: FormState, data: FormData) => Promise<FormState>,
 }
 
 export const ClientForm: FC<ApplicationFormProps> = ({ applicationId, client, editApplicationAction, generateClientSecretAction, deleteClientSecretAction }) => {

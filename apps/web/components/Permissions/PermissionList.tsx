@@ -4,7 +4,7 @@ import { Permission } from './Permission';
 import type { Permission as Gw2Permission } from '@gw2api/types/data/tokeninfo';
 
 export interface PermissionListProps {
-  permissions: Gw2Permission[];
+  permissions: Gw2Permission[],
 }
 
 export const PermissionList: FC<PermissionListProps> = ({ permissions }) => {

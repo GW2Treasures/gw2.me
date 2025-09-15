@@ -4,13 +4,13 @@ import { Notice, NoticeProps } from '@gw2treasures/ui/components/Notice/Notice';
 import { FC, ReactNode, createContext, useContext, useMemo, useState } from 'react';
 
 export interface NoticeContext {
-  show: (notice: NoticeProps | null) => void
+  show: (notice: NoticeProps | null) => void,
 }
 
 const context = createContext<NoticeContext>({ show: () => {} });
 
 interface NoticeContextProps {
-  children: ReactNode;
+  children: ReactNode,
 }
 
 export const NoticeContext: FC<NoticeContextProps> = ({ children }) => {

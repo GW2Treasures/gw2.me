@@ -2,7 +2,7 @@ import { Children, FC, ReactNode } from 'react';
 import styles from './Steps.module.css';
 
 export interface StepsProps {
-  children: ReactNode[]
+  children: ReactNode[],
 }
 
 export const Steps: FC<StepsProps> = ({ children }) => {

@@ -8,23 +8,23 @@ export const GET = withAuthorization({ oneOf: [...Gw2Scopes, Scope.Accounts] })(
     // get accounts from application grant
     const applicationGrant = getApplicationGrantByAuthorization(authorization);
     const [accounts, sharedAccounts] = await Promise.all([
-        applicationGrant.accounts({
-          orderBy: { createdAt: 'asc' },
-          select: {
-            accountId: true,
-            accountName: true,
-            displayName: authorization.scope.includes(Scope.Accounts_DisplayName),
-            verified: authorization.scope.includes(Scope.Accounts_Verified)
-          }
-        }),
-        applicationGrant.sharedAccounts({
-          orderBy: { createdAt: 'asc' },
-          select: {
-            displayName: authorization.scope.includes(Scope.Accounts_DisplayName),
-            account: { select: { accountId: true, accountName: true }}
-          }
-        })
-      ]);
+      applicationGrant.accounts({
+        orderBy: { createdAt: 'asc' },
+        select: {
+          accountId: true,
+          accountName: true,
+          displayName: authorization.scope.includes(Scope.Accounts_DisplayName),
+          verified: authorization.scope.includes(Scope.Accounts_Verified)
+        }
+      }),
+      applicationGrant.sharedAccounts({
+        orderBy: { createdAt: 'asc' },
+        select: {
+          displayName: authorization.scope.includes(Scope.Accounts_DisplayName),
+          account: { select: { accountId: true, accountName: true }}
+        }
+      })
+    ]);
 
     const response: AccountsResponse = {
       accounts: [

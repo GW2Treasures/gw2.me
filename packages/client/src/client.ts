@@ -11,7 +11,7 @@ export interface AuthorizationUrlParams {
   code_challenge?: string,
   code_challenge_method?: 'S256',
   dpop_jkt?: string,
-  prompt?: 'none' | 'consent'
+  prompt?: 'none' | 'consent',
   include_granted_scopes?: boolean,
   verified_accounts_only?: boolean,
 }
@@ -78,7 +78,7 @@ export namespace IntrospectTokenResponse {
 
     export interface DPoP extends Common {
       token_type: 'DPoP',
-      cnf: { jkt: string }
+      cnf: { jkt: string },
     }
   }
 

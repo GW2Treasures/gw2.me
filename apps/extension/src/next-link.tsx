@@ -1,8 +1,8 @@
 import type { FC, ReactNode } from 'react';
 
 export interface LinkProps {
-  href: string;
-  children: ReactNode;
+  href: string,
+  children: ReactNode,
 }
 
 const Link: FC<LinkProps> = ({ href, children }) => {

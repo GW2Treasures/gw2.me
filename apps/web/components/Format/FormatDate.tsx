@@ -4,7 +4,7 @@ import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { FC, useEffect, useState } from 'react';
 
 interface FormatDateProps {
-  date: Date
+  date: Date,
 }
 
 export const FormatDate: FC<FormatDateProps> = ({ date }) => {

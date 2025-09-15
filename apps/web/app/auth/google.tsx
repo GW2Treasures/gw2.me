@@ -22,8 +22,8 @@ export function google(): ProviderConfig | undefined {
       // build search params url
       const searchParams = new URLSearchParams({
         client_id,
-        'scope': 'profile email',
-        'response_type': 'code',
+        scope: 'profile email',
+        response_type: 'code',
         redirect_uri,
         state,
         access_type: 'online',
@@ -47,8 +47,8 @@ export function google(): ProviderConfig | undefined {
         code,
         client_id,
         client_secret,
-        'grant_type': 'authorization_code',
-        'redirect_uri': authRequest.redirect_uri,
+        grant_type: 'authorization_code',
+        redirect_uri: authRequest.redirect_uri,
       });
 
       // get access_token token
@@ -60,7 +60,7 @@ export function google(): ProviderConfig | undefined {
 
       // get profile info with token
       const profile = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-        headers: { 'Authorization': `Bearer ${token.access_token}` }
+        headers: { Authorization: `Bearer ${token.access_token}` }
       }).then(getJsonIfOk) as { sub: string, name: string, email: string, email_verified: boolean };
 
       return {

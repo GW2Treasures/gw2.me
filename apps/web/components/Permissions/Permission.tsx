@@ -4,7 +4,7 @@ import type { Permission as Gw2Permission } from '@gw2api/types/data/tokeninfo';
 import { permissionDescriptions } from './data';
 
 export interface PermissionProps {
-  permission: Gw2Permission;
+  permission: Gw2Permission,
 }
 
 

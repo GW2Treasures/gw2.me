@@ -12,8 +12,8 @@ import { CopyButton } from '@gw2treasures/ui/components/Form/Buttons/CopyButton'
 import { getApiKeyVerificationName } from '@/lib/api-key-verification-name';
 
 export interface AccountAddFormProps {
-  returnTo?: string;
-  requireVerification?: boolean;
+  returnTo?: string,
+  requireVerification?: boolean,
 }
 
 export const AccountAddForm: FC<AccountAddFormProps> = async ({ returnTo, requireVerification = false }) => {

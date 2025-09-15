@@ -3,20 +3,20 @@ import type { AuthorizationRequest as DbAuthorizationRequest, AuthorizationReque
 
 export namespace AuthorizationRequestData {
   interface Common {
-    response_type: string;
-    client_id: string;
-    scope: string;
-    code_challenge?: string;
-    code_challenge_method?: string;
-    include_granted_scopes?: string;
-    verified_accounts_only?: string;
+    response_type: string,
+    client_id: string,
+    scope: string,
+    code_challenge?: string,
+    code_challenge_method?: string,
+    include_granted_scopes?: string,
+    verified_accounts_only?: string,
   }
 
   export interface OAuth2 extends Common {
-    prompt?: string;
-    state?: string;
-    redirect_uri: string;
-    dpop_jkt?: string;
+    prompt?: string,
+    state?: string,
+    redirect_uri: string,
+    dpop_jkt?: string,
   }
 
   export type FedCM = Common;

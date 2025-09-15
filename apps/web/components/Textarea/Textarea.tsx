@@ -2,13 +2,13 @@ import { ChangeEvent, FC, useCallback } from 'react';
 import styles from './Textarea.module.css';
 
 export interface TextareaProps {
-  value?: string;
-  onChange?: (value: string) => void;
-  defaultValue?: string;
-  placeholder?: string;
-  name?: string;
-  readOnly?: boolean;
-  form?: string;
+  value?: string,
+  onChange?: (value: string) => void,
+  defaultValue?: string,
+  placeholder?: string,
+  name?: string,
+  readOnly?: boolean,
+  form?: string,
 }
 
 export const Textarea: FC<TextareaProps> = ({ onChange, ...props }) => {

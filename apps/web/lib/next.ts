@@ -1,5 +1,5 @@
 export type SearchParams = {
-  [key: string]: string | string[] | undefined
+  [key: string]: string | string[] | undefined,
 };
 
 /** Convert Next.js searchParams to URLSearchParams */

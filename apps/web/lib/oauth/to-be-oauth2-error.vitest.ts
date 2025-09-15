@@ -38,11 +38,11 @@ expect.extend({ toBeOAuth2Error, toThrowOAuth2Error });
 
 declare module 'vitest' {
   interface AsymmetricMatchers {
-    toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): void;
-    toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): void;
+    toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): void,
+    toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): void,
   }
   interface Assertion<T> {
-    toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): T;
-    toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): T;
+    toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): T,
+    toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): T,
   }
 }

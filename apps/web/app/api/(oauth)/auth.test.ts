@@ -27,7 +27,7 @@ describe('OAuth2 request authorization', () => {
       expect(getRequestAuthorization(new Headers(), { client_id: client.id })).resolves.toStrictEqual({ method: 'none', client_id: 'test', client } satisfies RequestAuthorization));
 
     it('throws if client_secret_basic is used', () =>
-      expect(getRequestAuthorization(new Headers({ 'Authorization': `Basic ${btoa(`${client.id}:xxx`)}` }), {}))
+      expect(getRequestAuthorization(new Headers({ Authorization: `Basic ${btoa(`${client.id}:xxx`)}` }), {}))
         .rejects.toBeOAuth2Error(OAuth2ErrorCode.invalid_request, 'Invalid authorization provided for public client'));
 
     it('throws if client_secret_post is used', () =>
@@ -54,15 +54,15 @@ describe('OAuth2 request authorization', () => {
         .rejects.toBeOAuth2Error(OAuth2ErrorCode.invalid_request, 'No client_id or authorization provided'));
 
     it('throws if non basic auth header was provided', () =>
-      expect(getRequestAuthorization(new Headers({ 'Authorization': 'Bearer foo' }), {}))
+      expect(getRequestAuthorization(new Headers({ Authorization: 'Bearer foo' }), {}))
         .rejects.toBeOAuth2Error(OAuth2ErrorCode.invalid_request, 'Only "Basic" authorization is supported using the Authorization header'));
 
     it('throws if malformed basic auth header was provided', () =>
-      expect(getRequestAuthorization(new Headers({ 'Authorization': 'Basic !"§$' }), {}))
+      expect(getRequestAuthorization(new Headers({ Authorization: 'Basic !"§$' }), {}))
         .rejects.toBeOAuth2Error(OAuth2ErrorCode.invalid_request, 'Invalid basic authorization header'));
 
     it('supports client_secret_basic', () =>
-      expect(getRequestAuthorization(new Headers({ 'Authorization': `Basic ${btoa(`${client.id}:${secret.raw}`)}` }), {}))
+      expect(getRequestAuthorization(new Headers({ Authorization: `Basic ${btoa(`${client.id}:${secret.raw}`)}` }), {}))
         .resolves.toStrictEqual({ method: 'client_secret_basic', client_id: 'test', client_secret: secret.raw, client: confidentialClient } satisfies RequestAuthorization));
 
     it('supports client_secret_post', () =>

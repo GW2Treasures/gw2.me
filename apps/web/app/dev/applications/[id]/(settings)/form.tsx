@@ -14,10 +14,10 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { FormState } from '@gw2treasures/ui/components/Form/Form';
 
 export interface ApplicationFormProps {
-  applicationId: string;
-  application: Application;
-  emails: UserEmail[];
-  editApplicationAction: (state: FormState, data: FormData) => Promise<FormState>;
+  applicationId: string,
+  application: Application,
+  emails: UserEmail[],
+  editApplicationAction: (state: FormState, data: FormData) => Promise<FormState>,
 }
 
 export const ApplicationForm: FC<ApplicationFormProps> = ({ applicationId, application, emails, editApplicationAction }) => {
