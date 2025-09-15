@@ -7,7 +7,7 @@
     "prisma:migrate": "prisma migrate deploy",
     "prisma:migrate-dev": "prisma migrate dev --name",
     "prisma:studio": "prisma studio",
-    "build": "rm -rf ./lib && tsc"
+    "build": "rm -rf ./lib && tsc -b"
   },
   "exports": {
     ".": {
@@ -28,13 +28,16 @@
       "default": "./lib/setup.js"
     }
   },
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "dependencies": {
     "@prisma/adapter-pg": "6.16.1",
     "@prisma/client": "6.16.1"
   },
   "devDependencies": {
     "@gw2treasures/tsconfig": "0.0.1",
+    "@types/node": "22.18.1",
     "prisma": "6.16.1",
     "typescript": "5.9.2"
   }
