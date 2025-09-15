@@ -9,7 +9,7 @@
     "watch": "pnpm run watch:chromium",
     "watch:chromium": "pnpm run clean && webpack watch --mode=development --config-name=chromium",
     "watch:firefox": "pnpm run clean && webpack watch --mode=development --config-name=firefox",
-    "lint": "eslint src",
+    "lint": "eslint .",
     "pack": "pnpm run build && node pack.mjs"
   },
   "repository": {

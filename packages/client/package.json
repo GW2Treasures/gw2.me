@@ -23,7 +23,7 @@
     "build:local": "tsup src/index.ts src/dpop.ts src/pkce.ts --format esm && tsc --emitDeclarationOnly --declaration --declarationMap",
     "build:ci": "tsup src/index.ts src/dpop.ts src/pkce.ts --format esm --minify --dts",
     "clean": "rm -rf dist/",
-    "lint": "eslint src",
+    "lint": "eslint .",
     "publish-package": "gw2treasures-publish-package"
   },
   "repository": {

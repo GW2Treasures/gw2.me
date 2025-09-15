@@ -14,7 +14,7 @@
     "build:local": "tsc --declaration --declarationMap",
     "build:ci": "tsc --declaration",
     "clean": "rm -rf dist/",
-    "lint": "eslint emails"
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@gw2treasures/eslint-config": "0.1.1",
