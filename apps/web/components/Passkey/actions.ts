@@ -199,7 +199,7 @@ export async function submitAuthentication(challengeJwt: string, authentication:
     response: authentication,
     credential: {
       id: passkey.id,
-      publicKey: passkey.publicKey,
+      publicKey: passkey.publicKey as Uint8Array<ArrayBuffer>,
       counter: Number(passkey.counter),
       transports: passkey.transports as AuthenticatorTransportFuture[]
     },
