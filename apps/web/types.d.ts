@@ -4,13 +4,13 @@
 
 interface Window {
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IdentityProvider) */
-  IdentityProvider: IdentityProvider
+  IdentityProvider: IdentityProvider,
 }
 
 /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IdentityProvider) */
 interface IdentityProvider {
   /** [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IdentityProvider/close_static) */
-  close(): undefined
+  close(): undefined,
 
-  resolve(token: string, options?: { accountId: string }): undefined
+  resolve(token: string, options?: { accountId: string }): undefined,
 }

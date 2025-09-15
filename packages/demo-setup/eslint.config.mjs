@@ -1,8 +1,7 @@
 import config from '@gw2treasures/eslint-config';
-import tseslint from 'typescript-eslint';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
-export default tseslint.config(
-  { ignores: ['dist/**' ] },
-
-  config,
+export default defineConfig(
+  globalIgnores(['dist/']),
+  ...config,
 );

@@ -1,8 +1,7 @@
-import reactConfig from '@gw2treasures/eslint-config/react';
-import tseslint from 'typescript-eslint';
+import config from '@gw2treasures/eslint-config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
-export default tseslint.config(
-  { ignores: ['dist/**' ] },
-
-  reactConfig,
+export default defineConfig(
+  globalIgnores(['dist/']),
+  ...config,
 );
