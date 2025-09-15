@@ -183,12 +183,12 @@ export default function DevDocsAccessTokensPage() {
       <Code>
         <Highlight language="json" code={
           JSON.stringify({
-            'access_token': 'xl1eSPfCpUNdQiIPe4TAag',
-            'issued_token_type': 'urn:ietf:params:oauth:token-type:access_token',
-            'token_type': 'Bearer',
-            'expires_in': 604800,
-            'refresh_token': 'mcn6FMwoiufzqcBDVwzOnz_NvGn-1ezzRKIm7vN_bsk',
-            'scope': 'identify accounts gw2:account'
+            access_token: 'xl1eSPfCpUNdQiIPe4TAag',
+            issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
+            token_type: 'Bearer',
+            expires_in: 604800,
+            refresh_token: 'mcn6FMwoiufzqcBDVwzOnz_NvGn-1ezzRKIm7vN_bsk',
+            scope: 'identify accounts gw2:account'
           }, null, 2)
         }/>
       </Code>

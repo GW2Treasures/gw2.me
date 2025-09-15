@@ -1,5 +1,5 @@
 export type SearchParams = {
-  [key: string]: string | string[] | undefined
+  [key: string]: string | string[] | undefined,
 };
 
 export function nextSearchParamsToURLSearchParams(searchParams: SearchParams): URLSearchParams {

@@ -10,8 +10,8 @@ import { NoticeContext, useShowNotice } from '../NoticeContext/NoticeContext';
 import { PasskeyAuthenticationDialog } from './PasskeyAuthenticationDialog';
 
 export interface PasskeyAuthenticationButtonProps {
-  className?: string;
-  options: LoginOptions;
+  className?: string,
+  options: LoginOptions,
 }
 
 export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> = ({ className, options: loginOptions }) => {

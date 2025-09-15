@@ -22,9 +22,9 @@ export function discord(): ProviderConfig | undefined {
       // build discord url
       const searchParams = new URLSearchParams({
         client_id,
-        'scope': 'identify email',
-        'response_type': 'code',
-        'prompt': 'none',
+        scope: 'identify email',
+        response_type: 'code',
+        prompt: 'none',
         code_challenge: code_challenge!,
         code_challenge_method: code_challenge_method!,
         redirect_uri,
@@ -49,9 +49,9 @@ export function discord(): ProviderConfig | undefined {
         code,
         client_id,
         client_secret,
-        'grant_type': 'authorization_code',
-        'redirect_uri': authRequest.redirect_uri,
-        'code_verifier': authRequest.code_verifier!,
+        grant_type: 'authorization_code',
+        redirect_uri: authRequest.redirect_uri,
+        code_verifier: authRequest.code_verifier!,
       });
 
       // get discord token
@@ -63,7 +63,7 @@ export function discord(): ProviderConfig | undefined {
 
       // get profile info with token
       const profile = await fetch('https://discord.com/api/users/@me', {
-        headers: { 'Authorization': `Bearer ${token.access_token}` }
+        headers: { Authorization: `Bearer ${token.access_token}` }
       }).then(getJsonIfOk) as { id: string, username: string, email: string, verified: boolean, discriminator: string };
 
       // get discord user name (darthmaim or legacy darthmaim#1234)

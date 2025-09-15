@@ -2,8 +2,8 @@ import type { DataTableColumnSelectionProps } from '@gw2treasures/ui/components/
 import type { FC, ReactNode } from 'react';
 
 export interface ColumnSelectionProps {
-  table: { ColumnSelection: FC<DataTableColumnSelectionProps> }
-  children?: ReactNode
+  table: { ColumnSelection: FC<DataTableColumnSelectionProps> },
+  children?: ReactNode,
 }
 
 export const ColumnSelection: FC<ColumnSelectionProps> = ({ table: { ColumnSelection }, children }) => {

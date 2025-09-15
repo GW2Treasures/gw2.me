@@ -6,7 +6,7 @@ import { allPermissions } from './data';
 import { Icon } from '@gw2treasures/ui';
 
 export interface PermissionCountProps {
-  permissions: Permission[]
+  permissions: Permission[],
 }
 
 export const PermissionCount: FC<PermissionCountProps> = ({ permissions }) => {

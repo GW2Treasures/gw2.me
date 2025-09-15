@@ -3,8 +3,8 @@ import { FC, ReactNode } from 'react';
 import styles from './PageTitle.module.css';
 
 interface PageTitleProps {
-  children: ReactNode;
-  className?: string;
+  children: ReactNode,
+  className?: string,
 }
 
 export const PageTitle: FC<PageTitleProps> = ({ children, className }) => {

@@ -205,9 +205,9 @@ export function GET(request: NextRequest): NextResponse<IdentityAssertionErrorRe
 }
 
 interface Params {
-  scope?: string;
-  code_challenge?: string;
-  code_challenge_method?: string;
+  scope?: string,
+  code_challenge?: string,
+  code_challenge_method?: string,
 }
 
 function parseParams(params?: unknown): Params {
@@ -219,8 +219,8 @@ function parseParams(params?: unknown): Params {
 }
 
 type UnsafePKCEChallenge = {
-  code_challenge: string;
-  code_challenge_method: string;
+  code_challenge: string,
+  code_challenge_method: string,
 };
 
 function parsePKCE(params: Params, nonce: string | undefined): PKCEChallenge | UnsafePKCEChallenge | undefined {

@@ -30,7 +30,7 @@ type State = {
 } | {
   step: Step.READY,
   access_token: string,
-  accounts: AccountsResponse['accounts']
+  accounts: AccountsResponse['accounts'],
 };
 
 export const App: FC = () => {

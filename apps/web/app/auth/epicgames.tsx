@@ -23,8 +23,8 @@ export function epicgames(): ProviderConfig | undefined {
       // build auth url
       const searchParams = new URLSearchParams({
         client_id,
-        'scope': 'basic_profile',
-        'response_type': 'code',
+        scope: 'basic_profile',
+        response_type: 'code',
         redirect_uri,
         state,
       });
@@ -45,9 +45,9 @@ export function epicgames(): ProviderConfig | undefined {
       // build token request
       const data = new URLSearchParams({
         code,
-        'grant_type': 'authorization_code',
-        'scope': 'basic_profile',
-        'redirect_uri': authRequest.redirect_uri,
+        grant_type: 'authorization_code',
+        scope: 'basic_profile',
+        redirect_uri: authRequest.redirect_uri,
       });
 
       // get token
@@ -62,7 +62,7 @@ export function epicgames(): ProviderConfig | undefined {
 
       // get profile info with token
       const user = await fetch('	https://api.epicgames.dev/epic/oauth/v2/userInfo', {
-        headers: { 'Authorization': `Bearer ${token.access_token}` }
+        headers: { Authorization: `Bearer ${token.access_token}` }
       }).then(getJsonIfOk) as { sub: string, preferred_username: string };
 
       console.log(user);

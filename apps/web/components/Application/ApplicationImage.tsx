@@ -4,8 +4,8 @@ import styles from './ApplicationImage.module.css';
 import placeholder from './app-placeholder.png';
 
 export interface ApplicationImageProps {
-  fileId: string | null;
-  size?: number;
+  fileId: string | null,
+  size?: number,
 }
 
 export const ApplicationImage: FC<ApplicationImageProps> = ({ fileId, size = 32 }) => {

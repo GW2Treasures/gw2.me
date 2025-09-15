@@ -56,7 +56,7 @@ export async function editOAuth2Client(applicationId: string, clientId: string, 
         }
 
         return u.toString();
-    });
+      });
   } catch {
     return { error: 'Invalid callback URLs' };
   }

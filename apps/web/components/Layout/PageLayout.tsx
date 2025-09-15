@@ -3,9 +3,9 @@ import styles from './PageLayout.module.css';
 import { cx } from '@gw2treasures/ui';
 
 interface PageLayoutProps {
-  children: ReactNode;
-  thin?: boolean;
-  className?: string;
+  children: ReactNode,
+  thin?: boolean,
+  className?: string,
 }
 
 export const PageLayout: FC<PageLayoutProps> = ({ children, thin = false, className }) => {

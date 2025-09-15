@@ -6,9 +6,9 @@ import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { FC, useCallback, useState } from 'react';
 
 export interface ResetClientSecretProps {
-  clientId: string;
-  hasClientSecret: boolean;
-  reset: (clientId: string) => Promise<string>
+  clientId: string,
+  hasClientSecret: boolean,
+  reset: (clientId: string) => Promise<string>,
 }
 
 export const ResetClientSecret: FC<ResetClientSecretProps> = ({ clientId, hasClientSecret, reset }) => {

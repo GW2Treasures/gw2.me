@@ -24,7 +24,7 @@ export interface AuthorizeActionParams {
   redirect_uri: string,
   scopes: Scope[],
   state?: string,
-  codeChallenge?: string
+  codeChallenge?: string,
 }
 
 export async function authorize(id: string, _: FormState, formData: FormData): Promise<FormState> {

@@ -122,7 +122,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
   const passkeyDisplayName = (registration.clientExtensionResults.credProps as { authenticatorDisplayName?: string })?.authenticatorDisplayName
     ?? aaguids[verification.registrationInfo.aaguid];
 
-  let session: { id: string; userId: string; };
+  let session: { id: string, userId: string };
   if(params.type === 'add') {
     const currentSession = await getSession();
 

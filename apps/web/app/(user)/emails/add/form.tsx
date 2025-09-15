@@ -12,7 +12,7 @@ import { redirect } from 'next/navigation';
 import type { FC } from 'react';
 
 export interface AddEmailFormProps {
-  returnTo?: string;
+  returnTo?: string,
 }
 
 export const AddEmailForm: FC<AddEmailFormProps> = ({ returnTo }) => {

@@ -1,8 +1,8 @@
 import { base64urlEncode } from './base64.js';
 
 export interface PKCEChallenge {
-  code_challenge: string;
-  code_challenge_method: 'S256';
+  code_challenge: string,
+  code_challenge_method: 'S256',
 }
 
 export interface PKCEPair {

@@ -23,7 +23,7 @@ export interface TpOrderChallengeFormProps {
   item: Awaited<ReturnType<typeof getItem>>,
   apiKey: string,
   verifyAction: () => Promise<VerifyChallengeActionResult>,
-  restartAction: (state: FormState, payload: FormData) => Promise<FormState>
+  restartAction: (state: FormState, payload: FormData) => Promise<FormState>,
 }
 
 export const TpOrderChallengeForm: FC<TpOrderChallengeFormProps> = ({ challenge, item, apiKey, verifyAction, restartAction }) => {

@@ -19,7 +19,7 @@ export interface AccountsResponse {
     shared: boolean,
     verified?: boolean,
     displayName?: string | null,
-  }[]
+  }[],
 }
 
 export interface SubtokenOptions {

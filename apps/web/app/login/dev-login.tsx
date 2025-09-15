@@ -6,7 +6,7 @@ import styles from './form.module.css';
 import { devLogin } from './dev-login.action';
 
 export interface DevLoginProps {
-  username?: string
+  username?: string,
 }
 
 export const DevLogin: FC<DevLoginProps> = ({ username }) => {

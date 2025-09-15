@@ -2,8 +2,8 @@ import { FC, ReactNode } from 'react';
 import styles from './ButtonLink.module.css';
 
 interface ButtonLinkProps {
-  children: ReactNode;
-  onClick: () => void;
+  children: ReactNode,
+  onClick: () => void,
 }
 
 export const ButtonLink: FC<ButtonLinkProps> = ({ children, onClick }) => {

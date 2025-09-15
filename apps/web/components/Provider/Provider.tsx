@@ -9,7 +9,7 @@ import { SteamIcon } from 'app/auth/steam';
 import type { FC } from 'react';
 
 export interface ProviderProps {
-  provider: UserProviderType
+  provider: UserProviderType,
 }
 
 export const Provider: FC<ProviderProps> = ({ provider }) => {

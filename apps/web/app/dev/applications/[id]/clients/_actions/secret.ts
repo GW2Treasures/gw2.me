@@ -9,7 +9,7 @@ import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { revalidatePath } from 'next/cache';
 
 export interface GenerateClientSecretFormState extends FormState {
-  clientSecret?: { id: string, secret: string }
+  clientSecret?: { id: string, secret: string },
 }
 
 export const generateClientSecret = createAction<GenerateClientSecretFormState>(async function generateClientSecret(_, formData) {
@@ -94,7 +94,7 @@ export const deleteClientSecret = createAction(async function deleteClientSecret
     error('At least one client secret is required. Create a new client secret first and update your application to use it before deleting this client secret.');
   }
 
-   await db.clientSecret.delete({
+  await db.clientSecret.delete({
     where: { id: clientSecretId },
     select: { id: true },
   });

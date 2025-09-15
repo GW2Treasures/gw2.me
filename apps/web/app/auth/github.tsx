@@ -23,8 +23,8 @@ export function github(): ProviderConfig | undefined {
       // build search params url
       const searchParams = new URLSearchParams({
         client_id,
-        'scope': 'user:email',
-        'response_type': 'code',
+        scope: 'user:email',
+        response_type: 'code',
         redirect_uri,
         state,
       });
@@ -47,8 +47,8 @@ export function github(): ProviderConfig | undefined {
         code,
         client_id,
         client_secret,
-        'grant_type': 'authorization_code',
-        'redirect_uri': authRequest.redirect_uri,
+        grant_type: 'authorization_code',
+        redirect_uri: authRequest.redirect_uri,
       });
 
       // get access_token token
@@ -60,7 +60,7 @@ export function github(): ProviderConfig | undefined {
 
       // get profile info with token
       const profile = await fetch('https://api.github.com/user', {
-        headers: { 'Authorization': `Bearer ${token.access_token}` }
+        headers: { Authorization: `Bearer ${token.access_token}` }
       }).then(getJsonIfOk) as { id: number, login: string, email: string };
 
       return {
