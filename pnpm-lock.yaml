@@ -85,8 +85,8 @@ importers:
   apps/extension:
     dependencies:
       '@fontsource/bitter':
-        specifier: 5.2.9
-        version: 5.2.9
+        specifier: 5.2.10
+        version: 5.2.10
       '@gw2me/client':
         specifier: workspace:*
         version: link:../../packages/client
@@ -918,8 +918,8 @@ packages:
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
 
-  '@fontsource/bitter@5.2.9':
-    resolution: {integrity: sha512-DnD+XBw7BH0pfR2//T7iC3Xgoo5EGM+vTbx5OHNKFPWLHdDvrFkn0uUpAxlKHJ93qry9hjxT8ai2gWPEInUzOg==}
+  '@fontsource/bitter@5.2.10':
+    resolution: {integrity: sha512-oqQgWAp+lgoGX7iFbVSbTkKyz0k8EK8+bLdUKDTqGTjW0HqrCue70v4jwbZvyNV/3DZol/b/L/WpdXfuQXKBUg==}
 
   '@gw2api/fetch@0.4.1':
     resolution: {integrity: sha512-JngDjnMVaXHF3k3MiadBUcEidLz4VRGhTuxP1cRGO9gAwc1KDBQ/kGQnMDs7/u0iSWhhFB1UKfoxcZbdzNRzpg==}
@@ -5571,7 +5571,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.9': {}
 
-  '@fontsource/bitter@5.2.9': {}
+  '@fontsource/bitter@5.2.10': {}
 
   '@gw2api/fetch@0.4.1(@gw2api/types@0.0.36)':
     dependencies:
