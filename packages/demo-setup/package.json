@@ -13,7 +13,7 @@
   "devDependencies": {
     "@gw2treasures/eslint-config": "0.1.1",
     "@gw2treasures/tsconfig": "0.0.1",
-    "@types/node": "22.18.4",
+    "@types/node": "22.18.5",
     "eslint": "9.35.0",
     "typescript": "5.9.2",
     "typescript-eslint": "8.44.0"
