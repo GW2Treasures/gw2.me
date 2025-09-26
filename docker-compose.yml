@@ -29,7 +29,7 @@ services:
       - 4001:3000
 
   database:
-    image: postgres:17.6-alpine
+    image: postgres:18.0-alpine
     restart: unless-stopped
     environment:
       - POSTGRES_USER=gw2me
