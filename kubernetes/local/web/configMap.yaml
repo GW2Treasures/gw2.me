@@ -5,6 +5,6 @@ metadata:
   name: web
 
 data:
-  db: postgresql://gw2me:857a45cc-3a98-4e66-b352-1ffdfe76ad1c@database-pg17:5432/gw2me?schema=public
+  db: postgresql://gw2me:857a45cc-3a98-4e66-b352-1ffdfe76ad1c@database-pg18:5432/gw2me?schema=public
   domain: gw2me.kubernetes.localhost
   jwt_secret: gw2.me-secret
