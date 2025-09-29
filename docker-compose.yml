@@ -29,15 +29,15 @@ services:
       - 4001:3000
 
   database:
-    image: postgres:17.6-alpine
+    image: postgres:18.0-alpine
     restart: unless-stopped
     environment:
       - POSTGRES_USER=gw2me
       - POSTGRES_PASSWORD=gw2me
       - POSTGRES_DB=gw2me
-      - PGDATA=/var/lib/postgresql/data/pgdata
+      - PGDATA=/var/lib/postgresql/data-mount/pgdata
     volumes:
-      - .docker/database-pg17:/var/lib/postgresql/data
+      - .docker/database-pg18:/var/lib/postgresql/data-mount
     ports:
       - 54327:5432
 

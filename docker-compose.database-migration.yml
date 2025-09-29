@@ -2,7 +2,7 @@ version: '3'
 
 services:
   database-old:
-    image: postgres:16.4-alpine
+    image: postgres:17.6-alpine
     restart: unless-stopped
     environment:
       - POSTGRES_USER=gw2me
@@ -10,4 +10,4 @@ services:
       - POSTGRES_DB=gw2me
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - .docker/database-pg16:/var/lib/postgresql/data
+      - .docker/database-pg17:/var/lib/postgresql/data
