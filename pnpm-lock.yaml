@@ -155,8 +155,8 @@ importers:
         specifier: 0.0.5
         version: 0.0.5
       '@gw2api/fetch':
-        specifier: 0.4.1
-        version: 0.4.1(@gw2api/types@0.0.36)
+        specifier: 0.4.2
+        version: 0.4.2(@gw2api/types@0.0.36)
       '@gw2me/client':
         specifier: workspace:*
         version: link:../../packages/client
@@ -906,8 +906,8 @@ packages:
   '@fontsource/bitter@5.2.10':
     resolution: {integrity: sha512-oqQgWAp+lgoGX7iFbVSbTkKyz0k8EK8+bLdUKDTqGTjW0HqrCue70v4jwbZvyNV/3DZol/b/L/WpdXfuQXKBUg==}
 
-  '@gw2api/fetch@0.4.1':
-    resolution: {integrity: sha512-JngDjnMVaXHF3k3MiadBUcEidLz4VRGhTuxP1cRGO9gAwc1KDBQ/kGQnMDs7/u0iSWhhFB1UKfoxcZbdzNRzpg==}
+  '@gw2api/fetch@0.4.2':
+    resolution: {integrity: sha512-eUJ73r+RmV3e3MjwH2DapHBt0QR5dryZIfYr/5o+lGgfoihhaPJX7AuQ4s4irQ4tqRlAQN6AbNYcFg9TTZdagA==}
     peerDependencies:
       '@gw2api/types': ~0.0.5
 
@@ -5563,7 +5563,7 @@ snapshots:
 
   '@fontsource/bitter@5.2.10': {}
 
-  '@gw2api/fetch@0.4.1(@gw2api/types@0.0.36)':
+  '@gw2api/fetch@0.4.2(@gw2api/types@0.0.36)':
     dependencies:
       '@gw2api/types': 0.0.36
 
