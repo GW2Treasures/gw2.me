@@ -39,6 +39,6 @@
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/node": "22.18.7",
     "prisma": "6.16.3",
-    "typescript": "5.9.2"
+    "typescript": "5.9.3"
   }
 }
