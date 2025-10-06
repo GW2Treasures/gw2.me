@@ -179,8 +179,8 @@ importers:
         specifier: 0.4.0
         version: 0.4.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.1.1))(@gw2treasures/tsconfig@0.0.1)(next@15.5.4(@babel/core@7.28.4)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@react-email/render':
-        specifier: 1.3.1
-        version: 1.3.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        specifier: 1.3.2
+        version: 1.3.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@simplewebauthn/browser':
         specifier: 13.2.2
         version: 13.2.2
@@ -380,8 +380,8 @@ importers:
         specifier: 0.0.13
         version: 0.0.13(react@19.1.1)
       '@react-email/render':
-        specifier: 1.3.1
-        version: 1.3.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        specifier: 1.3.2
+        version: 1.3.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@react-email/row':
         specifier: 0.0.12
         version: 0.0.12(react@19.1.1)
@@ -1321,8 +1321,8 @@ packages:
     peerDependencies:
       react: 19.1.1
 
-  '@react-email/render@1.3.1':
-    resolution: {integrity: sha512-BOc/kanieEVyiuldFFvceriiBGBBVhe4JWWXCXE2ehLIqz+gSWD4rgCoXAGbJRnnVyyp4joPqK62bSfa88yonA==}
+  '@react-email/render@1.3.2':
+    resolution: {integrity: sha512-oq8/BD/I/YspeuBjjdLJG6xaf9tsPYk+VWu8/mX9xWbRN0t0ExKSVm9sEBL6RsCpndQA2jbY2VgPEreIrzUgqw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: 19.1.1
@@ -5984,7 +5984,7 @@ snapshots:
     dependencies:
       react: 19.1.1
 
-  '@react-email/render@1.3.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
+  '@react-email/render@1.3.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
       html-to-text: 9.0.5
       prettier: 3.5.3
