@@ -17,7 +17,7 @@ export async function fetchGw2Api<Url extends KnownEndpoint | (string & {})>(end
   let response;
   try {
     console.log(`> ${endpoint}`, options);
-    response = await fetch<Url, Schema>(endpoint, { schema, ...options, ...fetchOptions });
+    response = await fetch<Url, Schema>(endpoint, { schema, ...options, ...fetchOptions, signal: AbortSignal.timeout(10_000) });
 
     if(Array.isArray(response) && response.length === 2 && response[0] === 'v1' && response[1] === 'v2') {
       throw new Error(`${endpoint} returned an invalid response (["v1","v2"]).`);
