@@ -81,8 +81,9 @@ export const OPTIONS = OptionsHandler;
 
 async function createSubtoken(apiToken: { id: string, token: string }, requiredPermissions: string[]): Promise<SubtokenResponse> {
   // create expiration time in 10 minutes
+  // TODO: temporarily increased to 1h while the official GW2 API is experiencing issues
   const expire = new Date();
-  expire.setMinutes(expire.getMinutes() + 10);
+  expire.setMinutes(expire.getMinutes() + 60);
 
   // create subtoken
   let apiResponse;
