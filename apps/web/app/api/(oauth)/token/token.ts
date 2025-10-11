@@ -5,7 +5,7 @@ import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
 import { TokenResponse } from '@gw2me/client';
 import { ClientType, AuthorizationType } from '@gw2me/database';
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 import { OAuth2RequestHandlerProps } from '../request';
 import { checkProof } from '@/lib/oauth/dpop';
 

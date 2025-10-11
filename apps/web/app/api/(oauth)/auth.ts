@@ -4,7 +4,7 @@ import { assert } from '@/lib/oauth/assert';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { AuthenticationMethod } from '@/lib/oauth/types';
 import { ClientType, Client } from '@gw2me/database';
-import { scryptSync, timingSafeEqual } from 'crypto';
+import { scryptSync, timingSafeEqual } from 'node:crypto';
 import { after } from 'next/server';
 
 export type RequestAuthorization = { client_id: string, client: Client } & (

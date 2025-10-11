@@ -1,7 +1,7 @@
 import VerifyEmailMail from '@gw2me/emails/verify-email';
 import { db } from '../db';
 import { sendMail } from '../mail';
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 import { getBaseUrlFromHeaders } from '../url';
 
 export async function sendEmailVerificationMail(emailId: string) {

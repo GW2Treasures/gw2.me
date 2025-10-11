@@ -4,7 +4,7 @@ import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { NextRequest, NextResponse } from 'next/server';
 import { getRequestAuthorization, RequestAuthorization } from './auth';
 import { getUrlFromRequest } from '@/lib/url';
-import { MIMEType } from 'util';
+import { MIMEType } from 'node:util';
 
 export interface OAuth2RequestHandlerProps {
   headers: Headers,

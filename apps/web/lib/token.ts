@@ -1,4 +1,4 @@
-import { randomBytes, scrypt } from 'crypto';
+import { randomBytes, scrypt } from 'node:crypto';
 
 export function generateRefreshToken(): string {
   return randomBytes(32).toString('base64url');
