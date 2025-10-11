@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/GW2treasures/gw2.me#readme",
   "devDependencies": {
-    "@gw2treasures/eslint-config": "0.1.1",
+    "@gw2treasures/eslint-config": "0.2.0",
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/archiver": "6.0.3",
     "@types/chrome": "0.1.23",
@@ -43,7 +43,7 @@
     "@fontsource/bitter": "5.2.10",
     "@gw2me/client": "workspace:*",
     "@gw2treasures/icons": "0.1.4",
-    "@gw2treasures/ui": "0.4.0",
+    "@gw2treasures/ui": "0.5.0-beta",
     "react": "19.1.1",
     "react-dom": "19.1.1"
   }
