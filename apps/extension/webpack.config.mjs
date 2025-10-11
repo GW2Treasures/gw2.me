@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import CopyPlugin from 'copy-webpack-plugin';
 
 const getConfig = (browser) => (env, argv) => ({

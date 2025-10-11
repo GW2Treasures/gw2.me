@@ -1,5 +1,5 @@
 // import { Algorithm, createVerifier } from 'fast-jwt';
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 import { calculateJwkThumbprint, EmbeddedJWK, jwtVerify } from 'jose';
 import { OAuth2Error, OAuth2ErrorCode } from './error';
 

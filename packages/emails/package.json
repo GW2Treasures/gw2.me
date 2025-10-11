@@ -17,7 +17,7 @@
     "lint": "eslint ."
   },
   "devDependencies": {
-    "@gw2treasures/eslint-config": "0.1.1",
+    "@gw2treasures/eslint-config": "0.2.0",
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/react": "19.1.16",
     "eslint": "9.37.0",

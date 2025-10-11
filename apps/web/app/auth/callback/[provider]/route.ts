@@ -4,7 +4,7 @@ import { getSession } from '@/lib/session';
 import { Prisma, UserProviderRequestType } from '@gw2me/database';
 import { providers } from 'app/auth/providers';
 import { LoginError } from 'app/login/form';
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 import { cookies } from 'next/headers';
 import { redirect, unstable_rethrow as rethrow } from 'next/navigation';
 import { NextRequest, NextResponse, userAgent } from 'next/server';

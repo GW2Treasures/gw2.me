@@ -1,13 +1,14 @@
 'use client';
 
-import { Button } from '@gw2treasures/ui/components/Form/Button';
-import { browserSupportsWebAuthn, startAuthentication } from '@simplewebauthn/browser';
-import { useCallback, useEffect, useState, useTransition, type FC } from 'react';
-import { getAuthenticationOptions, submitAuthentication } from './actions';
-import { LoginOptions } from 'app/login/action';
 import { Dialog } from '@gw2treasures/ui/components/Dialog/Dialog';
+import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { startAuthentication } from '@simplewebauthn/browser';
+import { LoginOptions } from 'app/login/action';
+import { useCallback, useState, useTransition, type FC } from 'react';
 import { NoticeContext, useShowNotice } from '../NoticeContext/NoticeContext';
+import { getAuthenticationOptions, submitAuthentication } from './actions';
 import { PasskeyAuthenticationDialog } from './PasskeyAuthenticationDialog';
+import { useBrowserSupportsWebAuthn } from './use-browser-supports-web-authn';
 
 export interface PasskeyAuthenticationButtonProps {
   className?: string,
@@ -15,16 +16,10 @@ export interface PasskeyAuthenticationButtonProps {
 }
 
 export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> = ({ className, options: loginOptions }) => {
-  const [supportsPasskeys, setSupportsPasskeys] = useState(false);
+  const supportsPasskeys = useBrowserSupportsWebAuthn();
   const [pending, startTransition] = useTransition();
   const [dialogOpen, setDialogOpen] = useState(false);
   const notice = useShowNotice();
-
-  useEffect(() => {
-    // check if the browser supports passkeys
-    // this is done in a useEffect so its always false during SSR
-    setSupportsPasskeys(browserSupportsWebAuthn());
-  }, []);
 
   const handleClick = useCallback(() => {
     // hide any notice that might still be visible

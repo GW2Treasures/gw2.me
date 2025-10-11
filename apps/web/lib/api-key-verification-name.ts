@@ -1,5 +1,5 @@
 import { getSessionOrRedirect } from './session';
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 
 export async function getApiKeyVerificationName() {
   const session = await getSessionOrRedirect();
