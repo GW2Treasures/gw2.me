@@ -1,19 +1,16 @@
 'use client';
 
 import { Button } from '@gw2treasures/ui/components/Form/Button';
-import { browserSupportsWebAuthn, startRegistration } from '@simplewebauthn/browser';
-import { useCallback, useEffect, useState, useTransition, type FC } from 'react';
+import { startRegistration } from '@simplewebauthn/browser';
+import { useCallback, useTransition, type FC } from 'react';
 import { getRegistrationOptions, submitRegistration } from './actions';
 import { useShowNotice } from '../NoticeContext/NoticeContext';
+import { useBrowserSupportsWebAuthn } from './use-browser-supports-web-authn';
 
 export const PasskeyRegistrationButton: FC = () => {
-  const [supportsPasskeys, setSupportsPasskeys] = useState(false);
+  const supportsPasskeys = useBrowserSupportsWebAuthn();
   const [pending, startTransition] = useTransition();
   const notice = useShowNotice();
-
-  useEffect(() => {
-    setSupportsPasskeys(browserSupportsWebAuthn());
-  }, []);
 
   const handleClick = useCallback(() => startTransition(async () => {
     // hide any notice that might still be visible
