@@ -4,7 +4,7 @@ import { FormState } from '@gw2treasures/ui/components/Form/Form';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { Prisma } from '@gw2me/database';
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
 import sharp from 'sharp';
 import { getFormDataString } from '@/lib/form-data';

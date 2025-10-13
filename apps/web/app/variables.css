@@ -24,7 +24,8 @@
 
   --shadow: 0 0 2px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.14);
 
-  --color-error: #f44336;
+  --color-error: #d60012;
+  --color-background-error: #d600120d;
 
   --max-page-width: 1400px;
   --max-page-width--padding: max(16px, (100vw - var(--max-page-width) + 16px) / 2);
@@ -53,7 +54,8 @@
 
     --color-focus: #2196f3;
 
-    --color-error: #ff6b60;
+    --color-error: #dc626d;
+    --color-background-error: #ff808a12;
 
     --shadow: 0 0 2px rgba(0,0,0,0.24), 0 4px 8px rgba(0,0,0,0.28)
   }

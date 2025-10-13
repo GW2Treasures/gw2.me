@@ -11,9 +11,9 @@
     "@gw2me/database": "workspace:*"
   },
   "devDependencies": {
-    "@gw2treasures/eslint-config": "0.1.1",
+    "@gw2treasures/eslint-config": "0.2.0",
     "@gw2treasures/tsconfig": "0.0.1",
-    "@types/node": "22.18.8",
+    "@types/node": "22.18.10",
     "eslint": "9.37.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.46.0"

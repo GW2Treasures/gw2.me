@@ -10,6 +10,7 @@ import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Checkbox } from '@gw2treasures/ui/components/Form/Checkbox';
 import { PKCEChallenge } from '@gw2me/client/pkce';
+import { useHydrated } from '@/lib/use-hydrated';
 
 export interface FedCmProps {
   clientId: string,
@@ -19,7 +20,7 @@ export interface FedCmProps {
 
 export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl, pkceChallenge }) => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const hydrated = useHydrated();
   const [supportsFedCmMode, setSupportsFedCmMode] = useState(false);
   const [abort, setAbort] = useState<AbortController>();
   const [error, setError] = useState<string>();
@@ -30,8 +31,6 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl, pkceChallenge }) => 
   const gw2me = useMemo(() => new Gw2MeClient({ client_id: clientId }, { url: gw2meUrl }), [clientId, gw2meUrl]);
 
   useEffect(() => {
-    setLoading(false);
-
     // check if this browser supports mode=button
     try {
       navigator.credentials.get({
@@ -72,7 +71,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl, pkceChallenge }) => 
     });
   }, [abort, gw2me.fedCM, gw2meUrl, mediation, mode, pkceChallenge, router, scopes]);
 
-  if(loading || !gw2me.fedCM.isSupported()) {
+  if(!hydrated || !gw2me.fedCM.isSupported()) {
     return (
       <Notice type="error">Your browser does not support FedCM.</Notice>
     );

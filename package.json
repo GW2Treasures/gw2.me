@@ -21,14 +21,14 @@
     "node": "20 || >=22",
     "npm": "please-use-pnpm",
     "yarn": "please-use-pnpm",
-    "pnpm": "10.18.1"
+    "pnpm": "10.18.2"
   },
   "pnpm": {
     "overrides": {
-      "react": "19.1.1",
-      "react-dom": "19.1.1",
-      "@types/react": "19.1.16",
-      "@types/react-dom": "19.1.9"
+      "react": "19.2.0",
+      "react-dom": "19.2.0",
+      "@types/react": "19.2.2",
+      "@types/react-dom": "19.2.2"
     },
     "onlyBuiltDependencies": [
       "@prisma/client",
@@ -38,5 +38,5 @@
       "sharp"
     ]
   },
-  "packageManager": "pnpm@10.18.1"
+  "packageManager": "pnpm@10.18.2"
 }

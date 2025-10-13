@@ -5,7 +5,7 @@ ARG turbo_version=2.5.8
 # renovate: datasource=npm packageName=sharp
 ARG sharp_version=0.34.4
 # renovate: datasource=npm packageName=pnpm
-ARG pnpm_version=10.18.1
+ARG pnpm_version=10.18.2
 
 FROM --platform=$BUILDPLATFORM node:${node_version} AS source
 ARG turbo_version
