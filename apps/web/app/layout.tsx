@@ -47,10 +47,6 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
             </div>
           </div>
           <hr className={styles.border}/>
-          <aside data-nosnippet="true" style={{ padding: 16, background: 'var(--color-brand)', color: '#fff', textAlign: 'center', lineHeight: 1.5 }}>
-            <b>The official Guild Wars 2 API is currently experiencing major issues</b> and has been partially disabled.<br/>
-            You might not be able to to add or verify API keys, and applications using gw2.me might not work properly.
-          </aside>
           <DataTableContext>
             {children}
           </DataTableContext>
