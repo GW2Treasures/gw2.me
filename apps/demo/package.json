@@ -24,7 +24,7 @@
     "@gw2treasures/eslint-plugin-nextjs": "0.1.1",
     "@gw2treasures/tsconfig": "0.0.1",
     "@next/eslint-plugin-next": "16.0.0-beta.0",
-    "@types/node": "22.18.10",
+    "@types/node": "22.18.11",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "eslint": "9.37.0",
