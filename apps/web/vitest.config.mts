@@ -5,7 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
-    environment: 'jsdom',
+    environment: 'node',
     setupFiles: [
       './lib/oauth/to-be-oauth2-error.vitest.ts',
       './lib/db.mock.ts',
