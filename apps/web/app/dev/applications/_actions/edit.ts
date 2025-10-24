@@ -84,7 +84,7 @@ export async function editApplication(id: string, _: FormState, form: FormData):
       // create file if hash doesn't exist yet
       const image = await db.file.upsert({
         where: { sha256 },
-        create: { data: resized, sha256, type: 'image/png' },
+        create: { data: Buffer.from(resized), sha256, type: 'image/png' },
         update: {}
       });
 

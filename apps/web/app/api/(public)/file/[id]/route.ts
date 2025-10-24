@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, { params }: RouteContext<'/api/f
     return new Response(null, { status: 304 });
   }
 
-  return new Response(file.data as Uint8Array<ArrayBuffer>, {
+  return new Response(file.data, {
     headers: {
       'Cache-Control': 'max-age=31536000, immutable',
       'Content-Type': file.type,
