@@ -12,8 +12,8 @@
   "dependencies": {
     "@gw2me/client": "workspace:*",
     "@gw2treasures/icons": "0.1.4",
-    "@gw2treasures/ui": "0.5.0-beta",
-    "next": "16.0.0-beta.0",
+    "@gw2treasures/ui": "0.5.0",
+    "next": "16.0.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "server-only": "0.0.1"
@@ -23,7 +23,7 @@
     "@gw2treasures/eslint-config": "0.2.0",
     "@gw2treasures/eslint-plugin-nextjs": "0.1.1",
     "@gw2treasures/tsconfig": "0.0.1",
-    "@next/eslint-plugin-next": "16.0.0-beta.0",
+    "@next/eslint-plugin-next": "16.0.0",
     "@types/node": "22.18.12",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
