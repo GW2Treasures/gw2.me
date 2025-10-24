@@ -33,8 +33,8 @@ importers:
         specifier: 0.1.4
         version: 0.1.4(react@19.2.0)
       '@gw2treasures/ui':
-        specifier: 0.5.0-beta
-        version: 0.5.0-beta(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.0(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.5.0
+        version: 0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.0(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       next:
         specifier: 16.0.0
         version: 16.0.0(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -94,8 +94,8 @@ importers:
         specifier: 0.1.4
         version: 0.1.4(react@19.2.0)
       '@gw2treasures/ui':
-        specifier: 0.5.0-beta
-        version: 0.5.0-beta(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.0(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.5.0
+        version: 0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.0(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react:
         specifier: 19.2.0
         version: 19.2.0
@@ -176,8 +176,8 @@ importers:
         specifier: 0.1.4
         version: 0.1.4(react@19.2.0)
       '@gw2treasures/ui':
-        specifier: 0.5.0-beta
-        version: 0.5.0-beta(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.0(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.5.0
+        version: 0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.0(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@react-email/render':
         specifier: 1.4.0
         version: 1.4.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -945,13 +945,13 @@ packages:
   '@gw2treasures/tsconfig@0.0.1':
     resolution: {integrity: sha512-zRzUn6Q49q19kXBcRSc853pfKlO0aPOzrYJxqffYBoZ1RamkQYQTMNtPaea8odCpQffoUKrGLVFGvNb6qY1C4w==}
 
-  '@gw2treasures/ui@0.5.0-beta':
-    resolution: {integrity: sha512-7ZgjqjEQr7tDSJL7yegkaumz8jVeb6JYQqIRCcHScJ7rXWchl0yzr/nZJrDuNIUU9ws0r2KCjeFkBGlmzR+5Bg==}
+  '@gw2treasures/ui@0.5.0':
+    resolution: {integrity: sha512-uFcMvlvXmttgf5t19jcYB/dqXdiOlwJANCyNwXv1dQztxEdRiuh5twCylcahincIyztGSpXVUSKrBSWXXhWrNw==}
     peerDependencies:
       '@gw2treasures/helper': ~0.0.5
       '@gw2treasures/icons': ~0.1.2
       '@gw2treasures/tsconfig': ~0.0.1
-      next: ^15.0.0 || 16.0.0-beta.0
+      next: ^15.0.0 || ^16.0.0
       react: 19.2.0
       react-dom: 19.2.0
 
@@ -5510,7 +5510,7 @@ snapshots:
 
   '@gw2treasures/tsconfig@0.0.1': {}
 
-  '@gw2treasures/ui@0.5.0-beta(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.0(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@gw2treasures/ui@0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.0(@babel/core@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@floating-ui/react': 0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@floating-ui/react-dom': 2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
