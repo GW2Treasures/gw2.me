@@ -20,11 +20,6 @@ spec:
       labels:
         name: demo
     spec:
-      tolerations:
-      - key: arch
-        operator: Equal
-        value: arm64
-        effect: NoSchedule
       containers:
       - name: demo
         image: ghcr.io/gw2treasures/gw2.me/demo:latest
