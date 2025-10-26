@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "PORT=4001 next dev --webpack",
     "build": "next build --webpack",
-    "start": "next start --webpack",
+    "start": "next start",
     "lint": "eslint .",
     "demo-setup": "demo-setup"
   },
