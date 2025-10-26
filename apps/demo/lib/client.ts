@@ -1,8 +1,8 @@
 import 'server-only';
 import { type DPoPCallback, Gw2MeClient } from '@gw2me/client';
 import { generatePKCEPair, type PKCEPair } from '@gw2me/client/pkce';
-import { unstable_noStore } from 'next/cache';
 import { createDPoPJwt as _createDPoPJwt, generateDPoPKeyPair } from '@gw2me/client/dpop';
+import { env } from './env';
 
 const globalForPKCEAndDPoP = globalThis as unknown as {
   pkce: PKCEPair | undefined,
@@ -33,22 +33,28 @@ export const createDPoPJwt: DPoPCallback = async (params) => {
   return _createDPoPJwt(params, await getDPoPPair());
 };
 
-export const gw2me = new Gw2MeClient({
-  client_id: process.env.DEMO_CLIENT_ID!,
-  client_secret: process.env.DEMO_CLIENT_SECRET!,
-}, {
-  url: getGw2MeUrl(),
-});
+let gw2me: Gw2MeClient;
+export async function getGw2Me() {
+  if(!gw2me) {
+    gw2me = new Gw2MeClient({
+      client_id: await env('DEMO_CLIENT_ID'),
+      client_secret: await env('DEMO_CLIENT_SECRET'),
+    }, {
+      url: await getGw2MeUrl(),
+    });
+  }
 
-export function getGw2MeUrl() {
-  unstable_noStore();
-  return process.env.GW2ME_URL ?? 'https://gw2.me';
+  return gw2me;
 }
 
-export function getCallback(isDPoP: boolean) {
-  unstable_noStore();
+export async function getGw2MeUrl() {
+  const gw2meUrl = await env('GW2ME_URL', { optional: true });
+  return gw2meUrl ?? 'https://gw2.me';
+}
 
-  const redirect_uri = new URL(process.env.CALLBACK_URL ?? 'https://demo.gw2.me/callback');
+export async function getCallback(isDPoP: boolean) {
+  const callbackUrl = await env('CALLBACK_URL');
+  const redirect_uri = new URL(callbackUrl ?? 'https://demo.gw2.me/callback');
 
   if(isDPoP) {
     redirect_uri.searchParams.set('dpop', 'true');

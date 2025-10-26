@@ -7,6 +7,7 @@ import Link from 'next/link';
 import './global.css';
 import styles from './layout.module.css';
 import './variables.css';
+import { FC, Suspense } from 'react';
 
 const bitter = Bitter({
   subsets: ['latin' as const],
@@ -29,16 +30,24 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
             </Link>
             <LinkButton appearance="menu" href="/fed-cm">FedCM</LinkButton>
 
-            <LinkButton appearance="menu" href={getGw2MeUrl()} external icon="gw2me" className={styles.right}>Return to gw2.me</LinkButton>
+            <Suspense>
+              <ReturnToGw2MeButton/>
+            </Suspense>
           </div>
         </div>
         <div className={styles.content}>
-          {children}
+          <Suspense fallback={<Icon icon="loading"/>}>
+            {children}
+          </Suspense>
         </div>
       </body>
     </html>
   );
 }
+
+const ReturnToGw2MeButton: FC = async () => (
+  <LinkButton appearance="menu" href={await getGw2MeUrl()} external icon="gw2me" className={styles.right}>Return to gw2.me</LinkButton>
+);
 
 export const metadata: Metadata = {
   title: {

@@ -1,4 +1,4 @@
-import { createDPoPJwt, getCallback, getDPoPPair, getPKCEPair, gw2me } from '@/lib/client';
+import { createDPoPJwt, getCallback, getDPoPPair, getGw2Me, getPKCEPair } from '@/lib/client';
 import { AuthorizationUrlParams, Scope } from '@gw2me/client';
 import { jwkThumbprint } from '@gw2me/client/dpop';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
@@ -56,7 +56,7 @@ async function login(formData: FormData) {
   const dpopKeys = await getDPoPPair();
 
   const requestParams: AuthorizationUrlParams = {
-    redirect_uri: getCallback(dpop),
+    redirect_uri: await getCallback(dpop),
     scopes,
     state: 'example',
     ...challenge,
@@ -65,6 +65,8 @@ async function login(formData: FormData) {
     include_granted_scopes,
     verified_accounts_only,
   };
+
+  const gw2me = await getGw2Me();
 
   if(par) {
     const pushed = await gw2me.pushAuthorizationRequest({ ...requestParams, dpop: dpop ? createDPoPJwt : undefined });

@@ -1,4 +1,4 @@
-import { createDPoPJwt, getGw2MeUrl, gw2me } from '@/lib/client';
+import { createDPoPJwt, getGw2Me, getGw2MeUrl } from '@/lib/client';
 import { Icon } from '@gw2treasures/ui';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { SubmitButton } from '@gw2treasures/ui/components/Form/Buttons/SubmitButton';
@@ -10,8 +10,6 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { Client } from './client';
 
-export const dynamic = 'force-dynamic';
-
 async function refreshTokenAction(data: FormData) {
   'use server';
 
@@ -21,6 +19,7 @@ async function refreshTokenAction(data: FormData) {
     throw new Error();
   }
 
+  const gw2me = await getGw2Me();
   const token = await gw2me.refreshToken({ refresh_token });
 
   redirect(`/token?access_token=${token.access_token}&refresh_token=${token.refresh_token}&token_type=${token.token_type}`);
@@ -35,6 +34,7 @@ async function refreshTokenActionDPoP(data: FormData) {
     throw new Error();
   }
 
+  const gw2me = await getGw2Me();
   const token = await gw2me.refreshToken({ refresh_token, dpop: createDPoPJwt });
 
   redirect(`/token?access_token=${token.access_token}&refresh_token=${token.refresh_token}&token_type=${token.token_type}`);
@@ -47,6 +47,7 @@ async function revokeAccessToken(data: FormData) {
   const refresh_token = data.get('refresh_token')?.toString();
 
   if(access_token) {
+    const gw2me = await getGw2Me();
     await gw2me.revokeToken({ token: access_token });
   }
 
@@ -61,6 +62,7 @@ async function revokeRefreshToken(data: FormData) {
   const token_type = data.get('token_type') === 'DPoP' ? 'DPoP' : 'Bearer';
 
   if(refresh_token) {
+    const gw2me = await getGw2Me();
     await gw2me.revokeToken({ token: refresh_token });
   }
 
@@ -80,6 +82,7 @@ async function getSubtoken(accountId: string, data: FormData) {
   // get requested permissions
   const requestedPermissions = data.getAll('permission').filter((permission) => typeof permission === 'string');
 
+  const gw2me = await getGw2Me();
   const api = gw2me.api(access_token, { dpop: token_type === 'DPoP' ? createDPoPJwt : undefined });
   const { subtoken } = await api.subtoken(accountId, { permissions: requestedPermissions });
 
@@ -88,6 +91,7 @@ async function getSubtoken(accountId: string, data: FormData) {
 
 export default async function TokenPage({ searchParams: asyncSearchParams }: PageProps<'/token'>) {
   const searchParams = await asyncSearchParams;
+  const gw2me = await getGw2Me();
 
   const access_token = Array.isArray(searchParams.access_token) ? searchParams.access_token[0] : searchParams.access_token;
   const refresh_token = Array.isArray(searchParams.refresh_token) ? searchParams.refresh_token[0] : searchParams.refresh_token;
@@ -106,7 +110,7 @@ export default async function TokenPage({ searchParams: asyncSearchParams }: Pag
 
   return (
     <>
-      <Client clientId={process.env.DEMO_CLIENT_ID!} gw2meUrl={getGw2MeUrl()} accessToken={access_token}/>
+      <Client clientId={process.env.DEMO_CLIENT_ID!} gw2meUrl={await getGw2MeUrl()} accessToken={access_token}/>
 
       <form>
         <input type="hidden" name="token_type" value={token_type}/>
