@@ -7,29 +7,30 @@
     "prisma:migrate": "prisma migrate deploy",
     "prisma:migrate-dev": "prisma migrate dev --name",
     "prisma:studio": "prisma studio",
-    "build": "rm -rf ./lib && tsc -b"
+    "build": "rm -rf ./dist && tsc -b"
   },
   "exports": {
     ".": {
-      "types": "./lib/generated/prisma/client.d.ts",
-      "browser": "./lib/generated/prisma/browser.js",
-      "default": "./lib/generated/prisma/client.js"
+      "types": "./dist/generated/prisma/client.d.ts",
+      "browser": "./dist/generated/prisma/browser.js",
+      "default": "./dist/generated/prisma/client.js"
     },
     "./enums": {
-      "types": "./lib/generated/prisma/enums.d.ts",
-      "default": "./lib/generated/prisma/enums.js"
+      "types": "./dist/generated/prisma/enums.d.ts",
+      "default": "./dist/generated/prisma/enums.js"
     },
     "./models": {
-      "types": "./lib/generated/prisma/models.d.ts",
-      "default": "./lib/generated/prisma/models.js"
+      "types": "./dist/generated/prisma/models.d.ts",
+      "default": "./dist/generated/prisma/models.js"
     },
     "./setup": {
-      "types": "./lib/setup.d.ts",
-      "default": "./lib/setup.js"
+      "types": "./dist/setup.d.ts",
+      "default": "./dist/setup.js"
     }
   },
   "files": [
-    "lib"
+    "dist",
+    "prisma"
   ],
   "dependencies": {
     "@prisma/adapter-pg": "6.18.0",
