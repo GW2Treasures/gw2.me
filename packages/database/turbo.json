@@ -9,7 +9,7 @@
         "prisma:generate"
       ],
       "outputs": [
-        "lib/**"
+        "dist/**"
       ]
     }
   }
