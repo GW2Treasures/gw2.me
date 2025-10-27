@@ -53,7 +53,7 @@ export async function getGw2MeUrl() {
 }
 
 export async function getCallback(isDPoP: boolean) {
-  const callbackUrl = await env('CALLBACK_URL');
+  const callbackUrl = await env('CALLBACK_URL', { optional: true });
   const redirect_uri = new URL(callbackUrl ?? 'https://demo.gw2.me/callback');
 
   if(isDPoP) {
