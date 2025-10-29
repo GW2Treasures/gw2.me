@@ -252,8 +252,8 @@ importers:
         specifier: 19.2.2
         version: 19.2.2(@types/react@19.2.2)
       '@types/web':
-        specifier: 0.0.284
-        version: 0.0.284
+        specifier: 0.0.285
+        version: 0.0.285
       '@vitejs/plugin-react':
         specifier: 5.1.0
         version: 5.1.0(vite@6.2.4(@types/node@22.18.12)(jiti@2.4.2)(terser@5.36.0))
@@ -1761,8 +1761,8 @@ packages:
   '@types/uuid@9.0.8':
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
 
-  '@types/web@0.0.284':
-    resolution: {integrity: sha512-pq/5+hj+FNvvULGdyY2dySKUj7cB67TLk1CSO4dj+rIf8q5BY11jlxdsNbcELWMr+GTdubpHUmcViQ+J8YuF/g==}
+  '@types/web@0.0.285':
+    resolution: {integrity: sha512-Bbco/Yy3zS/DhY8ym2ZXaFvMM4TMdE4pm9xjlnJvOI1pDIZb/nPNLv/yHUIntH0i959fjFWahPOCFKj3eB7+pg==}
 
   '@typescript-eslint/eslint-plugin@8.46.0':
     resolution: {integrity: sha512-hA8gxBq4ukonVXPy0OKhiaUh/68D0E88GSmtC1iAEnGaieuDi38LhS7jdCHRLi6ErJBNDGCzvh5EnzdPwUc0DA==}
@@ -6407,7 +6407,7 @@ snapshots:
 
   '@types/uuid@9.0.8': {}
 
-  '@types/web@0.0.284': {}
+  '@types/web@0.0.285': {}
 
   '@typescript-eslint/eslint-plugin@8.46.0(@typescript-eslint/parser@8.46.0(eslint@9.38.0(jiti@2.4.2))(typescript@5.9.3))(eslint@9.38.0(jiti@2.4.2))(typescript@5.9.3)':
     dependencies:
