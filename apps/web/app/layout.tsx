@@ -10,7 +10,6 @@ import { getUser } from '@/lib/session';
 import { Icon, cx } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { DataTableContext } from '@gw2treasures/ui/components/Table/DataTableContext';
-import { FormatDate } from '@/components/Format/FormatDate';
 
 const bitter = Bitter({
   subsets: ['latin' as const],
@@ -48,11 +47,6 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
             </div>
           </div>
           <hr className={styles.border}/>
-          <aside data-nosnippet="true" style={{ padding: 16, background: 'var(--color-brand)', color: '#fff', textAlign: 'center', lineHeight: 1.5 }}>
-            <b>The official Guild Wars 2 API will be disabled</b> from <FormatDate date={new Date('2025-10-24T17:00:00.000Z')}/> until <FormatDate date={new Date('2025-10-30T17:00:00.000Z')}/> to
-            avoid spoilers during the launch of <b style={{ whiteSpace: 'nowrap' }}>Guild Wars 2: Visions of Eternity.</b><br/>
-            You will not be able to add or verify API keys, and applications using gw2.me might not work properly.
-          </aside>
           <DataTableContext>
             {children}
           </DataTableContext>
