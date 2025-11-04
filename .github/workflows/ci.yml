@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        node: [ 20, 22 ]
+        node: [ 22, 24 ]
     steps:
     - uses: actions/checkout@v5
     - uses: ./.github/actions/setup-node
@@ -38,7 +38,7 @@ jobs:
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
-        node-version: 20
+        node-version: 24
         turbo-cache-key: lint
     - name: Run Lint
       run: pnpm run lint
@@ -136,7 +136,7 @@ jobs:
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
-        node-version: 20
+        node-version: 24
         turbo-cache-key: test
     - name: Run Tests
       run: pnpm run test
@@ -201,7 +201,7 @@ jobs:
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
-        node-version: 20
+        node-version: 24
         turbo-cache-key: publish
     - name: Run Publish
       run: pnpm run publish-package --filter=@gw2me/${{ matrix.target }} --env-mode=loose
