@@ -356,8 +356,8 @@ importers:
   packages/emails:
     dependencies:
       '@react-email/body':
-        specifier: 0.1.0
-        version: 0.1.0(react@19.2.0)
+        specifier: 0.2.0
+        version: 0.2.0(react@19.2.0)
       '@react-email/column':
         specifier: 0.0.13
         version: 0.0.13(react@19.2.0)
@@ -1408,8 +1408,8 @@ packages:
   '@prisma/get-platform@6.18.0':
     resolution: {integrity: sha512-uXNJCJGhxTCXo2B25Ta91Rk1/Nmlqg9p7G9GKh8TPhxvAyXCvMNQoogj4JLEUy+3ku8g59cpyQIKFhqY2xO2bg==}
 
-  '@react-email/body@0.1.0':
-    resolution: {integrity: sha512-o1bcSAmDYNNHECbkeyceCVPGmVsYvT+O3sSO/Ct7apKUu3JphTi31hu+0Nwqr/pgV5QFqdoT5vdS3SW5DJFHgQ==}
+  '@react-email/body@0.2.0':
+    resolution: {integrity: sha512-9GCWmVmKUAoRfloboCd+RKm6X17xn7eGL7HnpAZUnjBXBilWCxsKnLMTC/ixSHDKS/A/057M1Tx6ZUXd89sVBw==}
     peerDependencies:
       react: 19.2.0
 
@@ -6080,7 +6080,7 @@ snapshots:
     dependencies:
       '@prisma/debug': 6.18.0
 
-  '@react-email/body@0.1.0(react@19.2.0)':
+  '@react-email/body@0.2.0(react@19.2.0)':
     dependencies:
       react: 19.2.0
 
