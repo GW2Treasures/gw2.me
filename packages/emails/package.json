@@ -26,7 +26,7 @@
     "typescript-eslint": "8.46.3"
   },
   "dependencies": {
-    "@react-email/body": "0.1.0",
+    "@react-email/body": "0.2.0",
     "@react-email/column": "0.0.13",
     "@react-email/container": "0.0.15",
     "@react-email/head": "0.0.12",
