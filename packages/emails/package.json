@@ -23,7 +23,7 @@
     "eslint": "9.39.1",
     "react-email": "5.0.4",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.46.4"
+    "typescript-eslint": "8.47.0"
   },
   "dependencies": {
     "@react-email/body": "0.2.0",
