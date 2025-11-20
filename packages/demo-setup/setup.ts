@@ -25,7 +25,7 @@ async function run() {
   console.log(`Loading .env ${styleText('gray', `(${databaseEnvFile})`)}`);
   loadEnvFile(databaseEnvFile);
 
-  const db = createPrismaClient({ connectionString: process.env.DATABASE_URL! });
+  const db = createPrismaClient(process.env.DATABASE_URL!);
 
   // get user
   const existingUser = await db.user.findFirst({ where: { roles: { has: 'Admin' }}});
