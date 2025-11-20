@@ -41,7 +41,7 @@ export const App: FC = () => {
     const loadAccessToken = async () => {
       const value = await self.chrome.storage.sync.get('access_token');
 
-      if('access_token' in value && value.access_token) {
+      if('access_token' in value && value.access_token && typeof value.access_token === 'string') {
         setState({ step: Step.LOADING_ACCOUNTS, access_token: value.access_token });
       } else {
         const token = await authorize('none');
