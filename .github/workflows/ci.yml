@@ -21,7 +21,7 @@ jobs:
       matrix:
         node: [ 22, 24 ]
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
@@ -34,7 +34,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
@@ -53,7 +53,7 @@ jobs:
       contents: read
       packages: write
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Login to GitHub Container Registry
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: build-docker
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Pull images
       run: docker compose pull
     - run: docker images
@@ -99,7 +99,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: build-docker
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: nolar/setup-k3d-k3s@v1
       with:
         version: v1.33
@@ -132,7 +132,7 @@ jobs:
     name: Test / Unit
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
@@ -197,7 +197,7 @@ jobs:
       matrix:
         target: [ client ]
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
