@@ -3,7 +3,7 @@ import { createPrismaClient } from '@gw2me/database/setup';
 // https://pris.ly/d/help/next-js-best-practices
 
 const prismaClientSingleton = () => {
-  return createPrismaClient({ connectionString: process.env.DATABASE_URL! });
+  return createPrismaClient(process.env.DATABASE_URL!);
 };
 
 type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
