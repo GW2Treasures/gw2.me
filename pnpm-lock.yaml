@@ -285,8 +285,8 @@ importers:
         specifier: 0.2.0
         version: 0.2.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.1(jiti@2.4.2))(typescript@5.9.3)
       '@gw2treasures/publish-package':
-        specifier: 0.1.0-rc.0
-        version: 0.1.0-rc.0
+        specifier: 0.1.0
+        version: 0.1.0
       '@gw2treasures/tsconfig':
         specifier: 0.0.1
         version: 0.0.1
@@ -1112,8 +1112,8 @@ packages:
     peerDependencies:
       react: 19.2.0
 
-  '@gw2treasures/publish-package@0.1.0-rc.0':
-    resolution: {integrity: sha512-9ZGJiG6U1hVuj2AfZ9C0o0aUeavXtQi6jjnVpT5XApySwC5UcxM3JgknYo+wjCYedqOZJqlarhqrap2DOf2uAQ==}
+  '@gw2treasures/publish-package@0.1.0':
+    resolution: {integrity: sha512-ntkx4eDN5L4MVNoJGZ5tlKoQn85GQiZmAqf8UukIxYLcX36rXHlO2XAYTa93A9+UtkVae6TrCq9P+ws+FgQ3Qg==}
     hasBin: true
 
   '@gw2treasures/tsconfig@0.0.1':
@@ -5843,7 +5843,7 @@ snapshots:
     dependencies:
       react: 19.2.0
 
-  '@gw2treasures/publish-package@0.1.0-rc.0': {}
+  '@gw2treasures/publish-package@0.1.0': {}
 
   '@gw2treasures/tsconfig@0.0.1': {}
 
