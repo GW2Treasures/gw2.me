@@ -27,7 +27,7 @@
     "hast-util-to-jsx-runtime": "2.3.6",
     "jose": "6.1.2",
     "next": "16.0.4",
-    "nodemailer": "7.0.10",
+    "nodemailer": "7.0.11",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "server-only": "0.0.1",
