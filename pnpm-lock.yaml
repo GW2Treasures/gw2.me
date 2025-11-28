@@ -95,7 +95,7 @@ importers:
         version: 0.1.4(react@19.2.0)
       '@gw2treasures/ui':
         specifier: 0.5.0
-        version: 0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.5(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react:
         specifier: 19.2.0
         version: 19.2.0
@@ -177,7 +177,7 @@ importers:
         version: 0.1.4(react@19.2.0)
       '@gw2treasures/ui':
         specifier: 0.5.0
-        version: 0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.5(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@react-email/render':
         specifier: 2.0.0
         version: 2.0.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -315,7 +315,7 @@ importers:
         specifier: 7.0.0
         version: 7.0.0(prisma@7.0.0(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(typescript@5.9.3)
       '@prisma/client-runtime-utils':
-        specifier: ^7.0.0
+        specifier: 7.0.0
         version: 7.0.0
     devDependencies:
       '@gw2treasures/tsconfig':
@@ -6055,7 +6055,7 @@ snapshots:
       react-dom: 19.2.0(react@19.2.0)
       server-only: 0.0.1
 
-  '@gw2treasures/ui@0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@gw2treasures/ui@0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.0))(@gw2treasures/tsconfig@0.0.1)(next@16.0.5(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@floating-ui/react': 0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@floating-ui/react-dom': 2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
