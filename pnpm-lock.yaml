@@ -252,8 +252,8 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.7)
       '@types/web':
-        specifier: 0.0.294
-        version: 0.0.294
+        specifier: 0.0.295
+        version: 0.0.295
       '@vitejs/plugin-react':
         specifier: 5.1.1
         version: 5.1.1(vite@6.2.4(@types/node@24.10.1)(jiti@2.4.2)(terser@5.36.0))
@@ -2004,8 +2004,8 @@ packages:
   '@types/uuid@9.0.8':
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
 
-  '@types/web@0.0.294':
-    resolution: {integrity: sha512-prZi2M3jd/lGeOhW9P3txXfn6/nXIJRn+w/aFHz94/dl04riO5V99n+sKSeIciq7FM2XY6wPWoNhNbm6S/AdMQ==}
+  '@types/web@0.0.295':
+    resolution: {integrity: sha512-EgmtsChp5exbEH0uhQ9vhtnVg67lzd3HhWOndwNuPTViPGW434DCZ48AzYg3dURQCnEaCu/Rd3vH83D3xdZaVA==}
 
   '@typescript-eslint/eslint-plugin@8.46.0':
     resolution: {integrity: sha512-hA8gxBq4ukonVXPy0OKhiaUh/68D0E88GSmtC1iAEnGaieuDi38LhS7jdCHRLi6ErJBNDGCzvh5EnzdPwUc0DA==}
@@ -3831,6 +3831,7 @@ packages:
   next@16.0.6:
     resolution: {integrity: sha512-2zOZ/4FdaAp5hfCU/RnzARlZzBsjaTZ/XjNQmuyYLluAPM7kcrbIkdeO2SL0Ysd1vnrSgU+GwugfeWX1cUCgCg==}
     engines: {node: '>=20.9.0'}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -7013,7 +7014,7 @@ snapshots:
 
   '@types/uuid@9.0.8': {}
 
-  '@types/web@0.0.294': {}
+  '@types/web@0.0.295': {}
 
   '@typescript-eslint/eslint-plugin@8.46.0(@typescript-eslint/parser@8.46.0(eslint@9.39.1(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.1(jiti@2.4.2))(typescript@5.9.3)':
     dependencies:
