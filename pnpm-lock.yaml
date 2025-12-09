@@ -408,8 +408,8 @@ importers:
         specifier: 9.39.1
         version: 9.39.1(jiti@2.4.2)
       react-email:
-        specifier: 5.0.5
-        version: 5.0.5
+        specifier: 5.0.6
+        version: 5.0.6
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -4205,8 +4205,8 @@ packages:
     peerDependencies:
       react: 19.2.1
 
-  react-email@5.0.5:
-    resolution: {integrity: sha512-O0BCyg2zR/3CsEYqoeDQuJL6W8oHYSPmvzIeSbFa5XXdtofmgizCLThbs50lcP7wGCTkDvdJIZ6XWUt2aRU6zA==}
+  react-email@5.0.6:
+    resolution: {integrity: sha512-DEGzWpEiC3CquPEaaEJuipNT3WZ9mK58rbkpOe4Slbgyf60PLa1wONnt5a3afbBBRbNdW2aYhIvVI41yS6UIRA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -8470,7 +8470,7 @@ snapshots:
 
   glob@11.0.2:
     dependencies:
-      foreground-child: 3.1.1
+      foreground-child: 3.3.1
       jackspeak: 4.1.0
       minimatch: 10.0.1
       minipass: 7.1.2
@@ -9632,7 +9632,7 @@ snapshots:
       react: 19.2.1
       scheduler: 0.27.0
 
-  react-email@5.0.5:
+  react-email@5.0.6:
     dependencies:
       '@babel/parser': 7.28.5
       '@babel/traverse': 7.28.5
