@@ -150,7 +150,7 @@ export async function authorizeInternal(
           scope: scopes,
           redirectUri: authorizationRequest.type === 'OAuth2' ? authorizationRequest.data.redirect_uri : undefined,
           codeChallenge: authorizationRequest.data.code_challenge_method ? `${authorizationRequest.data.code_challenge_method}:${authorizationRequest.data.code_challenge}` : null,
-          dpopJkt: authorizationRequest.type !== 'FedCM' ? authorizationRequest.data.dpop_jkt : null,
+          dpopJkt: authorizationRequest.type !== 'FedCM' ? authorizationRequest.data.dpop_jkt : '',
           token: generateCode(),
           expiresAt: expiresAt(60),
         },

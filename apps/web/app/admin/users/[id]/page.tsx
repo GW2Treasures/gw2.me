@@ -10,6 +10,7 @@ import { db } from '@/lib/db';
 import { getFormDataString } from '@/lib/form-data';
 import { sendEmailVerificationMail } from '@/lib/mail/email-verification';
 import { AuthorizationRequestState } from '@gw2me/database';
+import { isTruthy } from '@gw2treasures/helper/is';
 import { Icon } from '@gw2treasures/ui';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
@@ -81,6 +82,7 @@ export default async function AdminUserDetailPage({ params }: PageProps<'/admin/
         <Authorizations.Column id="clientId" title="Client Id" hidden>{({ clientId }) => <Code inline borderless>{clientId}</Code>}</Authorizations.Column>
         <Authorizations.Column id="applicationId" title="Application Id" hidden>{({ applicationId }) => <Code inline borderless>{applicationId}</Code>}</Authorizations.Column>
         <Authorizations.Column id="type" title="Type" sortBy="type">{({ type }) => type}</Authorizations.Column>
+        <Authorizations.Column id="flags" title="Flags">{({ codeChallenge, dpopJkt }) => [codeChallenge && 'PKCE', dpopJkt && 'DPoP'].filter(isTruthy).join(', ')}</Authorizations.Column>
         <Authorizations.Column id="scope" title="Scope" hidden>{({ scope }) => scope.join(' ')}</Authorizations.Column>
         <Authorizations.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Authorizations.Column>
         <Authorizations.Column id="expiresAt" title="Expires At" sortBy="expiresAt">{({ expiresAt }) => expiresAt ? <FormatDate date={expiresAt}/> : 'Never'}</Authorizations.Column>
