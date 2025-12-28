@@ -263,7 +263,7 @@ model Authorization {
 
   redirectUri   String?
   codeChallenge String?
-  dpopJkt       String?
+  dpopJkt       String @default("") // TODO: once prisma supports NULL in unique compound indexes (prisma/prisma#3197) switch back from empty string to nullable
 
   expiresAt DateTime?
   createdAt DateTime  @default(now())
@@ -282,7 +282,7 @@ model Authorization {
   applicationGrant ApplicationGrant @relation(fields: [applicationId, userId], references: [applicationId, userId])
 
   @@unique([type, token])
-  @@unique([type, clientId, userId])
+  @@unique([type, clientId, userId, dpopJkt])
 }
 
 enum AuthorizationType {

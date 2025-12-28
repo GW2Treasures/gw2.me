@@ -4,7 +4,7 @@ import { assert } from '@/lib/oauth/assert';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { generateAccessToken, generateRefreshToken } from '@/lib/token';
 import { TokenResponse } from '@gw2me/client';
-import { ClientType, AuthorizationType } from '@gw2me/database';
+import { ClientType, AuthorizationType, Prisma } from '@gw2me/database';
 import { createHash } from 'node:crypto';
 import { OAuth2RequestHandlerProps } from '../request';
 import { checkProof } from '@/lib/oauth/dpop';
@@ -76,7 +76,7 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
         // create refresh token
         const refreshAuthorization = canCreateRefreshToken
           ? await tx.authorization.upsert({
-              where: { type_clientId_userId: { type: AuthorizationType.RefreshToken, clientId, userId }},
+              where: { type_clientId_userId_dpopJkt: { type: AuthorizationType.RefreshToken, clientId, userId, dpopJkt: '' }},
               create: { type: AuthorizationType.RefreshToken, clientId, applicationId, userId, scope, token: generateRefreshToken() },
               update: { scope }
             })
@@ -84,9 +84,9 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
 
         // create access token
         const accessAuthorization = await tx.authorization.upsert({
-          where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
-          create: { type: AuthorizationType.AccessToken, clientId, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt },
-          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt ?? null }
+          where: { type_clientId_userId_dpopJkt: { type: AuthorizationType.AccessToken, clientId, userId, dpopJkt: dpop?.jkt ?? '' }},
+          create: { type: AuthorizationType.AccessToken, clientId, userId, dpopJkt: dpop?.jkt ?? '', applicationId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
+          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
         });
 
         // delete used code token
@@ -137,12 +137,24 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
 
       const { clientId, applicationId, userId, scope } = refreshAuthorization;
 
+      const identifier = {
+        type: AuthorizationType.AccessToken,
+        clientId,
+        userId,
+        dpopJkt: dpop?.jkt ?? ''
+      } satisfies Prisma.AuthorizationTypeClientIdUserIdDpopJktCompoundUniqueInput;
+      const data = {
+        scope,
+        token: generateAccessToken(),
+        expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION),
+      } satisfies Prisma.AuthorizationUpdateInput;
+
       const [accessAuthorization] = await db.$transaction([
         // create new access token
         db.authorization.upsert({
-          where: { type_clientId_userId: { type: AuthorizationType.AccessToken, clientId, userId }},
-          create: { type: AuthorizationType.AccessToken, clientId, applicationId, userId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt },
-          update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION), dpopJkt: dpop?.jkt ?? null }
+          where: { type_clientId_userId_dpopJkt: identifier },
+          create: { ...identifier, ...data, applicationId },
+          update: data
         }),
 
         // set last used on refresh token

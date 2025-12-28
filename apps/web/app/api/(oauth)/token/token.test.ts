@@ -15,7 +15,7 @@ const mockAuthorization: MockAuthorization = {
   clientId: 'client-id',
   applicationId: 'app-id',
   codeChallenge: null,
-  dpopJkt: null,
+  dpopJkt: '',
   expiresAt: expiresAt(60),
   redirectUri: '/redirect',
   createdAt: new Date(),

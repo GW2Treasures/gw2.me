@@ -9,7 +9,7 @@ export const supportedDPoPAlgorithms: string[] = [
 ];
 
 // https://datatracker.ietf.org/doc/html/rfc9449#section-4.3
-export async function checkProof(proof: string, { htm, htu, accessToken }: { htm: string, htu: URL, accessToken?: string }, expectedJwkThumbprint?: string | null) {
+export async function checkProof(proof: string, { htm, htu, accessToken }: { htm: string, htu: URL, accessToken?: string }, expectedJwkThumbprint?: string | '') {
   // verify JWT
   const { protectedHeader, payload } = await jwtVerify(proof, EmbeddedJWK, {
     typ: 'dpop+jwt',
