@@ -8,7 +8,9 @@
     "paths": {
       "@/components/*": ["components/*"],
       "@/lib/*": ["lib/*"]
-    }
+    },
+
+    "libReplacement": true
   },
   "include": [
     "next-env.d.ts",
