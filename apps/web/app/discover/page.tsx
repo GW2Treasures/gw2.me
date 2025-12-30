@@ -6,6 +6,7 @@ import { Icon } from '@gw2treasures/ui';
 import { PageTitle } from '@/components/Layout/PageTitle';
 import { unstable_cache } from 'next/cache';
 import { Metadata } from 'next';
+import { isTruthy } from '@gw2treasures/helper/is';
 
 const getApplications = unstable_cache(async function getApplications() {
   const applications = await db.application.findMany({
@@ -29,7 +30,12 @@ export default async function DiscoverPage() {
           <a key={app.id} className={styles.app} href={app.publicUrl} target="_blank" rel="noreferrer noopener">
             <ApplicationImage fileId={app.imageId} size={64}/>
             <div className={styles.title}>{app.name} <Icon icon="external-link"/></div>
-            <p>{app.description}</p>
+            <div className={styles.description}>
+              {app.description.split(/(\r\n|\n|\r)+/).map((line) => line.trim()).filter(isTruthy).map((line, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <p key={index}>{line}</p>
+              ))}
+            </div>
           </a>
         ))}
       </div>
