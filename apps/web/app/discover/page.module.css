@@ -33,6 +33,10 @@
   font-size: 18px;
 }
 
-.app > p {
+.description > p {
   margin: 0;
+}
+
+.description > p + p {
+  margin-top: 4px;
 }
