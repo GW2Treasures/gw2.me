@@ -5,7 +5,7 @@ import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { Prisma } from '@gw2me/database';
 import { createHash } from 'node:crypto';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import sharp from 'sharp';
 import { getFormDataString } from '@/lib/form-data';
 
@@ -56,6 +56,9 @@ export async function editApplication(id: string, _: FormState, form: FormData):
   if(termsOfServiceUrl === undefined || (termsOfServiceUrl && !isValidUrl(termsOfServiceUrl))) {
     return { error: 'Invalid Terms of Service URL' };
   }
+
+  // update /discover page in case any public data changed
+  updateTag('discover');
 
   // make sure imageRaw is a file
   if(imageRaw !== null && !(imageRaw instanceof Blob)) {
