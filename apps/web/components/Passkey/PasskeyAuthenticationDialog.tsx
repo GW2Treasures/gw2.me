@@ -11,6 +11,7 @@ import { useCallback, useEffect, useRef, useState, useTransition, type FC } from
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 import { useShowNotice } from '../NoticeContext/NoticeContext';
 import { getAuthenticationOptions, getRegistrationOptions, submitAuthentication, submitRegistration } from './actions';
+import { handleAuthenticationResult } from './utils';
 
 const invalidUsernameRegex = /[^a-z0-9._-]/i;
 
@@ -47,7 +48,10 @@ export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> =
       // start authentication using "Conditional UI"
       // this promise only resolves when the users clicks on the autocomplete options of the text input
       const authentication = await startAuthentication({ optionsJSON: options, useBrowserAutofill: true });
-      await startTransition(() => submitAuthentication(challenge, authentication, returnTo));
+      await startTransition(async () => {
+        const result = await submitAuthentication(challenge, authentication);
+        return handleAuthenticationResult(result, notice, returnTo);
+      });
     } catch(e) {
       rethrow(e);
       console.error(e);
@@ -70,7 +74,8 @@ export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> =
     try {
       const authenticationOnRegistration = await getAuthenticationOptions();
       const authentication = await startAuthentication({ optionsJSON: authenticationOnRegistration.options });
-      await submitAuthentication(authenticationOnRegistration.challenge, authentication, returnTo);
+      const result = await submitAuthentication(authenticationOnRegistration.challenge, authentication);
+      await handleAuthenticationResult(result, notice, returnTo);
     } catch(e) {
       rethrow(e);
       console.error(e);

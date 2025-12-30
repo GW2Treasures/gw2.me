@@ -10,6 +10,7 @@ import { NoticeContext, useShowNotice } from '../NoticeContext/NoticeContext';
 import { getAuthenticationOptions, submitAuthentication } from './actions';
 import { PasskeyAuthenticationDialog } from './PasskeyAuthenticationDialog';
 import { useBrowserSupportsWebAuthn } from './use-browser-supports-web-authn';
+import { handleAuthenticationResult } from './utils';
 
 export interface PasskeyAuthenticationButtonProps {
   className?: string,
@@ -38,7 +39,9 @@ export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> =
           const authentication = await startAuthentication({ optionsJSON: options });
 
           // submit authentication to server to verify challenge and start session
-          await submitAuthentication(challenge, authentication, loginOptions.returnTo);
+          const result = await submitAuthentication(challenge, authentication);
+
+          handleAuthenticationResult(result, notice, loginOptions.returnTo);
         } catch(e) {
           rethrow(e);
           console.error(e);

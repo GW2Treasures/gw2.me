@@ -78,15 +78,20 @@ export async function getRegistrationOptions(params: RegistrationParams): Promis
 export async function getAuthenticationOptions(): Promise<{ options: PublicKeyCredentialRequestOptionsJSON, challenge: string }> {
   const { rpID } = await getRelayingParty();
 
+  // if we know which user is trying to authenticate, we can limit the allowed credentials to their passkeys
   const rememberedUser = await getPreviousUser();
-  const passkeys = rememberedUser ? await db.passkey.findMany({
-    where: { userId: rememberedUser.id }
-  }) : [];
+  const passkeys = rememberedUser
+    ? await db.passkey.findMany({
+        where: { userId: rememberedUser.id },
+        select: { id: true, transports: true },
+      })
+    : undefined;
 
+  // generate authentication options
   const options = await generateAuthenticationOptions({
     rpID,
     userVerification: 'required',
-    allowCredentials: passkeys.map(mapPasskeyToCredentials),
+    allowCredentials: passkeys?.map(mapPasskeyToCredentials),
     timeout: 3 * 60 * 1000, // 3 minutes
   });
 
@@ -181,20 +186,34 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
   redirect(params.returnTo ?? (params.type === 'add' ? '/providers' : '/profile'));
 }
 
-export async function submitAuthentication(challengeJwt: string, authentication: AuthenticationResponseJSON, returnTo?: string) {
+export type SubmitAuthenticationResult =
+  | { success: true, acceptedCredentials: AllAcceptedCredentialsOptions, currentUserDetails: CurrentUserDetailsOptions }
+  | { success: false, reason: 'unknown-credential', unknownCredential: UnknownCredentialOptions }
+  | { success: false, reason: 'verification-failed' };
+
+export async function submitAuthentication(challengeJwt: string, authentication: AuthenticationResponseJSON): Promise<SubmitAuthenticationResult> {
+  const { rpID, origin } = await getRelayingParty();
   const rememberedUser = await getPreviousUser();
 
+  // get the used passkey from db
   const passkey = await db.passkey.findUnique({
-    where: { id: authentication.id, userId: rememberedUser?.id }
+    where: { id: authentication.id, userId: rememberedUser?.id },
+    include: { user: { select: { name: true }}}
   });
 
   if(!passkey) {
-    throw new Error('Unknown passkey id');
+    return {
+      success: false,
+      reason: 'unknown-credential',
+      unknownCredential: {
+        credentialId: authentication.id,
+        rpId: rpID,
+      }
+    };
   }
 
-  const { rpID, origin } = await getRelayingParty();
+  // verify authentication response
   const { challenge } = await verifyChallengeJwt(challengeJwt);
-
   const { verified, authenticationInfo } = await verifyAuthenticationResponse({
     response: authentication,
     credential: {
@@ -209,12 +228,14 @@ export async function submitAuthentication(challengeJwt: string, authentication:
     requireUserVerification: true
   });
 
-  console.log({ verified, authenticationInfo }); // TODO: remove
-
   if(!verified) {
-    throw new Error('Verification failed');
+    return {
+      success: false,
+      reason: 'verification-failed'
+    };
   }
 
+  // update counter and last used date for passkey
   await db.passkey.update({
     where: { id: passkey.id },
     data: {
@@ -236,9 +257,26 @@ export async function submitAuthentication(challengeJwt: string, authentication:
   cookieStore.set(await userCookie(passkey.userId));
   cookieStore.delete(LoginErrorCookieName);
 
-  // redirect
-  // TODO: verify returnTo to only redirect to to trusted URLs
-  redirect(returnTo ?? '/profile');
+  // load all passkeys to signal known credentials to the browser
+  const passkeys = await db.passkey.findMany({
+    where: { userId: passkey.userId },
+    select: { id: true }
+  });
+
+  return {
+    success: true,
+    acceptedCredentials: {
+      userId: passkey.userId,
+      rpId: rpID,
+      allAcceptedCredentialIds: passkeys.map(({ id }) => id)
+    },
+    currentUserDetails: {
+      userId: passkey.userId,
+      rpId: rpID,
+      displayName: '',
+      name: passkey.user.name,
+    }
+  };
 }
 
 function mapPasskeyToCredentials({ id, transports }: Pick<Passkey, 'id' | 'transports'>) {
