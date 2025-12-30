@@ -4,17 +4,18 @@ import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { Icon } from '@gw2treasures/ui';
 import { PageTitle } from '@/components/Layout/PageTitle';
+import { unstable_cache } from 'next/cache';
+import { Metadata } from 'next';
 
-export const revalidate = 300;
-
-const getApplications = async () => {
+const getApplications = unstable_cache(async function getApplications() {
   const applications = await db.application.findMany({
     where: { public: true },
-    select: { id: true, name: true, description: true, publicUrl: true, imageId: true }
+    select: { id: true, name: true, description: true, publicUrl: true, imageId: true },
+    orderBy: { users: { _count: 'desc' }}
   });
 
   return applications;
-};
+}, ['discover'], { revalidate: 300, tags: ['discover'] });
 
 export default async function DiscoverPage() {
   const applications = await getApplications();
@@ -22,7 +23,7 @@ export default async function DiscoverPage() {
   return (
     <PageLayout>
       <PageTitle>Discover</PageTitle>
-      <p>Here are some of the applications that support gw2.me.</p>
+      <p>Here are some of the public applications that support gw2.me.</p>
       <div className={styles.apps}>
         {applications.map((app) => (
           <a key={app.id} className={styles.app} href={app.publicUrl} target="_blank" rel="noreferrer noopener">
@@ -36,7 +37,7 @@ export default async function DiscoverPage() {
   );
 }
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Discover',
   description: 'Discover applications with gw2.me integration',
 };
