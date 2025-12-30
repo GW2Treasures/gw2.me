@@ -146,7 +146,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
     session = await db.userSession.create({
       data: {
         info: sessionDisplayName ?? 'Session',
-        user: { create: { name: params.username }}
+        user: { create: { name: params.username }},
       },
       select: { id: true, userId: true }
     });
@@ -176,7 +176,9 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
           transports: credential.transports,
           userId: session.userId,
         }
-      }
+      },
+      // if this is a new user, connect the created session to the provider
+      sessions: params.type === 'new' ? { connect: { id: session.id }} : undefined
     }
   });
 
