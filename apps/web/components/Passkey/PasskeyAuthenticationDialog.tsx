@@ -1,15 +1,16 @@
 'use client';
 
-import { Button } from '@gw2treasures/ui/components/Form/Button';
-import { startAuthentication, startRegistration, browserSupportsWebAuthnAutofill, WebAuthnAbortService } from '@simplewebauthn/browser';
-import { useCallback, useEffect, useRef, useState, useTransition, type FC } from 'react';
-import { getAuthenticationOptions, getRegistrationOptions, submitAuthentication, submitRegistration } from './actions';
 import { DialogActions } from '@gw2treasures/ui/components/Dialog/DialogActions';
+import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
-import { useShowNotice } from '../NoticeContext/NoticeContext';
-import { ButtonLink } from '../ButtonLink/ButtonLink';
+import { browserSupportsWebAuthnAutofill, startAuthentication, startRegistration, WebAuthnAbortService } from '@simplewebauthn/browser';
 import { LoginOptions } from 'app/login/action';
+import { unstable_rethrow as rethrow } from 'next/navigation';
+import { useCallback, useEffect, useRef, useState, useTransition, type FC } from 'react';
+import { ButtonLink } from '../ButtonLink/ButtonLink';
+import { useShowNotice } from '../NoticeContext/NoticeContext';
+import { getAuthenticationOptions, getRegistrationOptions, submitAuthentication, submitRegistration } from './actions';
 
 const invalidUsernameRegex = /[^a-z0-9._-]/i;
 
@@ -48,6 +49,7 @@ export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> =
       const authentication = await startAuthentication({ optionsJSON: options, useBrowserAutofill: true });
       await startTransition(() => submitAuthentication(challenge, authentication, returnTo));
     } catch(e) {
+      rethrow(e);
       console.error(e);
 
       if(e instanceof Error && e.name === 'AbortError') {
@@ -70,6 +72,7 @@ export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> =
       const authentication = await startAuthentication({ optionsJSON: authenticationOnRegistration.options });
       await submitAuthentication(authenticationOnRegistration.challenge, authentication, returnTo);
     } catch(e) {
+      rethrow(e);
       console.error(e);
 
       // check if user has canceled
@@ -96,6 +99,7 @@ export const PasskeyAuthenticationDialog: FC<PasskeyAuthenticationDialogProps> =
       const registration = await startRegistration({ optionsJSON: authenticationOnRegistration.options });
       await submitRegistration({ type: 'new', username, returnTo }, authenticationOnRegistration.challenge, registration);
     } catch(e) {
+      rethrow(e);
       console.error(e);
 
       // restart conditional ui

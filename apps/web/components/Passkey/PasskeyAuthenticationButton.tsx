@@ -4,6 +4,7 @@ import { Dialog } from '@gw2treasures/ui/components/Dialog/Dialog';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { LoginOptions } from 'app/login/action';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { useCallback, useState, useTransition, type FC } from 'react';
 import { NoticeContext, useShowNotice } from '../NoticeContext/NoticeContext';
 import { getAuthenticationOptions, submitAuthentication } from './actions';
@@ -39,6 +40,7 @@ export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> =
           // submit authentication to server to verify challenge and start session
           await submitAuthentication(challenge, authentication, loginOptions.returnTo);
         } catch(e) {
+          rethrow(e);
           console.error(e);
 
           if(e instanceof Error) {

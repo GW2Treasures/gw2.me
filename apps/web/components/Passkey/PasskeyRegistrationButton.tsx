@@ -2,9 +2,10 @@
 
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { startRegistration } from '@simplewebauthn/browser';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { useCallback, useTransition, type FC } from 'react';
-import { getRegistrationOptions, submitRegistration } from './actions';
 import { useShowNotice } from '../NoticeContext/NoticeContext';
+import { getRegistrationOptions, submitRegistration } from './actions';
 import { useBrowserSupportsWebAuthn } from './use-browser-supports-web-authn';
 
 export const PasskeyRegistrationButton: FC = () => {
@@ -26,7 +27,9 @@ export const PasskeyRegistrationButton: FC = () => {
       // submit registration to server to verify challenge and store passkey
       await submitRegistration({ type: 'add' }, challenge, registration);
     } catch (e) {
+      rethrow(e);
       console.error(e);
+
       if(e instanceof Error) {
         if(e.name === 'InvalidStateError') {
           // don't show any error, local device is already registered
