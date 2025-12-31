@@ -78,9 +78,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<IdentityA
     const requestedScopes = new Set(params.scope?.split(' ') as Scope[] ?? [Scope.Identify, Scope.Email]);
     normalizeScopes(requestedScopes);
 
-    // always include previous scopes if available (as if `include_granted_scopes` is set during OAuth authorization)
-    // TODO: this could be made configurable (params)
-    const scopes = previousScopes.union(requestedScopes);
+    // include previously granted scopes unless `include_granted_scopes` is explicitly set to false
+    const includeGrantedScopes = params.include_granted_scopes ?? true;
+    const scopes = includeGrantedScopes ? previousScopes.union(requestedScopes) : requestedScopes;
 
     // get new scopes
     const undisclosedNewScopes = scopes.difference(previousScopes);
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<IdentityA
       client_id: identityAssertionRequest.client_id,
       response_type: 'code',
       scope: Array.from(scopes).join(' '),
-      include_granted_scopes: 'true',
+      include_granted_scopes: includeGrantedScopes ? 'true' : undefined,
       ...pkce,
     };
 
@@ -208,6 +208,7 @@ interface Params {
   scope?: string,
   code_challenge?: string,
   code_challenge_method?: string,
+  include_granted_scopes?: boolean,
 }
 
 function parseParams(params?: unknown): Params {

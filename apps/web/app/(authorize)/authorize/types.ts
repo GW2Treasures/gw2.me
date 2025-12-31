@@ -8,7 +8,7 @@ export namespace AuthorizationRequestData {
     scope: string,
     code_challenge?: string,
     code_challenge_method?: string,
-    include_granted_scopes?: string,
+    include_granted_scopes?: 'true',
     verified_accounts_only?: string,
   }
 
