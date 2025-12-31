@@ -38,8 +38,7 @@ export default function DevDocsFedCmPage() {
       <p>
         It is possible to request specific <Link href="/dev/docs/scopes">scopes</Link> when using FedCM in browsers supporting FedCM params (Chrome 132+).
         If the user has not granted these scopes before, the user will be shown an authorization dialog using the FedCM Continuation API.
-        All previously granted scopes are always included, as if <Code inline>include_granted_scopes</Code> is used with the normal OAuth2 flow.
-        If the browser does not support FedCM params, the scopes will default to <Code inline>identify email</Code>.
+        If the browser does not support FedCM params, the scopes will default to <Code inline>identify email</Code> in addition to all previously granted scopes.
       </p>
       <p>
         <Link href="/dev/docs/access-tokens#pkce">PKCE</Link> is required when using FedCM.
@@ -73,12 +72,17 @@ export default function DevDocsFedCmPage() {
             <td>List of <Link href="/dev/docs/scopes">scopes</Link> separated by spaces. Defaults to <Code inline>identify email</Code>.</td>
           </tr>
           <tr>
-            <td><Code inline>code_challenge</Code></td>
+            <td><Code inline>include_granted_scopes</Code> (optional)</td>
+            <td><Code inline borderless>Boolean</Code></td>
+            <td>Include all previously granted scopes (see <Link href="/dev/docs/access-tokens#incremental-authorization">Incremental Authorization</Link>). Defaults to <Code inline>true</Code>.</td>
+          </tr>
+          <tr>
+            <td><Code inline>code_challenge</Code> (optional)</td>
             <td><Code inline borderless>String</Code></td>
             <td><Link href="/dev/docs/access-tokens#pkce">PKCE</Link> challenge. Required for public applications.</td>
           </tr>
           <tr>
-            <td><Code inline>code_challenge_method</Code></td>
+            <td><Code inline>code_challenge_method</Code> (optional)</td>
             <td><Code inline borderless>&quot;S256&quot;</Code></td>
             <td><Link href="/dev/docs/access-tokens#pkce">PKCE</Link> challenge method. Only SHA-256 is supported.</td>
           </tr>

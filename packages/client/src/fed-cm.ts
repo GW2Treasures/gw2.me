@@ -8,6 +8,8 @@ export interface FedCMRequestOptions {
   signal?: AbortSignal,
   code_challenge: string,
   code_challenge_method: 'S256',
+  /** @default true */
+  include_granted_scopes?: boolean,
 }
 
 export class Gw2MeFedCM {
@@ -23,7 +25,7 @@ export class Gw2MeFedCM {
     return typeof window !== 'undefined' && 'IdentityCredential' in window;
   }
 
-  request({ scopes, mediation, signal, mode, code_challenge, code_challenge_method }: FedCMRequestOptions) {
+  request({ scopes, mediation, signal, mode, code_challenge, code_challenge_method, include_granted_scopes }: FedCMRequestOptions) {
     if(!this.isSupported()) {
       throw new Gw2MeError('FedCM is not supported');
     }
@@ -44,6 +46,7 @@ export class Gw2MeFedCM {
             scope: scopes.join(' '),
             code_challenge,
             code_challenge_method,
+            include_granted_scopes,
           }
         }],
         mode

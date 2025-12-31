@@ -26,6 +26,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl, pkceChallenge }) => 
   const [error, setError] = useState<string>();
   const [mediation, setMediation] = useState<CredentialMediationRequirement>('optional');
   const [mode, setMode] = useState<'passive' | 'active'>();
+  const [include_granted_scopes, setIncludeGrantedScopes] = useState(true);
   const [scopes, setScopes] = useState<Scope[]>([Scope.Identify, Scope.Email]);
 
   const gw2me = useMemo(() => new Gw2MeClient({ client_id: clientId }, { url: gw2meUrl }), [clientId, gw2meUrl]);
@@ -55,7 +56,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl, pkceChallenge }) => 
     setAbort(abortController);
     setError(undefined);
 
-    gw2me.fedCM.request({ mode, mediation, signal: abortController.signal, scopes, ...pkceChallenge }).then((credential) => {
+    gw2me.fedCM.request({ mode, mediation, signal: abortController.signal, scopes, include_granted_scopes, ...pkceChallenge }).then((credential) => {
       setAbort(undefined);
 
       if(credential) {
@@ -69,7 +70,7 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl, pkceChallenge }) => 
         setError(e.toString());
       }
     });
-  }, [abort, gw2me.fedCM, gw2meUrl, mediation, mode, pkceChallenge, router, scopes]);
+  }, [abort, gw2me.fedCM, gw2meUrl, include_granted_scopes, mediation, mode, pkceChallenge, router, scopes]);
 
   if(!hydrated || !gw2me.fedCM.isSupported()) {
     return (
@@ -96,6 +97,8 @@ export const FedCm: FC<FedCmProps> = ({ clientId, gw2meUrl, pkceChallenge }) => 
           </Checkbox>
         ))}
       </div>
+
+      <Checkbox checked={include_granted_scopes} onChange={setIncludeGrantedScopes}>include_granted_scopes</Checkbox>
 
       <FlexRow>
         <Button onClick={handleClick} icon={abort ? 'loading' : 'gw2me'}>Trigger FedCM</Button>
