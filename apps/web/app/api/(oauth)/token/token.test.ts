@@ -1,4 +1,3 @@
-// @vitest-environment node
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { assertPKCECodeChallenge, handleTokenRequest } from './token';
 import { dbMock } from '@/lib/db.mock';

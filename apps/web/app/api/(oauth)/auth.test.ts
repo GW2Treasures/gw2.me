@@ -1,4 +1,3 @@
-// @vitest-environment node
 import { describe, expect, it, beforeEach, beforeAll } from 'vitest';
 import { OAuth2ErrorCode } from '@/lib/oauth/error';
 import { getRequestAuthorization, RequestAuthorization } from './auth';

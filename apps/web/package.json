@@ -48,7 +48,6 @@
     "@typescript/lib-dom": "npm:@types/web@0.0.312",
     "@vitejs/plugin-react": "5.1.2",
     "eslint": "9.39.2",
-    "jsdom": "27.4.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.51.0",
     "vite-tsconfig-paths": "6.0.3",
