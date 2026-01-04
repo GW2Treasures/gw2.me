@@ -376,9 +376,6 @@ importers:
       '@react-email/preview':
         specifier: 0.0.14
         version: 0.0.14(react@19.2.3)
-      '@react-email/render':
-        specifier: 2.0.1
-        version: 2.0.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@react-email/row':
         specifier: 0.0.13
         version: 0.0.13(react@19.2.3)
