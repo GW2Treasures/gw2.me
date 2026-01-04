@@ -1,4 +1,3 @@
-// @vitest-environment node
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { handleNewEmail } from './email';
 import { dbMock } from '@/lib/db.mock';

@@ -1,4 +1,3 @@
-// @vitest-environment node
 import { Scope } from '@gw2me/client';
 import { verifyScopes } from './auth';
 import { describe, expect, it } from 'vitest';
