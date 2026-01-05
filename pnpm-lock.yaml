@@ -300,8 +300,8 @@ importers:
         specifier: 8.51.0
         version: 8.51.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
       undici-types:
-        specifier: 7.16.0
-        version: 7.16.0
+        specifier: 7.17.0
+        version: 7.17.0
 
   packages/database:
     dependencies:
@@ -4783,6 +4783,9 @@ packages:
 
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
+
+  undici-types@7.17.0:
+    resolution: {integrity: sha512-aCt4oiOwwDSB1SBIKNLuUghX8LHAZvY6qMaM0e8mifQpxbfqIUvCTF3W0M0wqM0s51opMMfni9999DzdWbaSLw==}
 
   unist-util-is@6.0.0:
     resolution: {integrity: sha512-2qCTHimwdxLfz+YzdGfkqNlH0tLi9xjTnHddPmJwtIG9MGsdbutfTc4P+haPD7l7Cjxf/WZj+we5qfVPvvxfYw==}
@@ -10251,6 +10254,8 @@ snapshots:
       which-boxed-primitive: 1.1.1
 
   undici-types@7.16.0: {}
+
+  undici-types@7.17.0: {}
 
   unist-util-is@6.0.0:
     dependencies:
