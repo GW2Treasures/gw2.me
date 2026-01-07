@@ -179,8 +179,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.3))(@gw2treasures/tsconfig@0.0.1)(next@16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@react-email/render':
-        specifier: 2.0.1
-        version: 2.0.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        specifier: 2.0.2
+        version: 2.0.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@simplewebauthn/browser':
         specifier: 13.2.2
         version: 13.2.2
@@ -402,8 +402,8 @@ importers:
         specifier: 9.39.2
         version: 9.39.2(jiti@2.4.2)
       react-email:
-        specifier: 5.1.1
-        version: 5.1.1
+        specifier: 5.2.0
+        version: 5.2.0
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -1555,8 +1555,8 @@ packages:
     peerDependencies:
       react: 19.2.3
 
-  '@react-email/render@2.0.1':
-    resolution: {integrity: sha512-eYNL4+SSrV1+58MIcT4znarX4YTMuYBr1uzhI6U8fBFvRMZPryxNOnD7jnZ/Ser3MtJEquQNbXjrAP+RVkfLbg==}
+  '@react-email/render@2.0.2':
+    resolution: {integrity: sha512-AGuNo86TP9Y2JBUwFcT+z0frPDML4WLIFlnCi7laCPYJA+43kdim0y+qRNPxRxZkJiUz1JMPnE2M5HaNYhWwIg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: 19.2.3
@@ -4179,8 +4179,8 @@ packages:
     peerDependencies:
       react: 19.2.3
 
-  react-email@5.1.1:
-    resolution: {integrity: sha512-NUwnOXyxCJtr2xJO4uiEVmBwRg00rgvV2WZe6Z+a2HqGeTTOiLpKoQOvroKGFzUemkQKQlVRFPdPvSK/1uanmw==}
+  react-email@5.2.0:
+    resolution: {integrity: sha512-4QoWo/UCc8F8uu5fFKVmcyXsZFpqnfQH1qgcMbGi9Dl6OfNhrDToXE9GY7ePIrGIrfxKZdcrHPzT7yuZA5Ra6A==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -6410,7 +6410,7 @@ snapshots:
     dependencies:
       react: 19.2.3
 
-  '@react-email/render@2.0.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+  '@react-email/render@2.0.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       html-to-text: 9.0.5
       prettier: 3.5.3
@@ -9539,7 +9539,7 @@ snapshots:
       react: 19.2.3
       scheduler: 0.27.0
 
-  react-email@5.1.1:
+  react-email@5.2.0:
     dependencies:
       '@babel/parser': 7.28.5
       '@babel/traverse': 7.28.5

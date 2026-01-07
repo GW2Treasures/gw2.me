@@ -19,7 +19,7 @@
     "@gw2treasures/helper": "0.0.5",
     "@gw2treasures/icons": "0.1.4",
     "@gw2treasures/ui": "0.5.0",
-    "@react-email/render": "2.0.1",
+    "@react-email/render": "2.0.2",
     "@simplewebauthn/browser": "13.2.2",
     "@simplewebauthn/server": "13.2.2",
     "@wooorm/starry-night": "3.8.0",
