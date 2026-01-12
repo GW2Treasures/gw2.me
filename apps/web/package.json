@@ -16,7 +16,7 @@
     "@gw2me/database": "workspace:*",
     "@gw2me/emails": "workspace:*",
     "@gw2me/onig": "workspace:*",
-    "@gw2treasures/helper": "0.0.5",
+    "@gw2treasures/helper": "0.0.6",
     "@gw2treasures/icons": "0.1.4",
     "@gw2treasures/ui": "0.5.0",
     "@react-email/render": "2.0.2",
