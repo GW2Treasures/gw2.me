@@ -34,7 +34,7 @@ importers:
         version: 0.1.4(react@19.2.3)
       '@gw2treasures/ui':
         specifier: 0.5.0
-        version: 0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.3))(@gw2treasures/tsconfig@0.0.1)(next@16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 0.5.0(@gw2treasures/helper@0.0.6)(@gw2treasures/icons@0.1.4(react@19.2.3))(@gw2treasures/tsconfig@0.0.1)(next@16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       next:
         specifier: 16.1.1
         version: 16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -95,7 +95,7 @@ importers:
         version: 0.1.4(react@19.2.3)
       '@gw2treasures/ui':
         specifier: 0.5.0
-        version: 0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.3))(@gw2treasures/tsconfig@0.0.1)(next@16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 0.5.0(@gw2treasures/helper@0.0.6)(@gw2treasures/icons@0.1.4(react@19.2.3))(@gw2treasures/tsconfig@0.0.1)(next@16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react:
         specifier: 19.2.3
         version: 19.2.3
@@ -170,14 +170,14 @@ importers:
         specifier: workspace:*
         version: link:../../packages/onig
       '@gw2treasures/helper':
-        specifier: 0.0.5
-        version: 0.0.5
+        specifier: 0.0.6
+        version: 0.0.6
       '@gw2treasures/icons':
         specifier: 0.1.4
         version: 0.1.4(react@19.2.3)
       '@gw2treasures/ui':
         specifier: 0.5.0
-        version: 0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.3))(@gw2treasures/tsconfig@0.0.1)(next@16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 0.5.0(@gw2treasures/helper@0.0.6)(@gw2treasures/icons@0.1.4(react@19.2.3))(@gw2treasures/tsconfig@0.0.1)(next@16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@react-email/render':
         specifier: 2.0.2
         version: 2.0.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -1122,8 +1122,8 @@ packages:
     peerDependencies:
       eslint: ^8.56.0 || ^9.0.0
 
-  '@gw2treasures/helper@0.0.5':
-    resolution: {integrity: sha512-CAbDPQn7raIO0eMMTFzYFUIfBOLmno8OSC8BMJQ9zTkZlkdW27t72nZFQVbZDgiTUUYq7yeya05eb6QfGZPBog==}
+  '@gw2treasures/helper@0.0.6':
+    resolution: {integrity: sha512-pluYpINRjqeP9aK8Z6ho43Uwu7pkIcJRveVnks2Kp0xAe1quvw781g+GPvS5YodUxiBJblQwncwIGTfhYAccfw==}
 
   '@gw2treasures/icons@0.1.4':
     resolution: {integrity: sha512-n4fgAohGzS0KHwzN1TIwl3YLJ2MjuCSjS7DJvG2g/ZSWgQkVa5wpXmyJVdVoU8CX3eeAv8SgT3f72Mce9RnuCw==}
@@ -5972,7 +5972,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@gw2treasures/helper@0.0.5': {}
+  '@gw2treasures/helper@0.0.6': {}
 
   '@gw2treasures/icons@0.1.4(react@19.2.3)':
     dependencies:
@@ -5982,11 +5982,11 @@ snapshots:
 
   '@gw2treasures/tsconfig@0.0.1': {}
 
-  '@gw2treasures/ui@0.5.0(@gw2treasures/helper@0.0.5)(@gw2treasures/icons@0.1.4(react@19.2.3))(@gw2treasures/tsconfig@0.0.1)(next@16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+  '@gw2treasures/ui@0.5.0(@gw2treasures/helper@0.0.6)(@gw2treasures/icons@0.1.4(react@19.2.3))(@gw2treasures/tsconfig@0.0.1)(next@16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       '@floating-ui/react': 0.27.16(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@floating-ui/react-dom': 2.1.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@gw2treasures/helper': 0.0.5
+      '@gw2treasures/helper': 0.0.6
       '@gw2treasures/icons': 0.1.4(react@19.2.3)
       '@gw2treasures/tsconfig': 0.0.1
       client-only: 0.0.1
