@@ -17,6 +17,8 @@ jobs:
   build-node:
     name: Build / Node ${{ matrix.node }}
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     strategy:
       matrix:
         node: [ 22, 24 ]
@@ -33,6 +35,8 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@v6
     - uses: ./.github/actions/setup-node
@@ -78,6 +82,8 @@ jobs:
     name: Test / docker compose
     runs-on: ubuntu-24.04
     needs: build-docker
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@v6
     - name: Pull images
@@ -98,6 +104,8 @@ jobs:
     name: Test / kubernetes
     runs-on: ubuntu-24.04
     needs: build-docker
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@v6
     - uses: nolar/setup-k3d-k3s@v1
@@ -131,6 +139,8 @@ jobs:
   test-unit:
     name: Test / Unit
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@v6
     - uses: ./.github/actions/setup-node
@@ -147,6 +157,7 @@ jobs:
     needs: [build-node, lint, test-compose, test-kubernetes, test-unit]
     runs-on: ubuntu-24.04
     if: always()
+    permissions: {}
     steps:
     - run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
     - run: exit 0
@@ -157,6 +168,9 @@ jobs:
     runs-on: ubuntu-24.04
     if: github.event_name == 'push'
     needs: [success]
+    permissions:
+      contents: read
+      packages: write
     strategy:
       matrix:
         target: [ web, demo, database-migration ]
