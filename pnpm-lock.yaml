@@ -55,8 +55,8 @@ importers:
         specifier: 0.2.0
         version: 0.2.0(@typescript-eslint/parser@8.53.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
       '@gw2treasures/eslint-plugin-nextjs':
-        specifier: 0.1.1
-        version: 0.1.1(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
+        specifier: 0.1.2
+        version: 0.1.2(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
       '@gw2treasures/tsconfig':
         specifier: 0.0.1
         version: 0.0.1
@@ -225,8 +225,8 @@ importers:
         specifier: 0.2.0
         version: 0.2.0(@typescript-eslint/parser@8.53.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
       '@gw2treasures/eslint-plugin-nextjs':
-        specifier: 0.1.1
-        version: 0.1.1(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
+        specifier: 0.1.2
+        version: 0.1.2(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
       '@gw2treasures/tsconfig':
         specifier: 0.0.1
         version: 0.0.1
@@ -1117,8 +1117,8 @@ packages:
     peerDependencies:
       eslint: ^9.22.0
 
-  '@gw2treasures/eslint-plugin-nextjs@0.1.1':
-    resolution: {integrity: sha512-tKzX1Y+QN5Zadx0YBGfhlNkcAfwj1Jtalr7lgdPcwMomaaucbJUtR0FKEAZstNb1cL5tQuLPaIt6mIelT+isAQ==}
+  '@gw2treasures/eslint-plugin-nextjs@0.1.2':
+    resolution: {integrity: sha512-O+imHMHl+61WZe9Y9y78r/RCU/IXPDPa3H3Ej2h+YSgJq6YSpmGaKfw5C01sq3nf2YRO9JPfDaeUqVbTm4cYbg==}
     peerDependencies:
       eslint: ^8.56.0 || ^9.0.0
 
@@ -6097,9 +6097,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@gw2treasures/eslint-plugin-nextjs@0.1.1(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)':
+  '@gw2treasures/eslint-plugin-nextjs@0.1.2(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)':
     dependencies:
-      '@typescript-eslint/utils': 8.46.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.53.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
       eslint: 9.39.2(jiti@2.4.2)
     transitivePeerDependencies:
       - supports-color
