@@ -1,28 +1,25 @@
 {
   "name": "@gw2me/client",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "gw2.me client library",
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     },
     "./dpop": {
-      "types": "./dist/dpop.d.ts",
-      "default": "./dist/dpop.js"
+      "types": "./dist/dpop.d.mts",
+      "default": "./dist/dpop.mjs"
     },
     "./pkce": {
-      "types": "./dist/pkce.d.ts",
-      "default": "./dist/pkce.js"
+      "types": "./dist/pkce.d.mts",
+      "default": "./dist/pkce.mjs"
     }
   },
   "scripts": {
-    "build": "pnpm run clean && if test $CI; then pnpm run build:ci; else pnpm run build:local; fi",
-    "build:local": "tsup src/index.ts src/dpop.ts src/pkce.ts --format esm && tsc --emitDeclarationOnly --declaration --declarationMap",
-    "build:ci": "tsup src/index.ts src/dpop.ts src/pkce.ts --format esm --minify --dts",
-    "clean": "rm -rf dist/",
+    "build": "tsdown src/index.ts src/dpop.ts src/pkce.ts",
     "lint": "eslint .",
     "publish-package": "gw2treasures-publish-package"
   },
@@ -38,7 +35,8 @@
     "oauth2"
   ],
   "files": [
-    "dist/"
+    "dist/*.mjs",
+    "dist/*.d.mts"
   ],
   "author": "darthmaim",
   "license": "MIT",
@@ -51,7 +49,7 @@
     "@gw2treasures/publish-package": "0.1.0",
     "@gw2treasures/tsconfig": "0.0.1",
     "eslint": "9.39.2",
-    "tsup": "8.5.1",
+    "tsdown": "0.19.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.53.0",
     "undici-types": "7.18.2"
