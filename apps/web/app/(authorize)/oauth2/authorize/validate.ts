@@ -118,7 +118,7 @@ function verifyVerifiedAccountsOnly({ verified_accounts_only }: Partial<Authoriz
   assert(verified_accounts_only === undefined || verified_accounts_only === 'true', OAuth2ErrorCode.invalid_request, 'invalid verified_accounts_only');
 }
 
-export const validateRequest = cache(async function validateRequest(request: Partial<AuthorizationRequestData.OAuth2>, isPAR: boolean): Promise<{ error: string, request?: undefined } | { error: undefined, request: AuthorizationRequestData.OAuth2 }> {
+export const validateRequest = cache(async function validateRequest(request: Partial<AuthorizationRequestData.OAuth2>, isPAR: boolean): Promise<{ error: OAuth2Error, request?: undefined } | { error: undefined, request: AuthorizationRequestData.OAuth2 }> {
   try {
     // first verify client_id and redirect_uri
     await verifyClientId(request);
@@ -127,11 +127,11 @@ export const validateRequest = cache(async function validateRequest(request: Par
     if(error instanceof OAuth2Error) {
       // it is not safe to redirect back to the client, so we show an error
       console.log(error);
-      return { error: error.message };
+      return { error };
     }
 
     console.log(error);
-    return { error: 'Unknown error' };
+    return { error: new OAuth2Error(OAuth2ErrorCode.server_error, { description: 'internal server error', cause: error }) };
   }
 
   try {

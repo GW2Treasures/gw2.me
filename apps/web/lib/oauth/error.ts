@@ -26,8 +26,8 @@ export class OAuth2Error extends Error {
   public description?: string;
   public httpStatus?: number;
 
-  constructor(public code: OAuth2ErrorCode, { description, httpStatus }: OAuth2ErrorDetails = {}) {
-    super(code + (description ? ` (${description})` : ''));
+  constructor(public code: OAuth2ErrorCode, { description, httpStatus, ...options }: OAuth2ErrorDetails & ErrorOptions = {}) {
+    super(code + (description ? ` (${description})` : ''), options);
 
     this.description = description;
     this.httpStatus = httpStatus;
@@ -43,7 +43,7 @@ export interface OAuth2AuthorizationErrorDetails extends OAuth2ErrorDetails {
 export class OAuth2AuthorizationError extends OAuth2Error {
   public schema?: string;
 
-  constructor(public code: OAuth2ErrorCode, { schema, ...details }: OAuth2AuthorizationErrorDetails = {}) {
+  constructor(public code: OAuth2ErrorCode, { schema, ...details }: OAuth2AuthorizationErrorDetails & ErrorOptions = {}) {
     super(code, details);
 
     this.schema = schema;

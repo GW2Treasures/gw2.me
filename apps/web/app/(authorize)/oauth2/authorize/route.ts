@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import { getApplicationByClientId, validateRequest } from './validate';
-import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { AuthorizationRequest, AuthorizationRequestType } from '@gw2me/database';
 import { SearchParams } from '@/lib/next';
 import { AuthorizationRequestExpiration, cancelAuthorizationRequest, createAuthorizationRequest } from 'app/(authorize)/authorize/helper';
@@ -14,14 +13,15 @@ import { assert } from '@/lib/oauth/assert';
 import { notExpired } from '@/lib/db/helper';
 import { expiresAt } from '@/lib/date';
 import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
+import { NextRequest } from 'next/server';
 
-export default async function AuthorizePage({ searchParams }: PageProps<'/oauth2/authorize'>) {
-  const { error, value } = await getAuthorizationRequest(await searchParams);
+export async function GET(httpRequest: NextRequest): Promise<never> {
+  const searchParams = Object.fromEntries(httpRequest.nextUrl.searchParams.entries());
+  const { error, value } = await getAuthorizationRequest(searchParams);
 
   // show unrecoverable error
-  // TODO: convert this page to a route and redirect to an error page instead?
   if(error !== undefined) {
-    return <Notice type="error">{error}</Notice>;
+    redirect(`/authorize/error?error=${encodeURIComponent(error.code)}&error_description=${encodeURIComponent(error.description || '')}`);
   }
 
   const { request, authorizationRequest } = value;
@@ -61,11 +61,6 @@ export default async function AuthorizePage({ searchParams }: PageProps<'/oauth2
   redirect(`/authorize/${authorizationRequest.id}`);
 }
 
-export const metadata = {
-  title: 'Authorize'
-};
-
-
 function getApplicationGrant(applicationId: string, userId: string) {
   return db.applicationGrant.findUnique({
     where: { userId_applicationId: { userId, applicationId }},
@@ -76,19 +71,19 @@ function getApplicationGrant(applicationId: string, userId: string) {
   });
 }
 
-type Optional<T> = { error: string, value?: undefined } | { error: undefined, value: T };
+type Optional<T> = { error: OAuth2Error, value?: undefined } | { error: undefined, value: T };
 
 async function getAuthorizationRequest(params: SearchParams): Promise<Optional<{ request: AuthorizationRequestData.OAuth2, authorizationRequest: AuthorizationRequest }>> {
   if('request_uri' in params) {
     try {
       const authorizationRequest = await validatePushedRequest(params);
       return { error: undefined, value: { request: authorizationRequest.data as unknown as AuthorizationRequestData.OAuth2, authorizationRequest }};
-    } catch(e) {
-      console.log(e);
-      if(e instanceof OAuth2Error) {
-        return { error: e.message };
+    } catch(error) {
+      console.log(error);
+      if(error instanceof OAuth2Error) {
+        return { error };
       }
-      return { error: 'Unknown error' };
+      return { error: new OAuth2Error(OAuth2ErrorCode.server_error, { description: 'internal server error', cause: error }) };
     }
   }
 
