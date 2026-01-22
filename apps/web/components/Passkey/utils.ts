@@ -28,5 +28,7 @@ export async function handleAuthenticationResult(result: SubmitAuthenticationRes
     await PublicKeyCredential.signalCurrentUserDetails(result.currentUserDetails);
   }
 
+  navigator.login?.setStatus('logged-in');
+
   redirect(returnTo || '/profile');
 }

@@ -15,10 +15,7 @@ export const DevLogin: FC<DevLoginProps> = ({ username }) => {
 
     if(name) {
       await devLogin(name);
-
-      if('login' in navigator) {
-        (navigator.login as { setStatus(status: string): void }).setStatus('logged-in');
-      }
+      navigator.login?.setStatus('logged-in');
     }
   }, [username]);
 
