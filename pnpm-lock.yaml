@@ -156,7 +156,7 @@ importers:
         version: 0.0.5
       '@gw2api/fetch':
         specifier: 0.4.2
-        version: 0.4.2(@gw2api/types@0.0.40)
+        version: 0.4.2(@gw2api/types@0.0.41)
       '@gw2me/client':
         specifier: workspace:*
         version: link:../../packages/client
@@ -219,8 +219,8 @@ importers:
         version: 0.34.5
     devDependencies:
       '@gw2api/types':
-        specifier: 0.0.40
-        version: 0.0.40
+        specifier: 0.0.41
+        version: 0.0.41
       '@gw2treasures/eslint-config':
         specifier: 0.2.0
         version: 0.2.0(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
@@ -1056,8 +1056,8 @@ packages:
     peerDependencies:
       '@gw2api/types': ~0.0.5
 
-  '@gw2api/types@0.0.40':
-    resolution: {integrity: sha512-RYAkaGzqbk/kW196GCvv0KekvFukNj4qGh+jREaFKYLFrFT+LMMIoNyhe4zrMjL/j1Qr74eStyNLgYQs73o4cg==}
+  '@gw2api/types@0.0.41':
+    resolution: {integrity: sha512-sf4S8xfp7GcgA0X8xiYm7l7UC3QXrjl4dDwhBmyDQ83ZVaPUEJjgDKIKtUcmOM6Sa52XjpF0dgCgI6PjVvTE3g==}
 
   '@gw2treasures/eslint-config@0.2.0':
     resolution: {integrity: sha512-4iQkYjCDSlREKgI+nih6EJHI7j733q8PfGA60aWrrevxpdp3sW45tSYXForckliG9jwihXAV9/FoWartNdyKhA==}
@@ -3122,11 +3122,13 @@ packages:
 
   glob@10.5.0:
     resolution: {integrity: sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@11.0.2:
     resolution: {integrity: sha512-YT7U7Vye+t5fZ/QMkBFrTJ7ZQxInIUjwyAjVj84CYXqgBdv30MFUPGnBR6sQaVq6Is15wYJUsnzTuWaGRBhBAQ==}
     engines: {node: 20 || >=22}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   globals@14.0.0:
@@ -5617,11 +5619,11 @@ snapshots:
 
   '@fontsource/bitter@5.2.10': {}
 
-  '@gw2api/fetch@0.4.2(@gw2api/types@0.0.40)':
+  '@gw2api/fetch@0.4.2(@gw2api/types@0.0.41)':
     dependencies:
-      '@gw2api/types': 0.0.40
+      '@gw2api/types': 0.0.41
 
-  '@gw2api/types@0.0.40': {}
+  '@gw2api/types@0.0.41': {}
 
   '@gw2treasures/eslint-config@0.2.0(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)':
     dependencies:
