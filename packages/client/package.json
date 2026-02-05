@@ -49,7 +49,7 @@
     "@gw2treasures/publish-package": "0.1.0",
     "@gw2treasures/tsconfig": "0.0.1",
     "eslint": "9.39.2",
-    "tsdown": "0.20.1",
+    "tsdown": "0.20.2",
     "typescript": "5.9.3",
     "typescript-eslint": "8.54.0",
     "undici-types": "7.20.0"
