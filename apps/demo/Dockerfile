@@ -1,7 +1,7 @@
 ARG node_version=24.13.0-alpine3.22
 
 # renovate: datasource=npm packageName=turbo
-ARG turbo_version=2.8.3
+ARG turbo_version=2.8.4
 # renovate: datasource=npm packageName=pnpm
 ARG pnpm_version=10.29.2
 
