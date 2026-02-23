@@ -3,7 +3,7 @@ import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Icon } from '@gw2treasures/ui/icons/Icon';
 import { type AccountsResponse, type TokenResponse } from '@gw2me/client';
-import { client } from './client';
+import { client } from '@/utils/client';
 import styles from './App.module.css';
 
 enum Step {
@@ -39,7 +39,7 @@ export const App: FC = () => {
 
   useEffect(() => {
     const loadAccessToken = async () => {
-      const value = await self.chrome.storage.sync.get('access_token');
+      const value = await browser.storage.sync.get('access_token');
 
       if('access_token' in value && value.access_token && typeof value.access_token === 'string') {
         setState({ step: Step.LOADING_ACCOUNTS, access_token: value.access_token });
@@ -51,7 +51,7 @@ export const App: FC = () => {
         } else {
           const { access_token } = token;
 
-          await self.chrome.storage.sync.set({ access_token });
+          await browser.storage.sync.set({ access_token });
           setState({ step: Step.LOADING_ACCOUNTS, access_token });
         }
       }
@@ -87,12 +87,12 @@ export const App: FC = () => {
 
     const { access_token } = token;
 
-    await self.chrome.storage.sync.set({ access_token });
+    await browser.storage.sync.set({ access_token });
     setState({ step: Step.LOADING_ACCOUNTS, access_token });
   }, []);
 
   const logout = useCallback(async () => {
-    await self.chrome.storage.sync.remove('access_token');
+    await browser.storage.sync.remove('access_token');
     setState({ step: Step.AUTH_REQUIRED });
   }, []);
 
@@ -122,7 +122,7 @@ export const App: FC = () => {
 
     const { access_token } = token;
 
-    await self.chrome.storage.sync.set({ access_token });
+    await browser.storage.sync.set({ access_token });
     setState({ step: Step.LOADING_ACCOUNTS, access_token });
   }, []);
 
@@ -183,6 +183,6 @@ function authorize(prompt?: 'consent' | 'none'): Promise<TokenResponse | undefin
     // which will close it (unless `ui.popup.disable_autohide` is set, which has another set of problems (like not closing context menus...)).
     // chromium browsers keep the popup open while the authorization page has focus, so this is not required for chromium browsers, but
     // handling it the same way in every browser makes the code more uniform.
-    chrome.runtime.sendMessage({ type: 'gw2.me:authorize', prompt }, resolve);
+    browser.runtime.sendMessage({ type: 'gw2.me:authorize', prompt }, resolve);
   });
 }
