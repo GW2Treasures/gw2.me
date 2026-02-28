@@ -48,7 +48,7 @@
     "@gw2treasures/eslint-config": "0.2.1",
     "@gw2treasures/publish-package": "0.1.0",
     "@gw2treasures/tsconfig": "0.0.1",
-    "eslint": "9.39.3",
+    "eslint": "10.0.2",
     "tsdown": "0.20.3",
     "typescript": "5.9.3",
     "typescript-eslint": "8.56.1",
