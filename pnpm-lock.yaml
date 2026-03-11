@@ -353,8 +353,8 @@ importers:
   packages/emails:
     dependencies:
       '@react-email/body':
-        specifier: 0.2.1
-        version: 0.2.1(react@19.2.4)
+        specifier: 0.3.0
+        version: 0.3.0(react@19.2.4)
       '@react-email/column':
         specifier: 0.0.14
         version: 0.0.14(react@19.2.4)
@@ -1437,8 +1437,8 @@ packages:
   '@quansync/fs@1.0.0':
     resolution: {integrity: sha512-4TJ3DFtlf1L5LDMaM6CanJ/0lckGNtJcMjQ1NAV6zDmA0tEHKZtxNKin8EgPaVX1YzljbxckyT2tJrpQKAtngQ==}
 
-  '@react-email/body@0.2.1':
-    resolution: {integrity: sha512-ljDiQiJDu/Fq//vSIIP0z5Nuvt4+DX1RqGasstChDGJB/14ogd4VdNS9aacoede/ZjGy3o3Qb+cxyS+XgM6SwQ==}
+  '@react-email/body@0.3.0':
+    resolution: {integrity: sha512-uGo0BOOzjbMUo3lu+BIDWayvn5o6Xyfmnlla5VGf05n8gHMvO1ll7U4FtzWe3hxMLwt53pmc4iE0M+B5slG+Ug==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: 19.2.4
@@ -5883,7 +5883,7 @@ snapshots:
     dependencies:
       quansync: 1.0.0
 
-  '@react-email/body@0.2.1(react@19.2.4)':
+  '@react-email/body@0.3.0(react@19.2.4)':
     dependencies:
       react: 19.2.4
 
