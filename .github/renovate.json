@@ -1,32 +1,59 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices", ":pinAllExceptPeerDependencies"],
-  "ignorePresets": ["security:minimumReleaseAgeNpm"],
-  "addLabels": ["dependencies"],
+  "extends": [
+    "config:best-practices",
+    ":pinAllExceptPeerDependencies"
+  ],
+  "ignorePresets": [
+    "security:minimumReleaseAgeNpm"
+  ],
+  "addLabels": [
+    "dependencies"
+  ],
   "kubernetes": {
-    "managerFilePatterns": ["kubernetes/.+\\.yaml$"]
+    "managerFilePatterns": [
+      "kubernetes/.+\\.yaml$"
+    ]
   },
   "ignorePaths": [
     "**/node_modules/**",
     "docker-compose.database-migration.yml"
   ],
-  "postUpdateOptions": ["pnpmDedupe"],
+  "postUpdateOptions": [
+    "pnpmDedupe"
+  ],
   "packageRules": [
     {
       "matchSourceUrls": "https://github.com/GW2Treasures/gw2treasures.com",
       "groupName": "gw2treasures packages"
-    }, {
-      "matchDatasources": ["npm"],
-      "matchPackageNames": ["@simplewebauthn/**"],
+    },
+    {
+      "matchDatasources": [
+        "npm"
+      ],
+      "matchPackageNames": [
+        "@simplewebauthn/**"
+      ],
       "groupName": "SimpleWebAuthn"
-    }, {
-      "matchDatasources": ["npm"],
-      "matchPackageNames": ["@react-email/**", "react-email"],
+    },
+    {
+      "matchDatasources": [
+        "npm"
+      ],
+      "matchPackageNames": [
+        "@react-email/**",
+        "react-email"
+      ],
       "groupName": "react-email"
-    }, {
+    },
+    {
       "description": "Don't pin dependencies in published packages",
-      "matchFileNames": ["packages/client/package.json"],
-      "matchDepTypes": ["dependencies"],
+      "matchFileNames": [
+        "packages/client/package.json"
+      ],
+      "matchDepTypes": [
+        "dependencies"
+      ],
       "rangeStrategy": "replace"
     }
   ],
@@ -34,7 +61,10 @@
     {
       "customType": "regex",
       "description": "Update version variables in Dockerfiles",
-      "fileMatch": ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
+      "managerFilePatterns": [
+        "/(^|/|\\.)Dockerfile$/",
+        "/(^|/)Dockerfile\\.[^/]*$/"
+      ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:ENV|ARG) .+?_version=(?<currentValue>.+?)\\s"
       ]
@@ -42,7 +72,9 @@
     {
       "customType": "regex",
       "description": "Update version variables in Github Actions workflows",
-      "fileMatch": ["^\\.github/(workflows|actions)/.+\\.ya?ml$"],
+      "managerFilePatterns": [
+        "/^\\.github/(workflows|actions)/.+\\.ya?ml$/"
+      ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s+.+?_VERSION: (?<currentValue>.+?)\\s"
       ]
