@@ -1,14 +1,16 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", ":pinAllExceptPeerDependencies"],
+  "extends": ["config:best-practices", ":pinAllExceptPeerDependencies"],
+  "ignorePresets": ["security:minimumReleaseAgeNpm"],
   "addLabels": ["dependencies"],
   "kubernetes": {
-    "fileMatch": ["kubernetes/.+\\.yaml$"]
+    "managerFilePatterns": ["kubernetes/.+\\.yaml$"]
   },
   "ignorePaths": [
     "**/node_modules/**",
     "docker-compose.database-migration.yml"
   ],
+  "postUpdateOptions": ["pnpmDedupe"],
   "packageRules": [
     {
       "matchSourceUrls": "https://github.com/GW2Treasures/gw2treasures.com",
@@ -21,6 +23,11 @@
       "matchDatasources": ["npm"],
       "matchPackageNames": ["@react-email/**", "react-email"],
       "groupName": "react-email"
+    }, {
+      "description": "Don't pin dependencies in published packages",
+      "matchFileNames": ["packages/client/package.json"],
+      "matchDepTypes": ["dependencies"],
+      "rangeStrategy": "replace"
     }
   ],
   "customManagers": [
