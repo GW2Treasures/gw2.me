@@ -24,6 +24,11 @@
       "matchPackageNames": ["@react-email/**", "react-email"],
       "groupName": "react-email"
     }, {
+      "description": "Don't pin own docker images in kubernetes manifests",
+      "matchFileNames": ["kubernetes/**/*.yaml"],
+      "matchPackageNames": ["ghcr.io/gw2treasures/gw2.me/**"],
+      "pinDigests": false
+    }, {
       "description": "Don't pin dependencies in published packages",
       "matchFileNames": ["packages/client/package.json"],
       "matchDepTypes": ["dependencies"],
