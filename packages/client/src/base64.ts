@@ -1,4 +1,4 @@
-export function base64urlEncode(input: Uint8Array | ArrayBuffer) {
+export function base64urlEncode(input: Uint8Array | ArrayBuffer): string {
   const data = input instanceof ArrayBuffer
     ? new Uint8Array(input)
     : input;

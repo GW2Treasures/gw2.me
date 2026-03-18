@@ -6,16 +6,16 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./dpop": {
-      "types": "./dist/dpop.d.mts",
-      "default": "./dist/dpop.mjs"
+      "types": "./dist/dpop.d.ts",
+      "default": "./dist/dpop.js"
     },
     "./pkce": {
-      "types": "./dist/pkce.d.mts",
-      "default": "./dist/pkce.mjs"
+      "types": "./dist/pkce.d.ts",
+      "default": "./dist/pkce.js"
     }
   },
   "scripts": {
@@ -35,9 +35,10 @@
     "oauth2"
   ],
   "files": [
-    "dist/*.mjs",
-    "dist/*.d.mts"
+    "dist/*.js",
+    "dist/*.d.ts"
   ],
+  "sideEffects": false,
   "author": "darthmaim",
   "license": "MIT",
   "bugs": {
@@ -45,10 +46,13 @@
   },
   "homepage": "https://github.com/gw2treasures/gw2.me#readme",
   "devDependencies": {
+    "@arethetypeswrong/core": "0.18.2",
     "@gw2treasures/eslint-config": "0.2.1",
     "@gw2treasures/publish-package": "0.1.0",
     "@gw2treasures/tsconfig": "0.0.1",
+    "@types/node": "24.12.0",
     "eslint": "9.39.4",
+    "publint": "0.3.18",
     "tsdown": "0.21.4",
     "typescript": "5.9.3",
     "typescript-eslint": "8.57.1",

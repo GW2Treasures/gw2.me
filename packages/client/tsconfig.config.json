@@ -1,0 +1,10 @@
+{
+  "extends": "@gw2treasures/tsconfig/base",
+  "compilerOptions": {
+    "composite": true,
+
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["./*.config.ts", "./*.config.mts", "./*.config.cts"]
+}
