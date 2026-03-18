@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { Scope, UserResponse } from '@gw2me/client';
 import { NextResponse } from 'next/server';
-import { withAuthorization } from '../auth';
+import { OptionsHandler, withAuthorization } from '../auth';
 import { Authorization } from '@gw2me/database';
 
 export const GET = withAuthorization([Scope.Identify])(
@@ -41,3 +41,5 @@ export const GET = withAuthorization([Scope.Identify])(
     return NextResponse.json(response);
   }
 );
+
+export const OPTIONS = OptionsHandler;
