@@ -1,14 +1,14 @@
 import { base64urlEncode } from './base64.js';
 import type { DPoPParams } from './types.js';
 
-export function generateDPoPKeyPair() {
+export function generateDPoPKeyPair(): Promise<CryptoKeyPair> {
   return crypto.subtle.generateKey({
     name: 'ECDSA',
     namedCurve: 'P-256',
   }, false, ['sign']);
 }
 
-export async function createDPoPJwt({ htm, htu, nonce, accessToken }: DPoPParams, keyPair: CryptoKeyPair) {
+export async function createDPoPJwt({ htm, htu, nonce, accessToken }: DPoPParams, keyPair: CryptoKeyPair): Promise<string> {
   // TODO: support user algorithms based on used key
   const header = JSON.stringify({
     alg: 'ES256',
@@ -45,7 +45,7 @@ async function jwk(key: CryptoKey) {
   return { e, k, crv, kty, n, x, y };
 }
 
-export async function jwkThumbprint(key: CryptoKey) {
+export async function jwkThumbprint(key: CryptoKey): Promise<string> {
   const jwkJson = JSON.stringify(await jwk(key));
   const hash = await crypto.subtle.digest('SHA-256', stringToBuffer(jwkJson));
 

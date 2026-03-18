@@ -98,7 +98,7 @@ export class Gw2MeClient {
   #client: ClientInfo;
   #fedCM;
 
-  constructor(client: ClientInfo, private options?: Partial<Options>) {
+  constructor(client: ClientInfo, private options?: Partial<Options> | undefined) {
     this.#client = client;
     this.#fedCM = new Gw2MeFedCM(this.#getUrl('/fed-cm/config.json'), client.client_id);
   }
@@ -118,10 +118,10 @@ export class Gw2MeClient {
   public getAuthorizationUrl(params: AuthorizationUrlParams | AuthorizationUrlRequestUriParams): string {
     const urlParams = 'request_uri' in params
       ? new URLSearchParams({
-        client_id: this.#client.client_id,
-        response_type: 'code',
-        request_uri: params.request_uri
-      })
+          client_id: this.#client.client_id,
+          response_type: 'code',
+          request_uri: params.request_uri
+        })
       : constructAuthorizationParams(this.#client.client_id, params);
 
     return this.#getUrl(`/oauth2/authorize?${urlParams.toString()}`).toString();
@@ -151,7 +151,7 @@ export class Gw2MeClient {
       headers,
       body: urlParams,
       cache: 'no-store',
-    }).then(jsonOrError);
+    }).then(jsonOrError<PushedAuthorizationRequestResponse>);
 
     return response;
   }
@@ -187,7 +187,7 @@ export class Gw2MeClient {
       headers,
       body: data,
       cache: 'no-store'
-    }).then(jsonOrError);
+    }).then(jsonOrError<TokenResponse>);
 
     return token;
   }
@@ -222,7 +222,7 @@ export class Gw2MeClient {
       headers,
       body: data,
       cache: 'no-store',
-    }).then(jsonOrError);
+    }).then(jsonOrError<TokenResponse>);
 
     return token;
   }
@@ -258,7 +258,7 @@ export class Gw2MeClient {
       cache: 'no-store',
       headers,
       body,
-    }).then(jsonOrError);
+    }).then(jsonOrError<IntrospectTokenResponse>);
 
     return response;
   }
@@ -303,11 +303,11 @@ export class Gw2MeClient {
     return { code, state };
   }
 
-  api(access_token: string, options?: Partial<Omit<ApiOptions, keyof Options>>) {
+  api(access_token: string, options?: Partial<Omit<ApiOptions, keyof Options>>): Gw2MeApi {
     return new Gw2MeApi(access_token, { ...this.options, ...options });
   }
 
-  get fedCM() {
+  get fedCM(): Gw2MeFedCM {
     return this.#fedCM;
   }
 }

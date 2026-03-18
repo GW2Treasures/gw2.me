@@ -1,9 +1,7 @@
 {
-  "extends": "@gw2treasures/tsconfig/base",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "target": "es2020",
-    "declarationMap": true
-  },
-  "include": ["./src"]
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.config.json" },
+    { "path": "./tsconfig.src.json" }
+  ]
 }

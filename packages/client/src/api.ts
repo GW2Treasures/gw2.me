@@ -36,12 +36,12 @@ export interface ApiOptions extends Options {
 }
 
 export class Gw2MeApi {
-  constructor(private access_token: string, private options?: Partial<ApiOptions>) {}
+  constructor(private access_token: string, private options?: Partial<ApiOptions> | undefined) {}
 
   user(): Promise<UserResponse> {
     return this.#requestWithDpop('api/user')
       .then((request) => fetch(request))
-      .then(jsonOrError);
+      .then(jsonOrError<UserResponse>);
   }
 
   saveSettings(settings: unknown): Promise<void> {
@@ -53,7 +53,7 @@ export class Gw2MeApi {
   accounts(): Promise<AccountsResponse> {
     return this.#requestWithDpop('api/accounts')
       .then((request) => fetch(request))
-      .then(jsonOrError);
+      .then(jsonOrError<AccountsResponse>);
   }
 
   subtoken(accountId: string, options?: SubtokenOptions): Promise<SubtokenResponse> {
@@ -65,7 +65,7 @@ export class Gw2MeApi {
 
     return this.#requestWithDpop(url)
       .then((request) => fetch(request))
-      .then(jsonOrError);
+      .then(jsonOrError<SubtokenResponse>);
   }
 
   #getUrl(url: string) {

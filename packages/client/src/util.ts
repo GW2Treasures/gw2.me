@@ -1,6 +1,6 @@
 import { Gw2MeError } from './error.js';
 
-export async function jsonOrError(response: Response) {
+export async function jsonOrError<T = unknown>(response: Response): Promise<T> {
   await okOrError(response);
 
   const isJson = response.headers.get('Content-Type') === 'application/json';
@@ -12,7 +12,7 @@ export async function jsonOrError(response: Response) {
   return response.json();
 }
 
-export async function okOrError(response: Response) {
+export async function okOrError(response: Response): Promise<void> {
   if(!response.ok) {
     let errorMessage: string | undefined;
 
