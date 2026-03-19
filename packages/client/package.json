@@ -1,6 +1,6 @@
 {
   "name": "@gw2me/client",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "gw2.me client library",
   "type": "module",
   "exports": {
