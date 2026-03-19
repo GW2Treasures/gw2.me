@@ -25,7 +25,7 @@
     "@wooorm/starry-night": "3.9.0",
     "aaguids": "0.0.50",
     "hast-util-to-jsx-runtime": "2.3.6",
-    "jose": "6.2.1",
+    "jose": "6.2.2",
     "next": "16.2.0",
     "nodemailer": "8.0.3",
     "react": "19.2.4",
