@@ -38,24 +38,40 @@ export interface ApiOptions extends Options {
 export class Gw2MeApi {
   constructor(private access_token: string, private options?: Partial<ApiOptions> | undefined) {}
 
+  /**
+   * Fetches information about the current user. Requires the `identify` scope.
+   * @see https://gw2.me/dev/docs/users
+   */
   user(): Promise<UserResponse> {
     return this.#requestWithDpop('api/user')
       .then((request) => fetch(request))
       .then(jsonOrError<UserResponse>);
   }
 
+  /**
+   * Stores user-specific settings.
+   * @see https://gw2.me/dev/docs/users#settings
+   */
   saveSettings(settings: unknown): Promise<void> {
     return this.#requestWithDpop('api/user/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(settings) })
       .then((request) => fetch(request))
       .then(okOrError);
   }
 
+  /**
+   * Fetches the Guild Wars 2 accounts linked to the current user. Requires the `accounts` scope.
+   * @see https://gw2.me/dev/docs/gw2-api#accounts
+   */
   accounts(): Promise<AccountsResponse> {
     return this.#requestWithDpop('api/accounts')
       .then((request) => fetch(request))
       .then(jsonOrError<AccountsResponse>);
   }
 
+  /**
+   * Generates a subtoken that can be used to authenticate to the Guild Wars 2 API.
+   * @see https://gw2.me/dev/docs/gw2-api#subtoken
+   */
   subtoken(accountId: string, options?: SubtokenOptions): Promise<SubtokenResponse> {
     const url = this.#getUrl(`api/accounts/${accountId}/subtoken`);
 

@@ -35,7 +35,7 @@ export default function DevDocsGW2APIPage() {
         }/>
       </Code>
 
-      <Headline id="accounts">Settings</Headline>
+      <Headline id="settings">Settings</Headline>
 
       <p>
         You can optionally store settings for each user.
