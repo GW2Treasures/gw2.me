@@ -21,10 +21,17 @@ export class Gw2MeFedCM {
     this.#clientId = clientId;
   }
 
+  /**
+   * Check if FedCM is supported in the current environment.
+   */
   isSupported(): boolean {
     return typeof window !== 'undefined' && 'IdentityCredential' in window;
   }
 
+  /**
+   * Start a FedCM sign-in flow with the given options. Resolves with the credential containing the access token on success, or null if the user cancels the flow.
+   * @see https://gw2.me/dev/docs/fed-cm
+   */
   request({ scopes, mediation, signal, mode, code_challenge, code_challenge_method, include_granted_scopes }: FedCMRequestOptions) {
     if(!this.isSupported()) {
       throw new Gw2MeError('FedCM is not supported');

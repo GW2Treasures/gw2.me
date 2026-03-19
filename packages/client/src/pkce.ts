@@ -10,6 +10,10 @@ export interface PKCEPair {
   code_verifier: string,
 }
 
+/**
+ * Generates a PKCE pair containing a random code verifier and a corresponding code challenge.
+ * @see https://gw2.me/dev/docs/access-tokens#pkce
+ */
 export async function generatePKCEPair(): Promise<PKCEPair> {
   // generate 32 random bytes
   const verifierBuffer = new Uint8Array(32);

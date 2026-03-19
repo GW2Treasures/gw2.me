@@ -1,3 +1,7 @@
+/**
+ * Scopes supported by gw2.me.
+ * @see https://gw2.me/dev/docs/scopes
+ */
 export enum Scope {
   Identify = 'identify',
   Email = 'email',

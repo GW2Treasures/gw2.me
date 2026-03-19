@@ -1,6 +1,10 @@
 import { base64urlEncode } from './base64.js';
 import type { DPoPParams } from './types.js';
 
+/**
+ * Generates a new key pair for use with DPoP.
+ * @see https://gw2.me/dev/docs/access-tokens#dpop
+ */
 export function generateDPoPKeyPair(): Promise<CryptoKeyPair> {
   return crypto.subtle.generateKey({
     name: 'ECDSA',
@@ -8,6 +12,10 @@ export function generateDPoPKeyPair(): Promise<CryptoKeyPair> {
   }, false, ['sign']);
 }
 
+/**
+ * Creates a DPoP proof JWT with the given parameters and key pair.
+ * @see https://gw2.me/dev/docs/access-tokens#dpop
+ */
 export async function createDPoPJwt({ htm, htu, nonce, accessToken }: DPoPParams, keyPair: CryptoKeyPair): Promise<string> {
   // TODO: support user algorithms based on used key
   const header = JSON.stringify({
@@ -45,6 +53,10 @@ async function jwk(key: CryptoKey) {
   return { e, k, crv, kty, n, x, y };
 }
 
+/**
+ * Calculates the JWK thumbprint for a given public key.
+ * @see https://gw2.me/dev/docs/access-tokens#dpop
+ */
 export async function jwkThumbprint(key: CryptoKey): Promise<string> {
   const jwkJson = JSON.stringify(await jwk(key));
   const hash = await crypto.subtle.digest('SHA-256', stringToBuffer(jwkJson));

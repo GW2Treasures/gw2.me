@@ -115,6 +115,10 @@ export class Gw2MeClient {
     return `Basic ${btoa(`${this.#client.client_id}:${this.#client.client_secret}`)}`;
   }
 
+  /**
+   * Generate an authorization URL with the given parameters you can navigate the user to in order to start the authorization code flow.
+   * @see https://gw2.me/dev/docs/access-tokens#user-authorization
+   */
   public getAuthorizationUrl(params: AuthorizationUrlParams | AuthorizationUrlRequestUriParams): string {
     const urlParams = 'request_uri' in params
       ? new URLSearchParams({
@@ -127,6 +131,11 @@ export class Gw2MeClient {
     return this.#getUrl(`/oauth2/authorize?${urlParams.toString()}`).toString();
   }
 
+  /**
+   * Create a pushed authorization request (PAR) with the given parameters.
+   * The returned `request_uri` can the be passed to {@link getAuthorizationUrl} to start the authorization code flow.
+   * @see https://gw2.me/dev/docs/access-tokens#par
+   */
   public async pushAuthorizationRequest(params: PushedAuthorizationRequestParams): Promise<PushedAuthorizationRequestResponse> {
     const url = this.#getUrl('/oauth2/par');
     const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' };
@@ -156,6 +165,10 @@ export class Gw2MeClient {
     return response;
   }
 
+  /**
+   * Exchanges an authorization code for an access token.
+   * @see https://gw2.me/dev/docs/access-tokens#access-token
+   */
   async getAccessToken({ code, token_type, redirect_uri, code_verifier, dpop }: AuthTokenParams): Promise<TokenResponse> {
     const data = new URLSearchParams({
       grant_type: 'authorization_code',
@@ -192,6 +205,10 @@ export class Gw2MeClient {
     return token;
   }
 
+  /**
+   * Use a refresh token to get a new access token.
+   * @see https://gw2.me/dev/docs/refresh-tokens
+   */
   async refreshToken({ refresh_token, refresh_token_type, dpop }: RefreshTokenParams): Promise<TokenResponse> {
     const data = new URLSearchParams({
       grant_type: 'refresh_token',
@@ -227,6 +244,9 @@ export class Gw2MeClient {
     return token;
   }
 
+  /**
+   * Revokes an access or refresh token, making it invalid for further use.
+   */
   async revokeToken({ token }: RevokeTokenParams): Promise<void> {
     const body = new URLSearchParams({ token });
 
@@ -244,6 +264,9 @@ export class Gw2MeClient {
     }).then(jsonOrError);
   }
 
+  /**
+   * Fetch metadata about an access or refresh token.
+   */
   async introspectToken({ token }: IntrospectTokenParams): Promise<IntrospectTokenResponse> {
     const body = new URLSearchParams({ token });
 
@@ -303,10 +326,17 @@ export class Gw2MeClient {
     return { code, state };
   }
 
+  /**
+   * Access the gw2.me API.
+   */
   api(access_token: string, options?: Partial<Omit<ApiOptions, keyof Options>>): Gw2MeApi {
     return new Gw2MeApi(access_token, { ...this.options, ...options });
   }
 
+  /**
+   * Use Federated Credential Management (FedCM) to sign in users.
+   * @see https://gw2.me/dev/docs/fed-cm
+   */
   get fedCM(): Gw2MeFedCM {
     return this.#fedCM;
   }
