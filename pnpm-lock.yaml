@@ -309,8 +309,8 @@ importers:
         specifier: 8.58.0
         version: 8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       undici-types:
-        specifier: 7.24.7
-        version: 7.24.7
+        specifier: 8.0.0
+        version: 8.0.0
 
   packages/database:
     dependencies:
@@ -4384,8 +4384,8 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici-types@7.24.7:
-    resolution: {integrity: sha512-XA+gOBkzYD3C74sZowtCLTpgtaCdqZhqCvR6y9LXvrKTt/IVU6bz49T4D+BPi475scshCCkb0IklJRw6T1ZlgQ==}
+  undici-types@8.0.0:
+    resolution: {integrity: sha512-qsgbPOxAPkJq6rpQX7HmlRrGdeqVxvA6WXNk2S72g/V0VuRFnp193p5ydeudMbVdzAcFQB0gRP2ZC1omvWXPJQ==}
 
   unist-util-is@6.0.1:
     resolution: {integrity: sha512-LsiILbtBETkDz8I9p1dQ0uyRUWuaQzd/cuEeS1hoRSyW5E5XGmTzlwY1OrNzzakGowI9Dr/I8HVaw4hTtnxy8g==}
@@ -8977,7 +8977,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici-types@7.24.7: {}
+  undici-types@8.0.0: {}
 
   unist-util-is@6.0.1:
     dependencies:
