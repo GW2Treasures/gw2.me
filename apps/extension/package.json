@@ -26,7 +26,7 @@
     "@gw2treasures/eslint-config": "0.2.1",
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/archiver": "7.0.0",
-    "@types/chrome": "0.1.38",
+    "@types/chrome": "0.1.39",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "archiver": "7.0.1",
