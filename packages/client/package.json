@@ -54,7 +54,7 @@
     "eslint": "9.39.4",
     "publint": "0.3.18",
     "tsdown": "0.21.7",
-    "typescript": "5.9.3",
+    "typescript": "6.0.2",
     "typescript-eslint": "8.58.0",
     "undici-types": "8.0.1"
   },
