@@ -1,5 +1,4 @@
-import { Link } from '@react-email/link';
-import { Text } from '@react-email/text';
+import { Link, Text } from 'react-email';
 import Template, { styles } from './template';
 
 export default function AccountShareInvitation({

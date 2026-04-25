@@ -1,5 +1,4 @@
-import { Link } from '@react-email/link';
-import { Text } from '@react-email/text';
+import { Link, Text } from 'react-email';
 import Template, { styles } from './template';
 
 export default function VerifyEmailMail({ username = '{username}', verifyLink = 'https://gw2.me/emails/verify?token={token}' }: { username: string, verifyLink: string }) {
