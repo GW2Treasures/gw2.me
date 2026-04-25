@@ -375,7 +375,7 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@react-email/ui':
-        specifier: ^6.0.0
+        specifier: 6.0.0
         version: 6.0.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@types/react':
         specifier: 19.2.14
