@@ -5,7 +5,7 @@ import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { ClientTypeOptions } from 'app/dev/applications/_actions/helper';
+import { ClientTypeOptions } from '@/app/dev/applications/_actions/helper';
 import Link from 'next/link';
 import { getApplicationById } from '../../helper';
 import { addClient } from '../_actions/add';

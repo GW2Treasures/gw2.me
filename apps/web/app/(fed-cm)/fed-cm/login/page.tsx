@@ -1,7 +1,7 @@
 import { getSession } from '@/lib/session';
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { PageLayout } from '@/components/Layout/PageLayout';
-import { LoginForm } from 'app/login/form';
+import { LoginForm } from '@/app/login/form';
 import { SetLoginStatus } from './SetLoginStatus';
 import { Icon } from '@gw2treasures/ui';
 

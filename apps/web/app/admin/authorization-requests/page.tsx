@@ -10,7 +10,7 @@ import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { ensureUserIsAdmin } from '../admin';
 import { isExpired } from '@/lib/date';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
-import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
+import { AuthorizationRequestData } from '@/app/(authorize)/authorize/types';
 import Link from 'next/link';
 import { Icon } from '@gw2treasures/ui';
 import { Features, State } from './components';

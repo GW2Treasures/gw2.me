@@ -1,7 +1,7 @@
 import { AuthorizationRequestState, AuthorizationRequestType } from '@gw2me/database';
 import { isTruthy } from '@gw2treasures/helper/is';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
+import { AuthorizationRequestData } from '@/app/(authorize)/authorize/types';
 import { type FC } from 'react';
 
 export interface StateProps {

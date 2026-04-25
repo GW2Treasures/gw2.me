@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { sendEmailVerificationMail } from '@/lib/mail/email-verification';
 import { Prisma } from '@gw2me/database';
-import { ProviderProfile } from 'app/auth/providers';
+import { ProviderProfile } from '@/app/auth/providers';
 import { after } from 'next/server';
 
 export async function handleNewEmail(userId: string, profile: Pick<ProviderProfile, 'email' | 'emailVerified'>) {

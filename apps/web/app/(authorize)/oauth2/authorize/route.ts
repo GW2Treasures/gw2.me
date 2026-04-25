@@ -2,8 +2,8 @@ import { redirect } from 'next/navigation';
 import { getApplicationByClientId, validateRequest } from './validate';
 import { AuthorizationRequest, AuthorizationRequestType } from '@gw2me/database';
 import { SearchParams } from '@/lib/next';
-import { AuthorizationRequestExpiration, cancelAuthorizationRequest, createAuthorizationRequest } from 'app/(authorize)/authorize/helper';
-import { authorizeInternal } from 'app/(authorize)/authorize/[id]/actions';
+import { AuthorizationRequestExpiration, cancelAuthorizationRequest, createAuthorizationRequest } from '@/app/(authorize)/authorize/helper';
+import { authorizeInternal } from '@/app/(authorize)/authorize/[id]/actions';
 import { createRedirectUrl } from '@/lib/redirectUrl';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { db } from '@/lib/db';
@@ -12,7 +12,7 @@ import { AuthorizationUrlRequestUriParams } from '@gw2me/client';
 import { assert } from '@/lib/oauth/assert';
 import { notExpired } from '@/lib/db/helper';
 import { expiresAt } from '@/lib/date';
-import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
+import { AuthorizationRequestData } from '@/app/(authorize)/authorize/types';
 import { NextRequest } from 'next/server';
 
 export async function GET(httpRequest: NextRequest): Promise<never> {

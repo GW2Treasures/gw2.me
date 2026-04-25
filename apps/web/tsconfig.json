@@ -3,11 +3,12 @@
   "compilerOptions": {
     // TODO: remove verbatimModuleSyntax override
     "verbatimModuleSyntax": false,
+    "allowArbitraryExtensions": true,
 
-    "baseUrl": "./",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/lib/*": ["lib/*"]
+      "@/app/*": ["./app/*"],
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"]
     },
 
     "libReplacement": true
