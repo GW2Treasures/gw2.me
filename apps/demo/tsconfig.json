@@ -4,10 +4,9 @@
     // TODO: remove verbatimModuleSyntax override
     "verbatimModuleSyntax": false,
 
-    "baseUrl": "./",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/lib/*": ["lib/*"]
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"]
     }
   },
   "include": [

@@ -18,7 +18,7 @@ import { createChallengeJwt, verifyChallengeJwt } from './challenge';
 import { db } from '@/lib/db';
 import { userAgent } from 'next/server';
 import { cookies, headers } from 'next/headers';
-import { getPreviousUser } from 'app/login/form';
+import { getPreviousUser } from '@/app/login/form';
 import { Passkey } from '@gw2me/database';
 import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, authCookie, userCookie } from '@/lib/cookie';

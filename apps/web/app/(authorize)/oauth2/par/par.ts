@@ -3,8 +3,8 @@ import { checkProof } from '@/lib/oauth/dpop';
 import { OAuth2Error, OAuth2ErrorCode } from '@/lib/oauth/error';
 import { type PushedAuthorizationRequestResponse } from '@gw2me/client';
 import { AuthorizationRequestType } from '@gw2me/database';
-import { AuthorizationRequestExpiration, createAuthorizationRequest } from 'app/(authorize)/authorize/helper';
-import { validateRequest } from 'app/(authorize)/oauth2/authorize/validate';
+import { AuthorizationRequestExpiration, createAuthorizationRequest } from '@/app/(authorize)/authorize/helper';
+import { validateRequest } from '@/app/(authorize)/oauth2/authorize/validate';
 import { OAuth2RequestHandlerProps } from '../../../api/(oauth)/request';
 
 export async function handleParRequest({ params, requestAuthorization, headers, url }: OAuth2RequestHandlerProps): Promise<PushedAuthorizationRequestResponse> {

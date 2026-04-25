@@ -16,7 +16,7 @@ import { Form, FormState } from '@gw2treasures/ui/components/Form/Form';
 import { ApplicationImage } from '@/components/Application/ApplicationImage';
 import { AuthorizationRequestState, AuthorizationRequestType, SharedAccountState, User, UserEmail } from '@gw2me/database';
 import { Expandable } from '@/components/Expandable/Expandable';
-import { LoginForm } from 'app/login/form';
+import { LoginForm } from '@/app/login/form';
 import { Metadata } from 'next';
 import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
@@ -25,7 +25,7 @@ import Link from 'next/link';
 import { Select } from '@gw2treasures/ui/components/Form/Select';
 import { isExpired } from '@/lib/date';
 import { AuthorizationRequest } from '../types';
-import { normalizeScopes } from 'app/(authorize)/oauth2/authorize/validate';
+import { normalizeScopes } from '@/app/(authorize)/oauth2/authorize/validate';
 
 const getPendingAuthorizationRequest = cache(
   (id: string) => db.authorizationRequest.findUnique({

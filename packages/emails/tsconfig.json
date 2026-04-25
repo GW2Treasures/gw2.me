@@ -1,6 +1,7 @@
 {
   "extends": "@gw2treasures/tsconfig/base",
   "compilerOptions": {
+    "rootDir": "./emails",
     "outDir": "./dist",
     "jsx": "react-jsx"
   },

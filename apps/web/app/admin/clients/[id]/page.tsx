@@ -10,7 +10,7 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { List } from '@gw2treasures/ui/components/Layout/List';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
-import { ensureUserIsAdmin } from 'app/admin/admin';
+import { ensureUserIsAdmin } from '@/app/admin/admin';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';

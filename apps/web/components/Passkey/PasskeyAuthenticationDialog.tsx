@@ -5,7 +5,7 @@ import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { Label } from '@gw2treasures/ui/components/Form/Label';
 import { TextInput } from '@gw2treasures/ui/components/Form/TextInput';
 import { browserSupportsWebAuthnAutofill, startAuthentication, startRegistration, WebAuthnAbortService } from '@simplewebauthn/browser';
-import { LoginOptions } from 'app/login/action';
+import { LoginOptions } from '@/app/login/action';
 import { unstable_rethrow as rethrow } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, useTransition, type FC } from 'react';
 import { ButtonLink } from '../ButtonLink/ButtonLink';

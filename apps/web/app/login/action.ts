@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 import { getSessionOrRedirect } from '@/lib/session';
 import { getBaseUrlFromHeaders } from '@/lib/url';
 import { UserProviderRequestType } from '@gw2me/database';
-import { providers } from 'app/auth/providers';
+import { providers } from '@/app/auth/providers';
 import { createHash, randomBytes } from 'node:crypto';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';

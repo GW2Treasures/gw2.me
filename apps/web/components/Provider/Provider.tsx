@@ -1,11 +1,11 @@
 import { UserProviderType } from '@gw2me/database';
 import { Icon } from '@gw2treasures/ui';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { DiscordIcon } from 'app/auth/discord';
-import { EpicGamesIcon } from 'app/auth/epicgames';
-import { GitHubIcon } from 'app/auth/github';
-import { GoogleIcon } from 'app/auth/google';
-import { SteamIcon } from 'app/auth/steam';
+import { DiscordIcon } from '@/app/auth/discord';
+import { EpicGamesIcon } from '@/app/auth/epicgames';
+import { GitHubIcon } from '@/app/auth/github';
+import { GoogleIcon } from '@/app/auth/google';
+import { SteamIcon } from '@/app/auth/steam';
 import type { FC } from 'react';
 
 export interface ProviderProps {

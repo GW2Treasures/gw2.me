@@ -1,5 +1,5 @@
 import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
-import { AddEmailForm } from 'app/(user)/emails/add/form';
+import { AddEmailForm } from '@/app/(user)/emails/add/form';
 import { Metadata } from 'next';
 
 export default async function AuthorizeAddEmailPage({ params }: PageProps<'/authorize/[id]/add-email'>) {

@@ -6,7 +6,7 @@ import { ClientType } from '@gw2me/database';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { createRedirectUrl } from '@/lib/redirectUrl';
-import type { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
+import type { AuthorizationRequestData } from '@/app/(authorize)/authorize/types';
 
 export const getApplicationByClientId = cache(async function getApplicationByClientId(clientId: string | undefined) {
   assert(clientId, OAuth2ErrorCode.invalid_request, 'client_id is missing');

@@ -3,7 +3,7 @@
 import { Dialog } from '@gw2treasures/ui/components/Dialog/Dialog';
 import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { startAuthentication } from '@simplewebauthn/browser';
-import { LoginOptions } from 'app/login/action';
+import { LoginOptions } from '@/app/login/action';
 import { unstable_rethrow as rethrow } from 'next/navigation';
 import { useCallback, useState, useTransition, type FC } from 'react';
 import { NoticeContext, useShowNotice } from '../NoticeContext/NoticeContext';

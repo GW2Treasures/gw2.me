@@ -3,12 +3,12 @@ import { FC } from 'react';
 import { DevLogin } from './dev-login';
 import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import styles from './form.module.css';
-import { providers } from 'app/auth/providers';
+import { providers } from '@/app/auth/providers';
 import { UserProviderType } from '@gw2me/database';
-import { DiscordIcon } from 'app/auth/discord';
-import { GitHubIcon } from 'app/auth/github';
-import { SteamIcon } from 'app/auth/steam';
-import { GoogleIcon } from 'app/auth/google';
+import { DiscordIcon } from '@/app/auth/discord';
+import { GitHubIcon } from '@/app/auth/github';
+import { SteamIcon } from '@/app/auth/steam';
+import { GoogleIcon } from '@/app/auth/google';
 import { Icon } from '@gw2treasures/ui';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { LoginOptions, login } from './action';
@@ -20,7 +20,7 @@ import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, UserCookieName } from '@/lib/cookie';
 import { PasskeyAuthenticationButton } from '@/components/Passkey/PasskeyAuthenticationButton';
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
-import { EpicGamesIcon } from 'app/auth/epicgames';
+import { EpicGamesIcon } from '@/app/auth/epicgames';
 
 interface LoginFormProps {
   returnTo?: string,

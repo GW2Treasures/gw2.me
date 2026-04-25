@@ -2,8 +2,8 @@ import { LoginErrorCookieName, authCookie, loginErrorCookie, userCookie } from '
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { Prisma, UserProviderRequestType } from '@gw2me/database';
-import { providers } from 'app/auth/providers';
-import { LoginError } from 'app/login/form';
+import { providers } from '@/app/auth/providers';
+import { LoginError } from '@/app/login/form';
 import { randomBytes } from 'node:crypto';
 import { cookies } from 'next/headers';
 import { redirect, unstable_rethrow as rethrow } from 'next/navigation';

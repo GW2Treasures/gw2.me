@@ -7,11 +7,11 @@ import { db } from '@/lib/db';
 import { generateCode } from '@/lib/token';
 import { expiresAt } from '@/lib/date';
 import { Scope } from '@gw2me/client';
-import { normalizeScopes } from 'app/(authorize)/oauth2/authorize/validate';
-import { createAuthorizationRequest } from 'app/(authorize)/authorize/helper';
+import { normalizeScopes } from '@/app/(authorize)/oauth2/authorize/validate';
+import { createAuthorizationRequest } from '@/app/(authorize)/authorize/helper';
 import { getUrlFromRequest } from '@/lib/url';
 import { PKCEChallenge } from '@gw2me/client/pkce';
-import { AuthorizationRequestData } from 'app/(authorize)/authorize/types';
+import { AuthorizationRequestData } from '@/app/(authorize)/authorize/types';
 import { FedCMServerError, IdentityAssertionErrorResponse, IdentityAssertionResponse, isValidWebIdentityRequest, parseIdentityAssertionRequest } from '@fedcm/server';
 import { assert } from '@/lib/oauth/assert';
 
