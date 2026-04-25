@@ -1,18 +1,16 @@
 'use client';
 
+import { useHydrated } from '@/lib/use-hydrated';
 import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 
 interface FormatDateProps {
   date: Date,
 }
 
 export const FormatDate: FC<FormatDateProps> = ({ date }) => {
-  const [value, setValue] = useState(date.toUTCString());
-
-  useEffect(() => {
-    setValue(date.toLocaleString());
-  }, [date]);
+  const hydrated = useHydrated();
+  const value = hydrated ? date.toLocaleString() : date.toUTCString();
 
   return (
     <Tip tip={date.toUTCString()}>
