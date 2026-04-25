@@ -1,0 +1,29 @@
+name: Library / Java
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+  merge_group:
+
+jobs:
+  build-java-types:
+    name: gw2-me-types
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+          distribution: 'temurin'
+          java-version: '24'
+          cache: 'maven'
+    - name: Build
+      working-directory: libraries/java/gw2-me-types
+      run: |
+        mvn clean package
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: java-gw2-me-types.jar
+        path: libraries/java/gw2-me-types/target/*.jar
