@@ -1,4 +1,4 @@
-import { Text } from '@react-email/text';
+import { Text } from 'react-email';
 import Template, { styles } from './template';
 
 export default function TestEmail() {
