@@ -252,8 +252,8 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.14)
       '@typescript/lib-dom':
-        specifier: npm:@types/web@0.0.347
-        version: '@types/web@0.0.347'
+        specifier: npm:@types/web@0.0.348
+        version: '@types/web@0.0.348'
       '@vitejs/plugin-react':
         specifier: 6.0.1
         version: 6.0.1(vite@8.0.10(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.6.1)(terser@5.46.2))
@@ -1607,8 +1607,8 @@ packages:
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
 
-  '@types/web@0.0.347':
-    resolution: {integrity: sha512-BYbWW8YEvnNeiQ72BXZrm8XXLJeC9rPUmqzcoYPWt3hcOAaJKGm8RN+vJ1mgkfOOGDChe1gYKj8gkXOae3McVg==}
+  '@types/web@0.0.348':
+    resolution: {integrity: sha512-XKtj02oBdMJbfX8PjaamrWP7tzCAtYFdsfXHhl8nz6ot6fkjvk1sCTVOgd0Fczi3D9eYbibjsfim5qf1KQQYkA==}
 
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
@@ -5733,7 +5733,7 @@ snapshots:
 
   '@types/unist@3.0.3': {}
 
-  '@types/web@0.0.347': {}
+  '@types/web@0.0.348': {}
 
   '@types/ws@8.18.1':
     dependencies:
