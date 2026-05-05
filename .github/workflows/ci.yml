@@ -49,7 +49,7 @@ jobs:
 
   docker:
     name: Docker / ${{ matrix.target }}
-    uses: docker/github-builder/.github/workflows/bake.yml@7d2a02426d4b989616ba5aaee4e879afd4134b0d # v1
+    uses: docker/github-builder/.github/workflows/bake.yml@d4bb88e5e4420d56d283d658b6b5992c1dce04da # v1
     permissions:
       contents: read
       id-token: write
