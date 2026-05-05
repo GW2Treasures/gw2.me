@@ -294,11 +294,11 @@ importers:
         specifier: 9.39.4
         version: 9.39.4(jiti@2.6.1)
       publint:
-        specifier: 0.3.18
-        version: 0.3.18
+        specifier: 0.3.19
+        version: 0.3.19
       tsdown:
         specifier: 0.21.10
-        version: 0.21.10(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(typescript@6.0.3)
+        version: 0.21.10(@arethetypeswrong/core@0.18.2)(publint@0.3.19)(typescript@6.0.3)
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -3711,8 +3711,8 @@ packages:
   property-information@7.1.0:
     resolution: {integrity: sha512-TwEZ+X+yCJmYfL7TPUOcvBZ4QfoT5YenQiJuX//0th53DE6w0xxLEtfK3iyryQFddXuvkIk51EEgrJQ0WJkOmQ==}
 
-  publint@0.3.18:
-    resolution: {integrity: sha512-JRJFeBTrfx4qLwEuGFPk+haJOJN97KnPuK01yj+4k/Wj5BgoOK5uNsivporiqBjk2JDaslg7qJOhGRnpltGeog==}
+  publint@0.3.19:
+    resolution: {integrity: sha512-J3p4GOocCRFyLLFRzGfIhAwWgk0Kkcdxj5iFspFvCYbyiJs5IhCM8gsIkcNeQL+tdpV671RtJQiTFSUKhl1Wjg==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -8121,7 +8121,7 @@ snapshots:
 
   property-information@7.1.0: {}
 
-  publint@0.3.18:
+  publint@0.3.19:
     dependencies:
       '@publint/pack': 0.1.4
       package-manager-detector: 1.6.0
@@ -8749,7 +8749,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.21.10(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(typescript@6.0.3):
+  tsdown@0.21.10(@arethetypeswrong/core@0.18.2)(publint@0.3.19)(typescript@6.0.3):
     dependencies:
       ansis: 4.2.0
       cac: 7.0.0
@@ -8769,7 +8769,7 @@ snapshots:
       unrun: 0.2.37
     optionalDependencies:
       '@arethetypeswrong/core': 0.18.2
-      publint: 0.3.18
+      publint: 0.3.19
       typescript: 6.0.3
     transitivePeerDependencies:
       - '@ts-macro/tsc'
