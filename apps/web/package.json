@@ -28,8 +28,8 @@
     "jose": "6.2.3",
     "next": "16.2.5",
     "nodemailer": "8.0.7",
-    "react": "19.2.5",
-    "react-dom": "19.2.5",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
     "server-only": "0.0.1",
     "sharp": "0.34.5"
   },
