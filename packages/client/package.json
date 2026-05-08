@@ -52,7 +52,7 @@
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/node": "24.12.3",
     "eslint": "9.39.4",
-    "publint": "0.3.19",
+    "publint": "0.3.20",
     "tsdown": "0.22.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.59.2",
