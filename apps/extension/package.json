@@ -25,11 +25,11 @@
   "devDependencies": {
     "@gw2treasures/eslint-config": "0.2.1",
     "@gw2treasures/tsconfig": "0.0.1",
-    "@types/archiver": "7.0.0",
+    "@types/archiver": "8.0.0",
     "@types/chrome": "0.1.43",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
-    "archiver": "7.0.1",
+    "archiver": "8.0.0",
     "copy-webpack-plugin": "14.0.0",
     "css-loader": "7.1.4",
     "eslint": "9.39.4",
