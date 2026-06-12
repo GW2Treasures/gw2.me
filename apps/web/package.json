@@ -31,7 +31,7 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "server-only": "0.0.1",
-    "sharp": "0.34.5"
+    "sharp": "0.35.1"
   },
   "devDependencies": {
     "@gw2api/types": "0.0.43",
