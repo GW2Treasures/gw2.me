@@ -137,8 +137,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0(webpack@5.107.2)
       ts-loader:
-        specifier: 9.6.0
-        version: 9.6.0(typescript@6.0.3)(webpack@5.107.2)
+        specifier: 9.6.1
+        version: 9.6.1(typescript@6.0.3)(webpack@5.107.2)
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -4430,8 +4430,8 @@ packages:
       typescript:
         optional: true
 
-  ts-loader@9.6.0:
-    resolution: {integrity: sha512-dsJO0S+T7grTDWTc4a0nTygXGjKncVUpx8Y+af8EvI/D5WgTJby5UEk5eoMCB9EcLQmnvitqh99MqtjtHgAwFQ==}
+  ts-loader@9.6.1:
+    resolution: {integrity: sha512-8FMHnmxtpncUAu0ZjkqpXnOTlwc9eY95esH8WVN94guTPPdkg2ofVdiVM5j8L2lmjiGerXd56zXb/D2JyVQPLg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       loader-utils: '*'
@@ -9062,7 +9062,7 @@ snapshots:
     optionalDependencies:
       typescript: 6.0.3
 
-  ts-loader@9.6.0(typescript@6.0.3)(webpack@5.107.2):
+  ts-loader@9.6.1(typescript@6.0.3)(webpack@5.107.2):
     dependencies:
       chalk: 4.1.2
       enhanced-resolve: 5.24.0
