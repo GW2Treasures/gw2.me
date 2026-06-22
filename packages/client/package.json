@@ -46,7 +46,7 @@
   },
   "homepage": "https://github.com/gw2treasures/gw2.me#readme",
   "devDependencies": {
-    "@arethetypeswrong/core": "0.18.3",
+    "@arethetypeswrong/core": "0.18.4",
     "@gw2treasures/eslint-config": "0.2.1",
     "@gw2treasures/publish-package": "0.1.0",
     "@gw2treasures/tsconfig": "0.0.1",
