@@ -19,14 +19,14 @@
   "devDependencies": {
     "@gw2treasures/eslint-config": "0.2.1",
     "@gw2treasures/tsconfig": "0.0.1",
-    "@react-email/ui": "6.6.5",
+    "@react-email/ui": "6.6.6",
     "@types/react": "19.2.17",
     "eslint": "9.39.4",
     "typescript": "6.0.3",
     "typescript-eslint": "8.62.1"
   },
   "dependencies": {
-    "react-email": "6.6.5"
+    "react-email": "6.6.6"
   },
   "peerDependencies": {
     "react": "^19.0.0"
