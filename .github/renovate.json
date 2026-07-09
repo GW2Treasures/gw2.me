@@ -4,7 +4,7 @@
   "ignorePresets": ["security:minimumReleaseAgeNpm"],
   "addLabels": ["dependencies"],
   "kubernetes": {
-    "managerFilePatterns": ["kubernetes/.+\\.yaml$"]
+    "managerFilePatterns": ["kubernetes/**/*.yaml"]
   },
   "ignorePaths": [
     "**/node_modules/**",
@@ -39,7 +39,7 @@
     {
       "customType": "regex",
       "description": "Update version variables in Dockerfiles",
-      "managerFilePatterns": ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
+      "managerFilePatterns": ["/(^|/|\\.)Dockerfile$/", "/(^|/)Dockerfile\\.[^/]*$/"],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:ENV|ARG) .+?_version=(?<currentValue>.+?)\\s"
       ]
@@ -47,7 +47,7 @@
     {
       "customType": "regex",
       "description": "Update version variables in Github Actions workflows",
-      "managerFilePatterns": ["^\\.github/(workflows|actions)/.+\\.ya?ml$"],
+      "managerFilePatterns": ["/^\\.github/(workflows|actions)/.+\\.ya?ml$/"],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s+.+?_VERSION: (?<currentValue>.+?)\\s"
       ]
