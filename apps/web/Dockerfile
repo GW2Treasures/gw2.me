@@ -2,8 +2,6 @@ ARG node_version=24.18.0-alpine3.23@sha256:595398b0081eacda8e1c4c5b97b76cd1020e4
 
 # renovate: datasource=npm packageName=turbo
 ARG turbo_version=2.8.17
-# renovate: datasource=npm packageName=sharp
-ARG sharp_version=0.35.2
 # renovate: datasource=npm packageName=pnpm
 ARG pnpm_version=10.32.1
 
@@ -35,7 +33,6 @@ RUN pnpm run build --filter=web
 
 # Production image, copy all the files and run next
 FROM node:${node_version} AS runner
-ARG sharp_version
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -43,8 +40,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
-
-RUN npm install sharp@${sharp_version} --include=optional
 
 COPY --from=builder /app/apps/web/package.json .
 
