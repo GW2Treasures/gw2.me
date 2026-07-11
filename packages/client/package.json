@@ -51,7 +51,7 @@
     "@gw2treasures/publish-package": "0.1.0",
     "@gw2treasures/tsconfig": "0.0.1",
     "@types/node": "24.13.3",
-    "eslint": "9.39.4",
+    "eslint": "9.39.5",
     "publint": "0.3.21",
     "tsdown": "0.22.4",
     "typescript": "6.0.3",
