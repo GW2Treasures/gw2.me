@@ -49,7 +49,7 @@
     "@vitejs/plugin-react": "6.0.3",
     "eslint": "9.39.5",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.63.0",
+    "typescript-eslint": "8.64.0",
     "vitest": "4.1.10",
     "vitest-mock-extended": "5.0.0"
   }
