@@ -270,8 +270,8 @@ importers:
         specifier: 4.1.10
         version: 4.1.10(@types/node@24.13.3)(vite@8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0))
       vitest-mock-extended:
-        specifier: 5.0.0
-        version: 5.0.0(typescript@6.0.3)(vitest@4.1.10(@types/node@24.13.3)(vite@8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)))
+        specifier: 5.1.0
+        version: 5.1.0(typescript@6.0.3)(vitest@4.1.10(@types/node@24.13.3)(vite@8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)))
 
   packages/client:
     devDependencies:
@@ -4733,8 +4733,8 @@ packages:
       yaml:
         optional: true
 
-  vitest-mock-extended@5.0.0:
-    resolution: {integrity: sha512-fnPf7Q5eVQPs8cCoNVdRA46khG1t1PL4LkdE7cYYZeT665jm0dGibYdBKCAQRCJhaw4Aam1QgraFiHMYnheTag==}
+  vitest-mock-extended@5.1.0:
+    resolution: {integrity: sha512-xW28qmo6CbEROzwFRKw+fhLQcwoxBbUHdezDtBJXiHinthfyYZ3pwt4ez4r+XPdimTbXJcFetjzKBJqMw1A6Jw==}
     peerDependencies:
       typescript: 3.x || 4.x || 5.x || 6.x || 7.x
       vitest: '>=4.0.0'
@@ -9434,7 +9434,7 @@ snapshots:
       jiti: 2.7.0
       terser: 5.49.0
 
-  vitest-mock-extended@5.0.0(typescript@6.0.3)(vitest@4.1.10(@types/node@24.13.3)(vite@8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0))):
+  vitest-mock-extended@5.1.0(typescript@6.0.3)(vitest@4.1.10(@types/node@24.13.3)(vite@8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0))):
     dependencies:
       ts-essentials: 10.2.1(typescript@6.0.3)
       typescript: 6.0.3
