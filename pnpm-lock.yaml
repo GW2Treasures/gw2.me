@@ -294,11 +294,11 @@ importers:
         specifier: 9.39.5
         version: 9.39.5(jiti@2.7.0)
       publint:
-        specifier: 0.3.21
-        version: 0.3.21
+        specifier: 0.3.22
+        version: 0.3.22
       tsdown:
         specifier: 0.22.13
-        version: 0.22.13(@arethetypeswrong/core@0.18.5)(publint@0.3.21)(typescript@6.0.3)
+        version: 0.22.13(@arethetypeswrong/core@0.18.5)(publint@0.3.22)(typescript@6.0.3)
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -1381,8 +1381,8 @@ packages:
       react: 19.2.8
       react-dom: 19.2.8
 
-  '@publint/pack@0.1.5':
-    resolution: {integrity: sha512-edgyN2pP07uXiP4tJs0s8KVmU8M8i60YPbbI0/WDeok1mIJHRXz+CgD8I0nelwDkoCh3EWL/G5kGfbuHjsdbvw==}
+  '@publint/pack@0.1.6':
+    resolution: {integrity: sha512-3uVNyGcVplhPZSLVyeIpL7+cIRn1YCSNHLG/rUIlBQMVH8YuN9++YF+5+UDIIO9RW98dujiUoTltO7RDB5bFJA==}
     engines: {node: '>=18'}
 
   '@quansync/fs@1.0.0':
@@ -4167,8 +4167,8 @@ packages:
   property-information@7.2.0:
     resolution: {integrity: sha512-IAtzIB6sUiWaJYrX9smp3V46pBGbBeLFRGdh25kg1334VcBlD8HzhPeNIWQH9zhGmo2itIe25EHt9dQP7G5hmg==}
 
-  publint@0.3.21:
-    resolution: {integrity: sha512-OqejcnMV6E9zel2oCrUOJEiiFkGiAAni0A6ibfQNh1k9Gu5z4F+Yso8lllam7AzmV6Do0vp7u3UpZNRBwuXaHQ==}
+  publint@0.3.22:
+    resolution: {integrity: sha512-6Z/scsr5CA7APdwyF35EY88CqgDj1textWuY788DVTJYPCWVv/Wn9G6KmLnrVRnStgYcahqN4wCDLZGSbQJ69w==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -5985,7 +5985,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react-dom'
 
-  '@publint/pack@0.1.5':
+  '@publint/pack@0.1.6':
     dependencies:
       tinyexec: 1.2.4
 
@@ -8917,9 +8917,9 @@ snapshots:
 
   property-information@7.2.0: {}
 
-  publint@0.3.21:
+  publint@0.3.22:
     dependencies:
-      '@publint/pack': 0.1.5
+      '@publint/pack': 0.1.6
       package-manager-detector: 1.7.0
       picocolors: 1.1.1
       sade: 1.8.1
@@ -9579,7 +9579,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.22.13(@arethetypeswrong/core@0.18.5)(publint@0.3.21)(typescript@6.0.3):
+  tsdown@0.22.13(@arethetypeswrong/core@0.18.5)(publint@0.3.22)(typescript@6.0.3):
     dependencies:
       ansis: 4.3.1
       cac: 7.0.0
@@ -9598,7 +9598,7 @@ snapshots:
       verkit: 0.1.2
     optionalDependencies:
       '@arethetypeswrong/core': 0.18.5
-      publint: 0.3.21
+      publint: 0.3.22
       typescript: 6.0.3
     transitivePeerDependencies:
       - '@typescript/native-preview'
