@@ -126,28 +126,28 @@ importers:
         version: 8.0.0
       copy-webpack-plugin:
         specifier: 14.0.0
-        version: 14.0.0(webpack@5.108.4)
+        version: 14.0.0(webpack@5.109.0)
       css-loader:
         specifier: 7.1.4
-        version: 7.1.4(webpack@5.108.4)
+        version: 7.1.4(webpack@5.109.0)
       eslint:
         specifier: 9.39.5
         version: 9.39.5(jiti@2.7.0)
       style-loader:
         specifier: 4.0.0
-        version: 4.0.0(webpack@5.108.4)
+        version: 4.0.0(webpack@5.109.0)
       ts-loader:
         specifier: 9.6.2
-        version: 9.6.2(typescript@6.0.3)(webpack@5.108.4)
+        version: 9.6.2(typescript@6.0.3)(webpack@5.109.0)
       typescript:
         specifier: 6.0.3
         version: 6.0.3
       webpack:
-        specifier: 5.108.4
-        version: 5.108.4(postcss@8.5.20)(webpack-cli@7.2.1)
+        specifier: 5.109.0
+        version: 5.109.0(postcss@8.5.20)(webpack-cli@7.2.1)
       webpack-cli:
         specifier: 7.2.1
-        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack@5.109.0)
 
   apps/web:
     dependencies:
@@ -2193,12 +2193,6 @@ packages:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}
     engines: {node: '>= 0.6'}
 
-  acorn-import-phases@1.0.4:
-    resolution: {integrity: sha512-wKmbr/DDiIXzEOiWrTTUcDm24kQ2vGfZQvM2fwg2vXqR5uW6aapr7ObPtj1th32b9u90/Pf4AItvdTh42fBmVQ==}
-    engines: {node: '>=10.13.0'}
-    peerDependencies:
-      acorn: ^8.14.0
-
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
@@ -3562,10 +3556,6 @@ packages:
   lightningcss@1.32.0:
     resolution: {integrity: sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ==}
     engines: {node: '>= 12.0.0'}
-
-  loader-runner@4.3.2:
-    resolution: {integrity: sha512-DFEqQ3ihfS9blba08cLfYf1NRAIEm+dDjic073DRDc3/JspI/8wYmtDsHwd3+4hwvdxSK7PGaElfTmm0awWJ4w==}
-    engines: {node: '>=6.11.5'}
 
   locate-path@5.0.0:
     resolution: {integrity: sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==}
@@ -4964,8 +4954,8 @@ packages:
     resolution: {integrity: sha512-jyuiGJdtvY434z5bUZrjz67v76/ePNvFZTp9Mdz29IlH4+GPsgyGjiv0fKI+M7BdkU6ADjulUcKAd3tUK3WlEw==}
     engines: {node: '>=10.13.0'}
 
-  webpack@5.108.4:
-    resolution: {integrity: sha512-yur8LyJoeiWh47dErD+Ok7vlbmDsJ3UbbRPAoxbGJ54WpE2y5yVo5G/inUzujnYgw3tPmBRdn+G7PoxXaYC33w==}
+  webpack@5.109.0:
+    resolution: {integrity: sha512-vomrngskVVXEZF9sMZfYAd4pXZUnfaWdJGlF+BTNF+gJBCKYCQBnOeVPlrh39Ewl7nlCsirDplMy6o5g9xJHBg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     peerDependencies:
@@ -6759,10 +6749,6 @@ snapshots:
       mime-types: 2.1.35
       negotiator: 0.6.3
 
-  acorn-import-phases@1.0.4(acorn@8.17.0):
-    dependencies:
-      acorn: 8.17.0
-
   acorn-jsx@5.3.2(acorn@8.17.0):
     dependencies:
       acorn: 8.17.0
@@ -7112,14 +7098,14 @@ snapshots:
 
   cookie@0.7.2: {}
 
-  copy-webpack-plugin@14.0.0(webpack@5.108.4):
+  copy-webpack-plugin@14.0.0(webpack@5.109.0):
     dependencies:
       glob-parent: 6.0.2
       normalize-path: 3.0.0
       schema-utils: 4.3.3
       serialize-javascript: 7.0.7
       tinyglobby: 0.2.17
-      webpack: 5.108.4(postcss@8.5.20)(webpack-cli@7.2.1)
+      webpack: 5.109.0(postcss@8.5.20)(webpack-cli@7.2.1)
 
   core-util-is@1.0.3: {}
 
@@ -7141,7 +7127,7 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  css-loader@7.1.4(webpack@5.108.4):
+  css-loader@7.1.4(webpack@5.109.0):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.20)
       postcss: 8.5.20
@@ -7152,7 +7138,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.8.5
     optionalDependencies:
-      webpack: 5.108.4(postcss@8.5.20)(webpack-cli@7.2.1)
+      webpack: 5.109.0(postcss@8.5.20)(webpack-cli@7.2.1)
 
   css-tree@3.2.1:
     dependencies:
@@ -8242,8 +8228,6 @@ snapshots:
       lightningcss-win32-arm64-msvc: 1.32.0
       lightningcss-win32-x64-msvc: 1.32.0
 
-  loader-runner@4.3.2: {}
-
   locate-path@5.0.0:
     dependencies:
       p-locate: 4.1.0
@@ -8532,13 +8516,13 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  minimizer-webpack-plugin@5.6.1(postcss@8.5.20)(webpack@5.108.4):
+  minimizer-webpack-plugin@5.6.1(postcss@8.5.20)(webpack@5.109.0):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.49.0
-      webpack: 5.108.4(postcss@8.5.20)(webpack-cli@7.2.1)
+      webpack: 5.109.0(postcss@8.5.20)(webpack-cli@7.2.1)
     optionalDependencies:
       postcss: 8.5.20
 
@@ -9463,9 +9447,9 @@ snapshots:
 
   stubborn-utils@1.0.2: {}
 
-  style-loader@4.0.0(webpack@5.108.4):
+  style-loader@4.0.0(webpack@5.109.0):
     dependencies:
-      webpack: 5.108.4(postcss@8.5.20)(webpack-cli@7.2.1)
+      webpack: 5.109.0(postcss@8.5.20)(webpack-cli@7.2.1)
 
   style-to-js@1.1.21:
     dependencies:
@@ -9558,13 +9542,13 @@ snapshots:
     optionalDependencies:
       typescript: 6.0.3
 
-  ts-loader@9.6.2(typescript@6.0.3)(webpack@5.108.4):
+  ts-loader@9.6.2(typescript@6.0.3)(webpack@5.109.0):
     dependencies:
       chalk: 4.1.2
       picomatch: 4.0.5
       source-map: 0.7.6
       typescript: 6.0.3
-      webpack: 5.108.4(postcss@8.5.20)(webpack-cli@7.2.1)
+      webpack: 5.109.0(postcss@8.5.20)(webpack-cli@7.2.1)
 
   tsconfig-paths@3.15.0:
     dependencies:
@@ -9802,7 +9786,7 @@ snapshots:
     dependencies:
       graceful-fs: 4.2.11
 
-  webpack-cli@7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack@5.108.4):
+  webpack-cli@7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack@5.109.0):
     dependencies:
       '@discoveryjs/json-ext': 1.1.0
       commander: 14.0.3
@@ -9811,7 +9795,7 @@ snapshots:
       import-local: 3.2.0
       interpret: 3.1.1
       rechoir: 0.8.0
-      webpack: 5.108.4(postcss@8.5.20)(webpack-cli@7.2.1)
+      webpack: 5.109.0(postcss@8.5.20)(webpack-cli@7.2.1)
       webpack-merge: 6.0.1
     optionalDependencies:
       js-yaml: 4.3.0
@@ -9825,7 +9809,7 @@ snapshots:
 
   webpack-sources@3.5.1: {}
 
-  webpack@5.108.4(postcss@8.5.20)(webpack-cli@7.2.1):
+  webpack@5.109.0(postcss@8.5.20)(webpack-cli@7.2.1):
     dependencies:
       '@types/estree': 1.0.9
       '@types/json-schema': 7.0.15
@@ -9833,7 +9817,6 @@ snapshots:
       '@webassemblyjs/wasm-edit': 1.14.1
       '@webassemblyjs/wasm-parser': 1.14.1
       acorn: 8.17.0
-      acorn-import-phases: 1.0.4(acorn@8.17.0)
       browserslist: 4.28.6
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.24.2
@@ -9841,16 +9824,15 @@ snapshots:
       eslint-scope: 5.1.1
       events: 3.3.0
       graceful-fs: 4.2.11
-      loader-runner: 4.3.2
       mime-db: 1.54.0
-      minimizer-webpack-plugin: 5.6.1(postcss@8.5.20)(webpack@5.108.4)
+      minimizer-webpack-plugin: 5.6.1(postcss@8.5.20)(webpack@5.109.0)
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.3
       watchpack: 2.5.2
       webpack-sources: 3.5.1
     optionalDependencies:
-      webpack-cli: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack@5.108.4)
+      webpack-cli: 7.2.1(js-yaml@4.3.0)(json5@2.2.3)(webpack@5.109.0)
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@swc/core'
