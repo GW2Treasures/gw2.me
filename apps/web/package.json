@@ -48,7 +48,7 @@
     "@typescript/lib-dom": "npm:@types/web@0.0.353",
     "@vitejs/plugin-react": "6.0.4",
     "eslint": "9.39.5",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "typescript-eslint": "8.65.0",
     "vitest": "4.1.10",
     "vitest-mock-extended": "5.1.0"
