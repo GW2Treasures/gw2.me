@@ -37,7 +37,7 @@
     "ts-loader": "9.6.2",
     "typescript": "6.0.3",
     "webpack": "5.109.2",
-    "webpack-cli": "7.2.1"
+    "webpack-cli": "7.2.2"
   },
   "dependencies": {
     "@fontsource/bitter": "5.3.0",
