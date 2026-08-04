@@ -41,7 +41,7 @@ const request = (params: Record<string, string>): OAuth2RequestHandlerProps => (
   headers: new Headers(),
   url: new URL('https://gw2.me/api/token'),
   params: { client_id: client.id, ...params },
-  requestAuthorization: { method: 'none', client }
+  requestAuthorization: { method: 'none', client, client_id: client.id }
 });
 
 describe('/api/token', () => {
@@ -105,7 +105,7 @@ describe('/api/token', () => {
         headers: new Headers(),
         url: new URL('https://gw2.me/api/token'),
         params: { client_id: confidentialClient.id, grant_type: 'authorization_code', code: 'foo', redirect_uri: '/redirect' },
-        requestAuthorization: { method: 'client_secret_basic', client: confidentialClient, client_secret: 'client_secret' }
+        requestAuthorization: { method: 'client_secret_basic', client: confidentialClient, client_secret: 'client_secret', client_id: confidentialClient.id }
       });
       expect(response.access_token).toBeDefined();
       expect(response.refresh_token).toBeDefined();
