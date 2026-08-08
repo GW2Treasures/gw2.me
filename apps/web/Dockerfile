@@ -3,7 +3,7 @@ ARG node_version=24.19.0-alpine3.23@sha256:244cc2b53f46f9e876304391d17682b0ddae9
 # renovate: datasource=npm packageName=turbo
 ARG turbo_version=2.10.9
 # renovate: datasource=npm packageName=pnpm
-ARG pnpm_version=10.34.5
+ARG pnpm_version=11.20.0
 
 FROM --platform=$BUILDPLATFORM node:${node_version} AS source
 ARG turbo_version
