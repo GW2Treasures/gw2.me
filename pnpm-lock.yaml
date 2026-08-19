@@ -191,8 +191,8 @@ importers:
         specifier: 3.10.0
         version: 3.10.0
       aaguids:
-        specifier: 0.0.63
-        version: 0.0.63
+        specifier: 0.0.64
+        version: 0.0.64
       hast-util-to-jsx-runtime:
         specifier: 2.3.6
         version: 2.3.6
@@ -2084,8 +2084,8 @@ packages:
   '@yuku-toolchain/types@0.8.7':
     resolution: {integrity: sha512-2Z53dNxAJL6UvFoIrDZvYf3zlO8s4VJK4O2hhaB4mXVwwpX/7ajtss3cmfqKvamlNLWyt9FSWs4eoYdlbxpnHA==}
 
-  aaguids@0.0.63:
-    resolution: {integrity: sha512-y5RM03h7/vDJQVqMb/LlZCLklh8K+DfJWD0xIUw5K0OUwuaMW87+cyIRAX92lOTfMdp3hotA7/DQJyZIKgSPSw==}
+  aaguids@0.0.64:
+    resolution: {integrity: sha512-l+SJbirOgspY4Ryqsu4Bbh7dfAENszcEe/f6Yl2CZTLmMrqsQ0A5qUDqhD1QPBilrlF+nr9lYwpYlXqTGdbp7Q==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -6540,7 +6540,7 @@ snapshots:
 
   '@yuku-toolchain/types@0.8.7': {}
 
-  aaguids@0.0.63: {}
+  aaguids@0.0.64: {}
 
   abort-controller@3.0.0:
     dependencies:
