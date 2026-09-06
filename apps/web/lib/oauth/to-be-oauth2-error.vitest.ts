@@ -1,11 +1,7 @@
 import { OAuth2Error, OAuth2ErrorCode } from './error';
-import { expect } from 'vitest';
+import { expect, type Matcher, type MatcherState } from 'vitest';
 
-type RecordValue<T> = T extends Record<string, infer X> ? X : never;
-type RawMatcherFn = RecordValue<Parameters<typeof expect.extend>[0]>;
-type MatcherFunction<Args extends Array<unknown>> = (this: ReturnType<typeof expect.getState>, actual: unknown, ...args: Args) => ReturnType<RawMatcherFn>;
-
-const toBeOAuth2Error: MatcherFunction<[code?: OAuth2ErrorCode, description?: string]> = function (actual, code, description) {
+const toBeOAuth2Error: Matcher<MatcherState, [code?: OAuth2ErrorCode, description?: string]> = function (actual, code, description) {
   if(!(actual instanceof OAuth2Error)) {
     return { pass: false, message: () => `Expected: ${this.utils.EXPECTED_COLOR('[OAuth2Error]')}\nReceived: ${this.utils.printReceived(actual)}` };
   }
@@ -20,7 +16,7 @@ const toBeOAuth2Error: MatcherFunction<[code?: OAuth2ErrorCode, description?: st
   return { pass: true, message: () => 'expected not OAuth2Error' };
 };
 
-const toThrowOAuth2Error: MatcherFunction<[code?: OAuth2ErrorCode, description?: string]> = function (actual, code, description) {
+const toThrowOAuth2Error: Matcher<MatcherState, [code?: OAuth2ErrorCode, description?: string]> = function (actual, code, description) {
   if(typeof actual !== 'function') {
     return { pass: false, message: () => 'expected value is not a function' };
   }
@@ -41,8 +37,10 @@ declare module 'vitest' {
     toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): void,
     toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): void,
   }
-  interface Assertion<T> {
-    toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): T,
-    toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): T,
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface Assertion<R, T> {
+    toBeOAuth2Error(code?: OAuth2ErrorCode, description?: string): R,
+    toThrowOAuth2Error(code?: OAuth2ErrorCode, description?: string): R,
   }
 }
