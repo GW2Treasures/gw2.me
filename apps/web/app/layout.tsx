@@ -10,6 +10,7 @@ import { getUser } from '@/lib/session';
 import { Icon, cx } from '@gw2treasures/ui';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { DataTableContext } from '@gw2treasures/ui/components/Table/DataTableContext';
+import { LoginButton } from '@/components/User/LoginButton';
 
 const bitter = Bitter({
   subsets: ['latin' as const],
@@ -43,7 +44,11 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
               <LinkButton appearance="menu" href="/extension" className={styles.mobileHidden}>Extension</LinkButton>
             </nav>
             <div className={styles.right}>
-              <LinkButton appearance="menu" href={user ? '/profile' : '/login'} icon="user">{user ? user.name : 'Login'}</LinkButton>
+              {user ? (
+                <LinkButton appearance="menu" href="/profile" icon="user">{user.name}</LinkButton>
+              ) : (
+                <LoginButton/>
+              )}
             </div>
           </div>
           <hr className={styles.border}/>
