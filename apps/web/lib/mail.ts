@@ -1,8 +1,7 @@
 import 'server-only';
-import nodemailer, { type Transporter } from 'nodemailer';
+import nodemailer, { Address, type Transporter } from 'nodemailer';
 import { render } from '@react-email/render';
 import { ReactElement } from 'react';
-import { Address } from 'nodemailer/lib/mailer';
 
 let transport: Transporter;
 
