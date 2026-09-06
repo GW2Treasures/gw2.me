@@ -1,3 +1,18 @@
 packages:
 - 'apps/*'
 - 'packages/*'
+
+# disable update notifications in cli,
+# the pnpm version is managed by renovate
+updateNotifier: false
+
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  'esbuild': true
+  'prisma': true
+  'sharp': true
+
+# TODO: remove
+minimumReleaseAgeExclude:
+  - '@types/chrome@0.2.9'

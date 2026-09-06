@@ -23,20 +23,12 @@
     "yarn": "please-use-pnpm",
     "pnpm": "12.3.4"
   },
-  "pnpm": {
-    "overrides": {
-      "react": "19.2.8",
-      "react-dom": "19.2.8",
-      "@types/react": "19.2.18",
-      "@types/react-dom": "19.2.7"
-    },
-    "onlyBuiltDependencies": [
-      "@prisma/client",
-      "@prisma/engines",
-      "esbuild",
-      "prisma",
-      "sharp"
-    ]
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.3.4",
+      "onFail": "download"
+    }
   },
   "packageManager": "pnpm@12.3.4"
 }
