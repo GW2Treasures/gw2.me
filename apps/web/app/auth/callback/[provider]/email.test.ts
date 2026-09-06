@@ -1,14 +1,12 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { handleNewEmail } from './email';
 import { dbMock } from '@/lib/db.mock';
 import { UserEmail } from '@gw2me/database';
 import { sendEmailVerificationMail } from '@/lib/mail/email-verification';
 
-describe('callback new email', () => {
-  beforeAll(() => {
-    vi.mock('@/lib/mail/email-verification');
-  });
+vi.mock('@/lib/mail/email-verification');
 
+describe('callback new email', () => {
   it('sets default email for first email', async () => {
     const { create } = mockExistingEmails([]);
 
