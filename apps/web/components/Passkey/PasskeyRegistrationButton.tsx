@@ -6,10 +6,10 @@ import { unstable_rethrow as rethrow } from 'next/navigation';
 import { useCallback, useTransition, type FC } from 'react';
 import { useShowNotice } from '../NoticeContext/NoticeContext';
 import { getRegistrationOptions, submitRegistration } from './actions';
-import { useBrowserSupportsWebAuthn } from './use-browser-supports-web-authn';
+import { useBrowserSupportsPasskeys } from './use-browser-supports-passkeys';
 
 export const PasskeyRegistrationButton: FC = () => {
-  const supportsPasskeys = useBrowserSupportsWebAuthn();
+  const supportsPasskeys = useBrowserSupportsPasskeys();
   const [pending, startTransition] = useTransition();
   const notice = useShowNotice();
 

@@ -9,7 +9,7 @@ import { useCallback, useState, useTransition, type FC } from 'react';
 import { NoticeContext, useShowNotice } from '../NoticeContext/NoticeContext';
 import { getAuthenticationOptions, submitAuthentication } from './actions';
 import { PasskeyAuthenticationDialog } from './PasskeyAuthenticationDialog';
-import { useBrowserSupportsWebAuthn } from './use-browser-supports-web-authn';
+import { useBrowserSupportsPasskeys } from './use-browser-supports-passkeys';
 import { handleAuthenticationResult } from './utils';
 
 export interface PasskeyAuthenticationButtonProps {
@@ -18,7 +18,7 @@ export interface PasskeyAuthenticationButtonProps {
 }
 
 export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> = ({ className, options: loginOptions }) => {
-  const supportsPasskeys = useBrowserSupportsWebAuthn();
+  const supportsPasskeys = useBrowserSupportsPasskeys();
   const [pending, startTransition] = useTransition();
   const [dialogOpen, setDialogOpen] = useState(false);
   const notice = useShowNotice();
