@@ -11,7 +11,6 @@ import {
   verifyAuthenticationResponse,
   verifyRegistrationResponse,
   type AuthenticationResponseJSON,
-  type AuthenticatorTransportFuture,
   type RegistrationResponseJSON
 } from '@simplewebauthn/server';
 import { createChallengeJwt, verifyChallengeJwt } from './challenge';
@@ -222,7 +221,7 @@ export async function submitAuthentication(challengeJwt: string, authentication:
       id: passkey.id,
       publicKey: passkey.publicKey,
       counter: Number(passkey.counter),
-      transports: passkey.transports as AuthenticatorTransportFuture[]
+      transports: passkey.transports
     },
     expectedChallenge: challenge,
     expectedOrigin: origin,
@@ -284,6 +283,6 @@ export async function submitAuthentication(challengeJwt: string, authentication:
 function mapPasskeyToCredentials({ id, transports }: Pick<Passkey, 'id' | 'transports'>) {
   return {
     id,
-    transports: transports as AuthenticatorTransportFuture[]
+    transports,
   };
 }
