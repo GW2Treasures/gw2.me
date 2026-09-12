@@ -298,8 +298,8 @@ importers:
         specifier: 16.3.4
         version: 16.3.4(@babel/core@7.29.7(supports-color@8.1.1))(@types/node@24.13.4)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       nodemailer:
-        specifier: 10.0.3
-        version: 10.0.3
+        specifier: 10.0.5
+        version: 10.0.5
       react:
         specifier: 19.2.8
         version: 19.2.8
@@ -3923,8 +3923,8 @@ packages:
     resolution: {integrity: sha512-YHs7BmmcsdAI5Ozuf8JZo6PT0mv2GIWC9vMfvUC3dp65M8hn7Ux8CPL+2oBI7juNuj9d0ndhTcznq2ODBps9cQ==}
     engines: {node: '>=18'}
 
-  nodemailer@10.0.3:
-    resolution: {integrity: sha512-h5c8ypcMoOIh44bIcVROvTDbjRdOJX8AXTkxMht2C92HlSjkG+/8kjoqmNPypfjQaVNaUHWyZ3tqs5I3K91F3g==}
+  nodemailer@10.0.5:
+    resolution: {integrity: sha512-m9pQEvh7trUOpbFr+MbMWh5c+h8Dpjv0iUQN6Xf37Kby5DkF4/G4jteaLd2GdX/LQgP6x5jdn9M95ddAW4nT6g==}
     engines: {node: '>=20.0.0'}
 
   normalize-path@3.0.0:
@@ -8890,7 +8890,7 @@ snapshots:
 
   node-releases@2.0.54: {}
 
-  nodemailer@10.0.3: {}
+  nodemailer@10.0.5: {}
 
   normalize-path@3.0.0: {}
 
