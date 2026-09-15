@@ -5,7 +5,7 @@ import { Headline } from '@gw2treasures/ui/components/Headline/Headline';
 import { Table } from '@gw2treasures/ui/components/Table/Table';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
-import { Button } from '@gw2treasures/ui/components/Form/Button';
+import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { revalidatePath } from 'next/cache';
 import { FormatDate } from '@/components/Format/FormatDate';
 import { DiscordIcon } from '@/app/auth/discord';
@@ -66,12 +66,29 @@ export default async function ProfilePage() {
         <Providers.Column id="provider" title="Provider" sortBy="provider">
           {({ provider }) => <Provider provider={provider}/>}
         </Providers.Column>
-        <Providers.Column id="user" title="User" sortBy="displayName">{({ displayName }) => displayName}</Providers.Column>
+        <Providers.Column id="name" title="Name" sortBy="displayName">{({ displayName }) => displayName}</Providers.Column>
         <Providers.Column id="createdAt" title="Created" sortBy="createdAt" align="right">
           {({ createdAt }) => <FormatDate date={createdAt}/>}
         </Providers.Column>
         <Providers.Column id="usedAt" title="Last Used" sortBy="usedAt" align="right">
           {({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'never'}
+        </Providers.Column>
+        <Providers.Column id="actions" title="Actions" small>
+          {({ provider, providerAccountId }) => (
+            <FlexRow>
+              {providers.length <= 1 || (currentSession.providerType === provider && currentSession.providerAccountId === providerAccountId) ? (
+                <Button disabled icon="delete">Remove</Button>
+              ) : (
+                <LinkButton
+                  icon="delete"
+                  href={`/providers/remove?provider=${provider}&providerAccountId=${encodeURIComponent(providerAccountId)}`}
+                >
+                  Remove
+                </LinkButton>
+              )}
+            </FlexRow>
+
+          )}
         </Providers.Column>
       </Providers.Table>
 
@@ -98,16 +115,16 @@ export default async function ProfilePage() {
         <thead>
           <tr>
             <th>Session</th>
-            <th>Started</th>
-            <th>Last Active</th>
+            <th align="right">Started</th>
+            <th align="right">Last Active</th>
           </tr>
         </thead>
         <tbody>
           {sessions.map((session) => (
             <tr key={session.id}>
               <td>{session.info}{session.id === currentSession.id && ' (Current Session)'}</td>
-              <td><FormatDate date={session.createdAt}/></td>
-              <td><FormatDate date={session.lastUsed}/></td>
+              <td align="right"><FormatDate date={session.createdAt}/></td>
+              <td align="right"><FormatDate date={session.lastUsed}/></td>
             </tr>
           ))}
         </tbody>

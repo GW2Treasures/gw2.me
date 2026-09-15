@@ -18,7 +18,7 @@ import { db } from '@/lib/db';
 import { userAgent } from 'next/server';
 import { cookies, headers } from 'next/headers';
 import { getPreviousUser } from '@/app/login/form';
-import { Passkey } from '@gw2me/database';
+import { Passkey, UserProviderType } from '@gw2me/database';
 import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, authCookie, userCookie } from '@/lib/cookie';
 import { redirect } from 'next/navigation';
@@ -250,7 +250,14 @@ export async function submitAuthentication(challengeJwt: string, authentication:
   const sessionName = browser && os ? `${browser.name} on ${os.name}` : 'Session';
 
   // create a new session
-  const session = await db.userSession.create({ data: { info: sessionName, userId: passkey.userId }});
+  const session = await db.userSession.create({
+    data: {
+      info: sessionName,
+      userId: passkey.userId,
+      providerType: UserProviderType.passkey,
+      providerAccountId: passkey.id,
+    },
+  });
 
   // set session cookie
   const cookieStore = await cookies();
