@@ -38,7 +38,8 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
       // find code
       const authorization = await db.authorization.findUnique({
         where: {
-          type_token: { token: code, type: AuthorizationType.Code },
+          token: code,
+          type: AuthorizationType.Code,
           clientId: client.id
         },
       });
@@ -76,7 +77,7 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
         // create refresh token
         const refreshAuthorization = canCreateRefreshToken
           ? await tx.authorization.upsert({
-              where: { type_clientId_userId_dpopJkt: { type: AuthorizationType.RefreshToken, clientId, userId, dpopJkt: '' }},
+              where: { userId_type_clientId_dpopJkt: { type: AuthorizationType.RefreshToken, clientId, userId, dpopJkt: '' }},
               create: { type: AuthorizationType.RefreshToken, clientId, applicationId, userId, scope, token: generateRefreshToken() },
               update: { scope }
             })
@@ -84,7 +85,7 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
 
         // create access token
         const accessAuthorization = await tx.authorization.upsert({
-          where: { type_clientId_userId_dpopJkt: { type: AuthorizationType.AccessToken, clientId, userId, dpopJkt: dpop?.jkt ?? '' }},
+          where: { userId_type_clientId_dpopJkt: { type: AuthorizationType.AccessToken, clientId, userId, dpopJkt: dpop?.jkt ?? '' }},
           create: { type: AuthorizationType.AccessToken, clientId, userId, dpopJkt: dpop?.jkt ?? '', applicationId, scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) },
           update: { scope, token: generateAccessToken(), expiresAt: expiresAt(ACCESS_TOKEN_EXPIRATION) }
         });
@@ -115,7 +116,8 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
 
       const refreshAuthorization = await db.authorization.findUnique({
         where: {
-          type_token: { token: refresh_token, type: AuthorizationType.RefreshToken },
+          token: refresh_token,
+          type: AuthorizationType.RefreshToken,
           clientId: client.id
         }
       });
@@ -142,7 +144,7 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
         clientId,
         userId,
         dpopJkt: dpop?.jkt ?? ''
-      } satisfies Prisma.AuthorizationTypeClientIdUserIdDpopJktCompoundUniqueInput;
+      } satisfies Prisma.AuthorizationUserIdTypeClientIdDpopJktCompoundUniqueInput;
       const data = {
         scope,
         token: generateAccessToken(),
@@ -152,7 +154,7 @@ export async function handleTokenRequest({ headers, params, requestAuthorization
       const [accessAuthorization] = await db.$transaction([
         // create new access token
         db.authorization.upsert({
-          where: { type_clientId_userId_dpopJkt: identifier },
+          where: { userId_type_clientId_dpopJkt: identifier },
           create: { ...identifier, ...data, applicationId },
           update: data
         }),

@@ -78,6 +78,8 @@ model UserSession {
 
   createdAt DateTime @default(now())
   lastUsed  DateTime @default(now())
+
+  @@index([userId])
 }
 
 model UserProvider {
@@ -101,6 +103,7 @@ model UserProvider {
   usedAt    DateTime?
 
   @@id([provider, providerAccountId])
+  @@index([userId])
 }
 
 model UserProviderRequest {
@@ -177,6 +180,8 @@ model Application {
   clients        Client[]           @relation("applicationClients")
   authorizations Authorization[]
   users          ApplicationGrant[] @relation("applicationGrants")
+
+  @@index([ownerId])
 }
 
 model Client {
@@ -257,7 +262,7 @@ model Authorization {
   id String @id @default(uuid())
 
   type  AuthorizationType
-  token String
+  token String            @unique
 
   scope String[]
 
@@ -281,8 +286,7 @@ model Authorization {
 
   applicationGrant ApplicationGrant @relation(fields: [applicationId, userId], references: [applicationId, userId])
 
-  @@unique([type, token])
-  @@unique([type, clientId, userId, dpopJkt])
+  @@unique([userId, type, clientId, dpopJkt])
 }
 
 enum AuthorizationType {
@@ -365,6 +369,7 @@ model Account {
   updatedAt DateTime @updatedAt
 
   @@unique([accountId, userId])
+  @@index([userId, createdAt])
 }
 
 model SharedAccount {
@@ -386,6 +391,7 @@ model SharedAccount {
   updatedAt DateTime @updatedAt
 
   @@unique([accountId, userId])
+  @@index([userId, createdAt])
 }
 
 enum SharedAccountState {
