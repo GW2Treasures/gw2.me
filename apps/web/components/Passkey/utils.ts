@@ -2,10 +2,10 @@ import { redirect } from 'next/navigation';
 import { NoticeContext } from '../NoticeContext/NoticeContext';
 import { SubmitAuthenticationResult } from './actions';
 
-export async function handleAuthenticationResult(result: SubmitAuthenticationResult, notice: NoticeContext, returnTo?: string) {
+export async function handleAuthenticationResult(result: SubmitAuthenticationResult, notice?: NoticeContext, returnTo?: string) {
   if (!result.success) {
     if (result.reason === 'unknown-credential') {
-      notice.show({ type: 'error', children: 'Unknown passkey. Please make sure you are using the correct passkey for this account.' });
+      notice?.show({ type: 'error', children: 'Unknown passkey. Please make sure you are using the correct passkey for this account.' });
 
       if (PublicKeyCredential.signalUnknownCredential) {
         PublicKeyCredential.signalUnknownCredential(result.unknownCredential);
@@ -13,7 +13,7 @@ export async function handleAuthenticationResult(result: SubmitAuthenticationRes
 
       return;
     } else if (result.reason === 'verification-failed') {
-      notice.show({ type: 'error', children: 'Passkey verification failed. Please try again.' });
+      notice?.show({ type: 'error', children: 'Passkey verification failed. Please try again.' });
       return;
     }
   }
