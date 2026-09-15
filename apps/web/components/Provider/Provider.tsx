@@ -12,6 +12,10 @@ export interface ProviderProps {
   provider: UserProviderType,
 }
 
+export interface ProviderIconProps extends ProviderProps {
+  className?: string,
+}
+
 export const Provider: FC<ProviderProps> = ({ provider }) => {
   return (
     <FlexRow>
@@ -32,13 +36,13 @@ export const ProviderName: FC<ProviderProps> = ({ provider }) => {
   }
 };
 
-export const ProviderIcon: FC<ProviderProps> = ({ provider }) => {
+export const ProviderIcon: FC<ProviderIconProps> = ({ provider, className }) => {
   switch (provider) {
-    case 'discord': return <DiscordIcon/>;
-    case 'github': return <GitHubIcon/>;
-    case 'steam': return <SteamIcon/>;
-    case 'google': return <GoogleIcon/>;
-    case 'passkey': return <Icon icon="passkey"/>;
-    case 'epicgames': return <EpicGamesIcon/>;
+    case 'discord': return <DiscordIcon className={className}/>;
+    case 'github': return <GitHubIcon className={className}/>;
+    case 'steam': return <SteamIcon className={className}/>;
+    case 'google': return <GoogleIcon className={className}/>;
+    case 'passkey': return <Icon icon="passkey" className={className}/>;
+    case 'epicgames': return <EpicGamesIcon className={className}/>;
   }
 };

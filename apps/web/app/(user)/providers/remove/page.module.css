@@ -1,0 +1,32 @@
+.providerBox {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  padding: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 360px;
+  max-width: 100%;
+  margin-bottom: 1rem;
+}
+
+.providerIcon.providerIcon {
+  background: var(--color-background-light);
+  padding: 1rem;
+  border-radius: 2rem;
+  corner-shape: squircle;
+  width: 3rem;
+  height: 3rem;
+  overflow: visible;
+}
+
+.providerType {
+  display: block;
+  color: var(--color-text-muted);
+  margin-top: .5rem;
+}
+
+.disclaimer {
+  color: var(--color-text-muted);
+}
