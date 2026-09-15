@@ -1,8 +1,5 @@
 import { UserProviderType } from '@gw2me/database';
 import { ProviderConfig, getJsonIfOk } from './providers';
-import { FC } from 'react';
-import icon from './_icons/google.svg';
-import Image from 'next/image';
 
 export function google(): ProviderConfig | undefined {
   const client_id = process.env.GOOGLE_CLIENT_ID;
@@ -74,9 +71,3 @@ export function google(): ProviderConfig | undefined {
     }
   };
 }
-
-export const GoogleIcon: FC<{ className?: string }> = function GoogleIcon({ className }) {
-  return (
-    <Image src={icon} alt="" width={16} height={16} className={className}/>
-  );
-};

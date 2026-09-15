@@ -1,9 +1,5 @@
 import { UserProviderType } from '@gw2me/database';
 import { ProviderConfig, getJsonIfOk } from './providers';
-import Image from 'next/image';
-import type { FC } from 'react';
-import iconLight from './_icons/epicgames-black.svg';
-import iconDark from './_icons/epicgames-white.svg';
 
 export function epicgames(): ProviderConfig | undefined {
   const client_id = process.env.EPIC_GAMES_CLIENT_ID;
@@ -77,11 +73,3 @@ export function epicgames(): ProviderConfig | undefined {
   };
 }
 
-export const EpicGamesIcon: FC<{ className?: string }> = function EpicGamesIcon({ className }) {
-  return (
-    <picture className={className} style={{ lineHeight: 1 }}>
-      <source srcSet={iconDark.src} media="(prefers-color-scheme: dark)"/>
-      <Image src={iconLight} alt="" width={16} height={16}/>
-    </picture>
-  );
-};

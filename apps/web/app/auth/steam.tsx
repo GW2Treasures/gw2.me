@@ -1,9 +1,5 @@
 import { UserProviderType } from '@gw2me/database';
 import { ProviderConfig, getJsonIfOk } from './providers';
-import { FC } from 'react';
-import iconLight from './_icons/steam-mark.svg';
-import iconDark from './_icons/steam-mark-white.svg';
-import Image from 'next/image';
 
 export function steam(): ProviderConfig | undefined {
   const apiKey = process.env.STEAM_API_KEY;
@@ -66,11 +62,3 @@ export function steam(): ProviderConfig | undefined {
   };
 }
 
-export const SteamIcon: FC<{ className?: string }> = function GithubIcon({ className }) {
-  return (
-    <picture className={className} style={{ lineHeight: 1 }}>
-      <source srcSet={iconDark.src} media="(prefers-color-scheme: dark)"/>
-      <Image src={iconLight} alt="" width={16} height={16}/>
-    </picture>
-  );
-};

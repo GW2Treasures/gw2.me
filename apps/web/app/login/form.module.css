@@ -6,20 +6,19 @@
 .buttons {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   max-width: 560px;
-}
-
-.button {
-  justify-content: center;
-}
-.button > span {
-  flex: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
 }
 
 .cookie {
-  border: 1px solid var(--color-border);
-  border-radius: 2px;
-  padding: 12px 16px;
   margin-top: 16px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0 .5rem;
 }

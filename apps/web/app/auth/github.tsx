@@ -1,9 +1,5 @@
 import { UserProviderType } from '@gw2me/database';
 import { ProviderConfig, getJsonIfOk } from './providers';
-import { FC } from 'react';
-import iconLight from './_icons/github-mark.svg';
-import iconDark from './_icons/github-mark-white.svg';
-import Image from 'next/image';
 
 export function github(): ProviderConfig | undefined {
   const client_id = process.env.GITHUB_CLIENT_ID;
@@ -73,12 +69,3 @@ export function github(): ProviderConfig | undefined {
     }
   };
 }
-
-export const GitHubIcon: FC<{ className?: string }> = function GithubIcon({ className }) {
-  return (
-    <picture className={className} style={{ lineHeight: 1 }}>
-      <source srcSet={iconDark.src} media="(prefers-color-scheme: dark)"/>
-      <Image src={iconLight} alt="" width={16} height={16}/>
-    </picture>
-  );
-};

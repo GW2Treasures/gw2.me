@@ -1,9 +1,8 @@
 'use client';
 
-import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { FC, useCallback } from 'react';
-import styles from './form.module.css';
 import { devLogin } from './dev-login.action';
+import { LoginButton } from './button';
 
 export interface DevLoginProps {
   username?: string,
@@ -20,6 +19,6 @@ export const DevLogin: FC<DevLoginProps> = ({ username }) => {
   }, [username]);
 
   return (
-    <Button className={styles.button} onClick={login} icon="user">Dev Login</Button>
+    <LoginButton provider="dev" onClick={login}/>
   );
 };

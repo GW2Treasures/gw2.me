@@ -164,6 +164,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
       provider: 'passkey',
       providerAccountId: credential.id,
       userId: session.userId,
+      usedAt: new Date(),
       passkeyId: credential.id,
       passkey: {
         create: {
