@@ -42,7 +42,7 @@ jobs:
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
-        node-version: 24
+        node-version: 24.21.0
         turbo-cache-key: lint
     - name: Run Lint
       run: pnpm run lint
@@ -141,7 +141,7 @@ jobs:
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
-        node-version: 24
+        node-version: 24.21.0
         turbo-cache-key: test
     - name: Run Tests
       run: pnpm run test
@@ -210,7 +210,7 @@ jobs:
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
-        node-version: 24
+        node-version: 24.21.0
         turbo-cache-key: publish
     - name: Run Publish
       run: pnpm run publish-package --filter=@gw2me/${{ matrix.target }} --env-mode=loose
