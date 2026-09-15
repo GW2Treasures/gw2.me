@@ -8,10 +8,6 @@ import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Button, LinkButton } from '@gw2treasures/ui/components/Form/Button';
 import { revalidatePath } from 'next/cache';
 import { FormatDate } from '@/components/Format/FormatDate';
-import { DiscordIcon } from '@/app/auth/discord';
-import { GitHubIcon } from '@/app/auth/github';
-import { SteamIcon } from '@/app/auth/steam';
-import { GoogleIcon } from '@/app/auth/google';
 import { UserProviderType } from '@gw2me/database';
 import { providers as availableProviders } from '@/app/auth/providers';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
@@ -21,8 +17,7 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { LoginError, getLoginErrorCookieValue } from '@/app/login/form';
 import { PasskeyRegistrationButton } from '@/components/Passkey/PasskeyRegistrationButton';
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
-import { Provider } from '@/components/Provider/Provider';
-import { EpicGamesIcon } from '@/app/auth/epicgames';
+import { Provider, ProviderIcon } from '@/components/Provider/Provider';
 
 const getUserData = cache(async () => {
   const currentSession = await getSessionOrRedirect();
@@ -101,11 +96,11 @@ export default async function ProfilePage() {
         <NoticeContext>
           <FlexRow wrap>
             <PasskeyRegistrationButton/>
-            {availableProviders[UserProviderType.discord] && (<Button type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Add Discord</Button>)}
-            {availableProviders[UserProviderType.google] && (<Button type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Add Google</Button>)}
-            {availableProviders[UserProviderType.github] && (<Button type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Add GitHub</Button>)}
-            {availableProviders[UserProviderType.steam] && (<Button type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Add Steam</Button>)}
-            {availableProviders[UserProviderType.epicgames] && (<Button type="submit" name="provider" value="epicgames" icon={<EpicGamesIcon/>}>Add Epic Games</Button>)}
+            {availableProviders[UserProviderType.discord] && (<Button type="submit" name="provider" value="discord" icon={<ProviderIcon provider={UserProviderType.discord}/>}>Add Discord</Button>)}
+            {availableProviders[UserProviderType.google] && (<Button type="submit" name="provider" value="google" icon={<ProviderIcon provider={UserProviderType.google}/>}>Add Google</Button>)}
+            {availableProviders[UserProviderType.github] && (<Button type="submit" name="provider" value="github" icon={<ProviderIcon provider={UserProviderType.github}/>}>Add GitHub</Button>)}
+            {availableProviders[UserProviderType.steam] && (<Button type="submit" name="provider" value="steam" icon={<ProviderIcon provider={UserProviderType.steam}/>}>Add Steam</Button>)}
+            {availableProviders[UserProviderType.epicgames] && (<Button type="submit" name="provider" value="epicgames" icon={<ProviderIcon provider={UserProviderType.epicgames}/>}>Add Epic Games</Button>)}
           </FlexRow>
         </NoticeContext>
       </Form>

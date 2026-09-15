@@ -5,10 +5,6 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import styles from './form.module.css';
 import { providers } from '@/app/auth/providers';
 import { UserProviderType } from '@gw2me/database';
-import { DiscordIcon } from '@/app/auth/discord';
-import { GitHubIcon } from '@/app/auth/github';
-import { SteamIcon } from '@/app/auth/steam';
-import { GoogleIcon } from '@/app/auth/google';
 import { Icon } from '@gw2treasures/ui';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { LoginOptions, login } from './action';
@@ -20,7 +16,7 @@ import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, UserCookieName } from '@/lib/cookie';
 import { PasskeyAuthenticationButton } from '@/components/Passkey/PasskeyAuthenticationButton';
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
-import { EpicGamesIcon } from '@/app/auth/epicgames';
+import { LoginButton } from './button';
 
 interface LoginFormProps {
   returnTo?: string,
@@ -37,6 +33,8 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
   const availableProviders = Object.fromEntries(Object.entries({ ...providers, [UserProviderType.passkey]: true }).map(
     ([provider, config]) => [provider, config !== undefined && (!prevUser || prevUser.providers.some((p) => p.provider === provider))] as const
   )) as Record<UserProviderType, boolean>;
+
+  const lastUsedProvider = prevUser?.providers[0]?.provider;
 
   const error = await getLoginErrorCookieValue();
 
@@ -58,21 +56,33 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
           )}
 
           <div className={styles.buttons}>
-            {availableProviders[UserProviderType.passkey] && (<PasskeyAuthenticationButton className={styles.button} options={options}/>)}
-            {availableProviders[UserProviderType.discord] && (<Button className={styles.button} type="submit" name="provider" value="discord" icon={<DiscordIcon/>}>Login with Discord</Button>)}
-            {availableProviders[UserProviderType.google] && (<Button className={styles.button} type="submit" name="provider" value="google" icon={<GoogleIcon/>}>Login with Google</Button>)}
-            {availableProviders[UserProviderType.github] && (<Button className={styles.button} type="submit" name="provider" value="github" icon={<GitHubIcon/>}>Login with GitHub</Button>)}
-            {availableProviders[UserProviderType.steam] && (<Button className={styles.button} type="submit" name="provider" value="steam" icon={<SteamIcon/>}>Login with Steam</Button>)}
-            {availableProviders[UserProviderType.epicgames] && (<Button className={styles.button} type="submit" name="provider" value="epicgames" icon={<EpicGamesIcon/>}>Login with Epic Games</Button>)}
+            {availableProviders[UserProviderType.passkey] && (
+              <PasskeyAuthenticationButton options={options} lastUsed={lastUsedProvider === UserProviderType.passkey}/>
+            )}
+            {availableProviders[UserProviderType.discord] && (
+              <LoginButton provider={UserProviderType.discord} lastUsed={lastUsedProvider === UserProviderType.discord}/>
+            )}
+            {availableProviders[UserProviderType.google] && (
+              <LoginButton provider={UserProviderType.google} lastUsed={lastUsedProvider === UserProviderType.google}/>
+            )}
+            {availableProviders[UserProviderType.github] && (
+              <LoginButton provider={UserProviderType.github} lastUsed={lastUsedProvider === UserProviderType.github}/>
+            )}
+            {availableProviders[UserProviderType.steam] && (
+              <LoginButton provider={UserProviderType.steam} lastUsed={lastUsedProvider === UserProviderType.steam}/>
+            )}
+            {availableProviders[UserProviderType.epicgames] && (
+              <LoginButton provider={UserProviderType.epicgames} lastUsed={lastUsedProvider === UserProviderType.epicgames}/>
+            )}
             {process.env.NODE_ENV !== 'production' && (<DevLogin username={prevUser?.name}/>)}
           </div>
         </NoticeContext>
 
         <div className={styles.cookie}>
-          <FlexRow>
-            <Icon icon="cookie"/>
+          <Icon icon="cookie"/>
+          <div>
             <p>By logging in you accept that gw2.me will store cookies in your browser.</p>
-          </FlexRow>
+          </div>
         </div>
       </Form>
     </div>
@@ -102,6 +112,7 @@ export async function getPreviousUser() {
       providers: {
         distinct: ['provider'],
         select: { provider: true },
+        orderBy: { usedAt: { sort: 'desc', nulls: 'last' }},
       }
     }
   });

@@ -1,8 +1,5 @@
 import { UserProviderType } from '@gw2me/database';
 import { ProviderConfig, getJsonIfOk } from './providers';
-import icon from './_icons/discord-mark-blue.svg';
-import Image from 'next/image';
-import type { FC } from 'react';
 
 export function discord(): ProviderConfig | undefined {
   const client_id = process.env.DISCORD_CLIENT_ID;
@@ -82,9 +79,3 @@ export function discord(): ProviderConfig | undefined {
     }
   };
 }
-
-export const DiscordIcon: FC<{ className?: string }> = function DiscordIcon({ className }) {
-  return (
-    <Image className={className} alt="" src={icon} width={16} height={16}/>
-  );
-};

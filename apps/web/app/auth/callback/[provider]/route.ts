@@ -136,6 +136,7 @@ export async function GET(request: NextRequest, { params }: RouteContext<'/auth/
           displayName: profile.accountName,
           token: profile.token,
           user,
+          usedAt: new Date(),
         },
         select: { userId: true }
       });

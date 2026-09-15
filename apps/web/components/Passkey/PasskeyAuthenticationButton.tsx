@@ -1,7 +1,6 @@
 'use client';
 
 import { Dialog } from '@gw2treasures/ui/components/Dialog/Dialog';
-import { Button } from '@gw2treasures/ui/components/Form/Button';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { LoginOptions } from '@/app/login/action';
 import { unstable_rethrow as rethrow } from 'next/navigation';
@@ -11,13 +10,15 @@ import { getAuthenticationOptions, submitAuthentication } from './actions';
 import { PasskeyAuthenticationDialog } from './PasskeyAuthenticationDialog';
 import { useBrowserSupportsPasskeys } from './use-browser-supports-passkeys';
 import { handleAuthenticationResult } from './utils';
+import { LoginButton } from '@/app/login/button';
+import { UserProviderType } from '@gw2me/database';
 
 export interface PasskeyAuthenticationButtonProps {
-  className?: string,
   options: LoginOptions,
+  lastUsed?: boolean,
 }
 
-export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> = ({ className, options: loginOptions }) => {
+export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> = ({ options: loginOptions, lastUsed }) => {
   const supportsPasskeys = useBrowserSupportsPasskeys();
   const [pending, startTransition] = useTransition();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -64,9 +65,13 @@ export const PasskeyAuthenticationButton: FC<PasskeyAuthenticationButtonProps> =
 
   return (
     <>
-      <Button icon={pending ? 'loading' : 'passkey'} disabled={!supportsPasskeys || pending} onClick={handleClick} className={className}>
-        Login with Passkey
-      </Button>
+      <LoginButton
+        provider={UserProviderType.passkey}
+        disabled={!supportsPasskeys || pending}
+        icon={(pending || supportsPasskeys === undefined) ? 'loading' : 'passkey'}
+        subtitle={supportsPasskeys === false ? 'Your browser does not support passkeys' : undefined}
+        lastUsed={lastUsed}
+        onClick={handleClick}/>
       <Dialog open={dialogOpen} title="Passkey" onClose={() => setDialogOpen(false)}>
         <NoticeContext>
           <PasskeyAuthenticationDialog options={loginOptions}/>
