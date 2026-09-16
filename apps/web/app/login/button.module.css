@@ -57,6 +57,7 @@
 
 .buttonContent > span {
   color: var(--color-text-muted);
+  line-height: 1.25;
 }
 
 .button:disabled .buttonContent {
@@ -79,4 +80,5 @@
   padding: 4px 12px;
   margin-left: 0.5rem;
   font-weight: 400;
+  white-space: nowrap;
 }
