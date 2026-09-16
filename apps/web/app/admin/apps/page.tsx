@@ -11,6 +11,7 @@ import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import Link from 'next/link';
 import { ensureUserIsAdmin } from '../admin';
 import { LinkButton } from '@gw2treasures/ui/components/Form/Button';
+import { Never } from '@/components/Format/Never';
 
 function getApps() {
   return db.client.findMany({
@@ -53,8 +54,8 @@ export default async function AdminAppsPage() {
         <Apps.Column id="owner" title="Owner" sortBy={({ application }) => application.owner.name}>{({ application }) => <Link href={`/admin/users/${application.owner.id}`}><FlexRow><Icon icon="user"/>{application.owner.name}</FlexRow></Link>}</Apps.Column>
         <Apps.Column id="email" title="Email" sortBy={({ application }) => application.email?.email} hidden>{({ application }) => application.email?.email}</Apps.Column>
         <Apps.Column id="auths" title="Authorizations" sortBy={({ _count }) => _count.authorizations} align="right">{({ _count }) => _count.authorizations}</Apps.Column>
-        <Apps.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Apps.Column>
-        <Apps.Column id="lastUsedAt" title="Last used" sortBy={({ authorizations }) => authorizations[0]?.usedAt}>{({ authorizations }) => authorizations[0]?.usedAt ? <FormatDate date={authorizations[0].usedAt}/> : '-'}</Apps.Column>
+        <Apps.Column id="createdAt" title="Created" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</Apps.Column>
+        <Apps.Column id="lastUsedAt" title="Last Used" sortBy={({ authorizations }) => authorizations[0]?.usedAt}>{({ authorizations }) => authorizations[0]?.usedAt ? <FormatDate date={authorizations[0].usedAt} relative/> : <Never/>}</Apps.Column>
         <Apps.Column id="action" title="Actions" small>{({ id }) => <LinkButton appearance="menu" href={`/admin/clients/${id}`} iconOnly><Icon icon="eye"/></LinkButton>}</Apps.Column>
       </Apps.Table>
     </PageLayout>
