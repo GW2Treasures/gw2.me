@@ -13,11 +13,11 @@
 
 .providerIcon.providerIcon {
   background: var(--color-background-light);
-  padding: 1rem;
-  border-radius: 2rem;
+  padding: .75rem;
+  border-radius: 99px;
   corner-shape: squircle;
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   overflow: visible;
 }
 

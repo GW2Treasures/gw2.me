@@ -1,0 +1,19 @@
+.provider {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.providerIcon {
+  flex-shrink: 0;
+  padding: 0.75rem;
+  background: var(--color-background-light-transparent);
+  border-radius: 99px;
+  corner-shape: squircle;
+  display: flex;
+}
+
+.providerType {
+  color: var(--color-text-muted);
+  line-height: 1.25;
+}
