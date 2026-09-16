@@ -15,6 +15,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
+import { Never } from '@/components/Format/Never';
 
 const getClient = cache(function getClient(id: string) {
   return db.client.findUnique({
@@ -61,9 +62,9 @@ export default async function AdminUserDetailPage({ params }: PageProps<'/admin/
         <Authorizations.Column id="flags" title="Flags">{({ codeChallenge, dpopJkt }) => [codeChallenge && 'PKCE', dpopJkt && 'DPoP'].filter(isTruthy).join(', ')}</Authorizations.Column>
         <Authorizations.Column id="user" title="User" sortBy="userId">{({ user }) => <Link href={`/admin/users/${user.id}`}><FlexRow><Icon icon="user"/>{user.name}</FlexRow></Link>}</Authorizations.Column>
         <Authorizations.Column id="scope" title="Scope" hidden>{({ scope }) => scope.join(' ')}</Authorizations.Column>
-        <Authorizations.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Authorizations.Column>
-        <Authorizations.Column id="expiresAt" title="Expires At" sortBy="expiresAt">{({ expiresAt }) => expiresAt ? (expiresAt < now ? <s><FormatDate date={expiresAt}/></s> : <FormatDate date={expiresAt}/>) : 'Never'}</Authorizations.Column>
-        <Authorizations.Column id="usedAt" title="Used At" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'Never'}</Authorizations.Column>
+        <Authorizations.Column id="createdAt" title="Created" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</Authorizations.Column>
+        <Authorizations.Column id="expiresAt" title="Expires" sortBy="expiresAt">{({ expiresAt }) => expiresAt ? (expiresAt < now ? <s><FormatDate date={expiresAt} relative/></s> : <FormatDate date={expiresAt} relative/>) : <Never/>}</Authorizations.Column>
+        <Authorizations.Column id="usedAt" title="Last Used" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt} relative/> : <Never/>}</Authorizations.Column>
       </Authorizations.Table>
     </PageLayout>
   );

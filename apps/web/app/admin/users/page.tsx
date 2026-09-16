@@ -12,6 +12,7 @@ import { Tip } from '@gw2treasures/ui/components/Tip/Tip';
 import { ProviderIcon } from '@/components/Provider/Provider';
 import { FlexRow } from '@gw2treasures/ui/components/Layout/FlexRow';
 import { Gravatar } from '@/components/User/Gravatar';
+import { Never } from '@/components/Format/Never';
 
 function getUsers() {
   return db.user.findMany({
@@ -49,8 +50,8 @@ export default async function AdminUserPage() {
         <Users.Column id="apps" title="Apps" sortBy={({ _count }) => _count.applications} align="right" hidden>{({ _count }) => _count.applications}</Users.Column>
         <Users.Column id="auths" title="Authorizations" sortBy={({ _count }) => _count.authorizations} align="right">{({ _count }) => _count.authorizations}</Users.Column>
         <Users.Column id="accounts" title="Accounts" sortBy={({ _count }) => _count.accounts} align="right">{({ _count }) => _count.accounts}</Users.Column>
-        <Users.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Users.Column>
-        <Users.Column id="session" title="Last access" sortBy={({ sessions }) => sessions[0]?.lastUsed}>{({ sessions }) => sessions.length > 0 ? <FormatDate date={sessions[0].lastUsed}/> : '-'}</Users.Column>
+        <Users.Column id="createdAt" title="Created" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</Users.Column>
+        <Users.Column id="session" title="Last access" sortBy={({ sessions }) => sessions[0]?.lastUsed}>{({ sessions }) => sessions.length > 0 ? <FormatDate date={sessions[0].lastUsed} relative/> : <Never/>}</Users.Column>
         <Users.Column id="action" title="Actions" small>{({ id }) => <LinkButton appearance="menu" href={`/admin/users/${id}`} iconOnly><Icon icon="eye"/></LinkButton>}</Users.Column>
       </Users.Table>
     </PageLayout>

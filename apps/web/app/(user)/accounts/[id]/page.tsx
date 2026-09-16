@@ -147,7 +147,7 @@ export default async function AccountPage({ params }: PageProps<'/accounts/[id]'
           <Shares.Table>
             <Shares.Column id="user" title="User">{({ user }) => <FlexRow><Icon icon="share"/> {user.name}</FlexRow>}</Shares.Column>
             <Shares.Column id="status" title="Status">{({ state }) => state}</Shares.Column>
-            <Shares.Column id="createdAt" title="Shared since">{({ createdAt }) => <FormatDate date={createdAt}/>}</Shares.Column>
+            <Shares.Column id="createdAt" title="Shared since">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</Shares.Column>
             <Shares.Column id="actions" title="Actions" small>{({ id }) => <Button type="submit" name="removeSharedAccountId" value={id} icon="delete">Remove</Button>}</Shares.Column>
           </Shares.Table>
         ) : account.verified && (

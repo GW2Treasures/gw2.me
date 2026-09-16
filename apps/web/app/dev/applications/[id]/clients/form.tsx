@@ -96,7 +96,7 @@ export const ClientForm: FC<ApplicationFormProps> = ({ applicationId, client, ed
                       ) : (
                         <td><FlexRow><Icon icon="key"/><span>Generated at <FormatDate date={secret.createdAt}/></span></FlexRow></td>
                       )}
-                      <td style={{ whiteSpace: 'nowrap' }}>{secret.usedAt ? <FormatDate date={secret.usedAt}/> : 'never'}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>{secret.usedAt ? <FormatDate date={secret.usedAt} relative/> : 'never'}</td>
                       <td>
                         <form action={deleteSecretAction}>
                           <SubmitButton disabled={isPending || client.secrets.length === 1} icon="delete" intent="delete" name="clientSecretId" value={secret.id}>Delete</SubmitButton>

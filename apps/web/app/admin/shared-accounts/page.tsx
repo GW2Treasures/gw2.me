@@ -37,7 +37,7 @@ export default async function AdminAppsPage() {
         <SharedAccounts.Column id="account" title="Account" sortBy={({ account }) => account.accountName}>{({ account }) => account.accountName}</SharedAccounts.Column>
         <SharedAccounts.Column id="user" title="User" sortBy={({ user }) => user.name}>{({ user }) => <Link href={`/admin/users/${user.id}`}><FlexRow><Icon icon="user"/>{user.name}</FlexRow></Link>}</SharedAccounts.Column>
         <SharedAccounts.Column id="grants" title="Applications" sortBy={({ _count }) => _count.applicationGrants} align="right">{({ _count }) => _count.applicationGrants}</SharedAccounts.Column>
-        <SharedAccounts.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</SharedAccounts.Column>
+        <SharedAccounts.Column id="createdAt" title="Created" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</SharedAccounts.Column>
       </SharedAccounts.Table>
     </PageLayout>
   );

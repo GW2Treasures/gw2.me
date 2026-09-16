@@ -72,7 +72,7 @@ export default async function ProfilePage() {
                       <FlexRow><ApplicationImage fileId={application.imageId}/> {application.name}</FlexRow>
                     )}
                   </td>
-                  <td>{application.authorizations[0]?.usedAt ? <FormatDate date={application.authorizations[0].usedAt}/> : 'never'}</td>
+                  <td>{application.authorizations[0]?.usedAt ? <FormatDate date={application.authorizations[0].usedAt} relative/> : 'never'}</td>
                   <td><Button type="submit" name="applicationId" value={application.id} intent="delete" icon="delete">Revoke Access</Button></td>
                 </tr>
               ))}

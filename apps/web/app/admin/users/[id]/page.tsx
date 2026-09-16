@@ -23,6 +23,7 @@ import { Features, State } from '@/app/admin/authorization-requests/components';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
+import { Never } from '@/components/Format/Never';
 
 const getUser = cache(function getUser(id: string) {
   return db.user.findUnique({
@@ -84,9 +85,9 @@ export default async function AdminUserDetailPage({ params }: PageProps<'/admin/
         <Authorizations.Column id="type" title="Type" sortBy="type">{({ type }) => type}</Authorizations.Column>
         <Authorizations.Column id="flags" title="Flags">{({ codeChallenge, dpopJkt }) => [codeChallenge && 'PKCE', dpopJkt && 'DPoP'].filter(isTruthy).join(', ')}</Authorizations.Column>
         <Authorizations.Column id="scope" title="Scope" hidden>{({ scope }) => scope.join(' ')}</Authorizations.Column>
-        <Authorizations.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Authorizations.Column>
-        <Authorizations.Column id="expiresAt" title="Expires At" sortBy="expiresAt">{({ expiresAt }) => expiresAt ? <FormatDate date={expiresAt}/> : 'Never'}</Authorizations.Column>
-        <Authorizations.Column id="usedAt" title="Used At" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'Never'}</Authorizations.Column>
+        <Authorizations.Column id="createdAt" title="Created" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</Authorizations.Column>
+        <Authorizations.Column id="expiresAt" title="Expires" sortBy="expiresAt">{({ expiresAt }) => expiresAt ? <FormatDate date={expiresAt} relative/> : <Never/>}</Authorizations.Column>
+        <Authorizations.Column id="usedAt" title="Last Used" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt} relative/> : <Never/>}</Authorizations.Column>
       </Authorizations.Table>
 
       <Headline id="accounts" actions={<ColumnSelection table={Accounts}/>}>Accounts ({user.accounts.length})</Headline>
@@ -98,7 +99,7 @@ export default async function AdminUserDetailPage({ params }: PageProps<'/admin/
         <Accounts.Column id="verified" title="Verified">{({ verified }) => verified && <Icon icon="checkmark"/>}</Accounts.Column>
         <Accounts.Column id="tokens" title="API keys">{({ _count }) => _count.apiTokens}</Accounts.Column>
         <Accounts.Column id="shares" title="Shares">{({ _count }) => _count.shares}</Accounts.Column>
-        <Accounts.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Accounts.Column>
+        <Accounts.Column id="createdAt" title="Created" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</Accounts.Column>
       </Accounts.Table>
 
       <Headline id="providers" actions={<ColumnSelection table={Providers}/>}>Providers ({user.providers.length})</Headline>
@@ -106,8 +107,8 @@ export default async function AdminUserDetailPage({ params }: PageProps<'/admin/
         <Providers.Column id="provider" title="Provider">{({ provider }) => <Provider provider={provider}/>}</Providers.Column>
         <Providers.Column id="providerId" title="Provider Id" hidden>{({ providerAccountId }) => <Code inline borderless>{providerAccountId}</Code>}</Providers.Column>
         <Providers.Column id="name" title="Name">{({ displayName }) => displayName}</Providers.Column>
-        <Providers.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Providers.Column>
-        <Providers.Column id="usedAt" title="Used At" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'never'}</Providers.Column>
+        <Providers.Column id="createdAt" title="Created" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</Providers.Column>
+        <Providers.Column id="usedAt" title="Last Used" sortBy="usedAt">{({ usedAt }) => usedAt ? <FormatDate date={usedAt} relative/> : <Never/>}</Providers.Column>
       </Providers.Table>
 
       <Headline id="emails" actions={<ColumnSelection table={Emails}/>}>Emails ({user.emails.length})</Headline>
@@ -118,7 +119,7 @@ export default async function AdminUserDetailPage({ params }: PageProps<'/admin/
           <Emails.Column id="default" title="Default">{({ isDefaultForUserId }) => isDefaultForUserId && <Icon icon="checkmark"/>}</Emails.Column>
           <Emails.Column id="verified" title="Verified">{({ verified, verificationToken }) => verified ? <Icon icon="checkmark"/> : !!verificationToken && <Icon icon="time"/>}</Emails.Column>
           <Emails.Column id="grants" title="Grants">{({ _count }) => _count.applicationGrants}</Emails.Column>
-          <Emails.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Emails.Column>
+          <Emails.Column id="createdAt" title="Created" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</Emails.Column>
           <Emails.Column small title="Actions" id="actions">
             {({ id, verified }) => (
               <FlexRow>
@@ -132,8 +133,8 @@ export default async function AdminUserDetailPage({ params }: PageProps<'/admin/
       <Headline id="sessions" actions={<ColumnSelection table={Sessions}/>}>Sessions ({user.sessions.length})</Headline>
       <Sessions.Table>
         <Sessions.Column id="session" title="Session">{({ info }) => info}</Sessions.Column>
-        <Sessions.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Sessions.Column>
-        <Sessions.Column id="lastUsedAt" title="Last Used At" sortBy="lastUsed">{({ lastUsed }) => <FormatDate date={lastUsed}/>}</Sessions.Column>
+        <Sessions.Column id="createdAt" title="Created" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</Sessions.Column>
+        <Sessions.Column id="lastUsedAt" title="Last Used" sortBy="lastUsed">{({ lastUsed }) => <FormatDate date={lastUsed} relative/>}</Sessions.Column>
       </Sessions.Table>
 
       <Headline id="authRequests" actions={<ColumnSelection table={AuthorizationRequests}/>}>Authorization Requests ({user.authorizationRequests.length})</Headline>
@@ -143,9 +144,9 @@ export default async function AdminUserDetailPage({ params }: PageProps<'/admin/
         <AuthorizationRequests.Column id="state" title="Status" sortBy="state">{({ state, expiresAt }) => <State state={state === AuthorizationRequestState.Pending && isExpired(expiresAt) ? 'Expired' : state}/>}</AuthorizationRequests.Column>
         <AuthorizationRequests.Column id="app" title="Application" sortBy="clientId">{({ client }) => <FlexRow><ApplicationImage fileId={client.application.imageId}/> {client.application.name}</FlexRow>}</AuthorizationRequests.Column>
         <AuthorizationRequests.Column id="features" title="Features">{({ type, data }) => <Features type={type} data={(data as unknown as AuthorizationRequestData)}/>}</AuthorizationRequests.Column>
-        <AuthorizationRequests.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</AuthorizationRequests.Column>
-        <AuthorizationRequests.Column id="updatedAt" title="Updated At" sortBy="updatedAt" hidden>{({ updatedAt }) => <FormatDate date={updatedAt}/>}</AuthorizationRequests.Column>
-        <AuthorizationRequests.Column id="expiresAt" title="Expires At" sortBy="expiresAt" hidden>{({ expiresAt }) => expiresAt ? <FormatDate date={expiresAt}/> : 'never'}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="createdAt" title="Created" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="updatedAt" title="Updated" sortBy="updatedAt" hidden>{({ updatedAt }) => <FormatDate date={updatedAt} relative/>}</AuthorizationRequests.Column>
+        <AuthorizationRequests.Column id="expiresAt" title="Expires" sortBy="expiresAt" hidden>{({ expiresAt }) => expiresAt ? <FormatDate date={expiresAt} relative/> : <Never/>}</AuthorizationRequests.Column>
       </AuthorizationRequests.Table>
     </PageLayout>
   );

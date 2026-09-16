@@ -36,7 +36,7 @@ export default async function AdminRequestsPage() {
         <Requests.Column id="apiKey" title="API Key" sortBy="apiKey">{({ apiKey }) => apiKey && <FlexRow><Code inline borderless>{apiKey}</Code><CopyButton copy={apiKey} icon="copy" iconOnly/></FlexRow>}</Requests.Column>
         <Requests.Column id="error" title="Error" sortBy="response" hidden>{({ response }) => <Code borderless>{response}</Code>}</Requests.Column>
         <Requests.Column id="responseTime" title="Time" sortBy="responseTimeMs" align="right">{({ responseTimeMs }) => Math.round(responseTimeMs).toLocaleString() + ' ms'}</Requests.Column>
-        <Requests.Column id="createdAt" title="Created At" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt}/>}</Requests.Column>
+        <Requests.Column id="createdAt" title="Created" sortBy="createdAt">{({ createdAt }) => <FormatDate date={createdAt} relative/>}</Requests.Column>
         <Requests.Column id="action" title="Actions" small>{(apiRequest) => <LinkButton external appearance="menu" href={getUrlFromApiRequest(apiRequest).toString()} iconOnly target="_blank"><Icon icon="chevron-right"/></LinkButton>}</Requests.Column>
       </Requests.Table>
     </PageLayout>
