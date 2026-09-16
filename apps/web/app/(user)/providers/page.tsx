@@ -17,7 +17,8 @@ import { Notice } from '@gw2treasures/ui/components/Notice/Notice';
 import { LoginError, getLoginErrorCookieValue } from '@/app/login/form';
 import { PasskeyRegistrationButton } from '@/components/Passkey/PasskeyRegistrationButton';
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
-import { Provider, ProviderIcon } from '@/components/Provider/Provider';
+import { ProviderIcon, ProviderName } from '@/components/Provider/Provider';
+import styles from './page.module.css';
 
 const getUserData = cache(async () => {
   const currentSession = await getSessionOrRedirect();
@@ -58,15 +59,22 @@ export default async function ProfilePage() {
       <p>You can login with any of the login providers listed below.</p>
 
       <Providers.Table>
-        <Providers.Column id="provider" title="Provider" sortBy="provider">
-          {({ provider }) => <Provider provider={provider}/>}
+        <Providers.Column id="provider" title="Provider" sortBy="displayName">
+          {({ provider, displayName }) => (
+            <div className={styles.provider}>
+              <span className={styles.providerIcon}><ProviderIcon provider={provider}/></span>
+              <div>
+                <b>{displayName}</b>
+                <div className={styles.providerType}><ProviderName provider={provider}/></div>
+              </div>
+            </div>
+          )}
         </Providers.Column>
-        <Providers.Column id="name" title="Name" sortBy="displayName">{({ displayName }) => displayName}</Providers.Column>
-        <Providers.Column id="createdAt" title="Created" sortBy="createdAt" align="right">
-          {({ createdAt }) => <FormatDate date={createdAt}/>}
+        <Providers.Column id="createdAt" title="Created" sortBy="createdAt">
+          {({ createdAt }) => <FormatDate date={createdAt} relative/>}
         </Providers.Column>
-        <Providers.Column id="usedAt" title="Last Used" sortBy="usedAt" align="right">
-          {({ usedAt }) => usedAt ? <FormatDate date={usedAt}/> : 'never'}
+        <Providers.Column id="usedAt" title="Last Used" sortBy="usedAt">
+          {({ usedAt }) => usedAt ? <FormatDate date={usedAt} relative/> : 'never'}
         </Providers.Column>
         <Providers.Column id="actions" title="Actions" small>
           {({ provider, providerAccountId }) => (
@@ -109,17 +117,17 @@ export default async function ProfilePage() {
       <Table>
         <thead>
           <tr>
-            <th>Session</th>
-            <th align="right">Started</th>
-            <th align="right">Last Active</th>
+            <Table.HeaderCell>Session</Table.HeaderCell>
+            <Table.HeaderCell>Started</Table.HeaderCell>
+            <Table.HeaderCell>Last Active</Table.HeaderCell>
           </tr>
         </thead>
         <tbody>
           {sessions.map((session) => (
             <tr key={session.id}>
               <td>{session.info}{session.id === currentSession.id && ' (Current Session)'}</td>
-              <td align="right"><FormatDate date={session.createdAt}/></td>
-              <td align="right"><FormatDate date={session.lastUsed}/></td>
+              <td><FormatDate date={session.createdAt} relative/></td>
+              <td><FormatDate date={session.lastUsed} relative/></td>
             </tr>
           ))}
         </tbody>

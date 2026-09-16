@@ -31,9 +31,9 @@
 .icon {
   flex-shrink: 0;
   display: flex;
-  padding: 1rem;
+  padding: .75rem;
   background: var(--color-background-light-transparent);
-  border-radius: 2rem;
+  border-radius: 99px;
   corner-shape: squircle;
 }
 
