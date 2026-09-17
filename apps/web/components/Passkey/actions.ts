@@ -13,6 +13,7 @@ import {
   type AuthenticationResponseJSON,
   type RegistrationResponseJSON
 } from '@simplewebauthn/server';
+import { generateUserID, isoBase64URL } from '@simplewebauthn/server/helpers';
 import { createChallengeJwt, verifyChallengeJwt } from './challenge';
 import { db } from '@/lib/db';
 import { userAgent } from 'next/server';
@@ -39,29 +40,20 @@ export type RegistrationParams =
   | { type: 'new', username: string };
 
 export async function getRegistrationOptions(params: RegistrationParams): Promise<{ options: PublicKeyCredentialCreationOptionsJSON, challenge: string }> {
-  let user;
-  if(params.type === 'add') {
-    user = await getUser();
-
-    if(!user) {
-      throw new Error('Not logged in');
-    }
-  }
+  const user = params.type === 'add'
+    ? await getCurrentUserForRegistration()
+    : { name: params.username, webAuthnUserId: await generateUserID() };
 
   const { rpID, rpName } = await getRelayingParty();
-
-  const existingPasskeys = params.type === 'add' ? await db.passkey.findMany({
-    where: { userId: user!.id },
-    select: { id: true, transports: true },
-  }) : [];
 
   const options = await generateRegistrationOptions({
     rpID,
     rpName,
-    userName: params.type === 'add' ? user!.name : params.username,
+    userName: user.name,
+    userID: user.webAuthnUserId,
     attestationType: 'none',
     timeout: 60000,
-    excludeCredentials: existingPasskeys.map(mapPasskeyToCredentials),
+    excludeCredentials: user.existingPasskeys,
     authenticatorSelection: {
       residentKey: 'required',
       userVerification: 'required'
@@ -134,6 +126,15 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
       throw new Error('Not logged in');
     }
 
+    const user = await db.user.findUniqueOrThrow({
+      where: { id: currentSession.userId },
+      select: { webAuthnUserId: true }
+    });
+
+    if (user.webAuthnUserId !== webAuthnUserId) {
+      throw new Error('Internal Server Error', { cause: 'WebAuthn user ID mismatch' });
+    }
+
     session = currentSession;
   } else {
     const invalidUsernameRegex = /[^a-z0-9._-]/i;
@@ -145,7 +146,7 @@ export async function submitRegistration(params: RegistrationParams & { returnTo
     session = await db.userSession.create({
       data: {
         info: sessionDisplayName ?? 'Session',
-        user: { create: { name: params.username }},
+        user: { create: { name: params.username, webAuthnUserId }},
       },
       select: { id: true, userId: true }
     });
@@ -200,7 +201,7 @@ export async function submitAuthentication(challengeJwt: string, authentication:
   // get the used passkey from db
   const passkey = await db.passkey.findUnique({
     where: { id: authentication.id, userId: rememberedUser?.id },
-    include: { user: { select: { name: true }}}
+    include: { user: { select: { name: true, webAuthnUserId: true }}}
   });
 
   if(!passkey) {
@@ -275,12 +276,12 @@ export async function submitAuthentication(challengeJwt: string, authentication:
   return {
     success: true,
     acceptedCredentials: {
-      userId: passkey.userId,
+      userId: passkey.user.webAuthnUserId!,
       rpId: rpID,
       allAcceptedCredentialIds: passkeys.map(({ id }) => id)
     },
     currentUserDetails: {
-      userId: passkey.userId,
+      userId: passkey.user.webAuthnUserId!,
       rpId: rpID,
       displayName: '',
       name: passkey.user.name,
@@ -293,4 +294,39 @@ function mapPasskeyToCredentials({ id, transports }: Pick<Passkey, 'id' | 'trans
     id,
     transports,
   };
+}
+
+
+type UserForRegistration = {
+  name: string,
+  webAuthnUserId: Uint8Array<ArrayBuffer>,
+  existingPasskeys?: Pick<Passkey, 'id' | 'transports'>[],
+};
+
+async function getCurrentUserForRegistration(): Promise<UserForRegistration> {
+  const currentUser = await getUser();
+  if(!currentUser) {
+    throw new Error('Not logged in');
+  }
+
+  // get existing passkeys to exclude them from registration
+  const existingPasskeys = await db.passkey.findMany({
+    where: { userId: currentUser.id },
+    select: { id: true, transports: true },
+  });
+
+  // get webAuthnUserId or generate a new one
+  const webAuthnUserId = currentUser.webAuthnUserId
+    ? isoBase64URL.toBuffer(currentUser.webAuthnUserId)
+    : await generateUserID();
+
+  // update user in db if webAuthnUserId is not set
+  if (!currentUser.webAuthnUserId) {
+    await db.user.update({
+      where: { id: currentUser.id },
+      data: { webAuthnUserId: isoBase64URL.fromBuffer(webAuthnUserId) }
+    });
+  }
+
+  return { name: currentUser.name, webAuthnUserId, existingPasskeys };
 }

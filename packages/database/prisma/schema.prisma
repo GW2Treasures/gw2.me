@@ -22,6 +22,7 @@ model User {
   sessions  UserSession[]  @relation("session")
   providers UserProvider[] @relation("provider")
   passkeys  Passkey[]      @relation("userPasskeys")
+  webAuthnUserId String?   @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -144,14 +145,14 @@ model Passkey {
 
   user           User   @relation("userPasskeys", fields: [userId], references: [id], onDelete: Cascade)
   userId         String
+
+  /// @deprecated Use `User.webAuthnUserId` instead
   webAuthnUserId String
 
   counter    BigInt
   deviceType String
   backedUp   Boolean
   transports String[]
-
-  @@unique([webAuthnUserId, userId])
 }
 
 model Application {
