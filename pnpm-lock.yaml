@@ -170,8 +170,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1
       turbo:
-        specifier: 2.10.13
-        version: 2.10.13
+        specifier: 2.11.0
+        version: 2.11.0
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -1781,33 +1781,33 @@ packages:
       '@types/react-dom':
         optional: true
 
-  '@turbo/darwin-64@2.10.13':
-    resolution: {integrity: sha512-m5DBcpkxmcKpEJHHFUfqf9GLUjSmw3cDnBJM9nghPW3kjCNb5OyNKmzG7/yT5x5AwzOO+HMwKN+UI4iVKL87YA==}
+  '@turbo/darwin-64@2.11.0':
+    resolution: {integrity: sha512-N9X56XfCWl9xJzzs//xBcQ/MQPXYooGYcSXmYAiTj4F+YYmYZrJEhh/gv0NVgRAjIx+D4VlSyTiXXrXQq6NaTQ==}
     cpu: [x64]
     os: [darwin]
 
-  '@turbo/darwin-arm64@2.10.13':
-    resolution: {integrity: sha512-vfKPvSuoY8BJGj8M8yN+a7aq1g+CejbEacDSDlJLDkSbPN3J/U1DbYAmPG8Ype5XvImI0SgfvUhIorNnFj67zw==}
+  '@turbo/darwin-arm64@2.11.0':
+    resolution: {integrity: sha512-U+wsqWEHmq5g1/2cJoH+QC1wVcj5a6yvIh+ycoqjcnjzONRfH6NXmI1/6BK6ba/vSD3Hq0WAJNeN1XI3Ty6pTg==}
     cpu: [arm64]
     os: [darwin]
 
-  '@turbo/linux-64@2.10.13':
-    resolution: {integrity: sha512-Zp0N5M6j9iEjJtFLTA2L+52TLuYy0VbXT3zLZzfMeqqdKSUJ7pDo2pA1NhqjoQcF2dIsktZ8xZRW3pGI6T81fw==}
+  '@turbo/linux-64@2.11.0':
+    resolution: {integrity: sha512-shyXLedbf8/Htqqv6bcPD637GGDV6EAsCpl6HRNrSdNon1jkMALFVSVPgeni9wo8R7fnCvQfNt45zMBDUBiZKA==}
     cpu: [x64]
     os: [android, linux]
 
-  '@turbo/linux-arm64@2.10.13':
-    resolution: {integrity: sha512-M8XcfWdS2D4EP3wzd5ehUyCANucMIOsRE6gZuV0Mr2NIn+FpsUjXFCh7r9HY7GnNcjXH4tUnT76OsCDg2c0Fng==}
+  '@turbo/linux-arm64@2.11.0':
+    resolution: {integrity: sha512-gjTQceIaTmgfAAG93GjjotyAOsI+gjJv0kbg5ToNhAHJa6hoaDmvmZL9k7LSAeqteXFc0ROkcQ/24+NRaT4FmQ==}
     cpu: [arm64]
     os: [android, linux]
 
-  '@turbo/windows-64@2.10.13':
-    resolution: {integrity: sha512-QFd3KBMpBBCc31TbxMnxgdBivie8lxJXV8EqmanH8fg8l2e1BdCLWpZJbxk48VNvcF4LHUnwO0FJOq+veKN1cw==}
+  '@turbo/windows-64@2.11.0':
+    resolution: {integrity: sha512-S8tTGqrdWK/D1s7VXPyvMxQCpVPcKJhusqo0VmB/1cafNg8uFh7OUIsm/ENKS7igJ4ZOLMt4guPBVo3+0lY9jg==}
     cpu: [x64]
     os: [win32]
 
-  '@turbo/windows-arm64@2.10.13':
-    resolution: {integrity: sha512-rM+cFO1P8iAHXdasOdMyK9nDk0UGII7VEFLIA8+jwv/+rh48pnVBbF2OSjJDBOw57pxNLIOEDA0JyKcarTBcIw==}
+  '@turbo/windows-arm64@2.11.0':
+    resolution: {integrity: sha512-TfkGFGnz4Ay4Ozh5PdgVNpTuw+I6LPb+R4wljiB6XCeX6YGz3jDsWvtoBvkKtonMx7OP8DrlZitTNY0EwIkn2A==}
     cpu: [arm64]
     os: [win32]
 
@@ -4773,8 +4773,8 @@ packages:
     resolution: {integrity: sha512-axr3IdNuVIxnaK5XGEUFTu3YmAQ6lllgrvqfEoR16g/HGnYY/6We4oWENtAnzK6/LpJ2ur9PAb80RBt7/U4ugw==}
     engines: {node: '>= 6.0.0'}
 
-  turbo@2.10.13:
-    resolution: {integrity: sha512-69MkPbjk+G8oyC7pC2DeBk0rPdbLz51wuH5eAT0Q4BVJkzq/b1XM4kUUidsARbmDjwIELSJwd1ezITULY9kWNw==}
+  turbo@2.11.0:
+    resolution: {integrity: sha512-9ObLaUg3Tn/48EjzALs9sB3FRerV9wZ9SVTv5l94t8CG9g9Q+x+Z5y0F00l5XZuVTjSOInsMeM0Efz3U866q0Q==}
     hasBin: true
 
   type-check@0.4.0:
@@ -6216,22 +6216,22 @@ snapshots:
       '@types/react': 19.3.0
       '@types/react-dom': 19.3.0(@types/react@19.3.0)
 
-  '@turbo/darwin-64@2.10.13':
+  '@turbo/darwin-64@2.11.0':
     optional: true
 
-  '@turbo/darwin-arm64@2.10.13':
+  '@turbo/darwin-arm64@2.11.0':
     optional: true
 
-  '@turbo/linux-64@2.10.13':
+  '@turbo/linux-64@2.11.0':
     optional: true
 
-  '@turbo/linux-arm64@2.10.13':
+  '@turbo/linux-arm64@2.11.0':
     optional: true
 
-  '@turbo/windows-64@2.10.13':
+  '@turbo/windows-64@2.11.0':
     optional: true
 
-  '@turbo/windows-arm64@2.10.13':
+  '@turbo/windows-arm64@2.11.0':
     optional: true
 
   '@types/archiver@8.0.0':
@@ -9604,14 +9604,14 @@ snapshots:
     dependencies:
       tslib: 1.14.1
 
-  turbo@2.10.13:
+  turbo@2.11.0:
     optionalDependencies:
-      '@turbo/darwin-64': 2.10.13
-      '@turbo/darwin-arm64': 2.10.13
-      '@turbo/linux-64': 2.10.13
-      '@turbo/linux-arm64': 2.10.13
-      '@turbo/windows-64': 2.10.13
-      '@turbo/windows-arm64': 2.10.13
+      '@turbo/darwin-64': 2.11.0
+      '@turbo/darwin-arm64': 2.11.0
+      '@turbo/linux-64': 2.11.0
+      '@turbo/linux-arm64': 2.11.0
+      '@turbo/windows-64': 2.11.0
+      '@turbo/windows-arm64': 2.11.0
 
   type-check@0.4.0:
     dependencies:
