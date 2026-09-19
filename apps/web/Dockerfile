@@ -1,4 +1,4 @@
-ARG node_version=24.21.0-alpine3.23@sha256:159fe64649038c30f8cc1ec4be3af3a6e93e3648678c31294e2c5058dbeb99f3
+ARG node_version=24.21.0-alpine3.23@sha256:9ec4a2e289874ed0d722e1772ec2de45d2801541db8612f3638b26f128c69ac2
 
 # renovate: datasource=npm packageName=turbo
 ARG turbo_version=2.10.13
