@@ -50,7 +50,7 @@
     "eslint": "9.39.5",
     "typescript": "6.0.3",
     "typescript-eslint": "8.70.1",
-    "vitest": "5.0.1",
+    "vitest": "5.0.2",
     "vitest-mock-extended": "5.1.1"
   }
 }
