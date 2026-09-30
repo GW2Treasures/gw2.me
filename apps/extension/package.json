@@ -43,7 +43,7 @@
     "@fontsource/bitter": "5.3.0",
     "@gw2me/client": "workspace:*",
     "@gw2treasures/icons": "0.1.4",
-    "@gw2treasures/ui": "0.5.0",
+    "@gw2treasures/ui": "0.5.1",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   }
