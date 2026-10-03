@@ -17,6 +17,7 @@ import { revalidatePath } from 'next/cache';
 import { getFormDataString } from '@/lib/form-data';
 import { createDataTable } from '@gw2treasures/ui/components/Table/DataTable';
 import { Icon } from '@gw2treasures/ui';
+import { SignalPasskeys } from '@/components/Passkey/SignalPasskeys';
 
 const getUserData = cache(async () => {
   const { userId } = await getSessionOrRedirect();
@@ -129,7 +130,14 @@ async function updateSettings(_: FormState, formData: FormData): Promise<FormSta
   });
 
   revalidatePath('/profile');
-  return { success: 'Saved' };
+  return {
+    success: (
+      <>
+        Saved
+        <SignalPasskeys/>
+      </>
+    )
+  };
 }
 
 async function updateEmails(_: FormState, formData: FormData): Promise<FormState> {

@@ -9,7 +9,7 @@ import { NoticeContext, useShowNotice } from '../NoticeContext/NoticeContext';
 import { getAuthenticationOptions, submitAuthentication } from './actions';
 import { PasskeyAuthenticationDialog } from './PasskeyAuthenticationDialog';
 import { useBrowserSupportsPasskeys } from './use-browser-supports-passkeys';
-import { handleAuthenticationResult } from './utils';
+import { handleAuthenticationResult } from './utils.client';
 import { LoginButton } from '@/app/login/button';
 import { UserProviderType } from '@gw2me/database';
 
