@@ -2,7 +2,6 @@
 
 import 'server-only';
 import { getSession, getUser } from '@/lib/session';
-import { getBaseUrlFromHeaders } from '@/lib/url';
 import {
   generateAuthenticationOptions,
   generateRegistrationOptions,
@@ -24,16 +23,7 @@ import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, authCookie, userCookie } from '@/lib/cookie';
 import { redirect } from 'next/navigation';
 import aaguids from 'aaguids';
-
-async function getRelayingParty() {
-  const url = await getBaseUrlFromHeaders();
-
-  return {
-    rpName: 'gw2.me',
-    rpID: url.hostname,
-    origin: url.origin,
-  };
-}
+import { getRelayingParty } from './utils.server';
 
 export type RegistrationParams =
   | { type: 'add' }

@@ -19,6 +19,7 @@ import { PasskeyRegistrationButton } from '@/components/Passkey/PasskeyRegistrat
 import { NoticeContext } from '@/components/NoticeContext/NoticeContext';
 import { ProviderIcon, ProviderName } from '@/components/Provider/Provider';
 import styles from './page.module.css';
+import { SignalPasskeys } from '@/components/Passkey/SignalPasskeys';
 
 const getUserData = cache(async () => {
   const currentSession = await getSessionOrRedirect();
@@ -51,6 +52,8 @@ export default async function ProfilePage() {
   return (
     <PageLayout>
       <Headline id="providers">Login Providers</Headline>
+
+      <SignalPasskeys/>
 
       {providers.length <= 1 && (
         <Notice>You currently only have one login provider. For added security, it&apos;s recommended to have at least one backup login method.</Notice>

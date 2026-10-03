@@ -1,3 +1,5 @@
+import 'client-only';
+
 import { redirect } from 'next/navigation';
 import { NoticeContext } from '../NoticeContext/NoticeContext';
 import { SubmitAuthenticationResult } from './actions';
