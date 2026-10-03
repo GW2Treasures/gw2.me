@@ -55,10 +55,12 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
             <Notice type="warning">If you have used gw2.me before, please <b>use the same login provider</b> to access your account. You can add additional providers after login.</Notice>
           )}
 
-          <div className={styles.buttons}>
-            {availableProviders[UserProviderType.passkey] && (
+          {availableProviders[UserProviderType.passkey] && (
+            <div className={styles.buttons}>
               <PasskeyAuthenticationButton options={options} lastUsed={lastUsedProvider === UserProviderType.passkey}/>
-            )}
+            </div>
+          )}
+          <div className={styles.buttons}>
             {availableProviders[UserProviderType.discord] && (
               <LoginButton provider={UserProviderType.discord} lastUsed={lastUsedProvider === UserProviderType.discord}/>
             )}
@@ -82,6 +84,7 @@ export const LoginForm: FC<LoginFormProps> = async ({ returnTo }) => {
           <Icon icon="cookie"/>
           <div>
             <p>By logging in you accept that gw2.me will store cookies in your browser.</p>
+            <p>No tracking or third-party cookies are used.</p>
           </div>
         </div>
       </Form>
