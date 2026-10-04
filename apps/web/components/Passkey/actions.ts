@@ -2,7 +2,6 @@
 
 import 'server-only';
 import { getSession, getUser } from '@/lib/session';
-import { getBaseUrlFromHeaders } from '@/lib/url';
 import {
   generateAuthenticationOptions,
   generateRegistrationOptions,
@@ -24,16 +23,7 @@ import { revalidatePath } from 'next/cache';
 import { LoginErrorCookieName, authCookie, userCookie } from '@/lib/cookie';
 import { redirect } from 'next/navigation';
 import aaguids from 'aaguids';
-
-async function getRelayingParty() {
-  const url = await getBaseUrlFromHeaders();
-
-  return {
-    rpName: 'gw2.me',
-    rpID: url.hostname,
-    origin: url.origin,
-  };
-}
+import { getRelyingParty } from './utils.server';
 
 export type RegistrationParams =
   | { type: 'add' }
@@ -44,7 +34,7 @@ export async function getRegistrationOptions(params: RegistrationParams): Promis
     ? await getCurrentUserForRegistration()
     : { name: params.username, webAuthnUserId: await generateUserID() };
 
-  const { rpID, rpName } = await getRelayingParty();
+  const { rpID, rpName } = await getRelyingParty();
 
   const options = await generateRegistrationOptions({
     rpID,
@@ -67,7 +57,7 @@ export async function getRegistrationOptions(params: RegistrationParams): Promis
 }
 
 export async function getAuthenticationOptions(): Promise<{ options: PublicKeyCredentialRequestOptionsJSON, challenge: string }> {
-  const { rpID } = await getRelayingParty();
+  const { rpID } = await getRelyingParty();
 
   // if we know which user is trying to authenticate, we can limit the allowed credentials to their passkeys
   const rememberedUser = await getPreviousUser();
@@ -92,7 +82,7 @@ export async function getAuthenticationOptions(): Promise<{ options: PublicKeyCr
 export async function submitRegistration(params: RegistrationParams & { returnTo?: string }, challengeJwt: string, registration: RegistrationResponseJSON) {
   console.log(registration); // TODO: remove
 
-  const { origin, rpID } = await getRelayingParty();
+  const { origin, rpID } = await getRelyingParty();
   const { challenge, webAuthnUserId } = await verifyChallengeJwt(challengeJwt);
 
   const verification = await verifyRegistrationResponse({
@@ -195,7 +185,7 @@ export type SubmitAuthenticationResult =
   | { success: false, reason: 'verification-failed' };
 
 export async function submitAuthentication(challengeJwt: string, authentication: AuthenticationResponseJSON): Promise<SubmitAuthenticationResult> {
-  const { rpID, origin } = await getRelayingParty();
+  const { rpID, origin } = await getRelyingParty();
   const rememberedUser = await getPreviousUser();
 
   // get the used passkey from db

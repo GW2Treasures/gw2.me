@@ -370,6 +370,9 @@ importers:
       aaguids:
         specifier: 0.0.69
         version: 0.0.69
+      client-only:
+        specifier: 0.0.1
+        version: 0.0.1
       hast-util-to-jsx-runtime:
         specifier: 2.3.6
         version: 2.3.6(supports-color@8.1.1)

@@ -11,7 +11,7 @@ import { useCallback, useEffect, useRef, useState, useTransition, type FC } from
 import { ButtonLink } from '../ButtonLink/ButtonLink';
 import { useShowNotice } from '../NoticeContext/NoticeContext';
 import { getAuthenticationOptions, getRegistrationOptions, submitAuthentication, submitRegistration } from './actions';
-import { handleAuthenticationResult } from './utils';
+import { handleAuthenticationResult } from './utils.client';
 
 const invalidUsernameRegex = /[^a-z0-9._-]/i;
 
