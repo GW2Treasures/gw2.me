@@ -12,7 +12,7 @@ datasource db {
 model User {
   id String @id @default(uuid())
 
-  name String @unique
+  name String @unique @db.Citext
 
   emails       UserEmail[] @relation("emails")
   defaultEmail UserEmail?  @relation("default")
