@@ -46,7 +46,7 @@
     "@types/nodemailer": "8.0.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "@typescript/lib-dom": "npm:@types/web@0.0.357",
+    "@typescript/lib-dom": "npm:@types/web@0.0.358",
     "@vitejs/plugin-react": "6.1.1",
     "eslint": "9.39.5",
     "typescript": "6.0.3",
