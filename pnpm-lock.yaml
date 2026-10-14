@@ -343,8 +343,8 @@ importers:
         specifier: 3.11.0
         version: 3.11.0
       aaguids:
-        specifier: 0.0.70
-        version: 0.0.70
+        specifier: 0.0.71
+        version: 0.0.71
       client-only:
         specifier: 0.0.1
         version: 0.0.1
@@ -2027,8 +2027,8 @@ packages:
   '@yuku-toolchain/types@0.18.1':
     resolution: {integrity: sha512-rWtqVdjA8O34nV/4mBFIdUm5Zj+FIzZDR7P2PEpqXXp53VEHabTROu7j2RjzzJbLMVYjW6gDKwOgPgiKRA+x4w==}
 
-  aaguids@0.0.70:
-    resolution: {integrity: sha512-7uF6TNzGHKe3r188JANba+dKHHZqbgQdqUIOktYDUlS9Z0axIjyNAgOkT6EX+7ZUmKGJBNsWHShMiODE/uQRAA==}
+  aaguids@0.0.71:
+    resolution: {integrity: sha512-GytQF7X6eSfSAruwekTLLajT1COqN6qeoPPIE8kLxv9trTnYo6lN1BS1qL6/uBVjzLFo94cm1WkXOrkkFSBurg==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -6332,7 +6332,7 @@ snapshots:
 
   '@yuku-toolchain/types@0.18.1': {}
 
-  aaguids@0.0.70: {}
+  aaguids@0.0.71: {}
 
   abort-controller@3.0.0:
     dependencies:
