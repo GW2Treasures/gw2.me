@@ -26,7 +26,7 @@
     "typescript-eslint": "8.71.2"
   },
   "dependencies": {
-    "react-email": "6.11.2"
+    "react-email": "6.11.3"
   },
   "peerDependencies": {
     "react": "^19.0.0"
