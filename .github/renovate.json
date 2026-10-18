@@ -25,6 +25,10 @@
       "matchPackageNames": ["@react-email/**", "react-email"],
       "groupName": "react-email"
     }, {
+      "matchDatasources": ["npm"],
+      "matchDepNames": ["prisma", "@prisma/**"],
+      "groupName": "prisma"
+    }, {
       "description": "Don't pin own docker images in kubernetes manifests",
       "matchFileNames": ["kubernetes/**/*.yaml"],
       "matchPackageNames": ["ghcr.io/gw2treasures/gw2.me/**"],
