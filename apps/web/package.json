@@ -42,7 +42,7 @@
     "@next/eslint-plugin-next": "16.4.2",
     "@testing-library/dom": "10.4.2",
     "@testing-library/react": "16.3.3",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.5",
     "@types/nodemailer": "8.0.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
