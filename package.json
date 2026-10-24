@@ -18,7 +18,7 @@
     "typescript": "6.0.3"
   },
   "engines": {
-    "node": "22 || 24",
+    "node": "24 || 26",
     "npm": "please-use-pnpm",
     "yarn": "please-use-pnpm",
     "pnpm": "12.15.0"

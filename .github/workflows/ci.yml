@@ -12,6 +12,10 @@ concurrency:
 
 env:
   IMAGE_VERSION: ci-run-${{ github.run_id }}
+  # renovate: datasource=node-version packageName=node
+  NODE_24_VERSION: 24.22.1
+  # renovate: datasource=node-version packageName=node
+  NODE_26_VERSION: 26.12.1
 
 jobs:
   build-node:
@@ -21,13 +25,13 @@ jobs:
       contents: read
     strategy:
       matrix:
-        node: [ 22, 24 ]
+        node: [ 24, 26 ]
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
-        node-version: ${{ matrix.node }}
+        node-version: ${{ env[format('NODE_{0}_VERSION', matrix.node)] }}
         turbo-cache-key: build
     - name: Run Build
       run: pnpm run build
@@ -42,7 +46,7 @@ jobs:
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
-        node-version: 24.22.1
+        node-version: ${{ env.NODE_26_VERSION }}
         turbo-cache-key: lint
     - name: Run Lint
       run: pnpm run lint
@@ -141,7 +145,7 @@ jobs:
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
-        node-version: 24.22.1
+        node-version: ${{ env.NODE_26_VERSION }}
         turbo-cache-key: test
     - name: Run Tests
       run: pnpm run test
@@ -210,7 +214,7 @@ jobs:
     - uses: ./.github/actions/setup-node
       name: Setup Node.js environment
       with:
-        node-version: 24.22.1
+        node-version: ${{ env.NODE_26_VERSION }}
         turbo-cache-key: publish
     - name: Run Publish
       run: pnpm run publish-package --filter=@gw2me/${{ matrix.target }} --env-mode=loose
