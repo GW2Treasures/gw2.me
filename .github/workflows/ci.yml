@@ -13,7 +13,7 @@ concurrency:
 env:
   IMAGE_VERSION: ci-run-${{ github.run_id }}
   # renovate: datasource=node-version packageName=node
-  NODE_24_VERSION: 24.22.1
+  NODE_24_VERSION: 24.22.2
   # renovate: datasource=node-version packageName=node
   NODE_26_VERSION: 26.12.1
 
