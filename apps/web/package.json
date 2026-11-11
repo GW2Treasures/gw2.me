@@ -26,7 +26,7 @@
     "aaguids": "0.0.73",
     "client-only": "0.0.1",
     "hast-util-to-jsx-runtime": "2.3.7",
-    "jose": "6.2.16",
+    "jose": "6.2.17",
     "next": "16.4.6",
     "nodemailer": "10.5.0",
     "react": "19.3.1",
