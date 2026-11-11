@@ -29,6 +29,14 @@
       "matchDepNames": ["prisma", "@prisma/**"],
       "groupName": "prisma"
     }, {
+      "description": "Don't update major node versions in workflows",
+      "matchFileNames": [".github/{workflows,actions}/*.{yml,yaml}"],
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["node-version"],
+      "matchPackageNames": ["node"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    }, {
       "description": "Don't pin own docker images in kubernetes manifests",
       "matchFileNames": ["kubernetes/**/*.yaml"],
       "matchPackageNames": ["ghcr.io/gw2treasures/gw2.me/**"],
