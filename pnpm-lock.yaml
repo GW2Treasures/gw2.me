@@ -343,8 +343,8 @@ importers:
         specifier: 3.11.0
         version: 3.11.0
       aaguids:
-        specifier: 0.0.73
-        version: 0.0.73
+        specifier: 0.0.74
+        version: 0.0.74
       client-only:
         specifier: 0.0.1
         version: 0.0.1
@@ -2110,8 +2110,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  aaguids@0.0.73:
-    resolution: {integrity: sha512-BNkGFAD1OZzCVuTQ9jI3qyvfKHi3UX/k7JSWBjTkF6kLESwikKs8YLaNINiT3GoTcbkgZ1D49RbeByut3tQAFw==}
+  aaguids@0.0.74:
+    resolution: {integrity: sha512-NMTBJL8RonSMx7/gti7uuu0uVwdjfZpMT2rXrz7KW6v5K42WVJKEpRl/NghpWyvzdtGsPXsWmZmjlAQ38vbVAw==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -6442,7 +6442,7 @@ snapshots:
   '@yuku-toolchain/win32-x64@0.27.0':
     optional: true
 
-  aaguids@0.0.73: {}
+  aaguids@0.0.74: {}
 
   abort-controller@3.0.0:
     dependencies:
