@@ -23,7 +23,7 @@ spec:
           claimName: database-pg18
       containers:
       - name: database-pg18
-        image: postgres:18.7-alpine@sha256:75dcac3dfb1cd01ca3536910bbc84128759362f8b118bf8c55b38a94f68f3b73
+        image: postgres:18.7-alpine@sha256:ff64c9e3bdf8e2120107d3559de8db314e8305f7e38c5105903c6295876738ff
         resources:
           requests:
             memory: "128Mi"
