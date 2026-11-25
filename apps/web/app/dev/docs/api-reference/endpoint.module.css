@@ -1,0 +1,76 @@
+.endpoint {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+  position: relative;
+  margin-bottom: 64px;
+}
+
+.description {
+  min-height: 200px;
+}
+
+.examples {
+  position: sticky;
+  top: calc(var(--table-sticky-top, 48px) + 16px);
+  height: auto;
+}
+
+.codeBlock {
+  border: 1px solid var(--color-border-dark);
+  background-color: var(--color-background-light);
+  border-radius: 2px;
+}
+
+.codeBlock + .codeBlock {
+  margin-top: 16px;
+}
+
+.codeBlockHeader {
+  border-bottom: 1px solid var(--color-border-dark);
+  padding: 16px;
+}
+
+.code {
+  padding: 0 16px;
+  color: var(--color-text-muted);
+}
+
+.parameters + .parameters {
+  margin-top: 64px;
+}
+
+.parametersHeader {
+  font-weight: 500;
+}
+
+.parameter {
+  border-top: 1px solid var(--color-border);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.parameterHeader {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.parameterName {
+  font-weight: bold;
+}
+.parameterOptional {
+  color: var(--color-text-muted);
+}
+.parameterType {}
+
+.parameterDescription {}
+
+.headline {
+  font-family: var(--font-bitter);
+  font-size: 28px;
+  border-bottom: 2px solid var(--color-border);
+  padding: 16px 0;
+  margin: 0 0 16px;
+}
